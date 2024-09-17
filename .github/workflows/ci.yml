@@ -81,13 +81,13 @@ jobs:
 
       - name: Check file
         run: |
-          $executables = "${{ vars.EXECUTABLES }}".Split(" ")
-          foreach ($file in $executables) {
-            if (-Not (Test-Path "build\\$file.exe")) {
-              Write-Error "File $file.exe does not exist in the build\\Release folder."
-              exit 1
-            }
-          }
+          set executables=${{ vars.EXECUTABLES }}
+          for %%f in (%executables%) do (
+            if not exist "build\%%f.exe" (
+              echo File %%f.exe does not exist in the build\Release folder.
+              exit /b 1
+            )
+          )
 
   # run_tests:
   #   runs-on: ubuntu-latest
