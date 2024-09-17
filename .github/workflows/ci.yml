@@ -80,6 +80,7 @@ jobs:
       #   run: make clean
 
       - name: Check file
+        shell: cmd
         run: |
           set executables=${{ vars.EXECUTABLES }}
           for %%f in (%executables%) do (
