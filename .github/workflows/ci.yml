@@ -81,7 +81,7 @@ jobs:
 
       - name: Check file
         run: |
-          $executables = "${{ vars.EXECUTABLES }}"
+          $executables = "${{ vars.EXECUTABLES }}".Split(" ")
           foreach ($file in $executables) {
             if (-Not (Test-Path "build\\$file.exe")) {
               Write-Error "File $file.exe does not exist in the build\\Release folder."
