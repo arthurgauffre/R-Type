@@ -85,7 +85,7 @@ jobs:
           set executables=${{ vars.EXECUTABLES }}
           for %%f in (%executables%) do (
             if not exist "%%f.exe" (
-              echo File %%f.exe does not exist in the build\Release folder.
+              echo File %%f.exe does not exist at the root of the project.
               exit /b 1
             )
           )
