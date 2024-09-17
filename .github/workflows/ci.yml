@@ -81,12 +81,13 @@ jobs:
 
       - name: Check file
         run: |
-          for file in ${{ vars.EXECUTABLES }};do
-             if [ ! -x "./build/$file" ]; then
-              echo"File $file does not exist or is not executable"
+          $executables = "${{ vars.EXECUTABLES }}"
+          foreach ($file in $executables) {
+            if (-Not (Test-Path "build\\$file.exe")) {
+              Write-Error "File $file.exe does not exist in the build\\Release folder."
               exit 1
-            fi
-          done
+            }
+          }
 
   # run_tests:
   #   runs-on: ubuntu-latest
