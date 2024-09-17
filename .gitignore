@@ -1,7 +1,6 @@
 *vgcore.*
 *.out
 .vscode
-*.sh
 *.so
 *.json
 
