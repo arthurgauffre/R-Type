@@ -7,10 +7,6 @@
 
 #include "ARenderer.hpp"
 
-ARenderer::ARenderer()
-{
-}
+ARenderer::ARenderer() {}
 
-ARenderer::~ARenderer()
-{
-}
+ARenderer::~ARenderer() {}

@@ -7,11 +7,11 @@
 
 #include "IEntities.hpp"
 
-class AEntities: virtual public IEntities {
-    public:
-        AEntities();
-        ~AEntities();
+class AEntities : virtual public IEntities {
+public:
+  AEntities();
+  ~AEntities();
 
-    protected:
-    private:
+protected:
+private:
 };

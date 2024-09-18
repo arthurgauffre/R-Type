@@ -7,10 +7,6 @@
 
 #include "AEntities.hpp"
 
-AEntities::AEntities()
-{
-}
+AEntities::AEntities() {}
 
-AEntities::~AEntities()
-{
-}
+AEntities::~AEntities() {}

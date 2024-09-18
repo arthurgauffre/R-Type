@@ -7,11 +7,11 @@
 
 #include "IRenderer.hpp"
 
-class ARenderer: virtual public IRenderer {
-    public:
-        ARenderer();
-        ~ARenderer();
+class ARenderer : virtual public IRenderer {
+public:
+  ARenderer();
+  ~ARenderer();
 
-    protected:
-    private:
+protected:
+private:
 };

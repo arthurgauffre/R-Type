@@ -8,10 +8,10 @@
 #pragma once
 
 class IComponents {
-    public:
-        IComponents();
-        ~IComponents();
+public:
+  IComponents();
+  ~IComponents();
 
-    protected:
-    private:
+protected:
+private:
 };

@@ -8,10 +8,10 @@
 #pragma once
 
 class IEntityManager {
-    public:
-        IEntityManager();
-        ~IEntityManager();
+public:
+  IEntityManager();
+  ~IEntityManager();
 
-    protected:
-    private:
+protected:
+private:
 };

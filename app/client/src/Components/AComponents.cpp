@@ -7,10 +7,6 @@
 
 #include "AComponents.hpp"
 
-AComponents::AComponents()
-{
-}
+AComponents::AComponents() {}
 
-AComponents::~AComponents()
-{
-}
+AComponents::~AComponents() {}

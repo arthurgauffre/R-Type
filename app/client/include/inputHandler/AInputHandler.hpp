@@ -7,11 +7,11 @@
 
 #include "IInputHandler.hpp"
 
-class AInputHandler: virtual public IInputHandler {
-    public:
-        AInputHandler();
-        ~AInputHandler();
+class AInputHandler : virtual public IInputHandler {
+public:
+  AInputHandler();
+  ~AInputHandler();
 
-    protected:
-    private:
+protected:
+private:
 };

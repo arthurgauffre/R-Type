@@ -7,11 +7,7 @@
 
 #include "AEntityManager.hpp"
 
-AEntityManager::AEntityManager()
-{
-}
+AEntityManager::AEntityManager() {}
 
-AEntityManager::~AEntityManager()
-{
-}
+AEntityManager::~AEntityManager() {}
 x

@@ -7,11 +7,11 @@
 
 #include "IEntityManager.hpp"
 
-class AEntityManager: virtual public IEntityManager {
-    public:
-        AEntityManager();
-        ~AEntityManager();
+class AEntityManager : virtual public IEntityManager {
+public:
+  AEntityManager();
+  ~AEntityManager();
 
-    protected:
-    private:
+protected:
+private:
 };

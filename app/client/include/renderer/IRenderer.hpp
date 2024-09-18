@@ -8,10 +8,10 @@
 #pragma once
 
 class IRenderer {
-    public:
-        IRenderer();
-        ~IRenderer();
+public:
+  IRenderer();
+  ~IRenderer();
 
-    protected:
-    private:
+protected:
+private:
 };

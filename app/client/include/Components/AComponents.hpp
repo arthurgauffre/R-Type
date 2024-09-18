@@ -7,11 +7,11 @@
 
 #pragma "IComponents.hpp"
 
-class AComponents: virtual public IComponents {
-    public:
-        AComponents();
-        ~AComponents();
+class AComponents : virtual public IComponents {
+public:
+  AComponents();
+  ~AComponents();
 
-    protected:
-    private:
+protected:
+private:
 };

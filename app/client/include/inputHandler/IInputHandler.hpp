@@ -8,10 +8,10 @@
 #pragma once
 
 class IInputHandler {
-    public:
-        IInputHandler();
-        ~IInputHandler();
+public:
+  IInputHandler();
+  ~IInputHandler();
 
-    protected:
-    private:
+protected:
+private:
 };

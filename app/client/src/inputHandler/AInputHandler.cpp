@@ -7,10 +7,6 @@
 
 #include "AInputHandler.hpp"
 
-AInputHandler::AInputHandler()
-{
-}
+AInputHandler::AInputHandler() {}
 
-AInputHandler::~AInputHandler()
-{
-}
+AInputHandler::~AInputHandler() {}
