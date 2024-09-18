@@ -41,14 +41,26 @@ jobs:
         with:
           repository: ""
 
-      - name: Compile repository
+      - name: Cache CMake build
+        id: cache-cmake
+        uses: actions/cache@v3
+        with:
+          # Cache the CMake build directory
+          path: build
+          key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}-${{ hashFiles('**/*.cpp') }}
+          restore-keys: |
+            ${{ runner.os }}-cmake-
+            ${{ runner.os }}-
+
+      - name: Configure CMake
         run: cmake -S . -B build
 
       - name: Build project
         run: cmake --build build
 
-      # - name: Clean repository
-      #   run: make clean
+      - if: ${{ steps.cache-cmake.outputs.cache-hit != 'true' }}
+        name: Notify cache miss
+        run: echo "Cache was not hit. Building from scratch."
 
       - name: Check file
         run: |
@@ -70,14 +82,26 @@ jobs:
         with:
           repository: ""
 
-      - name: Compile repository
+      - name: Cache CMake build
+        id: cache-cmake
+        uses: actions/cache@v3
+        with:
+          # Cache the CMake build directory
+          path: build
+          key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}-${{ hashFiles('**/*.cpp') }}
+          restore-keys: |
+            ${{ runner.os }}-cmake-
+            ${{ runner.os }}-
+
+      - name: Configure CMake
         run: cmake -S . -B build
 
       - name: Build project
         run: cmake --build build
 
-      # - name: Clean repository
-      #   run: make clean
+      - if: ${{ steps.cache-cmake.outputs.cache-hit != 'true' }}
+        name: Notify cache miss
+        run: echo "Cache was not hit. Building from scratch."
 
       - name: Check file
         shell: cmd
