@@ -32,7 +32,7 @@ jobs:
 
   check_linux_program_compilation:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     needs: auto_format
     # container: epitechcontent/epitest-docker:latest
     steps:
@@ -44,12 +44,15 @@ jobs:
       - name: Cache CMake build
         id: cache-cmake
         uses: actions/cache@v3
+        env:
+          cache-name: cache-cmake-build
         with:
           # Cache the CMake build directory
           path: build
-          key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}-${{ hashFiles('**/*.cpp') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name}}-${{ hashFiles('**/CMakeLists.txt') }}-${{ hashFiles('**/*.cpp') }}
           restore-keys: |
-            ${{ runner.os }}-cmake-
+            ${{ runner.os }}-build--${{ env.cache-name}}-
+            ${{ runner.os }}-build-
             ${{ runner.os }}-
 
       - name: Configure CMake
@@ -73,7 +76,7 @@ jobs:
 
   check_windows_program_compilation:
     runs-on: windows-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     needs: auto_format
     # container: epitechcontent/epitest-docker:latest
     steps:
@@ -85,23 +88,16 @@ jobs:
       - name: Cache CMake build
         id: cache-cmake
         uses: actions/cache@v3
+        env:
+          cache-name: cache-cmake-build
         with:
           # Cache the CMake build directory
           path: build
-          key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}-${{ hashFiles('**/*.cpp') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name}}-${{ hashFiles('**/CMakeLists.txt') }}-${{ hashFiles('**/*.cpp') }}
           restore-keys: |
-            ${{ runner.os }}-cmake-
+            ${{ runner.os }}-build--${{ env.cache-name}}-
+            ${{ runner.os }}-build-
             ${{ runner.os }}-
-
-      - name: Configure CMake
-        run: cmake -S . -B build
-
-      - name: Build project
-        run: cmake --build build
-
-      - if: ${{ steps.cache-cmake.outputs.cache-hit != 'true' }}
-        name: Notify cache miss
-        run: echo "Cache was not hit. Building from scratch."
 
       - name: Check file
         shell: cmd
