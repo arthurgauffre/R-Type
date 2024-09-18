@@ -99,6 +99,16 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+      - name: Configure CMake
+        run: cmake -S . -B build
+
+      - name: Build project
+        run: cmake --build build
+
+      - if: ${{ steps.cache-cmake.outputs.cache-hit != 'true' }}
+        name: Notify cache miss
+        run: echo "Cache was not hit. Building from scratch."
+
       - name: Check file
         shell: cmd
         run: |
