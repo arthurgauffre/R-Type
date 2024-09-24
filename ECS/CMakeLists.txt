@@ -9,10 +9,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
 include_directories(include/components)
+include_directories(include/systems)
 
 set(SOURCES
     src/ComponentManager.cpp
     src/EntityManager.cpp
+    src/SystemManager.cpp
+    src/systems/RenderSystem.cpp
     main.cpp
 )
 
@@ -21,3 +24,7 @@ add_executable(RType ${SOURCES})
 set_target_properties(RType PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}"
 )
+
+find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+
+target_link_libraries(RType sfml-graphics sfml-window sfml-system)

@@ -11,6 +11,7 @@
 #include <vector>
 #include <memory>
 #include "IComponent.hpp"
+#include "IEntity.hpp"
 
 namespace component
 {
@@ -29,7 +30,11 @@ namespace component
         template <typename T>
         T *getComponent(uint32_t entityID)
         {
-            const auto &entityComponents = components[entityID];
+            auto it = components.find(entityID);
+            if (it == components.end())
+                return nullptr;
+
+            const auto &entityComponents = it->second;
 
             for (const auto &component : entityComponents)
             {
@@ -37,6 +42,26 @@ namespace component
                     return casted;
             }
             return nullptr;
+        }
+
+        template <typename... Components>
+        bool hasComponents(std::shared_ptr<entity::IEntity> entity)
+        {
+            return (... && (getComponent<Components>(entity->getID()) != nullptr));
+        }
+
+        template <typename... Components>
+        std::vector<std::shared_ptr<entity::IEntity>> getEntitiesWithComponents(const std::vector<std::shared_ptr<entity::IEntity>> &entities)
+        {
+            std::vector<std::shared_ptr<entity::IEntity>> result;
+
+            for (const auto &entity : entities)
+            {
+                if (entity && hasComponents<Components...>(entity))
+                    result.push_back(entity);
+            }
+
+            return result;
         }
 
         void update(float deltaTime);

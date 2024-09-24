@@ -57,3 +57,13 @@ entity::IEntity *entity::EntityManager::createEntity(uint32_t id)
     entities.push_back(std::make_unique<entity::AEntity>(id));
     return entities.back().get();
 }
+
+/**
+ * @brief Retrieves the list of entities managed by the EntityManager.
+ * 
+ * @return A reference to a vector of unique pointers to IEntity objects.
+ */
+std::vector<std::unique_ptr<entity::IEntity>> &entity::EntityManager::getEntities()
+{
+    return entities;
+}

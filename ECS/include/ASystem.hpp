@@ -9,8 +9,9 @@
 
 #include "ISystem.hpp"
 #include "ComponentManager.hpp"
-
-namespace system
+#include <vector>
+#include <memory>
+namespace ECS_system
 {
     class ASystem : public ISystem
     {
@@ -22,7 +23,7 @@ namespace system
         virtual void initialize() = 0;
 
         // Update method called each frame
-        virtual void update(float deltaTime) = 0;
+        virtual void update(float deltaTime, std::vector<std::unique_ptr<entity::IEntity>> entities) = 0;
 
         // Handle components method
         virtual void handleComponents() = 0;
