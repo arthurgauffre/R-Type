@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Icomponent.hpp"
+#include "IComponent.hpp"
 
 namespace component
 {

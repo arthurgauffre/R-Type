@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** *
 ** File description:
-** Ientity
+** IEntity
 */
 
 #pragma once
@@ -11,10 +11,10 @@
 
 namespace entity
 {
-    class Ientity
+    class IEntity
     {
     public:
-        virtual ~Ientity() = default;
+        virtual ~IEntity() = default;
 
         // Return entity's ID
         virtual uint32_t getID() const = 0;

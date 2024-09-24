@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
-#include "Icomponent.hpp"
+#include "IComponent.hpp"
 
 namespace component
 {
@@ -18,10 +18,26 @@ namespace component
     {
     public:
         template <typename T, typename... Args>
-        T *AddComponent(uint32_t entityID, Args &&...args);
+        T *addComponent(uint32_t entityID, Args &&...args)
+        {
+            auto component = std::make_unique<T>(entityID, std::forward<Args>(args)...);
+            T *ptr = component.get();
+            components[entityID].push_back(std::move(component));
+            return ptr;
+        }
 
         template <typename T>
-        T *GetComponent(uint32_t entityID);
+        T *getComponent(uint32_t entityID)
+        {
+            const auto &entityComponents = components[entityID];
+
+            for (const auto &component : entityComponents)
+            {
+                if (T *casted = dynamic_cast<T *>(component.get()))
+                    return casted;
+            }
+            return nullptr;
+        }
 
         void update(float deltaTime);
 

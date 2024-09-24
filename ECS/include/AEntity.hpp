@@ -2,21 +2,21 @@
 ** EPITECH PROJECT, 2024
 ** *
 ** File description:
-** Aentity
+** AEntity
 */
 
 #pragma once
 
-#include "Ientity.hpp"
+#include "IEntity.hpp"
 
 namespace entity
 {
-    class Aentity : public Ientity
+    class AEntity : public IEntity
     {
     public:
-        Aentity(uint32_t id) : id(id), isActive(true) {}
+        AEntity(uint32_t id) : id(id), isActive(true) {}
 
-        virtual ~Aentity() = default;
+        virtual ~AEntity() = default;
 
         uint32_t getID() const override
         {

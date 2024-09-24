@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** Icomponent
+** IComponent
 */
 
 #pragma once
