@@ -7,7 +7,7 @@
 
 #include "RenderSystem.hpp"
 
-void ECS_system::RenderSystem::update(float deltaTime, std::vector<std::unique_ptr<entity::IEntity>> entities)
+void ECS_system::RenderSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
 {
     window.clear();
 

@@ -30,10 +30,10 @@ namespace entity
         IEntity *getEntityByID(uint32_t id) const;
 
         // Get all entities
-        std::vector<std::unique_ptr<IEntity>> &getEntities();
+        std::vector<std::shared_ptr<IEntity>> &getEntities();
 
     private:
         // Stock all entities
-        std::vector<std::unique_ptr<IEntity>> entities;
+        std::vector<std::shared_ptr<IEntity>> entities;
     };
 }

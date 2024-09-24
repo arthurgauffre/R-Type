@@ -38,7 +38,7 @@ entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const
  */
 void entity::EntityManager::destroyEntity(uint32_t id)
 {
-    entities.erase(std::remove_if(entities.begin(), entities.end(), [id](const std::unique_ptr<IEntity> &entity)
+    entities.erase(std::remove_if(entities.begin(), entities.end(), [id](const std::shared_ptr<IEntity> &entity)
                                   { return entity->getID() == id; }),
                    entities.end());
 }
@@ -63,7 +63,7 @@ entity::IEntity *entity::EntityManager::createEntity(uint32_t id)
  * 
  * @return A reference to a vector of unique pointers to IEntity objects.
  */
-std::vector<std::unique_ptr<entity::IEntity>> &entity::EntityManager::getEntities()
+std::vector<std::shared_ptr<entity::IEntity>> &entity::EntityManager::getEntities()
 {
     return entities;
 }

@@ -20,7 +20,7 @@ namespace ECS_system
             : ASystem(componentManager), window(window) {};
         ~RenderSystem() = default;
 
-        void update(float deltaTime, std::vector<std::unique_ptr<entity::IEntity>> entities) override;
+        void update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) override;
         void initialize() override {};
         void handleComponents() override {};
 

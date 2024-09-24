@@ -22,7 +22,7 @@ namespace ECS_system
         virtual void initialize() = 0;
 
         // Update method called each frame
-        virtual void update(float deltaTime, std::vector<std::unique_ptr<entity::IEntity>> entities) = 0;
+        virtual void update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) = 0;
 
         // Handle components method
         virtual void handleComponents() = 0;

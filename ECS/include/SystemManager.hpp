@@ -32,7 +32,7 @@ namespace ECS_system
         }
 
         // Update all systems
-        void update(float deltaTime, std::vector<std::unique_ptr<entity::IEntity>> entities);
+        void update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities);
 
     private:
         std::vector<std::unique_ptr<ISystem>> systems; // Vector of systems
