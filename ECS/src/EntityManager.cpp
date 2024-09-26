@@ -20,7 +20,7 @@
  */
 entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const
 {
-    for (auto &entity : entities)
+    for (auto &entity : _entities)
     {
         if (entity->getID() == id)
             return entity.get();
@@ -38,9 +38,9 @@ entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const
  */
 void entity::EntityManager::destroyEntity(uint32_t id)
 {
-    entities.erase(std::remove_if(entities.begin(), entities.end(), [id](const std::shared_ptr<IEntity> &entity)
+    _entities.erase(std::remove_if(_entities.begin(), _entities.end(), [id](const std::shared_ptr<IEntity> &entity)
                                   { return entity->getID() == id; }),
-                   entities.end());
+                   _entities.end());
 }
 
 /**
@@ -54,8 +54,8 @@ void entity::EntityManager::destroyEntity(uint32_t id)
  */
 entity::IEntity *entity::EntityManager::createEntity(uint32_t id)
 {
-    entities.push_back(std::make_unique<entity::AEntity>(id));
-    return entities.back().get();
+    _entities.push_back(std::make_unique<entity::AEntity>(id));
+    return _entities.back().get();
 }
 
 /**
@@ -65,5 +65,5 @@ entity::IEntity *entity::EntityManager::createEntity(uint32_t id)
  */
 std::vector<std::shared_ptr<entity::IEntity>> &entity::EntityManager::getEntities()
 {
-    return entities;
+    return _entities;
 }

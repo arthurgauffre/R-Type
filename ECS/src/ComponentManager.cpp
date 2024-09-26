@@ -18,7 +18,7 @@
  */
 void component::ComponentManager::update(float deltaTime)
 {
-    for (auto &entityComponents : components)
+    for (auto &entityComponents : _components)
     {
         for (auto &component : entityComponents.second)
         {

@@ -23,15 +23,15 @@ namespace component
         {
             auto component = std::make_unique<T>(entityID, std::forward<Args>(args)...);
             T *ptr = component.get();
-            components[entityID].push_back(std::move(component));
+            _components[entityID].push_back(std::move(component));
             return ptr;
         }
 
         template <typename T>
         T *getComponent(uint32_t entityID)
         {
-            auto it = components.find(entityID);
-            if (it == components.end())
+            auto it = _components.find(entityID);
+            if (it == _components.end())
                 return nullptr;
 
             const auto &entityComponents = it->second;
@@ -68,6 +68,6 @@ namespace component
 
     private:
         // Components stocked by entity ID
-        std::unordered_map<uint32_t, std::vector<std::unique_ptr<IComponent>>> components;
+        std::unordered_map<uint32_t, std::vector<std::unique_ptr<IComponent>>> _components;
     };
 }

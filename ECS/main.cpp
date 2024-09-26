@@ -16,10 +16,12 @@
 #include "AComponent.hpp"
 #include "SpriteComponent.hpp"
 #include "TextureComponent.hpp"
+#include "HitBoxComponent.hpp"
 
 #include "SystemManager.hpp"
 #include "RenderSystem.hpp"
 #include "ASystem.hpp"
+#include "CollisionSystem.hpp"
 
 int main()
 {
@@ -28,14 +30,22 @@ int main()
     ECS_system::SystemManager systemManager;
 
     entity::IEntity *entity = entityManager.createEntity(0);
+    entity::IEntity *entity2 = entityManager.createEntity(1);
 
-    component::PositionComponent *component = componentManager.addComponent<component::PositionComponent>(0, 700.0f, 500.0f);
-    component::SpriteComponent *spriteComponent = componentManager.addComponent<component::SpriteComponent>(0, 700.0f, 500.0f);
+    component::PositionComponent *component = componentManager.addComponent<component::PositionComponent>(0, 100.0f, 100.0f);
+    component::SpriteComponent *spriteComponent = componentManager.addComponent<component::SpriteComponent>(0, 100.0f, 100.0f);
     component::TextureComponent *textureComponent = componentManager.addComponent<component::TextureComponent>(0, "../sprites/r-typesheet1.gif");
+    component::HitBoxComponent *hitboxComponent = componentManager.addComponent<component::HitBoxComponent>(0, 50.0f, 50.0f);
+
+    component::PositionComponent *component2 = componentManager.addComponent<component::PositionComponent>(1, 100.0f, 100.0f);
+    component::SpriteComponent *spriteComponent2 = componentManager.addComponent<component::SpriteComponent>(1, 100.0f, 100.0f);
+    component::TextureComponent *textureComponent2 = componentManager.addComponent<component::TextureComponent>(1, "../sprites/r-typesheet1.gif");
+    component::HitBoxComponent *hitboxComponent2 = componentManager.addComponent<component::HitBoxComponent>(1, 50.0f, 50.0f);
 
     // create window
     sf::RenderWindow window(sf::VideoMode(800, 600), "ECS");
     systemManager.addSystem<ECS_system::RenderSystem>(componentManager, window);
+    systemManager.addSystem<ECS_system::CollisionSystem>(componentManager);
 
     // Main loop
     while (window.isOpen())

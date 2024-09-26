@@ -18,15 +18,15 @@ namespace component
         TextureComponent(uint32_t entityID, const std::string &path)
             : AComponent(entityID)
         {
-            texture.loadFromFile(path);
+            _texture.loadFromFile(path);
         }
         ~TextureComponent() = default;
 
-        sf::Texture &getTexture() { return texture; } // Get texture
+        sf::Texture &getTexture() { return _texture; } // Get texture
 
         void update(float deltaTime) override; // Update the component
 
     private:
-        sf::Texture texture; // Texture
+        sf::Texture _texture; // Texture
     };
 }

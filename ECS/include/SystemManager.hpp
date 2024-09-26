@@ -27,7 +27,7 @@ namespace ECS_system
         {
             auto system = std::make_unique<T>(std::forward<Args>(args)...);
             T *systemPtr = system.get();
-            systems.push_back(std::move(system));
+            _systems.push_back(std::move(system));
             return systemPtr;
         }
 
@@ -35,6 +35,6 @@ namespace ECS_system
         void update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities);
 
     private:
-        std::vector<std::unique_ptr<ISystem>> systems; // Vector of systems
+        std::vector<std::unique_ptr<ISystem>> _systems; // Vector of systems
     };
 }

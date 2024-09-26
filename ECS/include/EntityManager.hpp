@@ -34,6 +34,6 @@ namespace entity
 
     private:
         // Stock all entities
-        std::vector<std::shared_ptr<IEntity>> entities;
+        std::vector<std::shared_ptr<IEntity>> _entities;
     };
 }

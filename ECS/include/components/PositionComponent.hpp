@@ -15,16 +15,16 @@ namespace component
     {
     public:
         PositionComponent(uint32_t entityID, float x, float y)
-            : AComponent(entityID), x(x), y(y) {};
+            : AComponent(entityID), _x(x), _y(y) {};
         ~PositionComponent() = default;
 
-        float getX() const { return x; } // Return the x position
-        float getY() const { return y; } // Return the y position
+        float getX() const { return _x; } // Return the x position
+        float getY() const { return _y; } // Return the y position
 
         void update(float deltaTime) override {}; // Update the component
 
     private:
-        float x; // x position
-        float y; // y position
+        float _x; // x position
+        float _y; // y position
     };
 }

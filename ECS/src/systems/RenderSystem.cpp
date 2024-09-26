@@ -19,7 +19,7 @@
  */
 void ECS_system::RenderSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
 {
-    window.clear();
+    _window.clear();
 
     for (auto &entity : _componentManager.getEntitiesWithComponents<component::PositionComponent>(entities))
     {
@@ -30,7 +30,7 @@ void ECS_system::RenderSystem::update(float deltaTime, std::vector<std::shared_p
         spriteComponent->getSprite().setPosition(positionComponent->getX(), positionComponent->getY());
         spriteComponent->getSprite().setTexture(textureComponent->getTexture());
 
-        window.draw(spriteComponent->getSprite());
+        _window.draw(spriteComponent->getSprite());
     }
-    window.display();
+    _window.display();
 }

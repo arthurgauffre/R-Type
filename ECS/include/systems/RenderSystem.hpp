@@ -19,7 +19,7 @@ namespace ECS_system
     {
     public:
         RenderSystem(component::ComponentManager &componentManager, sf::RenderWindow &window)
-            : ASystem(componentManager), window(window) {};
+            : ASystem(componentManager), _window(window) {};
         ~RenderSystem() = default;
 
         void update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) override;
@@ -27,6 +27,6 @@ namespace ECS_system
         void handleComponents() override {};
 
     private:
-        sf::RenderWindow &window; // Reference to the window
+        sf::RenderWindow &_window; // Reference to the window
     };
 }

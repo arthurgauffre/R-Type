@@ -16,18 +16,18 @@ namespace component
     {
     public:
         SpriteComponent(uint32_t entityID, float x, float y)
-            : AComponent(entityID), x(x), y(y) {};
+            : AComponent(entityID), _x(x), _y(y) {};
         ~SpriteComponent() = default;
 
-        float getX() const { return x; }           // Get x position
-        float getY() const { return y; }           // Get y position
-        sf::Sprite &getSprite() { return sprite; } // Get sprite
+        float getX() const { return _x; }           // Get x position
+        float getY() const { return _y; }           // Get y position
+        sf::Sprite &getSprite() { return _sprite; } // Get sprite
 
         void update(float deltaTime) override; // Update the component
 
     private:
-        float x;           // x position
-        float y;           // y position
-        sf::Sprite sprite; // Sprite
+        float _x;           // x position
+        float _y;           // y position
+        sf::Sprite _sprite; // Sprite
     };
 }
