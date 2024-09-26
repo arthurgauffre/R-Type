@@ -17,8 +17,11 @@ set(SOURCES
     src/SystemManager.cpp
     src/systems/RenderSystem.cpp
     src/systems/CollisionSystem.cpp
+    src/systems/AudioSystem.cpp
     src/components/TextureComponent.cpp
     src/components/SpriteComponent.cpp
+    src/components/MusicComponent.cpp
+    src/components/SoundComponent.cpp
     main.cpp
 )
 
@@ -30,4 +33,4 @@ set_target_properties(RType PROPERTIES
 
 find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 
-target_link_libraries(RType sfml-graphics sfml-window sfml-system)
+target_link_libraries(RType sfml-graphics sfml-window sfml-system sfml-audio)

@@ -17,11 +17,14 @@
 #include "SpriteComponent.hpp"
 #include "TextureComponent.hpp"
 #include "HitBoxComponent.hpp"
+#include "MusicComponent.hpp"
+#include "SoundComponent.hpp"
 
 #include "SystemManager.hpp"
 #include "RenderSystem.hpp"
 #include "ASystem.hpp"
 #include "CollisionSystem.hpp"
+#include "AudioSystem.hpp"
 
 int main()
 {
@@ -34,18 +37,21 @@ int main()
 
     component::PositionComponent *component = componentManager.addComponent<component::PositionComponent>(0, 100.0f, 100.0f);
     component::SpriteComponent *spriteComponent = componentManager.addComponent<component::SpriteComponent>(0, 100.0f, 100.0f);
-    component::TextureComponent *textureComponent = componentManager.addComponent<component::TextureComponent>(0, "../sprites/r-typesheet1.gif");
+    component::TextureComponent *textureComponent = componentManager.addComponent<component::TextureComponent>(0, "../assets/sprites/r-typesheet1.gif");
     component::HitBoxComponent *hitboxComponent = componentManager.addComponent<component::HitBoxComponent>(0, 50.0f, 50.0f);
+    component::MusicComponent *musicComponent = componentManager.addComponent<component::MusicComponent>(0, "../assets/musics/testSong.wav");
 
     component::PositionComponent *component2 = componentManager.addComponent<component::PositionComponent>(1, 100.0f, 100.0f);
     component::SpriteComponent *spriteComponent2 = componentManager.addComponent<component::SpriteComponent>(1, 100.0f, 100.0f);
-    component::TextureComponent *textureComponent2 = componentManager.addComponent<component::TextureComponent>(1, "../sprites/r-typesheet1.gif");
+    component::TextureComponent *textureComponent2 = componentManager.addComponent<component::TextureComponent>(1, "../assets/sprites/r-typesheet1.gif");
     component::HitBoxComponent *hitboxComponent2 = componentManager.addComponent<component::HitBoxComponent>(1, 50.0f, 50.0f);
+    component::SoundComponent *soundComponent = componentManager.addComponent<component::SoundComponent>(1, "../assets/musics/testSong.wav");
 
     // create window
     sf::RenderWindow window(sf::VideoMode(800, 600), "ECS");
     systemManager.addSystem<ECS_system::RenderSystem>(componentManager, window);
     systemManager.addSystem<ECS_system::CollisionSystem>(componentManager);
+    systemManager.addSystem<ECS_system::AudioSystem>(componentManager);
 
     // Main loop
     while (window.isOpen())
