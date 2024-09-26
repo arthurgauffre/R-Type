@@ -7,21 +7,30 @@
 
 #include "RenderSystem.hpp"
 
+/**
+ * @brief Updates the render system by drawing all entities with PositionComponent, SpriteComponent, and TextureComponent.
+ *
+ * This function clears the window, iterates through all entities that have a PositionComponent,
+ * retrieves the corresponding PositionComponent, SpriteComponent, and TextureComponent for each entity,
+ * sets the sprite's position and texture, and then draws the sprite to the window. Finally, it displays the window.
+ *
+ * @param deltaTime The time elapsed since the last update.
+ * @param entities A vector of shared pointers to entities to be processed.
+ */
 void ECS_system::RenderSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
 {
     window.clear();
 
-    // Get all entities with PositionComponent
     for (auto &entity : _componentManager.getEntitiesWithComponents<component::PositionComponent>(entities))
     {
-        // Get PositionComponent
-        auto *positionComponent = _componentManager.getComponent<component::PositionComponent>(entity.get()->getID());
+        component::PositionComponent *positionComponent = _componentManager.getComponent<component::PositionComponent>(entity.get()->getID());
+        component::SpriteComponent *spriteComponent = _componentManager.getComponent<component::SpriteComponent>(entity.get()->getID());
+        component::TextureComponent *textureComponent = _componentManager.getComponent<component::TextureComponent>(entity.get()->getID());
 
-        // Draw entity
-        sf::CircleShape shape(100.f);
-        shape.setFillColor(sf::Color::Green);
-        shape.setPosition(positionComponent->getX(), positionComponent->getY());
-        window.draw(shape);
+        spriteComponent->getSprite().setPosition(positionComponent->getX(), positionComponent->getY());
+        spriteComponent->getSprite().setTexture(textureComponent->getTexture());
+
+        window.draw(spriteComponent->getSprite());
     }
     window.display();
 }

@@ -10,6 +10,8 @@
 #include <SFML/Graphics.hpp>
 #include <ASystem.hpp>
 #include <PositionComponent.hpp>
+#include <SpriteComponent.hpp>
+#include <TextureComponent.hpp>
 
 namespace ECS_system
 {

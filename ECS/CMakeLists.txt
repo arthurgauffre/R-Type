@@ -16,6 +16,8 @@ set(SOURCES
     src/EntityManager.cpp
     src/SystemManager.cpp
     src/systems/RenderSystem.cpp
+    src/components/TextureComponent.cpp
+    src/components/SpriteComponent.cpp
     main.cpp
 )
 

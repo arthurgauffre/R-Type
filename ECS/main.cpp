@@ -14,6 +14,8 @@
 #include "ComponentManager.hpp"
 #include "PositionComponent.hpp"
 #include "AComponent.hpp"
+#include "SpriteComponent.hpp"
+#include "TextureComponent.hpp"
 
 #include "SystemManager.hpp"
 #include "RenderSystem.hpp"
@@ -21,16 +23,15 @@
 
 int main()
 {
-    // Créer des gestionnaires d'entités et de composants
     entity::EntityManager entityManager;
     component::ComponentManager componentManager;
     ECS_system::SystemManager systemManager;
 
-    // Créer une entité
-    auto *entity = entityManager.createEntity(0);
+    entity::IEntity *entity = entityManager.createEntity(0);
 
-    // Add component to entity
-    auto *component = componentManager.addComponent<component::PositionComponent>(0, 10.0f, 20.0f);
+    component::PositionComponent *component = componentManager.addComponent<component::PositionComponent>(0, 700.0f, 500.0f);
+    component::SpriteComponent *spriteComponent = componentManager.addComponent<component::SpriteComponent>(0, 700.0f, 500.0f);
+    component::TextureComponent *textureComponent = componentManager.addComponent<component::TextureComponent>(0, "../sprites/r-typesheet1.gif");
 
     // create window
     sf::RenderWindow window(sf::VideoMode(800, 600), "ECS");
