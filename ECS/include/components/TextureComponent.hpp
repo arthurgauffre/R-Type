@@ -20,13 +20,39 @@ namespace component
         {
             _texture.loadFromFile(path);
         }
+
+        /**
+         * @brief Default destructor for the TextureComponent class.
+         */
         ~TextureComponent() = default;
 
-        sf::Texture &getTexture() { return _texture; } // Get texture
+        /**
+         * @brief Retrieves the texture associated with this component.
+         *
+         * @return Reference to the sf::Texture object.
+         */
+        sf::Texture &getTexture() { return _texture; }
 
-        void update(float deltaTime) override; // Update the component
+        /**
+         * @brief Updates the texture component.
+         *
+         * This function is called to update the state of the texture component
+         * based on the elapsed time since the last update.
+         *
+         * @param deltaTime The time elapsed since the last update, in seconds.
+         */
+        void update(float deltaTime) override;
 
     private:
-        sf::Texture _texture; // Texture
+        /**
+         * @brief Represents a texture in the SFML library.
+         *
+         * This component holds an instance of sf::Texture, which is used to load and manage
+         * graphical textures in the application. Textures are used to draw images, sprites,
+         * and other graphical elements.
+         *
+         * @see sf::Texture
+         */
+        sf::Texture _texture;
     };
 }

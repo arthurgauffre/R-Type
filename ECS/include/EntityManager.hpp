@@ -18,22 +18,27 @@ namespace entity
     class EntityManager
     {
     public:
+        /**
+         * @brief Constructs an EntityManager object.
+         */
         EntityManager() = default;
 
-        // Create a new entity with a specific ID
         IEntity *createEntity(uint32_t id);
 
-        // Destroy an entity by its ID
         void destroyEntity(uint32_t id);
 
-        // Get an entity by its ID
         IEntity *getEntityByID(uint32_t id) const;
 
-        // Get all entities
         std::vector<std::shared_ptr<IEntity>> &getEntities();
 
     private:
-        // Stock all entities
+        /**
+         * @brief A container that holds shared pointers to IEntity objects.
+         *
+         * This vector is used to manage and store entities within the EntityManager.
+         * Each entity is managed through a std::shared_ptr to ensure proper memory management
+         * and to allow shared ownership of the entities.
+         */
         std::vector<std::shared_ptr<IEntity>> _entities;
     };
 }
