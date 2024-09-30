@@ -9,11 +9,11 @@
 
 /**
  * @brief Updates the audio system by processing sound and music components of entities.
- * 
- * This function iterates through a list of entities and checks for the presence of 
- * SoundComponent and MusicComponent in each entity. If a SoundComponent or MusicComponent 
+ *
+ * This function iterates through a list of entities and checks for the presence of
+ * SoundComponent and MusicComponent in each entity. If a SoundComponent or MusicComponent
  * is found and is marked as playing, the respective play function is called.
- * 
+ *
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be processed.
  */
@@ -26,12 +26,12 @@ void ECS_system::AudioSystem::update(float deltaTime, std::vector<std::shared_pt
 
         if (soundComponent)
         {
-            if (soundComponent->isPlaying())
+            if (!soundComponent->isPlaying())
                 soundComponent->play();
         }
         if (musicComponent)
         {
-            if (musicComponent->isPlaying())
+            if (!musicComponent->isPlaying())
                 musicComponent->play();
         }
     }
