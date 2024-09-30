@@ -42,7 +42,7 @@ bool ECS_system::CollisionSystem::isColliding(component::HitBoxComponent *hitbox
  */
 void ECS_system::CollisionSystem::handleCollision(component::HitBoxComponent *hitbox1, component::HitBoxComponent *hitbox2)
 {
-    std::cout << "Collision detected" << std::endl;
+    // std::cout << "Collision detected" << std::endl;
 }
 
 /**
@@ -56,7 +56,7 @@ void ECS_system::CollisionSystem::handleCollision(component::HitBoxComponent *hi
  */
 void ECS_system::CollisionSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
 {
-    for (auto &entity : entities)
+    for (auto &entity : _componentManager.getEntitiesWithComponents<component::HitBoxComponent>(entities))
     {
         component::HitBoxComponent *hitbox1 = _componentManager.getComponent<component::HitBoxComponent>(entity->getID());
 

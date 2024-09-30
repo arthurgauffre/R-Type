@@ -19,7 +19,11 @@
  */
 void ECS_system::AudioSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
 {
-    for (auto &entity : entities)
+    auto soundEntities = _componentManager.getEntitiesWithComponents<component::SoundComponent>(entities);
+    auto musicEntities = _componentManager.getEntitiesWithComponents<component::MusicComponent>(entities);
+
+    soundEntities.insert(soundEntities.end(), musicEntities.begin(), musicEntities.end());
+    for (auto &entity : soundEntities)
     {
         component::SoundComponent *soundComponent = _componentManager.getComponent<component::SoundComponent>(entity->getID());
         component::MusicComponent *musicComponent = _componentManager.getComponent<component::MusicComponent>(entity->getID());

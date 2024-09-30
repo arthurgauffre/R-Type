@@ -21,7 +21,7 @@ void ECS_system::RenderSystem::update(float deltaTime, std::vector<std::shared_p
 {
     _window.clear();
 
-    for (auto &entity : _componentManager.getEntitiesWithComponents<component::PositionComponent>(entities))
+    for (auto &entity : _componentManager.getEntitiesWithComponents<component::PositionComponent, component::SpriteComponent, component::TextureComponent>(entities))
     {
         component::PositionComponent *positionComponent = _componentManager.getComponent<component::PositionComponent>(entity.get()->getID());
         component::SpriteComponent *spriteComponent = _componentManager.getComponent<component::SpriteComponent>(entity.get()->getID());

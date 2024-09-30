@@ -18,7 +18,8 @@ namespace component
         TextureComponent(uint32_t entityID, const std::string &path)
             : AComponent(entityID)
         {
-            _texture.loadFromFile(path);
+            if (!_texture.loadFromFile(path))
+                throw std::runtime_error("Failed to load texture from file: " + path);
         }
 
         /**

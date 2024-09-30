@@ -38,7 +38,7 @@ namespace ECS_system
 
         /**
          * @brief Handles the audio components within the ECS framework.
-         * 
+         *
          * This function is an override of the base class method and is responsible
          * for managing and updating the audio components in the system. The actual
          * implementation details should be provided in the function body.

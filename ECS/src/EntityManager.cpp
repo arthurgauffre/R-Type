@@ -54,6 +54,8 @@ void entity::EntityManager::destroyEntity(uint32_t id)
  */
 entity::IEntity *entity::EntityManager::createEntity(uint32_t id)
 {
+    if (getEntityByID(id) != nullptr)
+        return nullptr;
     _entities.push_back(std::make_unique<entity::AEntity>(id));
     return _entities.back().get();
 }

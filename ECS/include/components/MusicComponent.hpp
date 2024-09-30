@@ -23,11 +23,19 @@ namespace component
         ~MusicComponent() = default;
 
         /**
-         * @brief Set the music file to be used by this component.
+         * @brief Sets the music from the specified file path.
+         *
+         * This function attempts to open and load a music file from the given path.
+         * If the file cannot be opened, it throws a runtime error.
          *
          * @param path The file path to the music file.
+         * @throws std::runtime_error If the music file cannot be loaded.
          */
-        void setMusic(const std::string &path) { _music.openFromFile(path); }
+        void setMusic(const std::string &path)
+        {
+            if (!_music.openFromFile(path))
+                throw std::runtime_error("Failed to load music from file: " + path);
+        }
 
         /**
          * @brief Get the music object.
