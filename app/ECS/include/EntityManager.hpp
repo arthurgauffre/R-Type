@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "IEntity.hpp"
+#include <r-type/IEntity.hpp>
 #include <algorithm>
 #include <cstdint>
 #include <memory>

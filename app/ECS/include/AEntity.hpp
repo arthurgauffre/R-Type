@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "IEntity.hpp"
+#include <r-type/IEntity.hpp>
 
 namespace entity {
 class AEntity : public IEntity {

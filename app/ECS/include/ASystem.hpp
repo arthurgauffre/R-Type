@@ -8,7 +8,7 @@
 #pragma once
 
 #include "ComponentManager.hpp"
-#include "ISystem.hpp"
+#include <r-type/ISystem.hpp>
 #include <memory>
 #include <vector>
 namespace ECS_system {

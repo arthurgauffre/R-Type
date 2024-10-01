@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "IComponent.hpp"
-#include "IEntity.hpp"
+#include <r-type/IComponent.hpp>
+#include <r-type/IEntity.hpp>
 #include <memory>
 #include <unordered_map>
 #include <vector>
