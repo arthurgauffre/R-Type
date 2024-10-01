@@ -8,8 +8,8 @@
 #pragma once
 
 #include "ComponentManager.hpp"
-#include <r-type/ISystem.hpp>
 #include <memory>
+#include <r-type/ISystem.hpp>
 #include <vector>
 namespace ECS_system {
 class ASystem : public ISystem {

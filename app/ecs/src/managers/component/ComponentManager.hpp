@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include <memory>
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
-#include <memory>
 #include <unordered_map>
 #include <vector>
 
