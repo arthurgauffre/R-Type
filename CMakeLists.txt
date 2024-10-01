@@ -53,3 +53,66 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ${CMAKE_SOURCE_DIR}
 )
+
+# Move .so files out of the build folder into the lib one
+set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+
+add_custom_command(
+  TARGET r-type_server
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_music_component>
+          ${LIB_DESTINATION}/r-type_music_component.so)
+
+add_custom_command(
+  TARGET r-type_server
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_sound_component>
+          ${LIB_DESTINATION}/r-type_sound_component.so)
+
+add_custom_command(
+  TARGET r-type_server
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_component_manager>
+          ${LIB_DESTINATION}/r-type_component_manager.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity_manager>
+            ${LIB_DESTINATION}/r-type_entity_manager.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_sprite_component>
+            ${LIB_DESTINATION}/r-type_sprite_component.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_texture_component>
+            ${LIB_DESTINATION}/r-type_texture_component.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_system_manager>
+            ${LIB_DESTINATION}/r-type_system_manager.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_audio_system>
+            ${LIB_DESTINATION}/r-type_audio_system.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_render_system>
+            ${LIB_DESTINATION}/r-type_render_system.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
+            ${LIB_DESTINATION}/r-type_collision_system.so)
