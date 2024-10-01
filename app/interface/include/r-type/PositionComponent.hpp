@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "AComponent.hpp"
+#include <r-type/AComponent.hpp>
 
 namespace component {
 class PositionComponent : public AComponent {

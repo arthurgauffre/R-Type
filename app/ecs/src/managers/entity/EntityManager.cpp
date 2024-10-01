@@ -6,7 +6,7 @@
 */
 
 #include "EntityManager.hpp"
-#include "AEntity.hpp"
+#include <r-type/AEntity.hpp>
 
 /**
  * @brief Retrieves an entity by its unique identifier.

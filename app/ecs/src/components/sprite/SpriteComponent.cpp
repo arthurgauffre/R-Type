@@ -5,7 +5,7 @@
 ** SpriteComponent
 */
 
-#include "SpriteComponent.hpp"
+#include <r-type/SpriteComponent.hpp>
 
 void component::SpriteComponent::update(float deltaTime) {
   (void)deltaTime;

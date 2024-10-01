@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "AComponent.hpp"
+#include <r-type/AComponent.hpp>
 #include <SFML/Graphics.hpp>
 
 namespace component {

@@ -8,19 +8,19 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "AEntity.hpp"
+#include <r-type/AEntity.hpp>
 #include "EntityManager.hpp"
 
-#include "AComponent.hpp"
+#include <r-type/AComponent.hpp>
 #include "ComponentManager.hpp"
-#include "HitBoxComponent.hpp"
-#include "MusicComponent.hpp"
-#include "PositionComponent.hpp"
-#include "SoundComponent.hpp"
-#include "SpriteComponent.hpp"
-#include "TextureComponent.hpp"
+#include <r-type/HitBoxComponent.hpp>
+#include <r-type/MusicComponent.hpp>
+#include <r-type/PositionComponent.hpp>
+#include <r-type/SoundComponent.hpp>
+#include <r-type/SpriteComponent.hpp>
+#include <r-type/TextureComponent.hpp>
 
-#include "ASystem.hpp"
+#include <r-type/ASystem.hpp>
 #include "AudioSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "RenderSystem.hpp"

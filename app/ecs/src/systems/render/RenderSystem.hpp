@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <ASystem.hpp>
-#include <PositionComponent.hpp>
+#include <r-type/ASystem.hpp>
+#include <r-type/PositionComponent.hpp>
 #include <SFML/Graphics.hpp>
-#include <SpriteComponent.hpp>
-#include <TextureComponent.hpp>
+#include <r-type/SpriteComponent.hpp>
+#include <r-type/TextureComponent.hpp>
 
 namespace ECS_system {
 class RenderSystem : public ASystem {
