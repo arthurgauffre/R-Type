@@ -103,10 +103,12 @@ jobs:
             ${{ runner.os }}-
 
       - name: Download SFML
-        run: choco install sfml --pre
+        run: |
+          Invoke-WebRequest -Uri https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip -OutFile sfml.zip
+          Expand-Archive -Path sfml.zip -DestinationPath C:\SFML
 
       - name: Configure CMake
-        run: cmake -S . -B build
+        run: cmake -S . -B build -DSFML_DIR=C:\SFML\SFML-2.5.1
 
       - name: Build project
         run: cmake --build build
