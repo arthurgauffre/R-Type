@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include <r-type/ASystem.hpp>
 #include <r-type/PositionComponent.hpp>
-#include <SFML/Graphics.hpp>
 #include <r-type/SpriteComponent.hpp>
 #include <r-type/TextureComponent.hpp>
 

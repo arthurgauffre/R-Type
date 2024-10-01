@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <r-type/AComponent.hpp>
 #include <SFML/Graphics.hpp>
+#include <r-type/AComponent.hpp>
 
 namespace component {
 class TextureComponent : public AComponent {
