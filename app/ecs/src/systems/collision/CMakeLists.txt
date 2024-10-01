@@ -4,4 +4,5 @@ add_library(r-type_collision_system SHARED
 
 target_link_libraries(
     r-type_collision_system
+    r-type_interfaces
 )

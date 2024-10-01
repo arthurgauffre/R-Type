@@ -4,4 +4,6 @@ add_library(r-type_sound_component SHARED
 
 target_link_libraries(
     r-type_sound_component
+    r-type_interfaces
+    -lsfml-audio
 )

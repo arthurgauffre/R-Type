@@ -4,4 +4,6 @@ add_library(r-type_sprite_component SHARED
 
 target_link_libraries(
     r-type_sprite_component
+    r-type_interfaces
+    -lsfml-graphics
 )
