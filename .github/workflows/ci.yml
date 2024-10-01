@@ -103,7 +103,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Download SFML
-        run: choco install sfml
+        run: choco install sfml --pre
 
       - name: Configure CMake
         run: cmake -S . -B build
