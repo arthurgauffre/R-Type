@@ -8,81 +8,32 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "AEntity.hpp"
-#include "EntityManager.hpp"
+#include "GameLoop.hpp"
 
-#include "AComponent.hpp"
-#include "ComponentManager.hpp"
-#include "HitBoxComponent.hpp"
+#include "RenderSystem.hpp"
+#include "AudioSystem.hpp"
+
 #include "MusicComponent.hpp"
 #include "PositionComponent.hpp"
-#include "SoundComponent.hpp"
 #include "SpriteComponent.hpp"
 #include "TextureComponent.hpp"
 
-#include "ASystem.hpp"
-#include "AudioSystem.hpp"
-#include "CollisionSystem.hpp"
-#include "RenderSystem.hpp"
-#include "SystemManager.hpp"
+int main()
+{
+    game::GameLoop game(1920, 1080, "R-Type");
 
-int main() {
-  entity::EntityManager entityManager;
-  component::ComponentManager componentManager;
-  ECS_system::SystemManager systemManager;
+    game.getEntityManager().createEntity(0);
 
-  entity::IEntity *entity = entityManager.createEntity(0);
-  entity::IEntity *entity2 = entityManager.createEntity(1);
+    game.getComponentManager().addComponent<component::PositionComponent>(0, 100, 100);
+    game.getComponentManager().addComponent<component::SpriteComponent>(0, 100, 100);
+    game.getComponentManager().addComponent<component::TextureComponent>(0, "../assets/sprites/r-typesheet1.gif");
+    game.getComponentManager().addComponent<component::MusicComponent>(0, "../assets/musics/testSong.wav");
+    game.getComponentManager().getComponent<component::MusicComponent>(0)->setLoop(true);
 
-  component::PositionComponent *component =
-      componentManager.addComponent<component::PositionComponent>(0, 100.0f,
-                                                                  100.0f);
-  component::SpriteComponent *spriteComponent =
-      componentManager.addComponent<component::SpriteComponent>(0, 100.0f,
-                                                                100.0f);
-  component::TextureComponent *textureComponent =
-      componentManager.addComponent<component::TextureComponent>(
-          0, "../assets/sprites/r-typesheet1.gif");
-  component::HitBoxComponent *hitboxComponent =
-      componentManager.addComponent<component::HitBoxComponent>(0, 50.0f,
-                                                                50.0f);
-  component::MusicComponent *musicComponent =
-      componentManager.addComponent<component::MusicComponent>(
-          0, "../assets/musics/testSong.wav");
+    game.getSystemManager().addSystem<ECS_system::RenderSystem>(game.getComponentManager(), *game.getWindow());
+    game.getSystemManager().addSystem<ECS_system::AudioSystem>(game.getComponentManager());
 
-  component::PositionComponent *component2 =
-      componentManager.addComponent<component::PositionComponent>(1, 100.0f,
-                                                                  100.0f);
-  component::SpriteComponent *spriteComponent2 =
-      componentManager.addComponent<component::SpriteComponent>(1, 100.0f,
-                                                                100.0f);
-  component::TextureComponent *textureComponent2 =
-      componentManager.addComponent<component::TextureComponent>(
-          1, "../assets/sprites/r-typesheet1.gif");
-  component::HitBoxComponent *hitboxComponent2 =
-      componentManager.addComponent<component::HitBoxComponent>(1, 50.0f,
-                                                                50.0f);
-  component::SoundComponent *soundComponent =
-      componentManager.addComponent<component::SoundComponent>(
-          1, "../assets/musics/testSong.wav");
+    game.run();
 
-  // create window
-  sf::RenderWindow window(sf::VideoMode(800, 600), "ECS");
-  systemManager.addSystem<ECS_system::RenderSystem>(componentManager, window);
-  systemManager.addSystem<ECS_system::CollisionSystem>(componentManager);
-  systemManager.addSystem<ECS_system::AudioSystem>(componentManager);
-
-  // Main loop
-  while (window.isOpen()) {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed)
-        window.close();
-    }
-
-    // Update systems
-    systemManager.update(0.0f, entityManager.getEntities());
-  }
-
-  return 0;
+    return 0;
 }

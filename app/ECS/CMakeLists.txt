@@ -22,6 +22,7 @@ set(SOURCES
     src/components/SpriteComponent.cpp
     src/components/MusicComponent.cpp
     src/components/SoundComponent.cpp
+    src/GameLoop.cpp
     main.cpp
 )
 
