@@ -7,8 +7,7 @@
 
 #include "SpriteComponent.hpp"
 
-void component::SpriteComponent::update(float deltaTime)
-{
-    (void)deltaTime;
-    // Update the component
+void component::SpriteComponent::update(float deltaTime) {
+  (void)deltaTime;
+  // Update the component
 }

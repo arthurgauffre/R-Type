@@ -16,16 +16,15 @@
  * the function returns nullptr.
  *
  * @param id The unique identifier of the entity to retrieve.
- * @return entity::IEntity* Pointer to the entity with the specified ID, or nullptr if not found.
+ * @return entity::IEntity* Pointer to the entity with the specified ID, or
+ * nullptr if not found.
  */
-entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const
-{
-    for (auto &entity : _entities)
-    {
-        if (entity->getID() == id)
-            return entity.get();
-    }
-    return nullptr;
+entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const {
+  for (auto &entity : _entities) {
+    if (entity->getID() == id)
+      return entity.get();
+  }
+  return nullptr;
 }
 
 /**
@@ -36,34 +35,36 @@ entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const
  *
  * @param id The ID of the entity to be destroyed.
  */
-void entity::EntityManager::destroyEntity(uint32_t id)
-{
-    _entities.erase(std::remove_if(_entities.begin(), _entities.end(), [id](const std::shared_ptr<IEntity> &entity)
-                                  { return entity->getID() == id; }),
-                   _entities.end());
+void entity::EntityManager::destroyEntity(uint32_t id) {
+  _entities.erase(std::remove_if(_entities.begin(), _entities.end(),
+                                 [id](const std::shared_ptr<IEntity> &entity) {
+                                   return entity->getID() == id;
+                                 }),
+                  _entities.end());
 }
 
 /**
- * @brief Creates a new entity with the given ID and adds it to the entity manager.
+ * @brief Creates a new entity with the given ID and adds it to the entity
+ * manager.
  *
  * This function creates a new entity of type `AEntity` with the specified ID,
- * adds it to the list of managed entities, and returns a pointer to the newly created entity.
+ * adds it to the list of managed entities, and returns a pointer to the newly
+ * created entity.
  *
  * @param id The unique identifier for the new entity.
  * @return A pointer to the newly created entity.
  */
-entity::IEntity *entity::EntityManager::createEntity(uint32_t id)
-{
-    _entities.push_back(std::make_unique<entity::AEntity>(id));
-    return _entities.back().get();
+entity::IEntity *entity::EntityManager::createEntity(uint32_t id) {
+  _entities.push_back(std::make_unique<entity::AEntity>(id));
+  return _entities.back().get();
 }
 
 /**
  * @brief Retrieves the list of entities managed by the EntityManager.
- * 
+ *
  * @return A reference to a vector of unique pointers to IEntity objects.
  */
-std::vector<std::shared_ptr<entity::IEntity>> &entity::EntityManager::getEntities()
-{
-    return _entities;
+std::vector<std::shared_ptr<entity::IEntity>> &
+entity::EntityManager::getEntities() {
+  return _entities;
 }

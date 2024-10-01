@@ -7,8 +7,7 @@
 
 #include "TextureComponent.hpp"
 
-void component::TextureComponent::update(float deltaTime)
-{
-    (void)deltaTime;
-    // Update the component
+void component::TextureComponent::update(float deltaTime) {
+  (void)deltaTime;
+  // Update the component
 }

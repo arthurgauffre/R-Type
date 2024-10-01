@@ -19,9 +19,9 @@
  *
  * @throws std::runtime_error If the music file cannot be loaded.
  */
-component::MusicComponent::MusicComponent(uint32_t entityID, const std::string &soundFilePath)
-    : AComponent(entityID)
-{
-    if (!_music.openFromFile(soundFilePath))
-        throw std::runtime_error("Failed to load music from file");
+component::MusicComponent::MusicComponent(uint32_t entityID,
+                                          const std::string &soundFilePath)
+    : AComponent(entityID) {
+  if (!_music.openFromFile(soundFilePath))
+    throw std::runtime_error("Failed to load music from file");
 }
