@@ -12,19 +12,19 @@
 
 #include <iostream>
 
-namespace ECS_system
-{
-    class InputSystem : public ASystem
-    {
-    public:
-        InputSystem(component::ComponentManager &componentManager) : ASystem(componentManager) {}
-        ~InputSystem() = default;
+namespace ECS_system {
+class InputSystem : public ASystem {
+public:
+  InputSystem(component::ComponentManager &componentManager)
+      : ASystem(componentManager) {}
+  ~InputSystem() = default;
 
-        void update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) override;
+  void update(float deltaTime,
+              std::vector<std::shared_ptr<entity::IEntity>> entities) override;
 
-        void initialize() override {}
-        void handleComponents() override {}
+  void initialize() override {}
+  void handleComponents() override {}
 
-    private:
-    };
-}
+private:
+};
+} // namespace ECS_system
