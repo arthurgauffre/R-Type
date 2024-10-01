@@ -10,9 +10,9 @@
 
 #include "GameLoop.hpp"
 
-#include "RenderSystem.hpp"
 #include "AudioSystem.hpp"
 #include "InputSystem.hpp"
+#include "RenderSystem.hpp"
 
 #include "MusicComponent.hpp"
 #include "PositionComponent.hpp"
@@ -20,11 +20,10 @@
 #include "TextureComponent.hpp"
 #include "InputComponent.hpp"
 
-int main()
-{
-    game::GameLoop game(1920, 1080, "R-Type");
+int main() {
+  game::GameLoop game(1920, 1080, "R-Type");
 
-    game.getEntityManager().createEntity(0);
+  game.getEntityManager().createEntity(0);
 
     game.getComponentManager().addComponent<component::PositionComponent>(0, 100, 100);
     game.getComponentManager().addComponent<component::SpriteComponent>(0, 100, 100);
@@ -41,7 +40,7 @@ int main()
     game.getComponentManager().getComponent<component::InputComponent>(0)->bindAction("MoveUp", sf::Keyboard::W);
     game.getComponentManager().getComponent<component::InputComponent>(0)->bindAction("MoveDown", sf::Keyboard::S);
 
-    game.run();
+  game.run();
 
-    return 0;
+  return 0;
 }
