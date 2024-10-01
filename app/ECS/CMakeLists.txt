@@ -18,10 +18,12 @@ set(SOURCES
     src/systems/RenderSystem.cpp
     src/systems/CollisionSystem.cpp
     src/systems/AudioSystem.cpp
+    src/systems/InputSystem.cpp
     src/components/TextureComponent.cpp
     src/components/SpriteComponent.cpp
     src/components/MusicComponent.cpp
     src/components/SoundComponent.cpp
+    src/components/InputComponent.cpp
     src/GameLoop.cpp
     main.cpp
 )
