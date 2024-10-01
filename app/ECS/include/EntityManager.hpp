@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <r-type/IEntity.hpp>
 #include <algorithm>
 #include <cstdint>
 #include <memory>
+#include <r-type/IEntity.hpp>
 #include <vector>
 
 namespace entity {

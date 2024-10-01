@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <r-type/ISystem.hpp>
 #include <memory>
+#include <r-type/ISystem.hpp>
 #include <vector>
 
 namespace ECS_system {
