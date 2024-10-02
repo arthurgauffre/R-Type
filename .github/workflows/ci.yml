@@ -110,12 +110,6 @@ jobs:
       - name: Configure CMake with SFML
         run: cmake -S . -B build -DSFML_DIR=C:/SFML/SFML-2.5.1/lib/cmake/SFML
 
-      - name: Set environment variables
-        shell: cmd
-        run: |
-          setx SFML_INCLUDE_DIR C:\SFML\SFML-2.5.1\include
-          setx SFML_LIBRARY_DIR C:\SFML\SFML-2.5.1\lib
-
       - name: Build project
         run: cmake --build build
 

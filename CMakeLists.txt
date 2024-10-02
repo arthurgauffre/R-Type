@@ -26,6 +26,15 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
 endif()
 
+# Find SFML
+find_package(SFML 2.5 COMPONENTS audio graphics REQUIRED)
+
+if(SFML_FOUND)
+    message(STATUS "SFML found: ${SFML_DIR}")
+else()
+    message(FATAL_ERROR "SFML not found")
+endif()
+
 # Add the executables for the project
 add_executable(r-type_server
     app/server/main.cpp
@@ -39,9 +48,11 @@ add_executable(r-type_client
 add_subdirectory(app/interface)
 add_subdirectory(app/ecs)
 
-# Link the interface to the executables
-target_link_libraries(r-type_server r-type_interfaces)
-target_link_libraries(r-type_client r-type_interfaces)
+# Link server executable with SFML and your interfaces library
+target_link_libraries(r-type_server PRIVATE sfml-audio sfml-graphics r-type_interfaces)
+
+# Link client executable with SFML and your interfaces library
+target_link_libraries(r-type_client PRIVATE sfml-audio sfml-graphics r-type_interfaces)
 
 # Move the executables to root of the project
 add_custom_command(
