@@ -11,3 +11,7 @@ add_library(r-type_interfaces INTERFACE)
 target_include_directories(r-type_interfaces
         INTERFACE "include"
 )
+
+target_link_libraries(r-type_interfaces
+        INTERFACE -lsfml-graphics
+)
