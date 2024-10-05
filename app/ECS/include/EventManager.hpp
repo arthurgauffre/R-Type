@@ -7,13 +7,10 @@
 
 #pragma once
 
-class EventManager
-{
+class EventManager {
 public:
-    EventManager() = default;
-    ~EventManager() = default;
-
-    
+  EventManager() = default;
+  ~EventManager() = default;
 
 protected:
 private:

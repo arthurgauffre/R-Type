@@ -20,8 +20,7 @@
 #include "SpriteComponent.hpp"
 #include "TextureComponent.hpp"
 
-int main()
-{
+int main() {
   game::GameLoop game(1920, 1080, "R-Type");
 
   game.getEntityManager().createEntity(0);
