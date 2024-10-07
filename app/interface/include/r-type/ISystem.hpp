@@ -5,8 +5,8 @@
 ** Isystem
 */
 
-#include <r-type/IEntity.hpp>
 #include <memory>
+#include <r-type/IEntity.hpp>
 #include <vector>
 
 namespace ECS_system {

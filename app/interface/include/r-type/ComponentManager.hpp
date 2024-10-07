@@ -8,14 +8,14 @@
 #pragma once
 
 #include <memory>
+#include <r-type/AManager.hpp>
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
 #include <unordered_map>
 #include <vector>
-#include <r-type/AManager.hpp>
 
 namespace component {
-class ComponentManager: public AManager {
+class ComponentManager : public AManager {
 public:
   /**
    * @brief Adds a new component of type T to the specified entity.
@@ -31,7 +31,7 @@ public:
    * @param entityID The ID of the entity to which the component will be added.
    * @param args The arguments to be forwarded to the component's constructor.
    * @return T* A pointer to the newly created component.
-   */ 
+   */
   template <typename T, typename... Args>
   T *addComponent(uint32_t entityID, Args &&...args) {
     auto component = std::make_unique<T>(entityID, std::forward<Args>(args)...);
