@@ -5,7 +5,7 @@
 ** RenderSystem
 */
 
-#include "RenderSystem.hpp"
+#include <systems/RenderSystem.hpp>
 
 /**
  * @brief Updates the render system by drawing all entities with

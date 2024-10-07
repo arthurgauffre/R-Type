@@ -6,7 +6,6 @@
 */
 
 #pragma once
-
 #include <cstdint>
 
 namespace entity {
@@ -15,7 +14,7 @@ public:
   /**
    * @brief Virtual destructor for the IEntity class.
    */
-  virtual ~IEntity() = default;
+  virtual ~IEntity(){};
 
   /**
    * @brief Get the unique identifier of the entity.

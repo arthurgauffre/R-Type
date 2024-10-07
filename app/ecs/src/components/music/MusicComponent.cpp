@@ -5,7 +5,7 @@
 ** MusicComponent
 */
 
-#include <r-type/MusicComponent.hpp>
+#include <components/MusicComponent.hpp>
 
 /**
  * @brief Constructs a new MusicComponent object.

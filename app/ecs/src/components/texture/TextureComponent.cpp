@@ -5,7 +5,7 @@
 ** TextureComponent
 */
 
-#include <r-type/TextureComponent.hpp>
+#include <components/TextureComponent.hpp>
 
 void component::TextureComponent::update(float deltaTime) {
   (void)deltaTime;

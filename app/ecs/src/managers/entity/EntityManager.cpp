@@ -5,8 +5,8 @@
 ** EntityManager
 */
 
-#include "EntityManager.hpp"
-#include <r-type/AEntity.hpp>
+#include <managers/EntityManager.hpp>
+#include <r-type/Entity.hpp>
 
 /**
  * @brief Retrieves an entity by its unique identifier.
@@ -47,7 +47,7 @@ void entity::EntityManager::destroyEntity(uint32_t id) {
  * @brief Creates a new entity with the given ID and adds it to the entity
  * manager.
  *
- * This function creates a new entity of type `AEntity` with the specified ID,
+ * This function creates a new entity of type `Entity` with the specified ID,
  * adds it to the list of managed entities, and returns a pointer to the newly
  * created entity.
  *
@@ -55,7 +55,7 @@ void entity::EntityManager::destroyEntity(uint32_t id) {
  * @return A pointer to the newly created entity.
  */
 entity::IEntity *entity::EntityManager::createEntity(uint32_t id) {
-  _entities.push_back(std::make_unique<entity::AEntity>(id));
+  _entities.push_back(std::make_unique<entity::Entity>(id));
   return _entities.back().get();
 }
 

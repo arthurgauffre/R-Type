@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** *
 ** File description:
-** AEntity
+** Entity
 */
 
 #pragma once
@@ -10,20 +10,20 @@
 #include <r-type/IEntity.hpp>
 
 namespace entity {
-class AEntity : public IEntity {
+class Entity : virtual public IEntity {
 public:
   /**
-   * @brief Constructs an AEntity object with a specified ID and sets it as
+   * @brief Constructs an Entity object with a specified ID and sets it as
    * active.
    *
    * @param id The unique identifier for the entity.
    */
-  AEntity(uint32_t id) : id(id), isActive(true) {}
+  Entity(uint32_t id) : id(id), isActive(true) {}
 
   /**
-   * @brief Destroy the AEntity object.
+   * @brief Destroy the Entity object.
    */
-  virtual ~AEntity() = default;
+  virtual ~Entity() = default;
 
   /**
    * @brief Retrieves the unique identifier of the entity.

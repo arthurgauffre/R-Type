@@ -5,7 +5,7 @@
 ** SoundComponent
 */
 
-#include <r-type/SoundComponent.hpp>
+#include <components/SoundComponent.hpp>
 
 component::SoundComponent::SoundComponent(uint32_t entityID,
                                           const std::string &soundFilePath)

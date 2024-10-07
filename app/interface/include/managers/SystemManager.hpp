@@ -10,6 +10,7 @@
 #pragma once
 
 #include <memory>
+#include <r-type/AManager.hpp>
 #include <r-type/ISystem.hpp>
 #include <vector>
 
