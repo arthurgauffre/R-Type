@@ -9,9 +9,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <r-type/ASystem.hpp>
-#include <r-type/PositionComponent.hpp>
-#include <r-type/SpriteComponent.hpp>
-#include <r-type/TextureComponent.hpp>
+#include <components/PositionComponent.hpp>
+#include <components/SpriteComponent.hpp>
+#include <components/TextureComponent.hpp>
 
 namespace ECS_system {
 class RenderSystem : public ASystem {

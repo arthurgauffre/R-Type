@@ -5,7 +5,7 @@
 ** ComponentManager
 */
 
-#include <r-type/ComponentManager.hpp>
+#include <managers/ComponentManager.hpp>
 
 /**
  * @brief Updates all active components for each entity.

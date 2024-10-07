@@ -11,6 +11,7 @@
 
 #include <memory>
 #include <r-type/ISystem.hpp>
+#include <r-type/AManager.hpp>
 #include <vector>
 
 namespace ECS_system {

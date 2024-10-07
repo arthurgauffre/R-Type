@@ -5,7 +5,7 @@
 ** CollisionSystem
 */
 
-#include "CollisionSystem.hpp"
+#include <systems/CollisionSystem.hpp>
 
 /**
  * @brief Checks if two hitboxes are colliding.

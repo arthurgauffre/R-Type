@@ -8,8 +8,8 @@
 #pragma once
 
 #include <r-type/ASystem.hpp>
-#include <r-type/MusicComponent.hpp>
-#include <r-type/SoundComponent.hpp>
+#include <components/MusicComponent.hpp>
+#include <components/SoundComponent.hpp>
 
 namespace ECS_system {
 class AudioSystem : public ASystem {

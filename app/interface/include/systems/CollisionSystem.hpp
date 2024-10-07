@@ -8,8 +8,8 @@
 #pragma once
 
 #include <r-type/ASystem.hpp>
-#include <r-type/HitBoxComponent.hpp>
-#include <r-type/PositionComponent.hpp>
+#include <components/HitBoxComponent.hpp>
+#include <components/PositionComponent.hpp>
 
 #include <iostream>
 #include <memory>

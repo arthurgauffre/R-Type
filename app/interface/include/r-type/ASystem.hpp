@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "ComponentManager.hpp"
+#include <managers/ComponentManager.hpp>
 #include <memory>
 #include <r-type/ISystem.hpp>
 #include <vector>

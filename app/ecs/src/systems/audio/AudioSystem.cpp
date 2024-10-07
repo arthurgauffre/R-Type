@@ -5,7 +5,7 @@
 ** AudioSystem
 */
 
-#include "AudioSystem.hpp"
+#include <systems/AudioSystem.hpp>
 
 /**
  * @brief Updates the audio system by processing sound and music components of

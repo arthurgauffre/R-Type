@@ -16,7 +16,9 @@ function clean() {
 function fclean() {
     clean
     rm -rf $buildDirectory
-    rm -f $libDirectory/*.so
+    rm -f $libDirectory/components/*.so
+    rm -f $libDirectory/managers/*.so
+    rm -f $libDirectory/systems/*.so
 }
 
 args=("$@")

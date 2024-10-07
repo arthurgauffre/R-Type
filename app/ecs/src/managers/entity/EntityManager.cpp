@@ -5,7 +5,7 @@
 ** EntityManager
 */
 
-#include "EntityManager.hpp"
+#include <managers/EntityManager.hpp>
 #include <r-type/Entity.hpp>
 
 /**
