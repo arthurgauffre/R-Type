@@ -11,9 +11,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_BUILD_TYPE Debug) # set build type to Debug
 
+execute_process(COMMAND vcpkg integrate install)
+execute_process(COMMAND vcpkg install sfml)
+
 if (WIN32)
     # Windows-specific settings
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  execute_process(COMMAND vcpkg integrate install)
+  execute_process(COMMAND vcpkg install sfml)
 else()
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
@@ -26,16 +30,16 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
 endif()
 
-find_package(SFML 2.5 COMPONENTS audio graphics REQUIRED)
+# find_package(SFML 2.5 COMPONENTS audio graphics REQUIRED)
 
 # Set SFML include directories
-set(SFML_INCLUDE_DIR ${SFML_DIR}/include)
+# set(SFML_INCLUDE_DIR ${SFML_DIR}/include)
 
-if(SFML_FOUND)
-    message(STATUS "SFML found: ${SFML_DIR}")
-else()
-    message(FATAL_ERROR "SFML not found")
-endif()
+# if(SFML_FOUND)
+#     message(STATUS "SFML found: ${SFML_DIR}")
+# else()
+#     message(FATAL_ERROR "SFML not found")
+# endif()
 
 # Add the executables for the project
 add_executable(r-type_server

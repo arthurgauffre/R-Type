@@ -102,13 +102,8 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Download SFML
-        run: |
-          Invoke-WebRequest -Uri https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip -OutFile sfml.zip
-          Expand-Archive -Path sfml.zip -DestinationPath C:\SFML
-
       - name: Configure CMake with SFML
-        run: cmake -S . -B build -DSFML_DIR=C:/SFML/SFML-2.5.1/lib/cmake/SFML
+        run: cmake -S . -B build
 
       - name: Build project
         run: cmake --build build
