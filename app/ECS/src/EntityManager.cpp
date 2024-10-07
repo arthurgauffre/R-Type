@@ -54,9 +54,12 @@ void entity::EntityManager::destroyEntity(uint32_t id) {
  * @param id The unique identifier for the new entity.
  * @return A pointer to the newly created entity.
  */
-entity::IEntity *entity::EntityManager::createEntity(uint32_t id) {
-  _entities.push_back(std::make_unique<entity::AEntity>(id));
-  return _entities.back().get();
+entity::IEntity *entity::EntityManager::createEntity(uint32_t id)
+{
+    if (getEntityByID(id) != nullptr)
+        return nullptr;
+    _entities.push_back(std::make_unique<entity::AEntity>(id));
+    return _entities.back().get();
 }
 
 /**
