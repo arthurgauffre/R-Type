@@ -19,26 +19,25 @@ public:
    * @param x The x-coordinate of the position.
    * @param y The y-coordinate of the position.
    */
-  PositionComponent(uint32_t entityID, float x, float y)
-      : AComponent(entityID), _x(x), _y(y){};
+  PositionComponent(uint32_t entityID, float x, float y);
   /**
    * @brief Default destructor for the PositionComponent class.
    */
-  ~PositionComponent() = default;
+  ~PositionComponent();
 
   /**
    * @brief Get the X coordinate.
    *
    * @return The X coordinate as a float.
    */
-  float getX() const { return _x; }
+  float getX() const;
 
   /**
    * @brief Get the Y coordinate of the position.
    *
    * @return The Y coordinate as a float.
    */
-  float getY() const { return _y; }
+  float getY() const;
 
   /**
    * @brief Updates the position component.
@@ -48,7 +47,7 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  void update(float deltaTime) override{};
+  void update(float deltaTime) override;
 
 private:
   /**

@@ -19,27 +19,26 @@ public:
    * @param width The width of the hitbox.
    * @param height The height of the hitbox.
    */
-  HitBoxComponent(uint32_t entityID, float width, float height)
-      : AComponent(entityID), _width(width), _height(height){};
+  HitBoxComponent(uint32_t entityID, float width, float height);
 
   /**
    * @brief Destroys the HitBoxComponent object.
    */
-  ~HitBoxComponent() = default;
+  ~HitBoxComponent();
 
   /**
    * @brief Get the width of the hitbox.
    *
    * @return float The width of the hitbox.
    */
-  float getWidth() const { return _width; }
+  float getWidth() const;
 
   /**
    * @brief Get the height of the hitbox.
    *
    * @return float The height of the hitbox.
    */
-  float getHeight() const { return _height; }
+  float getHeight() const;
 
   /**
    * @brief Updates the HitBoxComponent.
@@ -51,7 +50,7 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  void update(float deltaTime) override{};
+  void update(float deltaTime) override;
 
 private:
   /**

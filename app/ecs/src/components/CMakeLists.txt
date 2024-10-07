@@ -19,6 +19,8 @@
 #add_library(graphics SHARED "")
 #target_link_libraries(graphics Sdl2 NCurses Sfml)
 
+add_subdirectory(hitbox)
+add_subdirectory(position)
 add_subdirectory(music)
 add_subdirectory(sound)
 add_subdirectory(sprite)

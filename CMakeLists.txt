@@ -56,66 +56,84 @@ add_custom_command(
 
 # Move .so files out of the build folder into the lib one
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
-set(LIB_COMPONENTS_DESTINATION ${LIB_DESTINATION}/components)
-set(LIB_SYSTEMS_DESTINATION ${LIB_DESTINATION}/systems)
-set(LIB_MANAGERS_DESTINATION ${LIB_DESTINATION}/managers)
+set(LIB_CLIENT_COMPONENTS_DESTINATION ${LIB_DESTINATION}/client_components)
+set(LIB_SERVER_COMPONENTS_DESTINATION ${LIB_DESTINATION}/server_components)
+set(LIB_SHARED_COMPONENTS_DESTINATION ${LIB_DESTINATION}/shared_components)
+set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
+set(LIB_SERVER_SYSTEMS_DESTINATION ${LIB_DESTINATION}/server_systems)
+set(LIB_SHARED_SYSTEMS_DESTINATION ${LIB_DESTINATION}/shared_systems)
+set(LIB_CLIENT_MANAGERS_DESTINATION ${LIB_DESTINATION}/client_managers)
+set(LIB_SERVER_MANAGERS_DESTINATION ${LIB_DESTINATION}/server_managers)
+set(LIB__SHARED_MANAGERS_DESTINATION ${LIB_DESTINATION}/shared_managers)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_position_component>
+            ${LIB_SHARED_COMPONENTS_DESTINATION}/r-type_position_component.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_hitbox_component>
+            ${LIB_SHARED_COMPONENTS_DESTINATION}/r-type_hitbox_component.so)
 
 add_custom_command(
   TARGET r-type_server
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_music_component>
-          ${LIB_COMPONENTS_DESTINATION}/r-type_music_component.so)
+          ${LIB_CLIENT_COMPONENTS_DESTINATION}/r-type_music_component.so)
 
 add_custom_command(
   TARGET r-type_server
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_sound_component>
-          ${LIB_COMPONENTS_DESTINATION}/r-type_sound_component.so)
+          ${LIB_CLIENT_COMPONENTS_DESTINATION}/r-type_sound_component.so)
 
 add_custom_command(
   TARGET r-type_server
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_component_manager>
-          ${LIB_MANAGERS_DESTINATION}/r-type_component_manager.so)
+          ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_component_manager.so)
 
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity_manager>
-            ${LIB_MANAGERS_DESTINATION}/r-type_entity_manager.so)
+            ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_entity_manager.so)
 
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_sprite_component>
-            ${LIB_COMPONENTS_DESTINATION}/r-type_sprite_component.so)
+            ${LIB_CLIENT_COMPONENTS_DESTINATION}/r-type_sprite_component.so)
 
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_texture_component>
-            ${LIB_COMPONENTS_DESTINATION}/r-type_texture_component.so)
+            ${LIB_CLIENT_COMPONENTS_DESTINATION}/r-type_texture_component.so)
 
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_system_manager>
-            ${LIB_MANAGERS_DESTINATION}/r-type_system_manager.so)
+            ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_system_manager.so)
 
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_audio_system>
-            ${LIB_SYSTEMS_DESTINATION}/r-type_audio_system.so)
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_audio_system.so)
 
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_render_system>
-            ${LIB_SYSTEMS_DESTINATION}/r-type_render_system.so)
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_render_system.so)
 
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
-            ${LIB_SYSTEMS_DESTINATION}/r-type_collision_system.so)
+            ${LIB_SERVER_SYSTEMS_DESTINATION}/r-type_collision_system.so)
