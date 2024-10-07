@@ -5,12 +5,11 @@
 ** IManager
 */
 
-
 class IManager {
-    public:
-        IManager();
-        ~IManager();
+public:
+  IManager();
+  ~IManager();
 
-    protected:
-    private:
+protected:
+private:
 };

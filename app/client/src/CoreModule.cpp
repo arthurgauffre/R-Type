@@ -17,31 +17,29 @@
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::CoreModule()
-{
-//   this->_coreStatus = CoreStatus::SELECTION;
-//   this->_gameModule = nullptr;
-//   this->_graphicModule = nullptr;
-//   // MenuData
-//   this->_menuData._username = "";
-//   this->_menuData.indexGame = 0;
-//   this->_menuData.indexGraphic = 0;
-//   this->_menuData._description = "\nLegend:\nPress UP/DOWN to navigate\n\
+rtype::CoreModule::CoreModule() {
+  //   this->_coreStatus = CoreStatus::SELECTION;
+  //   this->_gameModule = nullptr;
+  //   this->_graphicModule = nullptr;
+  //   // MenuData
+  //   this->_menuData._username = "";
+  //   this->_menuData.indexGame = 0;
+  //   this->_menuData.indexGraphic = 0;
+  //   this->_menuData._description = "\nLegend:\nPress UP/DOWN to navigate\n\
 // Press ENTER to confirm the choice\n\
 // Press TAB to switch to the next section";
-//   this->_menuData._type = rtype::ICoreModule::MenuSelection::USERNAME;
-//   this->_timers.push_back({std::chrono::steady_clock::now(),
-//                            std::chrono::steady_clock::now(),
-//                            std::chrono::milliseconds(0)});
-//   srand(time(NULL));
+  //   this->_menuData._type = rtype::ICoreModule::MenuSelection::USERNAME;
+  //   this->_timers.push_back({std::chrono::steady_clock::now(),
+  //                            std::chrono::steady_clock::now(),
+  //                            std::chrono::milliseconds(0)});
+  //   srand(time(NULL));
 }
 
 /**
  * @brief Destroy the rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::~CoreModule()
-{
+rtype::CoreModule::~CoreModule() {
   // if (this->_libList.size() > 0) {
   //   for (auto &loader : rtype::CoreModule::_libList) {
   //     loader.DLLunloader();
@@ -160,7 +158,8 @@ rtype::CoreModule::~CoreModule()
 //   }
 //   while ((entry = readdir(dir)) != nullptr) {
 //     if (strncmp(entry->d_name, "arcade_", strlen("arcade_")) == 0 &&
-//         strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) == OK) {
+//         strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) == OK)
+//         {
 //       matchedFiles.push_back(std::string(entry->d_name));
 //     }
 //   }
@@ -629,7 +628,8 @@ rtype::CoreModule::~CoreModule()
 
 //   // Focus version
 //   int max_len = std::max(max_len_line(username),
-//                          std::max(max_len_line(graphic), max_len_line(game)));
+//                          std::max(max_len_line(graphic),
+//                          max_len_line(game)));
 //   switch (this->_menuData._type) {
 //   case rtype::ICoreModule::MenuSelection::USERNAME:
 //     generateFocusVersion(username, max_len);
@@ -657,7 +657,8 @@ rtype::CoreModule::~CoreModule()
 //       getScoreFromFile(moduleName);
 //   // add score of player
 //   for (size_t i = 0; i < all_file.size() && i < 5; i += 1) {
-//     split_player_score[i] = std::to_string(i + 1) + ". " + all_file[i].first +
+//     split_player_score[i] = std::to_string(i + 1) + ". " + all_file[i].first
+//     +
 //                             " : " + std::to_string(all_file[i].second);
 //   }
 //   for (std::string line : split_player_score) {
@@ -680,7 +681,8 @@ rtype::CoreModule::~CoreModule()
 // {
 //   this->updateSelection();
 //   while (this->_coreStatus == CoreStatus::SELECTION) {
-//     rtype::KeyboardInput actualKeyPress = this->getGraphicModule()->getInput();
+//     rtype::KeyboardInput actualKeyPress =
+//     this->getGraphicModule()->getInput();
 //     this->handleKeyEvent(actualKeyPress);
 //     if (actualKeyPress != rtype::KeyboardInput::NONE)
 //       this->updateSelection();
@@ -767,13 +769,15 @@ rtype::CoreModule::~CoreModule()
 //       rtype::IGameModule::GameStatus::WIN) {
 //     this->_coreStatus = rtype::ICoreModule::SELECTION;
 //     this->_gameData.score += 1000;
-//     addScoreInFile("scoreArcade/" + this->getGameModule()->getName() + ".txt",
+//     addScoreInFile("scoreArcade/" + this->getGameModule()->getName() +
+//     ".txt",
 //                    this->_gameData.score,
 //                    this->_menuData._username);
 //   } else if (this->getGameModule()->getGameStatus() ==
 //              rtype::IGameModule::GameStatus::GAMEOVER) {
 //     this->_coreStatus = rtype::ICoreModule::SELECTION;
-//     addScoreInFile("scoreArcade/" + this->getGameModule()->getName() + ".txt",
+//     addScoreInFile("scoreArcade/" + this->getGameModule()->getName() +
+//     ".txt",
 //                    this->_gameData.score,
 //                    this->_menuData._username);
 //   }
@@ -825,20 +829,19 @@ rtype::CoreModule::~CoreModule()
 // }
 
 /**
- * @brief Loads the entity constructor by dynamically loading the shared object file.
+ * @brief Loads the entity constructor by dynamically loading the shared object
+ * file.
  *
- * This function uses dlopen to load the entity shared object file and stores the 
- * resulting entity constructor in the entityConstructor member variable.
+ * This function uses dlopen to load the entity shared object file and stores
+ * the resulting entity constructor in the entityConstructor member variable.
  */
-void rtype::CoreModule::loadEntityConstructor()
-{
+void rtype::CoreModule::loadEntityConstructor() {
   // dlopen the entity .so file
-  this->entityConstructor = std::make_shared<DLLoader<IEntity>>(
-      "lib/lib_rtype_entity.so");
+  this->entityConstructor =
+      std::make_shared<DLLoader<IEntity>>("lib/lib_rtype_entity.so");
 }
 
-void rtype::CoreModule::loadComponents()
-{
+void rtype::CoreModule::loadComponents() {
   // open the components directory
   DIR *dir;
   struct dirent *entry;
@@ -861,8 +864,7 @@ void rtype::CoreModule::loadComponents()
   }
 }
 
-void rtype::CoreModule::loadManagers()
-{
+void rtype::CoreModule::loadManagers() {
   // open the managers directory
   DIR *dir;
   struct dirent *entry;
@@ -885,8 +887,7 @@ void rtype::CoreModule::loadManagers()
   }
 }
 
-void rtype::CoreModule::loadSystems()
-{
+void rtype::CoreModule::loadSystems() {
   // open the systems directory
   DIR *dir;
   struct dirent *entry;

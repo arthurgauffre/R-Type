@@ -8,11 +8,11 @@
 #pragma once
 #include <r-type/IManager.hpp>
 
-class AManager: virtual public IManager {
-    public:
-        AManager();
-        ~AManager();
+class AManager : virtual public IManager {
+public:
+  AManager();
+  ~AManager();
 
-    protected:
-    private:
+protected:
+private:
 };
