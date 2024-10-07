@@ -10,12 +10,12 @@
 #include <algorithm>
 #include <cstdint>
 #include <memory>
-#include <r-type/IEntity.hpp>
 #include <r-type/AManager.hpp>
+#include <r-type/IEntity.hpp>
 #include <vector>
 
 namespace entity {
-class EntityManager: public AManager {
+class EntityManager : public AManager {
 public:
   /**
    * @brief Constructs an EntityManager object.

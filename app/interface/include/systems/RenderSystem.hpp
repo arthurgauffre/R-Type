@@ -8,10 +8,10 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <r-type/ASystem.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
+#include <r-type/ASystem.hpp>
 
 namespace ECS_system {
 class RenderSystem : public ASystem {
