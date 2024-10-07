@@ -11,9 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_BUILD_TYPE Debug) # set build type to Debug
 
-execute_process(COMMAND vcpkg integrate install)
-execute_process(COMMAND vcpkg install sfml)
-
 if (WIN32)
     # Windows-specific settings
   execute_process(COMMAND vcpkg integrate install)
