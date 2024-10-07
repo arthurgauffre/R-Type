@@ -14,7 +14,7 @@
 #include <vector>
 
 namespace entity {
-class EntityManager {
+class EntityManager{
 public:
   /**
    * @brief Constructs an EntityManager object.

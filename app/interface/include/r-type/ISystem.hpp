@@ -5,9 +5,7 @@
 ** Isystem
 */
 
-#pragma once
-
-#include "IEntity.hpp"
+#include <r-type/IEntity.hpp>
 #include <memory>
 #include <vector>
 

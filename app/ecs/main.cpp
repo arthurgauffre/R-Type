@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "EntityManager.hpp"
-#include <r-type/AEntity.hpp>
+#include <r-type/IEntity.hpp>
 
 #include "ComponentManager.hpp"
 #include <r-type/AComponent.hpp>
