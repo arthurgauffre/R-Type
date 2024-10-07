@@ -97,3 +97,6 @@ For critical game events, the protocol requires clients to acknowledge receipt o
 ## 4. Conclusion
 
 This UDP-based protocol, implemented with the **ASIO** C++ library, balances the need for speed with the requirement for reliability in critical moments. While game state updates are transmitted without guarantees, important events are handled with care to ensure consistency across all clients. The use of a priority field in the message header ensures that critical information is delivered with precedence. This design allows for a fluid and responsive multiplayer experience while maintaining the integrity of essential game events.
+
+#
+Go to the main documentation : [Main documentation](Readme.md)
