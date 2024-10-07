@@ -13,14 +13,10 @@
 #include "AudioSystem.hpp"
 #include "InputSystem.hpp"
 #include "RenderSystem.hpp"
+#include "MovementSystem.hpp"
 
-#include "InputComponent.hpp"
-#include "MusicComponent.hpp"
-#include "PositionComponent.hpp"
-#include "SpriteComponent.hpp"
-#include "TextureComponent.hpp"
-
-int main() {
+int main()
+{
   game::GameLoop game(1920, 1080, "R-Type");
 
   game.getEntityManager().createEntity(0);
@@ -34,10 +30,16 @@ int main() {
   game.getComponentManager().addComponent<component::MusicComponent>(
       0, "../assets/musics/testSong.wav");
   game.getComponentManager().addComponent<component::InputComponent>(0);
+  game.getComponentManager().addComponent<component::VelocityComponent>(0);
+  game.getComponentManager().addComponent<component::TransformComponent>(0, sf::Vector2f(100, 100), sf::Vector2f(1.0f, 1.0f));
 
   game.getSystemManager().addSystem<ECS_system::RenderSystem>(
       game.getComponentManager(), *game.getWindow());
   game.getSystemManager().addSystem<ECS_system::InputSystem>(
+      game.getComponentManager());
+  game.getSystemManager().addSystem<ECS_system::AudioSystem>(
+      game.getComponentManager());
+  game.getSystemManager().addSystem<ECS_system::MovementSystem>(
       game.getComponentManager());
 
   game.getComponentManager()

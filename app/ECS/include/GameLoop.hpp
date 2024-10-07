@@ -41,6 +41,7 @@ private:
   int _height;
   std::string _title;
   float _deltaTime;
+  sf::Clock _clock;
 
   entity::EntityManager _entityManager;
   component::ComponentManager _componentManager;

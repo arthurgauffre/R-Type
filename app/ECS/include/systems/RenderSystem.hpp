@@ -12,6 +12,7 @@
 #include <SFML/Graphics.hpp>
 #include <SpriteComponent.hpp>
 #include <TextureComponent.hpp>
+#include <TransformComponent.hpp>
 
 namespace ECS_system {
 class RenderSystem : public ASystem {

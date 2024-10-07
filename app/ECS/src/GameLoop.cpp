@@ -9,6 +9,7 @@
 
 void game::GameLoop::run() {
   while (_window->isOpen()) {
+    _deltaTime = _clock.restart().asSeconds();
     processEvents();
     update();
   }

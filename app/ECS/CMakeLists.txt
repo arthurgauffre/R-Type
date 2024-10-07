@@ -19,6 +19,7 @@ set(SOURCES
     src/systems/CollisionSystem.cpp
     src/systems/AudioSystem.cpp
     src/systems/InputSystem.cpp
+    src/systems/MovementSystem.cpp
     src/components/TextureComponent.cpp
     src/components/SpriteComponent.cpp
     src/components/MusicComponent.cpp
