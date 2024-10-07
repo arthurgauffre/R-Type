@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <r-type/ASystem.hpp>
 #include <components/MusicComponent.hpp>
 #include <components/SoundComponent.hpp>
+#include <r-type/ASystem.hpp>
 
 namespace ECS_system {
 class AudioSystem : public ASystem {

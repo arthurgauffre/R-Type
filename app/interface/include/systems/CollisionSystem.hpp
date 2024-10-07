@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <r-type/ASystem.hpp>
 #include <components/HitBoxComponent.hpp>
 #include <components/PositionComponent.hpp>
+#include <r-type/ASystem.hpp>
 
 #include <iostream>
 #include <memory>
