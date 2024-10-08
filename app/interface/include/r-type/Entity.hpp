@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <r-type/IEntity.hpp>
 #include <memory>
+#include <r-type/IEntity.hpp>
 
 namespace entity {
 class Entity : virtual public IEntity {

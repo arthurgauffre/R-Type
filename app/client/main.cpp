@@ -8,10 +8,10 @@
 #include <CoreModule.hpp>
 #include <r-type/IEntity.hpp>
 
-int main(void) 
-{
-    // unique  ptr to CoreModule
-    std::unique_ptr<rtype::CoreModule> coreModule = std::make_unique<rtype::CoreModule>();
+int main(void) {
+  // unique  ptr to CoreModule
+  std::unique_ptr<rtype::CoreModule> coreModule =
+      std::make_unique<rtype::CoreModule>();
 
     // hello world coreModule
     coreModule->loadEntityConstructor();
