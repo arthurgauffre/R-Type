@@ -25,6 +25,7 @@ function fclean() {
     rm -f $libDirectory/client_systems/*.so
     rm -f $libDirectory/shared_systems/*.so
     rm -f $libDirectory/server_systems/*.so
+    rm -f $libDirectory/shared_entity/*.so
 }
 
 args=("$@")

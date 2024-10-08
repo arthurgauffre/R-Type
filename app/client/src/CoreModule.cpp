@@ -6,7 +6,7 @@
 */
 
 #include <CoreModule.hpp>
-#include <Error.hpp>
+// #include <Error.hpp>
 #include <fcntl.h>
 #include <fstream>
 #include <sstream>
@@ -838,74 +838,79 @@ rtype::CoreModule::~CoreModule() {
 void rtype::CoreModule::loadEntityConstructor() {
   // dlopen the entity .so file
   this->entityConstructor =
-      std::make_shared<DLLoader<IEntity>>("lib/lib_rtype_entity.so");
+      std::make_shared<DLLoader<entity::IEntity>>("lib/shared_entity/r-type_shared_entity.so");
 }
 
-void rtype::CoreModule::loadComponents() {
-  // open the components directory
-  DIR *dir;
-  struct dirent *entry;
-  dir = opendir("lib/components");
-  if (dir == nullptr) {
-    perror("opendir");
-    try {
-      throw OpendirException("Could not open directory");
-    } catch (OpendirException &e) {
-      std::cerr << e.what() << std::endl;
-    }
-  }
+// void rtype::CoreModule::loadComponents() {
+//   // open the components directory
+//   DIR *dir;
+//   struct dirent *entry;
+//   dir = opendir("lib/components");
+//   if (dir == nullptr) {
+//     perror("opendir");
+//     // try {
+//     //   throw OpendirException("Could not open directory");
+//     // } catch (OpendirException &e) {
+//     //   std::cerr << e.what() << std::endl;
+//     // }
+//   }
 
-  // iterate over the files in the directory
-  while ((entry = readdir(dir)) != nullptr) {
-    if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != OK)
-      throw std::exception();
-    this->_components.push_back(std::make_shared<DLLoader<IComponent>>(
-        "lib/components/" + std::string(entry->d_name)));
-  }
-}
+//   // iterate over the files in the directory
+//   while ((entry = readdir(dir)) != nullptr) {
+//     if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != 0)
+//       throw std::exception();
+//     this->_components.push_back(std::make_shared<DLLoader<component::IComponent>>(
+//         "lib/components/" + std::string(entry->d_name)));
+//   }
+// }
 
-void rtype::CoreModule::loadManagers() {
-  // open the managers directory
-  DIR *dir;
-  struct dirent *entry;
-  dir = opendir("lib/managers");
-  if (dir == nullptr) {
-    perror("opendir");
-    try {
-      throw OpendirException("Could not open directory");
-    } catch (OpendirException &e) {
-      std::cerr << e.what() << std::endl;
-    }
-  }
+// void rtype::CoreModule::loadManagers() {
+//   // open the managers directory
+//   DIR *dir;
+//   struct dirent *entry;
+//   dir = opendir("lib/managers");
+//   if (dir == nullptr) {
+//     perror("opendir");
+//     // try {
+//     //   throw OpendirException("Could not open directory");
+//     // } catch (OpendirException &e) {
+//     //   std::cerr << e.what() << std::endl;
+//     // }
+//   }
 
-  // iterate over the files in the directory
-  while ((entry = readdir(dir)) != nullptr) {
-    if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != OK)
-      throw std::exception();
-    this->_managers.push_back(std::make_shared<DLLoader<IManager>>(
-        "lib/managers/" + std::string(entry->d_name)));
-  }
-}
+//   // iterate over the files in the directory
+//   while ((entry = readdir(dir)) != nullptr) {
+//     if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != 0)
+//       throw std::exception();
+//     this->_managers.push_back(std::make_shared<DLLoader<IManager>>(
+//         "lib/managers/" + std::string(entry->d_name)));
+//   }
+// }
 
-void rtype::CoreModule::loadSystems() {
-  // open the systems directory
-  DIR *dir;
-  struct dirent *entry;
-  dir = opendir("lib/systems");
-  if (dir == nullptr) {
-    perror("opendir");
-    try {
-      throw OpendirException("Could not open directory");
-    } catch (OpendirException &e) {
-      std::cerr << e.what() << std::endl;
-    }
-  }
+// void rtype::CoreModule::loadSystems() {
+//   // open the systems directory
+//   DIR *dir;
+//   struct dirent *entry;
+//   dir = opendir("lib/systems");
+//   if (dir == nullptr) {
+//     perror("opendir");
+//     try {
+//       throw OpendirException("Could not open directory");
+//     } catch (OpendirException &e) {
+//       std::cerr << e.what() << std::endl;
+//     }
+//   }
 
-  // iterate over the files in the directory
-  while ((entry = readdir(dir)) != nullptr) {
-    if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != OK)
-      throw std::exception();
-    this->_systems.push_back(std::make_shared<DLLoader<ISystem>>(
-        "lib/systems/" + std::string(entry->d_name)));
-  }
+//   // iterate over the files in the directory
+//   while ((entry = readdir(dir)) != nullptr) {
+//     if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != OK)
+//       throw std::exception();
+//     this->_systems.push_back(std::make_shared<DLLoader<ISystem>>(
+//         "lib/systems/" + std::string(entry->d_name)));
+//   }
+// }
+
+void rtype::CoreModule::helloWorld()
+{
+  std::cout << "Hello, World!" << std::endl;
 }

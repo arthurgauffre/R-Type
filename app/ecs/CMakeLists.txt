@@ -38,3 +38,4 @@
 add_subdirectory(src/components)
 add_subdirectory(src/managers)
 add_subdirectory(src/systems)
+add_subdirectory(src/entity)

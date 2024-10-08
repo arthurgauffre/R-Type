@@ -8,10 +8,10 @@
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
-#include <IComponent.hpp>
-#include <IEntity.hpp>
-#include <IManagers.hpp>
-#include <ISystem.hpp>
+#include <r-type/IComponent.hpp>
+#include <r-type/IEntity.hpp>
+#include <r-type/IManager.hpp>
+#include <r-type/ISystem.hpp>
 #include <dirent.h>
 #include <iostream>
 
@@ -37,14 +37,15 @@ public:
   // setGraphicModule(std::unique_ptr<rtype::IDisplayModule> module) = 0;
   // virtual void setGameModule(std::unique_ptr<rtype::IGameModule> module) = 0;
 
-  virtual void getLib(std::string pathLib) = 0;
-  virtual void loadLib(std::string pathLib) = 0;
-  virtual void addLibList(std::string pathLib) = 0;
+  // virtual void getLib(std::string pathLib) = 0;
+  // virtual void loadLib(std::string pathLib) = 0;
+  // virtual void addLibList(std::string pathLib) = 0;
 
   virtual void loadEntityConstructor() = 0;
-  virtual void loadSystems() = 0;
-  virtual void loadComponents() = 0;
-  virtual void loadManagers() = 0;
+  // virtual void loadSystems() = 0;
+  // virtual void loadComponents() = 0;
+  // virtual void loadManagers() = 0;
+  virtual void helloWorld() = 0;
   // virtual void generateScore() = 0;
 
   // virtual void handleKeyEvent(rtype::KeyboardInput key) = 0;
@@ -89,7 +90,7 @@ protected:
   // CoreStatus _coreStatus;
   // std::vector<timer> _timers;
 
-  std::vector<std::shared_ptr<IEntity>> _entities;
+  std::vector<std::shared_ptr<entity::IEntity>> _entities;
   // std::vector<std::shared_ptr<ISystem>> _systems;
   // std::vector<std::shared_ptr<IComponent>> _components;
   // std::vector<std::shared_ptr<IManagers>> _managers;

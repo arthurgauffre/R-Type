@@ -44,6 +44,7 @@ add_executable(r-type_server
 
 add_executable(r-type_client
     app/client/main.cpp
+    app/client/src/CoreModule.cpp
 )
 
 # Add the interface to the project
@@ -69,6 +70,7 @@ add_custom_command(
 
 # Move .so files out of the build folder into the lib one
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+set(LIB_SHARED_ENTITY_DESTINATION ${LIB_DESTINATION}/shared_entity)
 set(LIB_CLIENT_COMPONENTS_DESTINATION ${LIB_DESTINATION}/client_components)
 set(LIB_SERVER_COMPONENTS_DESTINATION ${LIB_DESTINATION}/server_components)
 set(LIB_SHARED_COMPONENTS_DESTINATION ${LIB_DESTINATION}/shared_components)
@@ -150,3 +152,9 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
             ${LIB_SERVER_SYSTEMS_DESTINATION}/r-type_collision_system.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity>
+            ${LIB_SHARED_ENTITY_DESTINATION}/r-type_shared_entity.so)
