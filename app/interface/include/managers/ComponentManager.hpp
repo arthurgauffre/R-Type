@@ -8,15 +8,16 @@
 #pragma once
 
 #include <memory>
-#include <r-type/AManager.hpp>
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
 #include <unordered_map>
 #include <vector>
 
 namespace component {
-class ComponentManager : public AManager {
+class ComponentManager {
 public:
+
+  ComponentManager();
   /**
    * @brief Adds a new component of type T to the specified entity.
    *

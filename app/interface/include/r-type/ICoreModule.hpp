@@ -10,8 +10,9 @@
 
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
-#include <r-type/IManager.hpp>
-#include <r-type/ISystem.hpp>
+#include <managers/EntityManager.hpp>
+#include <managers/ComponentManager.hpp>
+#include <managers/SystemManager.hpp>
 #include <dirent.h>
 #include <iostream>
 
@@ -42,10 +43,11 @@ public:
   // virtual void addLibList(std::string pathLib) = 0;
 
   virtual void loadEntityConstructor() = 0;
-  // virtual void loadSystems() = 0;
-  // virtual void loadComponents() = 0;
-  // virtual void loadManagers() = 0;
-  virtual void helloWorld() = 0;
+  virtual void loadSystems() = 0;
+  virtual void loadComponents() = 0;
+  virtual void loadManagers() = 0;
+
+  virtual std::vector<std::shared_ptr<ECS_system::ISystem>> getSystems() const = 0;
   // virtual void generateScore() = 0;
 
   // virtual void handleKeyEvent(rtype::KeyboardInput key) = 0;
@@ -90,9 +92,10 @@ protected:
   // CoreStatus _coreStatus;
   // std::vector<timer> _timers;
 
-  std::vector<std::shared_ptr<entity::IEntity>> _entities;
-  // std::vector<std::shared_ptr<ISystem>> _systems;
-  // std::vector<std::shared_ptr<IComponent>> _components;
+  std::shared_ptr<entity::EntityManager> _entityManager;
+  std::shared_ptr<component::ComponentManager> _componentManager;
+  std::shared_ptr<ECS_system::SystemManager> _systemManager;
+  std::vector<std::shared_ptr<ECS_system::ISystem>> _systems;
   // std::vector<std::shared_ptr<IManagers>> _managers;
 
   // rtype::IDisplayModule *_graphicModule;
@@ -106,9 +109,6 @@ protected:
   // std::string _title;
   // float _deltaTime;
 
-  // entity::EntityManager _entityManager;
-  // component::ComponentManager _componentManager;
-  // ECS_system::SystemManager _systemManager;
 };
 }; // namespace rtype
 

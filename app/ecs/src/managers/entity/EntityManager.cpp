@@ -9,6 +9,11 @@
 #include <r-type/Entity.hpp>
 
 /**
+ * @brief Constructs an EntityManager object.
+ */
+entity::EntityManager::EntityManager() {}
+
+/**
  * @brief Retrieves an entity by its unique identifier.
  *
  * This function iterates through the list of entities and returns the entity
@@ -19,8 +24,10 @@
  * @return entity::IEntity* Pointer to the entity with the specified ID, or
  * nullptr if not found.
  */
-entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const {
-  for (auto &entity : _entities) {
+entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const
+{
+  for (auto &entity : _entities)
+  {
     if (entity->getID() == id)
       return entity.get();
   }
@@ -35,9 +42,11 @@ entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const {
  *
  * @param id The ID of the entity to be destroyed.
  */
-void entity::EntityManager::destroyEntity(uint32_t id) {
+void entity::EntityManager::destroyEntity(uint32_t id)
+{
   _entities.erase(std::remove_if(_entities.begin(), _entities.end(),
-                                 [id](const std::shared_ptr<IEntity> &entity) {
+                                 [id](const std::shared_ptr<IEntity> &entity)
+                                 {
                                    return entity->getID() == id;
                                  }),
                   _entities.end());
@@ -54,7 +63,8 @@ void entity::EntityManager::destroyEntity(uint32_t id) {
  * @param id The unique identifier for the new entity.
  * @return A pointer to the newly created entity.
  */
-entity::IEntity *entity::EntityManager::createEntity(uint32_t id) {
+entity::IEntity *entity::EntityManager::createEntity(uint32_t id)
+{
   _entities.push_back(std::make_unique<entity::Entity>(id));
   return _entities.back().get();
 }
@@ -65,6 +75,12 @@ entity::IEntity *entity::EntityManager::createEntity(uint32_t id) {
  * @return A reference to a vector of unique pointers to IEntity objects.
  */
 std::vector<std::shared_ptr<entity::IEntity>> &
-entity::EntityManager::getEntities() {
+entity::EntityManager::getEntities()
+{
   return _entities;
+}
+
+extern "C" std::shared_ptr<entity::EntityManager> createEntityManager()
+{
+  return std::make_shared<entity::EntityManager>();
 }

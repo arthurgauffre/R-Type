@@ -12,12 +12,16 @@
 #include <sstream>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <dirent.h>
+#include <cstring>
 
 /**
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::CoreModule() {
+rtype::CoreModule::CoreModule()
+{
   //   this->_coreStatus = CoreStatus::SELECTION;
   //   this->_gameModule = nullptr;
   //   this->_graphicModule = nullptr;
@@ -39,7 +43,8 @@ rtype::CoreModule::CoreModule() {
  * @brief Destroy the rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::~CoreModule() {
+rtype::CoreModule::~CoreModule()
+{
   // if (this->_libList.size() > 0) {
   //   for (auto &loader : rtype::CoreModule::_libList) {
   //     loader.DLLunloader();
@@ -835,82 +840,60 @@ rtype::CoreModule::~CoreModule() {
  * This function uses dlopen to load the entity shared object file and stores
  * the resulting entity constructor in the entityConstructor member variable.
  */
-void rtype::CoreModule::loadEntityConstructor() {
+void rtype::CoreModule::loadEntityConstructor()
+{
   // dlopen the entity .so file
   this->entityConstructor =
       std::make_shared<DLLoader<entity::IEntity>>("lib/shared_entity/r-type_shared_entity.so");
 }
 
-// void rtype::CoreModule::loadComponents() {
-//   // open the components directory
-//   DIR *dir;
-//   struct dirent *entry;
-//   dir = opendir("lib/components");
-//   if (dir == nullptr) {
-//     perror("opendir");
-//     // try {
-//     //   throw OpendirException("Could not open directory");
-//     // } catch (OpendirException &e) {
-//     //   std::cerr << e.what() << std::endl;
-//     // }
-//   }
-
-//   // iterate over the files in the directory
-//   while ((entry = readdir(dir)) != nullptr) {
-//     if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != 0)
-//       throw std::exception();
-//     this->_components.push_back(std::make_shared<DLLoader<component::IComponent>>(
-//         "lib/components/" + std::string(entry->d_name)));
-//   }
-// }
-
-// void rtype::CoreModule::loadManagers() {
-//   // open the managers directory
-//   DIR *dir;
-//   struct dirent *entry;
-//   dir = opendir("lib/managers");
-//   if (dir == nullptr) {
-//     perror("opendir");
-//     // try {
-//     //   throw OpendirException("Could not open directory");
-//     // } catch (OpendirException &e) {
-//     //   std::cerr << e.what() << std::endl;
-//     // }
-//   }
-
-//   // iterate over the files in the directory
-//   while ((entry = readdir(dir)) != nullptr) {
-//     if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != 0)
-//       throw std::exception();
-//     this->_managers.push_back(std::make_shared<DLLoader<IManager>>(
-//         "lib/managers/" + std::string(entry->d_name)));
-//   }
-// }
-
-// void rtype::CoreModule::loadSystems() {
-//   // open the systems directory
-//   DIR *dir;
-//   struct dirent *entry;
-//   dir = opendir("lib/systems");
-//   if (dir == nullptr) {
-//     perror("opendir");
-//     try {
-//       throw OpendirException("Could not open directory");
-//     } catch (OpendirException &e) {
-//       std::cerr << e.what() << std::endl;
-//     }
-//   }
-
-//   // iterate over the files in the directory
-//   while ((entry = readdir(dir)) != nullptr) {
-//     if (strncmp(&(entry->d_name[strlen(entry->d_name) - 3]), ".so", 3) != OK)
-//       throw std::exception();
-//     this->_systems.push_back(std::make_shared<DLLoader<ISystem>>(
-//         "lib/systems/" + std::string(entry->d_name)));
-//   }
-// }
-
-void rtype::CoreModule::helloWorld()
+void rtype::CoreModule::loadManagers()
 {
-  std::cout << "Hello, World!" << std::endl;
+  // load system manager .so
+  DLLoader<ECS_system::SystemManager> systemManagerLoader("lib/shared_managers/r-type_system_manager.so");
+
+  // load entity manager .so
+  DLLoader<entity::EntityManager> entityManagerLoader("lib/shared_managers/r-type_entity_manager.so");
+
+  // load component manager .so
+  DLLoader<component::ComponentManager> componentManagerLoader("lib/shared_managers/r-type_component_manager.so");
+
+  this->_systemManager = systemManagerLoader.getInstance("createSystemManager");
+  this->_entityManager = entityManagerLoader.getInstance("createEntityManager");
+  this->_componentManager = componentManagerLoader.getInstance("createComponentManager");
+}
+
+void rtype::CoreModule::loadSystems()
+{
+  // load audio system .so
+  DLLoader<ECS_system::ISystem> audioSystemLoader("lib/client_systems/r-type_audio_system.so");
+
+  // load render system .so
+  DLLoader<ECS_system::ISystem> renderSystemLoader("lib/client_systems/r-type_render_system.so");
+
+  this->_systems.push_back(audioSystemLoader.getInstance("createAudioSystem", this->_componentManager));
+  this->_systems.push_back(renderSystemLoader.getInstance("createRenderSystem", this->_componentManager));
+}
+
+void rtype::CoreModule::loadComponents()
+{
+  // load music component .so
+  this->_components.emplace("music", std::make_shared<DLLoader<component::IComponent>>("lib/client_components/r-type_music_component.so"));
+
+  // load sound component .so
+  this->_components.emplace("sound", std::make_shared<DLLoader<component::IComponent>>("lib/client_components/r-type_sound_component.so"));
+
+  // load sprite component .so
+  this->_components.emplace("sprite", std::make_shared<DLLoader<component::IComponent>>("lib/client_components/r-type_sprite_component.so"));
+
+  // load texture component .so
+  this->_components.emplace("texture", std::make_shared<DLLoader<component::IComponent>>("lib/client_components/r-type_texture_component.so"));
+
+  // load position component .so
+  this->_components.emplace("position", std::make_shared<DLLoader<component::IComponent>>("lib/shared_components/r-type_position_component.so"));
+}
+
+std::vector<std::shared_ptr<ECS_system::ISystem>> rtype::CoreModule::getSystems() const
+{
+  return this->_systems;
 }

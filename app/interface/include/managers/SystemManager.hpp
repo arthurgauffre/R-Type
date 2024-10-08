@@ -10,7 +10,6 @@
 #pragma once
 
 #include <memory>
-#include <r-type/AManager.hpp>
 #include <r-type/ISystem.hpp>
 #include <vector>
 
@@ -20,7 +19,7 @@ public:
   /**
    * @brief Constructs a new SystemManager object.
    */
-  SystemManager() = default;
+  SystemManager();
 
   /**
    * @brief Destroys the SystemManager object.

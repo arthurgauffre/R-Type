@@ -39,3 +39,8 @@ void ECS_system::AudioSystem::update(
     }
   }
 }
+
+extern "C" std::shared_ptr<ECS_system::ISystem> createAudioSystem(
+    component::ComponentManager &componentManager) {
+  return std::make_shared<ECS_system::AudioSystem>(componentManager);
+}
