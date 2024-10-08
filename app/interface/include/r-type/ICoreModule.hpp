@@ -8,12 +8,12 @@
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
+#include <dirent.h>
+#include <iostream>
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
 #include <r-type/IManager.hpp>
 #include <r-type/ISystem.hpp>
-#include <dirent.h>
-#include <iostream>
 
 namespace rtype {
 class ICoreModule {

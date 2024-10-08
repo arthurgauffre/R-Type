@@ -837,8 +837,8 @@ rtype::CoreModule::~CoreModule() {
  */
 void rtype::CoreModule::loadEntityConstructor() {
   // dlopen the entity .so file
-  this->entityConstructor =
-      std::make_shared<DLLoader<entity::IEntity>>("lib/shared_entity/r-type_shared_entity.so");
+  this->entityConstructor = std::make_shared<DLLoader<entity::IEntity>>(
+      "lib/shared_entity/r-type_shared_entity.so");
 }
 
 // void rtype::CoreModule::loadComponents() {
@@ -910,7 +910,6 @@ void rtype::CoreModule::loadEntityConstructor() {
 //   }
 // }
 
-void rtype::CoreModule::helloWorld()
-{
+void rtype::CoreModule::helloWorld() {
   std::cout << "Hello, World!" << std::endl;
 }
