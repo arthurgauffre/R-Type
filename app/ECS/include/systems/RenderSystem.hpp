@@ -13,6 +13,8 @@
 #include <SpriteComponent.hpp>
 #include <TextureComponent.hpp>
 #include <TransformComponent.hpp>
+#include <BackgroundComponent.hpp>
+#include <ScrollComponent.hpp>
 
 namespace ECS_system {
 class RenderSystem : public ASystem {

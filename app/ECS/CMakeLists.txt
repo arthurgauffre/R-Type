@@ -20,11 +20,14 @@ set(SOURCES
     src/systems/AudioSystem.cpp
     src/systems/InputSystem.cpp
     src/systems/MovementSystem.cpp
+    src/systems/BackgroundSystem.cpp
     src/components/TextureComponent.cpp
     src/components/SpriteComponent.cpp
     src/components/MusicComponent.cpp
     src/components/SoundComponent.cpp
     src/components/InputComponent.cpp
+    src/components/ScrollComponent.cpp
+    src/components/BackgroundComponent.cpp
     src/GameLoop.cpp
     main.cpp
 )
