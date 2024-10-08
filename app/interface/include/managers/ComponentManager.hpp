@@ -16,7 +16,6 @@
 namespace component {
 class ComponentManager {
 public:
-
   ComponentManager();
   /**
    * @brief Adds a new component of type T to the specified entity.

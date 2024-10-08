@@ -10,13 +10,11 @@
 
 #include <dirent.h>
 #include <iostream>
+#include <managers/ComponentManager.hpp>
+#include <managers/EntityManager.hpp>
+#include <managers/SystemManager.hpp>
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
-#include <managers/EntityManager.hpp>
-#include <managers/ComponentManager.hpp>
-#include <managers/SystemManager.hpp>
-#include <dirent.h>
-#include <iostream>
 
 namespace rtype {
 class ICoreModule {
@@ -49,7 +47,8 @@ public:
   virtual void loadComponents() = 0;
   virtual void loadManagers() = 0;
 
-  virtual std::vector<std::shared_ptr<ECS_system::ISystem>> getSystems() const = 0;
+  virtual std::vector<std::shared_ptr<ECS_system::ISystem>>
+  getSystems() const = 0;
   // virtual void generateScore() = 0;
 
   // virtual void handleKeyEvent(rtype::KeyboardInput key) = 0;
@@ -110,7 +109,6 @@ protected:
   // int _height;
   // std::string _title;
   // float _deltaTime;
-
 };
 }; // namespace rtype
 

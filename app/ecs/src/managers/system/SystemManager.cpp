@@ -20,16 +20,13 @@ ECS_system::SystemManager::SystemManager() {}
  * systems.
  */
 void ECS_system::SystemManager::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
-  for (auto &system : _systems)
-  {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+  for (auto &system : _systems) {
     system->update(deltaTime, entities); // Each system updates itself because
                                          // each system has its own logic
   }
 }
 
-extern "C" std::shared_ptr<ECS_system::SystemManager> createSystemManager()
-{
+extern "C" std::shared_ptr<ECS_system::SystemManager> createSystemManager() {
   return std::make_shared<ECS_system::SystemManager>();
 }
