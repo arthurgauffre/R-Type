@@ -8,13 +8,13 @@
 #pragma once
 
 #include <ASystem.hpp>
+#include <BackgroundComponent.hpp>
 #include <PositionComponent.hpp>
 #include <SFML/Graphics.hpp>
+#include <ScrollComponent.hpp>
 #include <SpriteComponent.hpp>
 #include <TextureComponent.hpp>
 #include <TransformComponent.hpp>
-#include <BackgroundComponent.hpp>
-#include <ScrollComponent.hpp>
 
 namespace ECS_system {
 class RenderSystem : public ASystem {
