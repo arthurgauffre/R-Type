@@ -12,7 +12,7 @@ Although the game operates over UDP, the connection phase is designed to resembl
 
 #### Encrypted Handshake
 
-To ensure the connection is secure from unauthorized access, the handshake process is encrypted using **bcrypt** (or an equivalent cryptographic library such as **libsodium** or **OpenSSL**). This ensures that the client and server exchange data securely and that only authorized clients can establish a connection.
+To ensure the connection is secure from unauthorized access, the handshake process is encrypted using **bcrypt**. This ensures that the client and server exchange data securely and that only authorized clients can establish a connection.
 
 The encrypted handshake process is as follows:
 
