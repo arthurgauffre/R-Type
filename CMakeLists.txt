@@ -45,6 +45,19 @@ add_executable(r-type_server
 add_executable(r-type_client
     app/client/main.cpp
     app/client/src/CoreModule.cpp
+    app/ecs/src/managers/system/SystemManager.cpp
+    app/ecs/src/managers/component/ComponentManager.cpp
+    app/ecs/src/managers/entity/EntityManager.cpp
+    app/ecs/src/components/sprite/SpriteComponent.cpp
+    app/ecs/src/components/texture/TextureComponent.cpp
+    app/ecs/src/components/position/PositionComponent.cpp
+    app/ecs/src/components/hitbox/HitBoxComponent.cpp
+    app/ecs/src/components/music/MusicComponent.cpp
+    app/ecs/src/components/sound/SoundComponent.cpp
+    # app/ecs/src/systems/render/RenderSystem.cpp
+    # app/ecs/src/systems/audio/AudioSystem.cpp
+    # app/ecs/src/systems/collision/CollisionSystem.cpp
+    app/ecs/src/entity/Entity.cpp
 )
 
 # Add the interface to the project
@@ -53,7 +66,7 @@ add_subdirectory(app/ecs)
 
 # Link the interface to the executables
 target_link_libraries(r-type_server r-type_interfaces)
-target_link_libraries(r-type_client r-type_interfaces)
+target_link_libraries(r-type_client r-type_interfaces sfml-graphics sfml-audio)
 
 # Move the executables to root of the project
 add_custom_command(
@@ -71,9 +84,6 @@ add_custom_command(
 # Move .so files out of the build folder into the lib one
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 set(LIB_SHARED_ENTITY_DESTINATION ${LIB_DESTINATION}/shared_entity)
-set(LIB_CLIENT_COMPONENTS_DESTINATION ${LIB_DESTINATION}/client_components)
-set(LIB_SERVER_COMPONENTS_DESTINATION ${LIB_DESTINATION}/server_components)
-set(LIB_SHARED_COMPONENTS_DESTINATION ${LIB_DESTINATION}/shared_components)
 set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
 set(LIB_SERVER_SYSTEMS_DESTINATION ${LIB_DESTINATION}/server_systems)
 set(LIB_SHARED_SYSTEMS_DESTINATION ${LIB_DESTINATION}/shared_systems)
@@ -81,29 +91,6 @@ set(LIB_CLIENT_MANAGERS_DESTINATION ${LIB_DESTINATION}/client_managers)
 set(LIB_SERVER_MANAGERS_DESTINATION ${LIB_DESTINATION}/server_managers)
 set(LIB_SHARED_MANAGERS_DESTINATION ${LIB_DESTINATION}/shared_managers)
 
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_position_component>
-            ${LIB_SHARED_COMPONENTS_DESTINATION}/r-type_position_component.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_hitbox_component>
-            ${LIB_SHARED_COMPONENTS_DESTINATION}/r-type_hitbox_component.so)
-
-add_custom_command(
-  TARGET r-type_server
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_music_component>
-          ${LIB_CLIENT_COMPONENTS_DESTINATION}/r-type_music_component.so)
-
-add_custom_command(
-  TARGET r-type_server
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_sound_component>
-          ${LIB_CLIENT_COMPONENTS_DESTINATION}/r-type_sound_component.so)
 
 add_custom_command(
   TARGET r-type_server
@@ -116,18 +103,6 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity_manager>
             ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_entity_manager.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_sprite_component>
-            ${LIB_CLIENT_COMPONENTS_DESTINATION}/r-type_sprite_component.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_texture_component>
-            ${LIB_CLIENT_COMPONENTS_DESTINATION}/r-type_texture_component.so)
 
 add_custom_command(
     TARGET r-type_server

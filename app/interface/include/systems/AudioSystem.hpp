@@ -12,7 +12,7 @@
 #include <r-type/ASystem.hpp>
 
 namespace ECS_system {
-class AudioSystem : public ASystem {
+class AudioSystem : virtual public ASystem {
 public:
   /**
    * @class AudioSystem
@@ -25,8 +25,8 @@ public:
    * @param componentManager A reference to the ComponentManager that manages
    * all components.
    */
-  AudioSystem(component::ComponentManager &componentManager)
-      : ASystem(componentManager) {}
+  AudioSystem(component::ComponentManager &componentManager, sf::RenderWindow &window)
+      : ASystem(componentManager, window) {}
 
   /**
    * @brief Destroys the AudioSystem object.

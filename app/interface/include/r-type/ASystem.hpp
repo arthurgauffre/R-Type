@@ -22,8 +22,8 @@ public:
    * @param componentManager Reference to the ComponentManager that manages all
    * components.
    */
-  ASystem(component::ComponentManager &componentManager)
-      : _componentManager(componentManager) {}
+  ASystem(component::ComponentManager &componentManager, sf::RenderWindow &window)
+      : ISystem(componentManager, window) {}
 
   /**
    * @brief Virtual destructor for the ASystem class.
@@ -68,6 +68,5 @@ protected:
    * Component System). It provides functionalities to add, remove, and access
    * components associated with entities.
    */
-  component::ComponentManager &_componentManager;
 };
 } // namespace ECS_system

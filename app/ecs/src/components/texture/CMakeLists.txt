@@ -1,13 +1,14 @@
-add_library(r-type_texture_component SHARED
-    TextureComponent.cpp
-)
+# add_library(r-type_render_system SHARED
+#     TextureComponent.cpp
+# )
 
 # Specify the SFML include directory
-target_include_directories(r-type_texture_component PRIVATE ${SFML_INCLUDE_DIR})
+# target_include_directories(r-type_render_system PRIVATE ${SFML_INCLUDE_DIR})
 
 # Link the SFML library
-target_link_libraries(
-    r-type_texture_component
-    r-type_interfaces
-    sfml-graphics
-)
+# target_link_libraries(
+#     r-type_render_system
+#     TextureComponent.cpp
+#     r-type_interfaces
+#     sfml-graphics
+# )

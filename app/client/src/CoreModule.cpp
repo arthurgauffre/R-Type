@@ -20,7 +20,11 @@
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::CoreModule() {
+rtype::CoreModule::CoreModule()
+{
+  this->_componentManager = std::make_shared<component::ComponentManager>();
+  this->_systemManager = std::make_shared<ECS_system::SystemManager>();
+  this->_entityManager = std::make_shared<entity::EntityManager>();
   //   this->_coreStatus = CoreStatus::SELECTION;
   //   this->_gameModule = nullptr;
   //   this->_graphicModule = nullptr;
@@ -42,7 +46,8 @@ rtype::CoreModule::CoreModule() {
  * @brief Destroy the rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::~CoreModule() {
+rtype::CoreModule::~CoreModule()
+{
   // if (this->_libList.size() > 0) {
   //   for (auto &loader : rtype::CoreModule::_libList) {
   //     loader.DLLunloader();
@@ -838,74 +843,94 @@ rtype::CoreModule::~CoreModule() {
  * This function uses dlopen to load the entity shared object file and stores
  * the resulting entity constructor in the entityConstructor member variable.
  */
-void rtype::CoreModule::loadEntityConstructor() {
-  // dlopen the entity .so file
-  this->entityConstructor = std::make_shared<DLLoader<entity::IEntity>>(
-      "lib/shared_entity/r-type_shared_entity.so");
+// void rtype::CoreModule::loadEntityConstructor()
+// {
+//   // dlopen the entity .so file
+//   this->entityConstructor = std::make_shared<DLLoader<entity::IEntity>>(
+//       "lib/shared_entity/r-type_shared_entity.so");
+// }
+
+// void rtype::CoreModule::loadManagers()
+// {
+//   // load system manager .so
+//   DLLoader<ECS_system::SystemManager> systemManagerLoader(
+//       "lib/shared_managers/r-type_system_manager.so");
+
+//   // load entity manager .so
+//   DLLoader<entity::EntityManager> entityManagerLoader(
+//       "lib/shared_managers/r-type_entity_manager.so");
+
+//   // load component manager .so
+//   DLLoader<component::ComponentManager> componentManagerLoader(
+//       "lib/shared_managers/r-type_component_manager.so");
+
+//   this->_systemManager = systemManagerLoader.getInstance("createSystemManager");
+//   this->_entityManager = entityManagerLoader.getInstance("createEntityManager");
+//   this->_componentManager =
+//       componentManagerLoader.getInstance("createComponentManager");
+// }
+
+// void rtype::CoreModule::loadSystems()
+// {
+//   // load audio system .so
+//   DLLoader<ECS_system::ISystem> audioSystemLoader(
+//       "lib/client_systems/r-type_audio_system.so");
+
+//   // load render system .so
+//   DLLoader<ECS_system::ISystem> renderSystemLoader(
+//       "lib/client_systems/r-type_render_system.so");
+
+//   this->_systems.push_back(audioSystemLoader.getInstance(
+//       "createAudioSystem", this->_componentManager));
+//   this->_systems.push_back(renderSystemLoader.getInstance(
+//       "createRenderSystem", this->_componentManager));
+// }
+
+// void rtype::CoreModule::loadComponents()
+// {
+//   // load music component .so
+//   this->_components.emplace(
+//       "music", std::make_shared<DLLoader<component::IComponent>>(
+//                    "lib/client_components/r-type_music_component.so"));
+
+//   // load sound component .so
+//   this->_components.emplace(
+//       "sound", std::make_shared<DLLoader<component::IComponent>>(
+//                    "lib/client_components/r-type_sound_component.so"));
+
+//   // load sprite component .so
+//   this->_components.emplace(
+//       "sprite", std::make_shared<DLLoader<component::IComponent>>(
+//                     "lib/client_components/r-type_sprite_component.so"));
+
+//   // load texture component .so
+//   this->_components.emplace(
+//       "texture", std::make_shared<DLLoader<component::IComponent>>(
+//                      "lib/client_components/r-type_texture_component.so"));
+
+//   // load position component .so
+//   this->_components.emplace(
+//       "position", std::make_shared<DLLoader<component::IComponent>>(
+//                       "lib/shared_components/r-type_position_component.so"));
+// }
+
+// std::vector<std::shared_ptr<ECS_system::ISystem>>
+// rtype::CoreModule::getSystems() const
+// {
+//   return this->_systems;
+// }
+
+std::shared_ptr<entity::EntityManager> rtype::CoreModule::getEntityManager() const
+{
+  return this->_entityManager;
 }
 
-void rtype::CoreModule::loadManagers() {
-  // load system manager .so
-  DLLoader<ECS_system::SystemManager> systemManagerLoader(
-      "lib/shared_managers/r-type_system_manager.so");
-
-  // load entity manager .so
-  DLLoader<entity::EntityManager> entityManagerLoader(
-      "lib/shared_managers/r-type_entity_manager.so");
-
-  // load component manager .so
-  DLLoader<component::ComponentManager> componentManagerLoader(
-      "lib/shared_managers/r-type_component_manager.so");
-
-  this->_systemManager = systemManagerLoader.getInstance("createSystemManager");
-  this->_entityManager = entityManagerLoader.getInstance("createEntityManager");
-  this->_componentManager =
-      componentManagerLoader.getInstance("createComponentManager");
+std::shared_ptr<component::ComponentManager> rtype::CoreModule::getComponentManager() const
+{
+  return this->_componentManager;
 }
 
-void rtype::CoreModule::loadSystems() {
-  // load audio system .so
-  DLLoader<ECS_system::ISystem> audioSystemLoader(
-      "lib/client_systems/r-type_audio_system.so");
-
-  // load render system .so
-  DLLoader<ECS_system::ISystem> renderSystemLoader(
-      "lib/client_systems/r-type_render_system.so");
-
-  this->_systems.push_back(audioSystemLoader.getInstance(
-      "createAudioSystem", this->_componentManager));
-  this->_systems.push_back(renderSystemLoader.getInstance(
-      "createRenderSystem", this->_componentManager));
-}
-
-void rtype::CoreModule::loadComponents() {
-  // load music component .so
-  this->_components.emplace(
-      "music", std::make_shared<DLLoader<component::IComponent>>(
-                   "lib/client_components/r-type_music_component.so"));
-
-  // load sound component .so
-  this->_components.emplace(
-      "sound", std::make_shared<DLLoader<component::IComponent>>(
-                   "lib/client_components/r-type_sound_component.so"));
-
-  // load sprite component .so
-  this->_components.emplace(
-      "sprite", std::make_shared<DLLoader<component::IComponent>>(
-                    "lib/client_components/r-type_sprite_component.so"));
-
-  // load texture component .so
-  this->_components.emplace(
-      "texture", std::make_shared<DLLoader<component::IComponent>>(
-                     "lib/client_components/r-type_texture_component.so"));
-
-  // load position component .so
-  this->_components.emplace(
-      "position", std::make_shared<DLLoader<component::IComponent>>(
-                      "lib/shared_components/r-type_position_component.so"));
-}
-
-std::vector<std::shared_ptr<ECS_system::ISystem>>
-rtype::CoreModule::getSystems() const {
-  return this->_systems;
+std::shared_ptr<ECS_system::SystemManager> rtype::CoreModule::getSystemManager() const
+{
+  return this->_systemManager;
 }

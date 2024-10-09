@@ -16,7 +16,7 @@
 #include <vector>
 
 namespace ECS_system {
-class CollisionSystem : public ASystem {
+class CollisionSystem : virtual public ASystem {
 public:
   /**
    * @brief Constructs a new CollisionSystem object.
@@ -24,8 +24,8 @@ public:
    * @param componentManager Reference to the ComponentManager that manages the
    * components.
    */
-  CollisionSystem(component::ComponentManager &componentManager)
-      : ASystem(componentManager) {}
+  CollisionSystem(component::ComponentManager &componentManager, sf::RenderWindow &window)
+      : ASystem(componentManager, window) {}
 
   /**
    * @brief Destroys the CollisionSystem object.

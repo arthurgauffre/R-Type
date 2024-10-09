@@ -35,12 +35,15 @@ namespace rtype
     // void loadLib(std::string pathLib);
     // void addLibList(std::string pathLib);
 
-    void loadEntityConstructor();
-    void loadSystems();
-    void loadComponents();
-    void loadManagers();
+    // void loadEntityConstructor();
+    // void loadSystems();
+    // void loadComponents();
+    // void loadManagers();
 
-    std::vector<std::shared_ptr<ECS_system::ISystem>> getSystems() const;
+    // std::vector<std::shared_ptr<ECS_system::ISystem>> getSystems() const;
+    std::shared_ptr<entity::EntityManager> getEntityManager() const;
+    std::shared_ptr<component::ComponentManager> getComponentManager() const;
+    std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
     // void handleKeyEvent(rtype::KeyboardInput key);
     // void launchSelection();
@@ -110,17 +113,11 @@ namespace rtype
       };
     };
 
-    // entity constructor
-    std::shared_ptr<DLLoader<entity::IEntity>> entityConstructor;
-
-    // undored map of components constructors
-    std::unordered_map<std::string, std::shared_ptr<DLLoader<component::IComponent>>> _components;
-
     // std::vector<DLLoader<std::shared_ptr<ECS_system::ISystem>>> _systems;
     // std::vector<DLLoader<std::shared_ptr<component::IComponent>>> _components;
     // std::vector<DLLoader<std::shared_ptr<IManager>>> _managers;
 
-    std::vector<DLLoader<std::string>> _nameLoader;
+    // std::vector<DLLoader<std::string>> _nameLoader;
     // std::vector<DLLoader<rtype::ModuleType>> _libList;
     // std::vector<DLLoader<std::shared_ptr<IModuleEngine>>> _interfaceList;
     // entity constructor

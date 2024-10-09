@@ -1,8 +1,9 @@
-add_library(r-type_position_component SHARED
-    PositionComponent.cpp
-)
+# add_library(r-type_render_system SHARED
+#     PositionComponent.cpp
+# )
 
-target_link_libraries(
-    r-type_position_component
-    r-type_interfaces
-)
+# target_link_libraries(
+#     r-type_render_system
+#     PositionComponent.cpp
+#     r-type_interfaces
+# )
