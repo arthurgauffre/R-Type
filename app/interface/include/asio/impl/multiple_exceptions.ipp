@@ -12,7 +12,7 @@
 #define ASIO_IMPL_MULTIPLE_EXCEPTIONS_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -22,19 +22,14 @@
 
 namespace asio {
 
-multiple_exceptions::multiple_exceptions(
-    std::exception_ptr first) noexcept
-  : first_(static_cast<std::exception_ptr&&>(first))
-{
-}
+multiple_exceptions::multiple_exceptions(std::exception_ptr first) noexcept
+    : first_(static_cast<std::exception_ptr &&>(first)) {}
 
-const char* multiple_exceptions::what() const noexcept
-{
+const char *multiple_exceptions::what() const noexcept {
   return "multiple exceptions";
 }
 
-std::exception_ptr multiple_exceptions::first_exception() const
-{
+std::exception_ptr multiple_exceptions::first_exception() const {
   return first_;
 }
 

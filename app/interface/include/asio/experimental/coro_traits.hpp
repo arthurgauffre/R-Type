@@ -13,13 +13,13 @@
 #define ASIO_EXPERIMENTAL_DETAIL_CORO_TRAITS_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "asio/any_io_executor.hpp"
 #include "asio/detail/config.hpp"
 #include <optional>
 #include <variant>
-#include "asio/any_io_executor.hpp"
 
 namespace asio {
 namespace experimental {
@@ -32,70 +32,44 @@ template <typename T>
 concept decays_to_executor = execution::executor<std::decay_t<T>>;
 
 template <typename T, typename Executor = any_io_executor>
-concept execution_context = requires (T& t)
-{
-  {t.get_executor()} -> convertible_to<Executor>;
+concept execution_context = requires(T &t) {
+  { t.get_executor() } -> convertible_to<Executor>;
 };
 
-template <typename Yield, typename Return>
-struct coro_result
-{
+template <typename Yield, typename Return> struct coro_result {
   using type = std::variant<Yield, Return>;
 };
 
-template <typename Yield>
-struct coro_result<Yield, void>
-{
+template <typename Yield> struct coro_result<Yield, void> {
   using type = std::optional<Yield>;
 };
 
-template <typename Return>
-struct coro_result<void, Return>
-{
+template <typename Return> struct coro_result<void, Return> {
   using type = Return;
 };
 
-template <typename YieldReturn>
-struct coro_result<YieldReturn, YieldReturn>
-{
+template <typename YieldReturn> struct coro_result<YieldReturn, YieldReturn> {
   using type = YieldReturn;
 };
 
-template <>
-struct coro_result<void, void>
-{
-  using type = void;
-};
+template <> struct coro_result<void, void> { using type = void; };
 
 template <typename Yield, typename Return>
 using coro_result_t = typename coro_result<Yield, Return>::type;
 
-template <typename Result, bool IsNoexcept>
-struct coro_handler;
+template <typename Result, bool IsNoexcept> struct coro_handler;
 
-template <>
-struct coro_handler<void, false>
-{
+template <> struct coro_handler<void, false> {
   using type = void(std::exception_ptr);
 };
 
-template <>
-struct coro_handler<void, true>
-{
-  using type = void();
-};
+template <> struct coro_handler<void, true> { using type = void(); };
 
-template <typename T>
-struct coro_handler<T, false>
-{
+template <typename T> struct coro_handler<T, false> {
   using type = void(std::exception_ptr, T);
 };
 
-template <typename T>
-struct coro_handler<T, true>
-{
-  using type = void(T);
-};
+template <typename T> struct coro_handler<T, true> { using type = void(T); };
 
 template <typename Result, bool IsNoexcept>
 using coro_handler_t = typename coro_handler<Result, IsNoexcept>::type;
@@ -111,8 +85,7 @@ using coro_handler_t = typename coro_handler<Result, IsNoexcept>::type;
  * the underlying executor type.
  */
 template <typename Yield, typename Return, typename Executor>
-struct coro_traits
-{
+struct coro_traits {
   /// The value that can be passed into a symmetrical cororoutine. @c void if
   /// asymmetrical.
   using input_type = argument_dependent;
@@ -143,10 +116,9 @@ struct coro_traits
 #else // defined(GENERATING_DOCUMENTATION)
 
 template <typename Yield, typename Return, typename Executor>
-struct coro_traits
-{
-  using input_type  = void;
-  using yield_type  = Yield;
+struct coro_traits {
+  using input_type = void;
+  using yield_type = Yield;
   using return_type = Return;
   using result_type = detail::coro_result_t<yield_type, return_type>;
   using signature_type = result_type();
@@ -156,8 +128,7 @@ struct coro_traits
 };
 
 template <typename T, typename Return, typename Executor>
-struct coro_traits<T(), Return, Executor>
-{
+struct coro_traits<T(), Return, Executor> {
   using input_type = void;
   using yield_type = T;
   using return_type = Return;
@@ -169,8 +140,7 @@ struct coro_traits<T(), Return, Executor>
 };
 
 template <typename T, typename Return, typename Executor>
-struct coro_traits<T() noexcept, Return, Executor>
-{
+struct coro_traits<T() noexcept, Return, Executor> {
   using input_type = void;
   using yield_type = T;
   using return_type = Return;
@@ -182,8 +152,7 @@ struct coro_traits<T() noexcept, Return, Executor>
 };
 
 template <typename T, typename U, typename Return, typename Executor>
-struct coro_traits<T(U), Return, Executor>
-{
+struct coro_traits<T(U), Return, Executor> {
   using input_type = U;
   using yield_type = T;
   using return_type = Return;
@@ -195,8 +164,7 @@ struct coro_traits<T(U), Return, Executor>
 };
 
 template <typename T, typename U, typename Return, typename Executor>
-struct coro_traits<T(U) noexcept, Return, Executor>
-{
+struct coro_traits<T(U) noexcept, Return, Executor> {
   using input_type = U;
   using yield_type = T;
   using return_type = Return;
@@ -208,8 +176,7 @@ struct coro_traits<T(U) noexcept, Return, Executor>
 };
 
 template <typename Executor>
-struct coro_traits<void() noexcept, void, Executor>
-{
+struct coro_traits<void() noexcept, void, Executor> {
   using input_type = void;
   using yield_type = void;
   using return_type = void;

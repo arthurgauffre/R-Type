@@ -12,14 +12,14 @@
 #define ASIO_BIND_ALLOCATOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/detail/type_traits.hpp"
 #include "asio/associated_allocator.hpp"
 #include "asio/associator.hpp"
 #include "asio/async_result.hpp"
+#include "asio/detail/config.hpp"
+#include "asio/detail/type_traits.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -28,89 +28,81 @@ namespace detail {
 
 // Helper to automatically define nested typedef result_type.
 
-template <typename T, typename = void>
-struct allocator_binder_result_type
-{
+template <typename T, typename = void> struct allocator_binder_result_type {
 protected:
   typedef void result_type_or_void;
 };
 
 template <typename T>
-struct allocator_binder_result_type<T, void_t<typename T::result_type>>
-{
+struct allocator_binder_result_type<T, void_t<typename T::result_type>> {
   typedef typename T::result_type result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
-template <typename R>
-struct allocator_binder_result_type<R(*)()>
-{
+template <typename R> struct allocator_binder_result_type<R (*)()> {
   typedef R result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
-template <typename R>
-struct allocator_binder_result_type<R(&)()>
-{
+template <typename R> struct allocator_binder_result_type<R (&)()> {
   typedef R result_type;
-protected:
-  typedef result_type result_type_or_void;
-};
 
-template <typename R, typename A1>
-struct allocator_binder_result_type<R(*)(A1)>
-{
-  typedef R result_type;
 protected:
   typedef result_type result_type_or_void;
 };
 
 template <typename R, typename A1>
-struct allocator_binder_result_type<R(&)(A1)>
-{
+struct allocator_binder_result_type<R (*)(A1)> {
   typedef R result_type;
+
+protected:
+  typedef result_type result_type_or_void;
+};
+
+template <typename R, typename A1>
+struct allocator_binder_result_type<R (&)(A1)> {
+  typedef R result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
 template <typename R, typename A1, typename A2>
-struct allocator_binder_result_type<R(*)(A1, A2)>
-{
+struct allocator_binder_result_type<R (*)(A1, A2)> {
   typedef R result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
 template <typename R, typename A1, typename A2>
-struct allocator_binder_result_type<R(&)(A1, A2)>
-{
+struct allocator_binder_result_type<R (&)(A1, A2)> {
   typedef R result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
 // Helper to automatically define nested typedef argument_type.
 
-template <typename T, typename = void>
-struct allocator_binder_argument_type {};
+template <typename T, typename = void> struct allocator_binder_argument_type {};
 
 template <typename T>
-struct allocator_binder_argument_type<T, void_t<typename T::argument_type>>
-{
+struct allocator_binder_argument_type<T, void_t<typename T::argument_type>> {
   typedef typename T::argument_type argument_type;
 };
 
 template <typename R, typename A1>
-struct allocator_binder_argument_type<R(*)(A1)>
-{
+struct allocator_binder_argument_type<R (*)(A1)> {
   typedef A1 argument_type;
 };
 
 template <typename R, typename A1>
-struct allocator_binder_argument_type<R(&)(A1)>
-{
+struct allocator_binder_argument_type<R (&)(A1)> {
   typedef A1 argument_type;
 };
 
@@ -121,23 +113,20 @@ template <typename T, typename = void>
 struct allocator_binder_argument_types {};
 
 template <typename T>
-struct allocator_binder_argument_types<T,
-    void_t<typename T::first_argument_type>>
-{
+struct allocator_binder_argument_types<
+    T, void_t<typename T::first_argument_type>> {
   typedef typename T::first_argument_type first_argument_type;
   typedef typename T::second_argument_type second_argument_type;
 };
 
 template <typename R, typename A1, typename A2>
-struct allocator_binder_argument_type<R(*)(A1, A2)>
-{
+struct allocator_binder_argument_type<R (*)(A1, A2)> {
   typedef A1 first_argument_type;
   typedef A2 second_argument_type;
 };
 
 template <typename R, typename A1, typename A2>
-struct allocator_binder_argument_type<R(&)(A1, A2)>
-{
+struct allocator_binder_argument_type<R (&)(A1, A2)> {
   typedef A1 first_argument_type;
   typedef A2 second_argument_type;
 };
@@ -149,9 +138,9 @@ struct allocator_binder_argument_type<R(&)(A1, A2)>
 template <typename T, typename Allocator>
 class allocator_binder
 #if !defined(GENERATING_DOCUMENTATION)
-  : public detail::allocator_binder_result_type<T>,
-    public detail::allocator_binder_argument_type<T>,
-    public detail::allocator_binder_argument_types<T>
+    : public detail::allocator_binder_result_type<T>,
+      public detail::allocator_binder_argument_type<T>,
+      public detail::allocator_binder_argument_types<T>
 #endif // !defined(GENERATING_DOCUMENTATION)
 {
 public:
@@ -229,25 +218,16 @@ public:
    * @c U.
    */
   template <typename U>
-  allocator_binder(const allocator_type& s, U&& u)
-    : allocator_(s),
-      target_(static_cast<U&&>(u))
-  {
-  }
+  allocator_binder(const allocator_type &s, U &&u)
+      : allocator_(s), target_(static_cast<U &&>(u)) {}
 
   /// Copy constructor.
-  allocator_binder(const allocator_binder& other)
-    : allocator_(other.get_allocator()),
-      target_(other.get())
-  {
-  }
+  allocator_binder(const allocator_binder &other)
+      : allocator_(other.get_allocator()), target_(other.get()) {}
 
   /// Construct a copy, but specify a different allocator.
-  allocator_binder(const allocator_type& s, const allocator_binder& other)
-    : allocator_(s),
-      target_(other.get())
-  {
-  }
+  allocator_binder(const allocator_type &s, const allocator_binder &other)
+      : allocator_(s), target_(other.get()) {}
 
   /// Construct a copy of a different allocator wrapper type.
   /**
@@ -256,13 +236,11 @@ public:
    * constructible from type @c U.
    */
   template <typename U, typename OtherAllocator>
-  allocator_binder(const allocator_binder<U, OtherAllocator>& other,
+  allocator_binder(
+      const allocator_binder<U, OtherAllocator> &other,
       constraint_t<is_constructible<Allocator, OtherAllocator>::value> = 0,
       constraint_t<is_constructible<T, U>::value> = 0)
-    : allocator_(other.get_allocator()),
-      target_(other.get())
-  {
-  }
+      : allocator_(other.get_allocator()), target_(other.get()) {}
 
   /// Construct a copy of a different allocator wrapper type, but
   /// specify a different allocator.
@@ -271,88 +249,59 @@ public:
    * @c U.
    */
   template <typename U, typename OtherAllocator>
-  allocator_binder(const allocator_type& s,
-      const allocator_binder<U, OtherAllocator>& other,
-      constraint_t<is_constructible<T, U>::value> = 0)
-    : allocator_(s),
-      target_(other.get())
-  {
-  }
+  allocator_binder(const allocator_type &s,
+                   const allocator_binder<U, OtherAllocator> &other,
+                   constraint_t<is_constructible<T, U>::value> = 0)
+      : allocator_(s), target_(other.get()) {}
 
   /// Move constructor.
-  allocator_binder(allocator_binder&& other)
-    : allocator_(static_cast<allocator_type&&>(
-          other.get_allocator())),
-      target_(static_cast<T&&>(other.get()))
-  {
-  }
+  allocator_binder(allocator_binder &&other)
+      : allocator_(static_cast<allocator_type &&>(other.get_allocator())),
+        target_(static_cast<T &&>(other.get())) {}
 
   /// Move construct the target object, but specify a different allocator.
-  allocator_binder(const allocator_type& s,
-      allocator_binder&& other)
-    : allocator_(s),
-      target_(static_cast<T&&>(other.get()))
-  {
-  }
+  allocator_binder(const allocator_type &s, allocator_binder &&other)
+      : allocator_(s), target_(static_cast<T &&>(other.get())) {}
 
   /// Move construct from a different allocator wrapper type.
   template <typename U, typename OtherAllocator>
   allocator_binder(
-      allocator_binder<U, OtherAllocator>&& other,
+      allocator_binder<U, OtherAllocator> &&other,
       constraint_t<is_constructible<Allocator, OtherAllocator>::value> = 0,
       constraint_t<is_constructible<T, U>::value> = 0)
-    : allocator_(static_cast<OtherAllocator&&>(
-          other.get_allocator())),
-      target_(static_cast<U&&>(other.get()))
-  {
-  }
+      : allocator_(static_cast<OtherAllocator &&>(other.get_allocator())),
+        target_(static_cast<U &&>(other.get())) {}
 
   /// Move construct from a different allocator wrapper type, but
   /// specify a different allocator.
   template <typename U, typename OtherAllocator>
-  allocator_binder(const allocator_type& s,
-      allocator_binder<U, OtherAllocator>&& other,
-      constraint_t<is_constructible<T, U>::value> = 0)
-    : allocator_(s),
-      target_(static_cast<U&&>(other.get()))
-  {
-  }
+  allocator_binder(const allocator_type &s,
+                   allocator_binder<U, OtherAllocator> &&other,
+                   constraint_t<is_constructible<T, U>::value> = 0)
+      : allocator_(s), target_(static_cast<U &&>(other.get())) {}
 
   /// Destructor.
-  ~allocator_binder()
-  {
-  }
+  ~allocator_binder() {}
 
   /// Obtain a reference to the target object.
-  target_type& get() noexcept
-  {
-    return target_;
-  }
+  target_type &get() noexcept { return target_; }
 
   /// Obtain a reference to the target object.
-  const target_type& get() const noexcept
-  {
-    return target_;
-  }
+  const target_type &get() const noexcept { return target_; }
 
   /// Obtain the associated allocator.
-  allocator_type get_allocator() const noexcept
-  {
-    return allocator_;
+  allocator_type get_allocator() const noexcept { return allocator_; }
+
+  /// Forwarding function call operator.
+  template <typename... Args>
+  result_of_t<T(Args...)> operator()(Args &&...args) {
+    return target_(static_cast<Args &&>(args)...);
   }
 
   /// Forwarding function call operator.
   template <typename... Args>
-  result_of_t<T(Args...)> operator()(Args&&... args)
-  {
-    return target_(static_cast<Args&&>(args)...);
-  }
-
-  /// Forwarding function call operator.
-  template <typename... Args>
-  result_of_t<T(Args...)> operator()(Args&&... args) const
-  {
-    return target_(static_cast<Args&&>(args)...);
+  result_of_t<T(Args...)> operator()(Args &&...args) const {
+    return target_(static_cast<Args &&>(args)...);
   }
 
 private:
@@ -364,9 +313,8 @@ private:
 /// @c Allocator.
 template <typename Allocator, typename T>
 ASIO_NODISCARD inline allocator_binder<decay_t<T>, Allocator>
-bind_allocator(const Allocator& s, T&& t)
-{
-  return allocator_binder<decay_t<T>, Allocator>(s, static_cast<T&&>(t));
+bind_allocator(const Allocator &s, T &&t) {
+  return allocator_binder<decay_t<T>, Allocator>(s, static_cast<T &&>(t));
 }
 
 #if !defined(GENERATING_DOCUMENTATION)
@@ -374,94 +322,71 @@ bind_allocator(const Allocator& s, T&& t)
 namespace detail {
 
 template <typename TargetAsyncResult, typename Allocator, typename = void>
-class allocator_binder_completion_handler_async_result
-{
+class allocator_binder_completion_handler_async_result {
 public:
   template <typename T>
-  explicit allocator_binder_completion_handler_async_result(T&)
-  {
-  }
+  explicit allocator_binder_completion_handler_async_result(T &) {}
 };
 
 template <typename TargetAsyncResult, typename Allocator>
 class allocator_binder_completion_handler_async_result<
     TargetAsyncResult, Allocator,
-    void_t<typename TargetAsyncResult::completion_handler_type>>
-{
+    void_t<typename TargetAsyncResult::completion_handler_type>> {
 private:
   TargetAsyncResult target_;
 
 public:
-  typedef allocator_binder<
-    typename TargetAsyncResult::completion_handler_type, Allocator>
+  typedef allocator_binder<typename TargetAsyncResult::completion_handler_type,
+                           Allocator>
       completion_handler_type;
 
   explicit allocator_binder_completion_handler_async_result(
-      typename TargetAsyncResult::completion_handler_type& handler)
-    : target_(handler)
-  {
-  }
+      typename TargetAsyncResult::completion_handler_type &handler)
+      : target_(handler) {}
 
-  auto get() -> decltype(target_.get())
-  {
-    return target_.get();
-  }
+  auto get() -> decltype(target_.get()) { return target_.get(); }
 };
 
 template <typename TargetAsyncResult, typename = void>
-struct allocator_binder_async_result_return_type
-{
-};
+struct allocator_binder_async_result_return_type {};
 
 template <typename TargetAsyncResult>
 struct allocator_binder_async_result_return_type<
-    TargetAsyncResult, void_type<typename TargetAsyncResult::return_type>>
-{
+    TargetAsyncResult, void_type<typename TargetAsyncResult::return_type>> {
   typedef typename TargetAsyncResult::return_type return_type;
 };
 
 } // namespace detail
 
 template <typename T, typename Allocator, typename Signature>
-class async_result<allocator_binder<T, Allocator>, Signature> :
-  public detail::allocator_binder_completion_handler_async_result<
-      async_result<T, Signature>, Allocator>,
-  public detail::allocator_binder_async_result_return_type<
-      async_result<T, Signature>>
-{
+class async_result<allocator_binder<T, Allocator>, Signature>
+    : public detail::allocator_binder_completion_handler_async_result<
+          async_result<T, Signature>, Allocator>,
+      public detail::allocator_binder_async_result_return_type<
+          async_result<T, Signature>> {
 public:
-  explicit async_result(allocator_binder<T, Allocator>& b)
-    : detail::allocator_binder_completion_handler_async_result<
-        async_result<T, Signature>, Allocator>(b.get())
-  {
-  }
+  explicit async_result(allocator_binder<T, Allocator> &b)
+      : detail::allocator_binder_completion_handler_async_result<
+            async_result<T, Signature>, Allocator>(b.get()) {}
 
-  template <typename Initiation>
-  struct init_wrapper
-  {
+  template <typename Initiation> struct init_wrapper {
     template <typename Init>
-    init_wrapper(const Allocator& allocator, Init&& init)
-      : allocator_(allocator),
-        initiation_(static_cast<Init&&>(init))
-    {
+    init_wrapper(const Allocator &allocator, Init &&init)
+        : allocator_(allocator), initiation_(static_cast<Init &&>(init)) {}
+
+    template <typename Handler, typename... Args>
+    void operator()(Handler &&handler, Args &&...args) {
+      static_cast<Initiation &&>(initiation_)(
+          allocator_binder<decay_t<Handler>, Allocator>(
+              allocator_, static_cast<Handler &&>(handler)),
+          static_cast<Args &&>(args)...);
     }
 
     template <typename Handler, typename... Args>
-    void operator()(Handler&& handler, Args&&... args)
-    {
-      static_cast<Initiation&&>(initiation_)(
-          allocator_binder<decay_t<Handler>, Allocator>(
-              allocator_, static_cast<Handler&&>(handler)),
-          static_cast<Args&&>(args)...);
-    }
-
-    template <typename Handler, typename... Args>
-    void operator()(Handler&& handler, Args&&... args) const
-    {
-      initiation_(
-          allocator_binder<decay_t<Handler>, Allocator>(
-              allocator_, static_cast<Handler&&>(handler)),
-          static_cast<Args&&>(args)...);
+    void operator()(Handler &&handler, Args &&...args) const {
+      initiation_(allocator_binder<decay_t<Handler>, Allocator>(
+                      allocator_, static_cast<Handler &&>(handler)),
+                  static_cast<Args &&>(args)...);
     }
 
     Allocator allocator_;
@@ -469,54 +394,47 @@ public:
   };
 
   template <typename Initiation, typename RawCompletionToken, typename... Args>
-  static auto initiate(Initiation&& initiation,
-      RawCompletionToken&& token, Args&&... args)
-    -> decltype(
-      async_initiate<T, Signature>(
-        declval<init_wrapper<decay_t<Initiation>>>(),
-        token.get(), static_cast<Args&&>(args)...))
-  {
+  static auto initiate(Initiation &&initiation, RawCompletionToken &&token,
+                       Args &&...args)
+      -> decltype(async_initiate<T, Signature>(
+          declval<init_wrapper<decay_t<Initiation>>>(), token.get(),
+          static_cast<Args &&>(args)...)) {
     return async_initiate<T, Signature>(
-        init_wrapper<decay_t<Initiation>>(token.get_allocator(),
-          static_cast<Initiation&&>(initiation)),
-        token.get(), static_cast<Args&&>(args)...);
+        init_wrapper<decay_t<Initiation>>(
+            token.get_allocator(), static_cast<Initiation &&>(initiation)),
+        token.get(), static_cast<Args &&>(args)...);
   }
 
 private:
-  async_result(const async_result&) = delete;
-  async_result& operator=(const async_result&) = delete;
+  async_result(const async_result &) = delete;
+  async_result &operator=(const async_result &) = delete;
 
   async_result<T, Signature> target_;
 };
 
-template <template <typename, typename> class Associator,
-    typename T, typename Allocator, typename DefaultCandidate>
+template <template <typename, typename> class Associator, typename T,
+          typename Allocator, typename DefaultCandidate>
 struct associator<Associator, allocator_binder<T, Allocator>, DefaultCandidate>
-  : Associator<T, DefaultCandidate>
-{
-  static typename Associator<T, DefaultCandidate>::type get(
-      const allocator_binder<T, Allocator>& b) noexcept
-  {
+    : Associator<T, DefaultCandidate> {
+  static typename Associator<T, DefaultCandidate>::type
+  get(const allocator_binder<T, Allocator> &b) noexcept {
     return Associator<T, DefaultCandidate>::get(b.get());
   }
 
-  static auto get(const allocator_binder<T, Allocator>& b,
-      const DefaultCandidate& c) noexcept
-    -> decltype(Associator<T, DefaultCandidate>::get(b.get(), c))
-  {
+  static auto get(const allocator_binder<T, Allocator> &b,
+                  const DefaultCandidate &c) noexcept
+      -> decltype(Associator<T, DefaultCandidate>::get(b.get(), c)) {
     return Associator<T, DefaultCandidate>::get(b.get(), c);
   }
 };
 
 template <typename T, typename Allocator, typename Allocator1>
-struct associated_allocator<allocator_binder<T, Allocator>, Allocator1>
-{
+struct associated_allocator<allocator_binder<T, Allocator>, Allocator1> {
   typedef Allocator type;
 
-  static auto get(const allocator_binder<T, Allocator>& b,
-      const Allocator1& = Allocator1()) noexcept
-    -> decltype(b.get_allocator())
-  {
+  static auto get(const allocator_binder<T, Allocator> &b,
+                  const Allocator1 & = Allocator1()) noexcept
+      -> decltype(b.get_allocator()) {
     return b.get_allocator();
   }
 };

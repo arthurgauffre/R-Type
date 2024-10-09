@@ -12,16 +12,13 @@
 #define ASIO_BASIC_FILE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_FILE) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_FILE) || defined(GENERATING_DOCUMENTATION)
 
-#include <string>
-#include <utility>
 #include "asio/any_io_executor.hpp"
 #include "asio/async_result.hpp"
 #include "asio/detail/cstdint.hpp"
@@ -32,12 +29,14 @@
 #include "asio/detail/type_traits.hpp"
 #include "asio/error.hpp"
 #include "asio/execution_context.hpp"
-#include "asio/post.hpp"
 #include "asio/file_base.hpp"
+#include "asio/post.hpp"
+#include <string>
+#include <utility>
 #if defined(ASIO_HAS_IOCP)
-# include "asio/detail/win_iocp_file_service.hpp"
+#include "asio/detail/win_iocp_file_service.hpp"
 #elif defined(ASIO_HAS_IO_URING)
-# include "asio/detail/io_uring_file_service.hpp"
+#include "asio/detail/io_uring_file_service.hpp"
 #endif
 
 #include "asio/detail/push_options.hpp"
@@ -48,8 +47,7 @@ namespace asio {
 #define ASIO_BASIC_FILE_FWD_DECL
 
 // Forward declaration with defaulted arguments.
-template <typename Executor = any_io_executor>
-class basic_file;
+template <typename Executor = any_io_executor> class basic_file;
 
 #endif // !defined(ASIO_BASIC_FILE_FWD_DECL)
 
@@ -62,18 +60,13 @@ class basic_file;
  * @e Distinct @e objects: Safe.@n
  * @e Shared @e objects: Unsafe.
  */
-template <typename Executor>
-class basic_file
-  : public file_base
-{
+template <typename Executor> class basic_file : public file_base {
 public:
   /// The type of the executor associated with the object.
   typedef Executor executor_type;
 
   /// Rebinds the file type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The file type when rebound to the specified executor.
     typedef basic_file<Executor1> other;
   };
@@ -94,10 +87,7 @@ public:
    * @param ex The I/O executor that the file will use, by default, to
    * dispatch handlers for any asynchronous operations performed on the file.
    */
-  explicit basic_file(const executor_type& ex)
-    : impl_(0, ex)
-  {
-  }
+  explicit basic_file(const executor_type &ex) : impl_(0, ex) {}
 
   /// Construct a basic_file without opening it.
   /**
@@ -108,14 +98,12 @@ public:
    * operations performed on the file.
    */
   template <typename ExecutionContext>
-  explicit basic_file(ExecutionContext& context,
+  explicit basic_file(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {}
 
   /// Construct and open a basic_file.
   /**
@@ -129,10 +117,9 @@ public:
    * @param open_flags A set of flags that determine how the file should be
    * opened.
    */
-  explicit basic_file(const executor_type& ex,
-      const char* path, file_base::flags open_flags)
-    : impl_(0, ex)
-  {
+  explicit basic_file(const executor_type &ex, const char *path,
+                      file_base::flags open_flags)
+      : impl_(0, ex) {
     asio::error_code ec;
     impl_.get_service().open(impl_.get_implementation(), path, open_flags, ec);
     asio::detail::throw_error(ec, "open");
@@ -152,14 +139,12 @@ public:
    * opened.
    */
   template <typename ExecutionContext>
-  explicit basic_file(ExecutionContext& context,
-      const char* path, file_base::flags open_flags,
+  explicit basic_file(
+      ExecutionContext &context, const char *path, file_base::flags open_flags,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {
     asio::error_code ec;
     impl_.get_service().open(impl_.get_implementation(), path, open_flags, ec);
     asio::detail::throw_error(ec, "open");
@@ -177,13 +162,12 @@ public:
    * @param open_flags A set of flags that determine how the file should be
    * opened.
    */
-  explicit basic_file(const executor_type& ex,
-      const std::string& path, file_base::flags open_flags)
-    : impl_(0, ex)
-  {
+  explicit basic_file(const executor_type &ex, const std::string &path,
+                      file_base::flags open_flags)
+      : impl_(0, ex) {
     asio::error_code ec;
-    impl_.get_service().open(impl_.get_implementation(),
-        path.c_str(), open_flags, ec);
+    impl_.get_service().open(impl_.get_implementation(), path.c_str(),
+                             open_flags, ec);
     asio::detail::throw_error(ec, "open");
   }
 
@@ -201,17 +185,16 @@ public:
    * opened.
    */
   template <typename ExecutionContext>
-  explicit basic_file(ExecutionContext& context,
-      const std::string& path, file_base::flags open_flags,
+  explicit basic_file(
+      ExecutionContext &context, const std::string &path,
+      file_base::flags open_flags,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {
     asio::error_code ec;
-    impl_.get_service().open(impl_.get_implementation(),
-        path.c_str(), open_flags, ec);
+    impl_.get_service().open(impl_.get_implementation(), path.c_str(),
+                             open_flags, ec);
     asio::detail::throw_error(ec, "open");
   }
 
@@ -226,12 +209,10 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_file(const executor_type& ex, const native_handle_type& native_file)
-    : impl_(0, ex)
-  {
+  basic_file(const executor_type &ex, const native_handle_type &native_file)
+      : impl_(0, ex) {
     asio::error_code ec;
-    impl_.get_service().assign(
-        impl_.get_implementation(), native_file, ec);
+    impl_.get_service().assign(impl_.get_implementation(), native_file, ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -248,16 +229,13 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_file(ExecutionContext& context, const native_handle_type& native_file,
-      constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
+  basic_file(ExecutionContext &context, const native_handle_type &native_file,
+             constraint_t<
+                 is_convertible<ExecutionContext &, execution_context &>::value,
+                 defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {
     asio::error_code ec;
-    impl_.get_service().assign(
-        impl_.get_implementation(), native_file, ec);
+    impl_.get_service().assign(impl_.get_implementation(), native_file, ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -271,10 +249,7 @@ public:
    * @note Following the move, the moved-from object is in the same state as if
    * constructed using the @c basic_file(const executor_type&) constructor.
    */
-  basic_file(basic_file&& other) noexcept
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_file(basic_file &&other) noexcept : impl_(std::move(other.impl_)) {}
 
   /// Move-assign a basic_file from another.
   /**
@@ -286,15 +261,13 @@ public:
    * @note Following the move, the moved-from object is in the same state as if
    * constructed using the @c basic_file(const executor_type&) constructor.
    */
-  basic_file& operator=(basic_file&& other)
-  {
+  basic_file &operator=(basic_file &&other) {
     impl_ = std::move(other.impl_);
     return *this;
   }
 
   // All files have access to each other's implementations.
-  template <typename Executor1>
-  friend class basic_file;
+  template <typename Executor1> friend class basic_file;
 
   /// Move-construct a basic_file from a file of another executor type.
   /**
@@ -307,14 +280,10 @@ public:
    * constructed using the @c basic_file(const executor_type&) constructor.
    */
   template <typename Executor1>
-  basic_file(basic_file<Executor1>&& other,
-      constraint_t<
-        is_convertible<Executor1, Executor>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_file(basic_file<Executor1> &&other,
+             constraint_t<is_convertible<Executor1, Executor>::value,
+                          defaulted_constraint> = defaulted_constraint())
+      : impl_(std::move(other.impl_)) {}
 
   /// Move-assign a basic_file from a file of another executor type.
   /**
@@ -327,21 +296,15 @@ public:
    * constructed using the @c basic_file(const executor_type&) constructor.
    */
   template <typename Executor1>
-  constraint_t<
-    is_convertible<Executor1, Executor>::value,
-    basic_file&
-  > operator=(basic_file<Executor1>&& other)
-  {
+  constraint_t<is_convertible<Executor1, Executor>::value, basic_file &>
+  operator=(basic_file<Executor1> &&other) {
     basic_file tmp(std::move(other));
     impl_ = std::move(tmp.impl_);
     return *this;
   }
 
   /// Get the executor associated with the object.
-  const executor_type& get_executor() noexcept
-  {
-    return impl_.get_executor();
-  }
+  const executor_type &get_executor() noexcept { return impl_.get_executor(); }
 
   /// Open the file using the specified path.
   /**
@@ -360,8 +323,7 @@ public:
    * file.open("/path/to/my/file", asio::stream_file::read_only);
    * @endcode
    */
-  void open(const char* path, file_base::flags open_flags)
-  {
+  void open(const char *path, file_base::flags open_flags) {
     asio::error_code ec;
     impl_.get_service().open(impl_.get_implementation(), path, open_flags, ec);
     asio::detail::throw_error(ec, "open");
@@ -389,9 +351,8 @@ public:
    * }
    * @endcode
    */
-  ASIO_SYNC_OP_VOID open(const char* path,
-      file_base::flags open_flags, asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID open(const char *path, file_base::flags open_flags,
+                         asio::error_code &ec) {
     impl_.get_service().open(impl_.get_implementation(), path, open_flags, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -413,11 +374,10 @@ public:
    * file.open("/path/to/my/file", asio::stream_file::read_only);
    * @endcode
    */
-  void open(const std::string& path, file_base::flags open_flags)
-  {
+  void open(const std::string &path, file_base::flags open_flags) {
     asio::error_code ec;
-    impl_.get_service().open(impl_.get_implementation(),
-        path.c_str(), open_flags, ec);
+    impl_.get_service().open(impl_.get_implementation(), path.c_str(),
+                             open_flags, ec);
     asio::detail::throw_error(ec, "open");
   }
 
@@ -443,11 +403,10 @@ public:
    * }
    * @endcode
    */
-  ASIO_SYNC_OP_VOID open(const std::string& path,
-      file_base::flags open_flags, asio::error_code& ec)
-  {
-    impl_.get_service().open(impl_.get_implementation(),
-        path.c_str(), open_flags, ec);
+  ASIO_SYNC_OP_VOID open(const std::string &path, file_base::flags open_flags,
+                         asio::error_code &ec) {
+    impl_.get_service().open(impl_.get_implementation(), path.c_str(),
+                             open_flags, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
@@ -459,11 +418,9 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void assign(const native_handle_type& native_file)
-  {
+  void assign(const native_handle_type &native_file) {
     asio::error_code ec;
-    impl_.get_service().assign(
-        impl_.get_implementation(), native_file, ec);
+    impl_.get_service().assign(impl_.get_implementation(), native_file, ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -475,17 +432,14 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID assign(const native_handle_type& native_file,
-      asio::error_code& ec)
-  {
-    impl_.get_service().assign(
-        impl_.get_implementation(), native_file, ec);
+  ASIO_SYNC_OP_VOID assign(const native_handle_type &native_file,
+                           asio::error_code &ec) {
+    impl_.get_service().assign(impl_.get_implementation(), native_file, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Determine whether the file is open.
-  bool is_open() const
-  {
+  bool is_open() const {
     return impl_.get_service().is_open(impl_.get_implementation());
   }
 
@@ -498,8 +452,7 @@ public:
    * @throws asio::system_error Thrown on failure. Note that, even if
    * the function indicates an error, the underlying descriptor is closed.
    */
-  void close()
-  {
+  void close() {
     asio::error_code ec;
     impl_.get_service().close(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "close");
@@ -526,8 +479,7 @@ public:
    * }
    * @endcode
    */
-  ASIO_SYNC_OP_VOID close(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID close(asio::error_code &ec) {
     impl_.get_service().close(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -545,17 +497,16 @@ public:
    * 8.1, and will fail with asio::error::operation_not_supported on
    * these platforms.
    */
-#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) \
-  && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0603)
+#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) &&                               \
+    (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0603)
   __declspec(deprecated("This function always fails with "
-        "operation_not_supported when used on Windows versions "
-        "prior to Windows 8.1."))
+                        "operation_not_supported when used on Windows versions "
+                        "prior to Windows 8.1."))
 #endif
-  native_handle_type release()
-  {
+      native_handle_type release() {
     asio::error_code ec;
-    native_handle_type s = impl_.get_service().release(
-        impl_.get_implementation(), ec);
+    native_handle_type s =
+        impl_.get_service().release(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "release");
     return s;
   }
@@ -573,14 +524,13 @@ public:
    * 8.1, and will fail with asio::error::operation_not_supported on
    * these platforms.
    */
-#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) \
-  && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0603)
+#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) &&                               \
+    (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0603)
   __declspec(deprecated("This function always fails with "
-        "operation_not_supported when used on Windows versions "
-        "prior to Windows 8.1."))
+                        "operation_not_supported when used on Windows versions "
+                        "prior to Windows 8.1."))
 #endif
-  native_handle_type release(asio::error_code& ec)
-  {
+      native_handle_type release(asio::error_code &ec) {
     return impl_.get_service().release(impl_.get_implementation(), ec);
   }
 
@@ -590,8 +540,7 @@ public:
    * file. This is intended to allow access to native file functionality
    * that is not otherwise provided.
    */
-  native_handle_type native_handle()
-  {
+  native_handle_type native_handle() {
     return impl_.get_service().native_handle(impl_.get_implementation());
   }
 
@@ -623,15 +572,15 @@ public:
    * CancelIoEx function is always used. This function does not have the
    * problems described above.
    */
-#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) \
-  && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600) \
-  && !defined(ASIO_ENABLE_CANCELIO)
-  __declspec(deprecated("By default, this function always fails with "
-        "operation_not_supported when used on Windows XP, Windows Server 2003, "
-        "or earlier. Consult documentation for details."))
+#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) &&                               \
+    (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600) &&                       \
+    !defined(ASIO_ENABLE_CANCELIO)
+  __declspec(deprecated(
+      "By default, this function always fails with "
+      "operation_not_supported when used on Windows XP, Windows Server 2003, "
+      "or earlier. Consult documentation for details."))
 #endif
-  void cancel()
-  {
+      void cancel() {
     asio::error_code ec;
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "cancel");
@@ -665,15 +614,15 @@ public:
    * CancelIoEx function is always used. This function does not have the
    * problems described above.
    */
-#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) \
-  && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600) \
-  && !defined(ASIO_ENABLE_CANCELIO)
-  __declspec(deprecated("By default, this function always fails with "
-        "operation_not_supported when used on Windows XP, Windows Server 2003, "
-        "or earlier. Consult documentation for details."))
+#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) &&                               \
+    (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600) &&                       \
+    !defined(ASIO_ENABLE_CANCELIO)
+  __declspec(deprecated(
+      "By default, this function always fails with "
+      "operation_not_supported when used on Windows XP, Windows Server 2003, "
+      "or earlier. Consult documentation for details."))
 #endif
-  ASIO_SYNC_OP_VOID cancel(asio::error_code& ec)
-  {
+      ASIO_SYNC_OP_VOID cancel(asio::error_code &ec) {
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -684,8 +633,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  uint64_t size() const
-  {
+  uint64_t size() const {
     asio::error_code ec;
     uint64_t s = impl_.get_service().size(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "size");
@@ -698,8 +646,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  uint64_t size(asio::error_code& ec) const
-  {
+  uint64_t size(asio::error_code &ec) const {
     return impl_.get_service().size(impl_.get_implementation(), ec);
   }
 
@@ -714,8 +661,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void resize(uint64_t n)
-  {
+  void resize(uint64_t n) {
     asio::error_code ec;
     impl_.get_service().resize(impl_.get_implementation(), n, ec);
     asio::detail::throw_error(ec, "resize");
@@ -732,8 +678,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID resize(uint64_t n, asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID resize(uint64_t n, asio::error_code &ec) {
     impl_.get_service().resize(impl_.get_implementation(), n, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -745,8 +690,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void sync_all()
-  {
+  void sync_all() {
     asio::error_code ec;
     impl_.get_service().sync_all(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "sync_all");
@@ -759,8 +703,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID sync_all(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID sync_all(asio::error_code &ec) {
     impl_.get_service().sync_all(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -772,8 +715,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void sync_data()
-  {
+  void sync_data() {
     asio::error_code ec;
     impl_.get_service().sync_data(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "sync_data");
@@ -786,8 +728,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID sync_data(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID sync_data(asio::error_code &ec) {
     impl_.get_service().sync_data(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -798,9 +739,7 @@ protected:
    * This function destroys the file, cancelling any outstanding asynchronous
    * operations associated with the file as if by calling @c cancel.
    */
-  ~basic_file()
-  {
-  }
+  ~basic_file() {}
 
 #if defined(ASIO_HAS_IOCP)
   detail::io_object_impl<detail::win_iocp_file_service, Executor> impl_;
@@ -810,8 +749,8 @@ protected:
 
 private:
   // Disallow copying and assignment.
-  basic_file(const basic_file&) = delete;
-  basic_file& operator=(const basic_file&) = delete;
+  basic_file(const basic_file &) = delete;
+  basic_file &operator=(const basic_file &) = delete;
 };
 
 } // namespace asio

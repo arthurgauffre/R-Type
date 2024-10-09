@@ -12,25 +12,23 @@
 #define ASIO_USE_FUTURE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 #include "asio/detail/future.hpp"
 
-#if defined(ASIO_HAS_STD_FUTURE_CLASS) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_STD_FUTURE_CLASS) || defined(GENERATING_DOCUMENTATION)
 
-#include <memory>
 #include "asio/detail/type_traits.hpp"
+#include <memory>
 
 #include "asio/detail/push_options.hpp"
 
 namespace asio {
 namespace detail {
 
-template <typename Function, typename Allocator>
-class packaged_token;
+template <typename Function, typename Allocator> class packaged_token;
 
 template <typename Function, typename Allocator, typename Result>
 class packaged_handler;
@@ -54,46 +52,35 @@ class packaged_handler;
  * completes with an error_code indicating failure, it is converted into a
  * system_error and passed back to the caller via the future.
  */
-template <typename Allocator = std::allocator<void>>
-class use_future_t
-{
+template <typename Allocator = std::allocator<void>> class use_future_t {
 public:
   /// The allocator type. The allocator is used when constructing the
   /// @c std::promise object for a given asynchronous operation.
   typedef Allocator allocator_type;
 
   /// Construct using default-constructed allocator.
-  constexpr use_future_t()
-  {
-  }
+  constexpr use_future_t() {}
 
   /// Construct using specified allocator.
-  explicit use_future_t(const Allocator& allocator)
-    : allocator_(allocator)
-  {
-  }
+  explicit use_future_t(const Allocator &allocator) : allocator_(allocator) {}
 
 #if !defined(ASIO_NO_DEPRECATED)
   /// (Deprecated: Use rebind().) Specify an alternate allocator.
   template <typename OtherAllocator>
-  use_future_t<OtherAllocator> operator[](const OtherAllocator& allocator) const
-  {
+  use_future_t<OtherAllocator>
+  operator[](const OtherAllocator &allocator) const {
     return use_future_t<OtherAllocator>(allocator);
   }
 #endif // !defined(ASIO_NO_DEPRECATED)
 
   /// Specify an alternate allocator.
   template <typename OtherAllocator>
-  use_future_t<OtherAllocator> rebind(const OtherAllocator& allocator) const
-  {
+  use_future_t<OtherAllocator> rebind(const OtherAllocator &allocator) const {
     return use_future_t<OtherAllocator>(allocator);
   }
 
   /// Obtain allocator.
-  allocator_type get_allocator() const
-  {
-    return allocator_;
-  }
+  allocator_type get_allocator() const { return allocator_; }
 
   /// Wrap a function object in a packaged task.
   /**
@@ -115,29 +102,23 @@ public:
   template <typename Function>
 #if defined(GENERATING_DOCUMENTATION)
   unspecified
-#else // defined(GENERATING_DOCUMENTATION)
+#else  // defined(GENERATING_DOCUMENTATION)
   detail::packaged_token<decay_t<Function>, Allocator>
 #endif // defined(GENERATING_DOCUMENTATION)
-  operator()(Function&& f) const;
+  operator()(Function &&f) const;
 
 private:
   // Helper type to ensure that use_future can be constexpr default-constructed
   // even when std::allocator<void> can't be.
-  struct std_allocator_void
-  {
-    constexpr std_allocator_void()
-    {
-    }
+  struct std_allocator_void {
+    constexpr std_allocator_void() {}
 
-    operator std::allocator<void>() const
-    {
-      return std::allocator<void>();
-    }
+    operator std::allocator<void>() const { return std::allocator<void>(); }
   };
 
-  conditional_t<
-    is_same<std::allocator<void>, Allocator>::value,
-    std_allocator_void, Allocator> allocator_;
+  conditional_t<is_same<std::allocator<void>, Allocator>::value,
+                std_allocator_void, Allocator>
+      allocator_;
 };
 
 /// A @ref completion_token object that causes an asynchronous operation to

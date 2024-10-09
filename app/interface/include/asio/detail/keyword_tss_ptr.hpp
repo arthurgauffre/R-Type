@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_KEYWORD_TSS_PTR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -26,39 +26,25 @@
 namespace asio {
 namespace detail {
 
-template <typename T>
-class keyword_tss_ptr
-  : private noncopyable
-{
+template <typename T> class keyword_tss_ptr : private noncopyable {
 public:
   // Constructor.
-  keyword_tss_ptr()
-  {
-  }
+  keyword_tss_ptr() {}
 
   // Destructor.
-  ~keyword_tss_ptr()
-  {
-  }
+  ~keyword_tss_ptr() {}
 
   // Get the value.
-  operator T*() const
-  {
-    return value_;
-  }
+  operator T *() const { return value_; }
 
   // Set the value.
-  void operator=(T* value)
-  {
-    value_ = value;
-  }
+  void operator=(T *value) { value_ = value; }
 
 private:
-  static ASIO_THREAD_KEYWORD T* value_;
+  static ASIO_THREAD_KEYWORD T *value_;
 };
 
-template <typename T>
-ASIO_THREAD_KEYWORD T* keyword_tss_ptr<T>::value_;
+template <typename T> ASIO_THREAD_KEYWORD T *keyword_tss_ptr<T>::value_;
 
 } // namespace detail
 } // namespace asio

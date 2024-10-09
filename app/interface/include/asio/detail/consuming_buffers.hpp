@@ -12,15 +12,15 @@
 #define ASIO_DETAIL_CONSUMING_BUFFERS_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include <cstddef>
 #include "asio/buffer.hpp"
 #include "asio/detail/buffer_sequence_adapter.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/limits.hpp"
 #include "asio/registered_buffer.hpp"
+#include <cstddef>
 
 #include "asio/detail/push_options.hpp"
 
@@ -28,30 +28,24 @@ namespace asio {
 namespace detail {
 
 // Helper template to determine the maximum number of prepared buffers.
-template <typename Buffers>
-struct prepared_buffers_max
-{
+template <typename Buffers> struct prepared_buffers_max {
   enum { value = buffer_sequence_adapter_base::max_buffers };
 };
 
 template <typename Elem, std::size_t N>
-struct prepared_buffers_max<boost::array<Elem, N>>
-{
+struct prepared_buffers_max<boost::array<Elem, N>> {
   enum { value = N };
 };
 
 template <typename Elem, std::size_t N>
-struct prepared_buffers_max<std::array<Elem, N>>
-{
+struct prepared_buffers_max<std::array<Elem, N>> {
   enum { value = N };
 };
 
 // A buffer sequence used to represent a subsequence of the buffers.
-template <typename Buffer, std::size_t MaxBuffers>
-struct prepared_buffers
-{
+template <typename Buffer, std::size_t MaxBuffers> struct prepared_buffers {
   typedef Buffer value_type;
-  typedef const Buffer* const_iterator;
+  typedef const Buffer *const_iterator;
 
   enum { max_buffers = MaxBuffers < 16 ? MaxBuffers : 16 };
 
@@ -65,32 +59,24 @@ struct prepared_buffers
 
 // A proxy for a sub-range in a list of buffers.
 template <typename Buffer, typename Buffers, typename Buffer_Iterator>
-class consuming_buffers
-{
+class consuming_buffers {
 public:
   typedef prepared_buffers<Buffer, prepared_buffers_max<Buffers>::value>
-    prepared_buffers_type;
+      prepared_buffers_type;
 
   // Construct to represent the entire list of buffers.
-  explicit consuming_buffers(const Buffers& buffers)
-    : buffers_(buffers),
-      total_consumed_(0),
-      next_elem_(0),
-      next_elem_offset_(0)
-  {
+  explicit consuming_buffers(const Buffers &buffers)
+      : buffers_(buffers), total_consumed_(0), next_elem_(0),
+        next_elem_offset_(0) {
     using asio::buffer_size;
     total_size_ = buffer_size(buffers);
   }
 
   // Determine if we are at the end of the buffers.
-  bool empty() const
-  {
-    return total_consumed_ >= total_size_;
-  }
+  bool empty() const { return total_consumed_ >= total_size_; }
 
   // Get the buffer for a single transfer, with a size.
-  prepared_buffers_type prepare(std::size_t max_size)
-  {
+  prepared_buffers_type prepare(std::size_t max_size) {
     prepared_buffers_type result;
 
     Buffer_Iterator next = asio::buffer_sequence_begin(buffers_);
@@ -98,8 +84,7 @@ public:
 
     std::advance(next, next_elem_);
     std::size_t elem_offset = next_elem_offset_;
-    while (next != end && max_size > 0 && (result.count) < result.max_buffers)
-    {
+    while (next != end && max_size > 0 && (result.count) < result.max_buffers) {
       Buffer next_buf = Buffer(*next) + elem_offset;
       result.elems[result.count] = asio::buffer(next_buf, max_size);
       max_size -= result.elems[result.count].size();
@@ -113,24 +98,19 @@ public:
   }
 
   // Consume the specified number of bytes from the buffers.
-  void consume(std::size_t size)
-  {
+  void consume(std::size_t size) {
     total_consumed_ += size;
 
     Buffer_Iterator next = asio::buffer_sequence_begin(buffers_);
     Buffer_Iterator end = asio::buffer_sequence_end(buffers_);
 
     std::advance(next, next_elem_);
-    while (next != end && size > 0)
-    {
+    while (next != end && size > 0) {
       Buffer next_buf = Buffer(*next) + next_elem_offset_;
-      if (size < next_buf.size())
-      {
+      if (size < next_buf.size()) {
         next_elem_offset_ += size;
         size = 0;
-      }
-      else
-      {
+      } else {
         size -= next_buf.size();
         next_elem_offset_ = 0;
         ++next_elem_;
@@ -140,10 +120,7 @@ public:
   }
 
   // Get the total number of bytes consumed from the buffers.
-  std::size_t total_consumed() const
-  {
-    return total_consumed_;
-  }
+  std::size_t total_consumed() const { return total_consumed_; }
 
 private:
   Buffers buffers_;
@@ -154,41 +131,26 @@ private:
 };
 
 // Base class of all consuming_buffers specialisations for single buffers.
-template <typename Buffer>
-class consuming_single_buffer
-{
+template <typename Buffer> class consuming_single_buffer {
 public:
   // Construct to represent the entire list of buffers.
   template <typename Buffer1>
-  explicit consuming_single_buffer(const Buffer1& buffer)
-    : buffer_(buffer),
-      total_consumed_(0)
-  {
-  }
+  explicit consuming_single_buffer(const Buffer1 &buffer)
+      : buffer_(buffer), total_consumed_(0) {}
 
   // Determine if we are at the end of the buffers.
-  bool empty() const
-  {
-    return total_consumed_ >= buffer_.size();
-  }
+  bool empty() const { return total_consumed_ >= buffer_.size(); }
 
   // Get the buffer for a single transfer, with a size.
-  Buffer prepare(std::size_t max_size)
-  {
+  Buffer prepare(std::size_t max_size) {
     return asio::buffer(buffer_ + total_consumed_, max_size);
   }
 
   // Consume the specified number of bytes from the buffers.
-  void consume(std::size_t size)
-  {
-    total_consumed_ += size;
-  }
+  void consume(std::size_t size) { total_consumed_ += size; }
 
   // Get the total number of bytes consumed from the buffers.
-  std::size_t total_consumed() const
-  {
-    return total_consumed_;
-  }
+  std::size_t total_consumed() const { return total_consumed_; }
 
 private:
   Buffer buffer_;
@@ -196,156 +158,117 @@ private:
 };
 
 template <>
-class consuming_buffers<mutable_buffer, mutable_buffer, const mutable_buffer*>
-  : public consuming_single_buffer<ASIO_MUTABLE_BUFFER>
-{
+class consuming_buffers<mutable_buffer, mutable_buffer, const mutable_buffer *>
+    : public consuming_single_buffer<ASIO_MUTABLE_BUFFER> {
 public:
-  explicit consuming_buffers(const mutable_buffer& buffer)
-    : consuming_single_buffer<ASIO_MUTABLE_BUFFER>(buffer)
-  {
-  }
+  explicit consuming_buffers(const mutable_buffer &buffer)
+      : consuming_single_buffer<ASIO_MUTABLE_BUFFER>(buffer) {}
 };
 
 template <>
-class consuming_buffers<const_buffer, mutable_buffer, const mutable_buffer*>
-  : public consuming_single_buffer<ASIO_CONST_BUFFER>
-{
+class consuming_buffers<const_buffer, mutable_buffer, const mutable_buffer *>
+    : public consuming_single_buffer<ASIO_CONST_BUFFER> {
 public:
-  explicit consuming_buffers(const mutable_buffer& buffer)
-    : consuming_single_buffer<ASIO_CONST_BUFFER>(buffer)
-  {
-  }
+  explicit consuming_buffers(const mutable_buffer &buffer)
+      : consuming_single_buffer<ASIO_CONST_BUFFER>(buffer) {}
 };
 
 template <>
-class consuming_buffers<const_buffer, const_buffer, const const_buffer*>
-  : public consuming_single_buffer<ASIO_CONST_BUFFER>
-{
+class consuming_buffers<const_buffer, const_buffer, const const_buffer *>
+    : public consuming_single_buffer<ASIO_CONST_BUFFER> {
 public:
-  explicit consuming_buffers(const const_buffer& buffer)
-    : consuming_single_buffer<ASIO_CONST_BUFFER>(buffer)
-  {
-  }
+  explicit consuming_buffers(const const_buffer &buffer)
+      : consuming_single_buffer<ASIO_CONST_BUFFER>(buffer) {}
 };
 
 #if !defined(ASIO_NO_DEPRECATED)
 
 template <>
-class consuming_buffers<mutable_buffer,
-    mutable_buffers_1, const mutable_buffer*>
-  : public consuming_single_buffer<ASIO_MUTABLE_BUFFER>
-{
+class consuming_buffers<mutable_buffer, mutable_buffers_1,
+                        const mutable_buffer *>
+    : public consuming_single_buffer<ASIO_MUTABLE_BUFFER> {
 public:
-  explicit consuming_buffers(const mutable_buffers_1& buffer)
-    : consuming_single_buffer<ASIO_MUTABLE_BUFFER>(buffer)
-  {
-  }
+  explicit consuming_buffers(const mutable_buffers_1 &buffer)
+      : consuming_single_buffer<ASIO_MUTABLE_BUFFER>(buffer) {}
 };
 
 template <>
-class consuming_buffers<const_buffer, mutable_buffers_1, const mutable_buffer*>
-  : public consuming_single_buffer<ASIO_CONST_BUFFER>
-{
+class consuming_buffers<const_buffer, mutable_buffers_1, const mutable_buffer *>
+    : public consuming_single_buffer<ASIO_CONST_BUFFER> {
 public:
-  explicit consuming_buffers(const mutable_buffers_1& buffer)
-    : consuming_single_buffer<ASIO_CONST_BUFFER>(buffer)
-  {
-  }
+  explicit consuming_buffers(const mutable_buffers_1 &buffer)
+      : consuming_single_buffer<ASIO_CONST_BUFFER>(buffer) {}
 };
 
 template <>
-class consuming_buffers<const_buffer, const_buffers_1, const const_buffer*>
-  : public consuming_single_buffer<ASIO_CONST_BUFFER>
-{
+class consuming_buffers<const_buffer, const_buffers_1, const const_buffer *>
+    : public consuming_single_buffer<ASIO_CONST_BUFFER> {
 public:
-  explicit consuming_buffers(const const_buffers_1& buffer)
-    : consuming_single_buffer<ASIO_CONST_BUFFER>(buffer)
-  {
-  }
+  explicit consuming_buffers(const const_buffers_1 &buffer)
+      : consuming_single_buffer<ASIO_CONST_BUFFER>(buffer) {}
 };
 
 #endif // !defined(ASIO_NO_DEPRECATED)
 
 template <>
-class consuming_buffers<mutable_buffer,
-    mutable_registered_buffer, const mutable_buffer*>
-  : public consuming_single_buffer<mutable_registered_buffer>
-{
+class consuming_buffers<mutable_buffer, mutable_registered_buffer,
+                        const mutable_buffer *>
+    : public consuming_single_buffer<mutable_registered_buffer> {
 public:
-  explicit consuming_buffers(const mutable_registered_buffer& buffer)
-    : consuming_single_buffer<mutable_registered_buffer>(buffer)
-  {
-  }
+  explicit consuming_buffers(const mutable_registered_buffer &buffer)
+      : consuming_single_buffer<mutable_registered_buffer>(buffer) {}
 };
 
 template <>
-class consuming_buffers<const_buffer,
-    mutable_registered_buffer, const mutable_buffer*>
-  : public consuming_single_buffer<mutable_registered_buffer>
-{
+class consuming_buffers<const_buffer, mutable_registered_buffer,
+                        const mutable_buffer *>
+    : public consuming_single_buffer<mutable_registered_buffer> {
 public:
-  explicit consuming_buffers(const mutable_registered_buffer& buffer)
-    : consuming_single_buffer<mutable_registered_buffer>(buffer)
-  {
-  }
+  explicit consuming_buffers(const mutable_registered_buffer &buffer)
+      : consuming_single_buffer<mutable_registered_buffer>(buffer) {}
 };
 
 template <>
-class consuming_buffers<const_buffer,
-    const_registered_buffer, const const_buffer*>
-  : public consuming_single_buffer<const_registered_buffer>
-{
+class consuming_buffers<const_buffer, const_registered_buffer,
+                        const const_buffer *>
+    : public consuming_single_buffer<const_registered_buffer> {
 public:
-  explicit consuming_buffers(const const_registered_buffer& buffer)
-    : consuming_single_buffer<const_registered_buffer>(buffer)
-  {
-  }
+  explicit consuming_buffers(const const_registered_buffer &buffer)
+      : consuming_single_buffer<const_registered_buffer>(buffer) {}
 };
 
 template <typename Buffer, typename Elem>
 class consuming_buffers<Buffer, boost::array<Elem, 2>,
-    typename boost::array<Elem, 2>::const_iterator>
-{
+                        typename boost::array<Elem, 2>::const_iterator> {
 public:
   // Construct to represent the entire list of buffers.
-  explicit consuming_buffers(const boost::array<Elem, 2>& buffers)
-    : buffers_(buffers),
-      total_consumed_(0)
-  {
-  }
+  explicit consuming_buffers(const boost::array<Elem, 2> &buffers)
+      : buffers_(buffers), total_consumed_(0) {}
 
   // Determine if we are at the end of the buffers.
-  bool empty() const
-  {
+  bool empty() const {
     return total_consumed_ >=
-      Buffer(buffers_[0]).size() + Buffer(buffers_[1]).size();
+           Buffer(buffers_[0]).size() + Buffer(buffers_[1]).size();
   }
 
   // Get the buffer for a single transfer, with a size.
-  boost::array<Buffer, 2> prepare(std::size_t max_size)
-  {
-    boost::array<Buffer, 2> result = {{
-      Buffer(buffers_[0]), Buffer(buffers_[1]) }};
+  boost::array<Buffer, 2> prepare(std::size_t max_size) {
+    boost::array<Buffer, 2> result = {
+        {Buffer(buffers_[0]), Buffer(buffers_[1])}};
     std::size_t buffer0_size = result[0].size();
     result[0] = asio::buffer(result[0] + total_consumed_, max_size);
-    result[1] = asio::buffer(
-        result[1] + (total_consumed_ < buffer0_size
-          ? 0 : total_consumed_ - buffer0_size),
-        max_size - result[0].size());
+    result[1] = asio::buffer(result[1] + (total_consumed_ < buffer0_size
+                                              ? 0
+                                              : total_consumed_ - buffer0_size),
+                             max_size - result[0].size());
     return result;
   }
 
   // Consume the specified number of bytes from the buffers.
-  void consume(std::size_t size)
-  {
-    total_consumed_ += size;
-  }
+  void consume(std::size_t size) { total_consumed_ += size; }
 
   // Get the total number of bytes consumed from the buffers.
-  std::size_t total_consumed() const
-  {
-    return total_consumed_;
-  }
+  std::size_t total_consumed() const { return total_consumed_; }
 
 private:
   boost::array<Elem, 2> buffers_;
@@ -354,48 +277,35 @@ private:
 
 template <typename Buffer, typename Elem>
 class consuming_buffers<Buffer, std::array<Elem, 2>,
-    typename std::array<Elem, 2>::const_iterator>
-{
+                        typename std::array<Elem, 2>::const_iterator> {
 public:
   // Construct to represent the entire list of buffers.
-  explicit consuming_buffers(const std::array<Elem, 2>& buffers)
-    : buffers_(buffers),
-      total_consumed_(0)
-  {
-  }
+  explicit consuming_buffers(const std::array<Elem, 2> &buffers)
+      : buffers_(buffers), total_consumed_(0) {}
 
   // Determine if we are at the end of the buffers.
-  bool empty() const
-  {
+  bool empty() const {
     return total_consumed_ >=
-      Buffer(buffers_[0]).size() + Buffer(buffers_[1]).size();
+           Buffer(buffers_[0]).size() + Buffer(buffers_[1]).size();
   }
 
   // Get the buffer for a single transfer, with a size.
-  std::array<Buffer, 2> prepare(std::size_t max_size)
-  {
-    std::array<Buffer, 2> result = {{
-      Buffer(buffers_[0]), Buffer(buffers_[1]) }};
+  std::array<Buffer, 2> prepare(std::size_t max_size) {
+    std::array<Buffer, 2> result = {{Buffer(buffers_[0]), Buffer(buffers_[1])}};
     std::size_t buffer0_size = result[0].size();
     result[0] = asio::buffer(result[0] + total_consumed_, max_size);
-    result[1] = asio::buffer(
-        result[1] + (total_consumed_ < buffer0_size
-          ? 0 : total_consumed_ - buffer0_size),
-        max_size - result[0].size());
+    result[1] = asio::buffer(result[1] + (total_consumed_ < buffer0_size
+                                              ? 0
+                                              : total_consumed_ - buffer0_size),
+                             max_size - result[0].size());
     return result;
   }
 
   // Consume the specified number of bytes from the buffers.
-  void consume(std::size_t size)
-  {
-    total_consumed_ += size;
-  }
+  void consume(std::size_t size) { total_consumed_ += size; }
 
   // Get the total number of bytes consumed from the buffers.
-  std::size_t total_consumed() const
-  {
-    return total_consumed_;
-  }
+  std::size_t total_consumed() const { return total_consumed_; }
 
 private:
   std::array<Elem, 2> buffers_;
@@ -405,34 +315,22 @@ private:
 // Specialisation for null_buffers to ensure that the null_buffers type is
 // always passed through to the underlying read or write operation.
 template <typename Buffer>
-class consuming_buffers<Buffer, null_buffers, const mutable_buffer*>
-  : public asio::null_buffers
-{
+class consuming_buffers<Buffer, null_buffers, const mutable_buffer *>
+    : public asio::null_buffers {
 public:
-  consuming_buffers(const null_buffers&)
-  {
+  consuming_buffers(const null_buffers &) {
     // No-op.
   }
 
-  bool empty()
-  {
-    return false;
-  }
+  bool empty() { return false; }
 
-  null_buffers prepare(std::size_t)
-  {
-    return null_buffers();
-  }
+  null_buffers prepare(std::size_t) { return null_buffers(); }
 
-  void consume(std::size_t)
-  {
+  void consume(std::size_t) {
     // No-op.
   }
 
-  std::size_t total_consumed() const
-  {
-    return 0;
-  }
+  std::size_t total_consumed() const { return 0; }
 };
 
 } // namespace detail

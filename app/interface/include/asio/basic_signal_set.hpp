@@ -12,7 +12,7 @@
 #define ASIO_BASIC_SIGNAL_SET_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -94,8 +94,7 @@ namespace asio {
  * least one thread.
  */
 template <typename Executor = any_io_executor>
-class basic_signal_set : public signal_set_base
-{
+class basic_signal_set : public signal_set_base {
 private:
   class initiate_async_wait;
 
@@ -104,9 +103,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the signal set type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The signal set type when rebound to the specified executor.
     typedef basic_signal_set<Executor1> other;
   };
@@ -119,10 +116,7 @@ public:
    * dispatch handlers for any asynchronous operations performed on the
    * signal set.
    */
-  explicit basic_signal_set(const executor_type& ex)
-    : impl_(0, ex)
-  {
-  }
+  explicit basic_signal_set(const executor_type &ex) : impl_(0, ex) {}
 
   /// Construct a signal set without adding any signals.
   /**
@@ -133,14 +127,12 @@ public:
    * asynchronous operations performed on the signal set.
    */
   template <typename ExecutionContext>
-  explicit basic_signal_set(ExecutionContext& context,
+  explicit basic_signal_set(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {}
 
   /// Construct a signal set and add one signal.
   /**
@@ -156,9 +148,8 @@ public:
    * @code asio::signal_set signals(ex);
    * signals.add(signal_number_1); @endcode
    */
-  basic_signal_set(const executor_type& ex, int signal_number_1)
-    : impl_(0, ex)
-  {
+  basic_signal_set(const executor_type &ex, int signal_number_1)
+      : impl_(0, ex) {
     asio::error_code ec;
     impl_.get_service().add(impl_.get_implementation(), signal_number_1, ec);
     asio::detail::throw_error(ec, "add");
@@ -179,13 +170,11 @@ public:
    * signals.add(signal_number_1); @endcode
    */
   template <typename ExecutionContext>
-  basic_signal_set(ExecutionContext& context, int signal_number_1,
-      constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
+  basic_signal_set(ExecutionContext &context, int signal_number_1,
+                   constraint_t<is_convertible<ExecutionContext &,
+                                               execution_context &>::value,
+                                defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {
     asio::error_code ec;
     impl_.get_service().add(impl_.get_implementation(), signal_number_1, ec);
     asio::detail::throw_error(ec, "add");
@@ -208,10 +197,9 @@ public:
    * signals.add(signal_number_1);
    * signals.add(signal_number_2); @endcode
    */
-  basic_signal_set(const executor_type& ex, int signal_number_1,
-      int signal_number_2)
-    : impl_(0, ex)
-  {
+  basic_signal_set(const executor_type &ex, int signal_number_1,
+                   int signal_number_2)
+      : impl_(0, ex) {
     asio::error_code ec;
     impl_.get_service().add(impl_.get_implementation(), signal_number_1, ec);
     asio::detail::throw_error(ec, "add");
@@ -237,14 +225,12 @@ public:
    * signals.add(signal_number_2); @endcode
    */
   template <typename ExecutionContext>
-  basic_signal_set(ExecutionContext& context, int signal_number_1,
-      int signal_number_2,
+  basic_signal_set(
+      ExecutionContext &context, int signal_number_1, int signal_number_2,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {
     asio::error_code ec;
     impl_.get_service().add(impl_.get_implementation(), signal_number_1, ec);
     asio::detail::throw_error(ec, "add");
@@ -272,10 +258,9 @@ public:
    * signals.add(signal_number_2);
    * signals.add(signal_number_3); @endcode
    */
-  basic_signal_set(const executor_type& ex, int signal_number_1,
-      int signal_number_2, int signal_number_3)
-    : impl_(0, ex)
-  {
+  basic_signal_set(const executor_type &ex, int signal_number_1,
+                   int signal_number_2, int signal_number_3)
+      : impl_(0, ex) {
     asio::error_code ec;
     impl_.get_service().add(impl_.get_implementation(), signal_number_1, ec);
     asio::detail::throw_error(ec, "add");
@@ -306,14 +291,12 @@ public:
    * signals.add(signal_number_3); @endcode
    */
   template <typename ExecutionContext>
-  basic_signal_set(ExecutionContext& context, int signal_number_1,
-      int signal_number_2, int signal_number_3,
-      constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
+  basic_signal_set(ExecutionContext &context, int signal_number_1,
+                   int signal_number_2, int signal_number_3,
+                   constraint_t<is_convertible<ExecutionContext &,
+                                               execution_context &>::value,
+                                defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {
     asio::error_code ec;
     impl_.get_service().add(impl_.get_implementation(), signal_number_1, ec);
     asio::detail::throw_error(ec, "add");
@@ -329,15 +312,10 @@ public:
    * asynchronous wait operations associated with the signal set as if by
    * calling @c cancel.
    */
-  ~basic_signal_set()
-  {
-  }
+  ~basic_signal_set() {}
 
   /// Get the executor associated with the object.
-  const executor_type& get_executor() noexcept
-  {
-    return impl_.get_executor();
-  }
+  const executor_type &get_executor() noexcept { return impl_.get_executor(); }
 
   /// Add a signal to a signal_set.
   /**
@@ -348,8 +326,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void add(int signal_number)
-  {
+  void add(int signal_number) {
     asio::error_code ec;
     impl_.get_service().add(impl_.get_implementation(), signal_number, ec);
     asio::detail::throw_error(ec, "add");
@@ -364,9 +341,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID add(int signal_number,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID add(int signal_number, asio::error_code &ec) {
     impl_.get_service().add(impl_.get_implementation(), signal_number, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -390,8 +365,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void add(int signal_number, flags_t f)
-  {
+  void add(int signal_number, flags_t f) {
     asio::error_code ec;
     impl_.get_service().add(impl_.get_implementation(), signal_number, f, ec);
     asio::detail::throw_error(ec, "add");
@@ -416,9 +390,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID add(int signal_number, flags_t f,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID add(int signal_number, flags_t f, asio::error_code &ec) {
     impl_.get_service().add(impl_.get_implementation(), signal_number, f, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -435,8 +407,7 @@ public:
    * @note Removes any notifications that have been queued for the specified
    * signal number.
    */
-  void remove(int signal_number)
-  {
+  void remove(int signal_number) {
     asio::error_code ec;
     impl_.get_service().remove(impl_.get_implementation(), signal_number, ec);
     asio::detail::throw_error(ec, "remove");
@@ -454,9 +425,7 @@ public:
    * @note Removes any notifications that have been queued for the specified
    * signal number.
    */
-  ASIO_SYNC_OP_VOID remove(int signal_number,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID remove(int signal_number, asio::error_code &ec) {
     impl_.get_service().remove(impl_.get_implementation(), signal_number, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -470,8 +439,7 @@ public:
    *
    * @note Removes all queued notifications.
    */
-  void clear()
-  {
+  void clear() {
     asio::error_code ec;
     impl_.get_service().clear(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "clear");
@@ -486,8 +454,7 @@ public:
    *
    * @note Removes all queued notifications.
    */
-  ASIO_SYNC_OP_VOID clear(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID clear(asio::error_code &ec) {
     impl_.get_service().clear(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -513,8 +480,7 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  void cancel()
-  {
+  void cancel() {
     asio::error_code ec;
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "cancel");
@@ -541,8 +507,7 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  ASIO_SYNC_OP_VOID cancel(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID cancel(asio::error_code &ec) {
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -588,54 +553,45 @@ public:
    *
    * @li @c cancellation_type::total
    */
-  template <
-    ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code, int))
-      SignalToken = default_completion_token_t<executor_type>>
-  auto async_wait(
-      SignalToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<SignalToken, void (asio::error_code, int)>(
-        declval<initiate_async_wait>(), token))
-  {
-    return async_initiate<SignalToken, void (asio::error_code, int)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, int))
+                SignalToken = default_completion_token_t<executor_type>>
+  auto
+  async_wait(SignalToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<SignalToken, void(asio::error_code, int)>(
+          declval<initiate_async_wait>(), token)) {
+    return async_initiate<SignalToken, void(asio::error_code, int)>(
         initiate_async_wait(this), token);
   }
 
 private:
   // Disallow copying and assignment.
-  basic_signal_set(const basic_signal_set&) = delete;
-  basic_signal_set& operator=(const basic_signal_set&) = delete;
+  basic_signal_set(const basic_signal_set &) = delete;
+  basic_signal_set &operator=(const basic_signal_set &) = delete;
 
-  class initiate_async_wait
-  {
+  class initiate_async_wait {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_wait(basic_signal_set* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_wait(basic_signal_set *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename SignalHandler>
-    void operator()(SignalHandler&& handler) const
-    {
+    void operator()(SignalHandler &&handler) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a SignalHandler.
       ASIO_SIGNAL_HANDLER_CHECK(SignalHandler, handler) type_check;
 
       detail::non_const_lvalue<SignalHandler> handler2(handler);
-      self_->impl_.get_service().async_wait(
-          self_->impl_.get_implementation(),
-          handler2.value, self_->impl_.get_executor());
+      self_->impl_.get_service().async_wait(self_->impl_.get_implementation(),
+                                            handler2.value,
+                                            self_->impl_.get_executor());
     }
 
   private:
-    basic_signal_set* self_;
+    basic_signal_set *self_;
   };
 
   detail::io_object_impl<detail::signal_set_service, Executor> impl_;

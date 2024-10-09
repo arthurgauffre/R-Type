@@ -12,13 +12,12 @@
 #define ASIO_BASIC_SOCKET_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include <utility>
 #include "asio/any_io_executor.hpp"
-#include "asio/detail/config.hpp"
 #include "asio/async_result.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/handler_type_requirements.hpp"
 #include "asio/detail/io_object_impl.hpp"
 #include "asio/detail/non_const_lvalue.hpp"
@@ -28,15 +27,16 @@
 #include "asio/execution_context.hpp"
 #include "asio/post.hpp"
 #include "asio/socket_base.hpp"
+#include <utility>
 
 #if defined(ASIO_WINDOWS_RUNTIME)
-# include "asio/detail/null_socket_service.hpp"
+#include "asio/detail/null_socket_service.hpp"
 #elif defined(ASIO_HAS_IOCP)
-# include "asio/detail/win_iocp_socket_service.hpp"
+#include "asio/detail/win_iocp_socket_service.hpp"
 #elif defined(ASIO_HAS_IO_URING_AS_DEFAULT)
-# include "asio/detail/io_uring_socket_service.hpp"
+#include "asio/detail/io_uring_socket_service.hpp"
 #else
-# include "asio/detail/reactive_socket_service.hpp"
+#include "asio/detail/reactive_socket_service.hpp"
 #endif
 
 #include "asio/detail/push_options.hpp"
@@ -62,9 +62,7 @@ class basic_socket;
  * @e Shared @e objects: Unsafe.
  */
 template <typename Protocol, typename Executor>
-class basic_socket
-  : public socket_base
-{
+class basic_socket : public socket_base {
 private:
   class initiate_async_connect;
   class initiate_async_wait;
@@ -74,9 +72,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the socket type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The socket type when rebound to the specified executor.
     typedef basic_socket<Protocol, Executor1> other;
   };
@@ -85,17 +81,17 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined native_handle_type;
 #elif defined(ASIO_WINDOWS_RUNTIME)
-  typedef typename detail::null_socket_service<
-    Protocol>::native_handle_type native_handle_type;
+  typedef typename detail::null_socket_service<Protocol>::native_handle_type
+      native_handle_type;
 #elif defined(ASIO_HAS_IOCP)
-  typedef typename detail::win_iocp_socket_service<
-    Protocol>::native_handle_type native_handle_type;
+  typedef typename detail::win_iocp_socket_service<Protocol>::native_handle_type
+      native_handle_type;
 #elif defined(ASIO_HAS_IO_URING_AS_DEFAULT)
-  typedef typename detail::io_uring_socket_service<
-    Protocol>::native_handle_type native_handle_type;
+  typedef typename detail::io_uring_socket_service<Protocol>::native_handle_type
+      native_handle_type;
 #else
-  typedef typename detail::reactive_socket_service<
-    Protocol>::native_handle_type native_handle_type;
+  typedef typename detail::reactive_socket_service<Protocol>::native_handle_type
+      native_handle_type;
 #endif
 
   /// The protocol type.
@@ -116,10 +112,7 @@ public:
    * @param ex The I/O executor that the socket will use, by default, to
    * dispatch handlers for any asynchronous operations performed on the socket.
    */
-  explicit basic_socket(const executor_type& ex)
-    : impl_(0, ex)
-  {
-  }
+  explicit basic_socket(const executor_type &ex) : impl_(0, ex) {}
 
   /// Construct a basic_socket without opening it.
   /**
@@ -130,13 +123,11 @@ public:
    * operations performed on the socket.
    */
   template <typename ExecutionContext>
-  explicit basic_socket(ExecutionContext& context,
+  explicit basic_socket(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : impl_(0, 0, context) {}
 
   /// Construct and open a basic_socket.
   /**
@@ -149,9 +140,8 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_socket(const executor_type& ex, const protocol_type& protocol)
-    : impl_(0, ex)
-  {
+  basic_socket(const executor_type &ex, const protocol_type &protocol)
+      : impl_(0, ex) {
     asio::error_code ec;
     impl_.get_service().open(impl_.get_implementation(), protocol, ec);
     asio::detail::throw_error(ec, "open");
@@ -170,13 +160,11 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_socket(ExecutionContext& context, const protocol_type& protocol,
-      constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
+  basic_socket(ExecutionContext &context, const protocol_type &protocol,
+               constraint_t<is_convertible<ExecutionContext &,
+                                           execution_context &>::value,
+                            defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {
     asio::error_code ec;
     impl_.get_service().open(impl_.get_implementation(), protocol, ec);
     asio::detail::throw_error(ec, "open");
@@ -197,9 +185,8 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_socket(const executor_type& ex, const endpoint_type& endpoint)
-    : impl_(0, ex)
-  {
+  basic_socket(const executor_type &ex, const endpoint_type &endpoint)
+      : impl_(0, ex) {
     asio::error_code ec;
     const protocol_type protocol = endpoint.protocol();
     impl_.get_service().open(impl_.get_implementation(), protocol, ec);
@@ -225,12 +212,10 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_socket(ExecutionContext& context, const endpoint_type& endpoint,
-      constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
+  basic_socket(ExecutionContext &context, const endpoint_type &endpoint,
+               constraint_t<is_convertible<ExecutionContext &,
+                                           execution_context &>::value> = 0)
+      : impl_(0, 0, context) {
     asio::error_code ec;
     const protocol_type protocol = endpoint.protocol();
     impl_.get_service().open(impl_.get_implementation(), protocol, ec);
@@ -252,13 +237,12 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_socket(const executor_type& ex, const protocol_type& protocol,
-      const native_handle_type& native_socket)
-    : impl_(0, ex)
-  {
+  basic_socket(const executor_type &ex, const protocol_type &protocol,
+               const native_handle_type &native_socket)
+      : impl_(0, ex) {
     asio::error_code ec;
-    impl_.get_service().assign(impl_.get_implementation(),
-        protocol, native_socket, ec);
+    impl_.get_service().assign(impl_.get_implementation(), protocol,
+                               native_socket, ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -277,16 +261,14 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_socket(ExecutionContext& context, const protocol_type& protocol,
-      const native_handle_type& native_socket,
-      constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
+  basic_socket(ExecutionContext &context, const protocol_type &protocol,
+               const native_handle_type &native_socket,
+               constraint_t<is_convertible<ExecutionContext &,
+                                           execution_context &>::value> = 0)
+      : impl_(0, 0, context) {
     asio::error_code ec;
-    impl_.get_service().assign(impl_.get_implementation(),
-        protocol, native_socket, ec);
+    impl_.get_service().assign(impl_.get_implementation(), protocol,
+                               native_socket, ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -300,10 +282,7 @@ public:
    * @note Following the move, the moved-from object is in the same state as if
    * constructed using the @c basic_socket(const executor_type&) constructor.
    */
-  basic_socket(basic_socket&& other) noexcept
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_socket(basic_socket &&other) noexcept : impl_(std::move(other.impl_)) {}
 
   /// Move-assign a basic_socket from another.
   /**
@@ -315,15 +294,13 @@ public:
    * @note Following the move, the moved-from object is in the same state as if
    * constructed using the @c basic_socket(const executor_type&) constructor.
    */
-  basic_socket& operator=(basic_socket&& other)
-  {
+  basic_socket &operator=(basic_socket &&other) {
     impl_ = std::move(other.impl_);
     return *this;
   }
 
   // All sockets have access to each other's implementations.
-  template <typename Protocol1, typename Executor1>
-  friend class basic_socket;
+  template <typename Protocol1, typename Executor1> friend class basic_socket;
 
   /// Move-construct a basic_socket from a socket of another protocol type.
   /**
@@ -336,14 +313,10 @@ public:
    * constructed using the @c basic_socket(const executor_type&) constructor.
    */
   template <typename Protocol1, typename Executor1>
-  basic_socket(basic_socket<Protocol1, Executor1>&& other,
-      constraint_t<
-        is_convertible<Protocol1, Protocol>::value
-          && is_convertible<Executor1, Executor>::value
-      > = 0)
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_socket(basic_socket<Protocol1, Executor1> &&other,
+               constraint_t<is_convertible<Protocol1, Protocol>::value &&
+                            is_convertible<Executor1, Executor>::value> = 0)
+      : impl_(std::move(other.impl_)) {}
 
   /// Move-assign a basic_socket from a socket of another protocol type.
   /**
@@ -356,22 +329,17 @@ public:
    * constructed using the @c basic_socket(const executor_type&) constructor.
    */
   template <typename Protocol1, typename Executor1>
-  constraint_t<
-    is_convertible<Protocol1, Protocol>::value
-      && is_convertible<Executor1, Executor>::value,
-    basic_socket&
-  > operator=(basic_socket<Protocol1, Executor1>&& other)
-  {
+  constraint_t<is_convertible<Protocol1, Protocol>::value &&
+                   is_convertible<Executor1, Executor>::value,
+               basic_socket &>
+  operator=(basic_socket<Protocol1, Executor1> &&other) {
     basic_socket tmp(std::move(other));
     impl_ = std::move(tmp.impl_);
     return *this;
   }
 
   /// Get the executor associated with the object.
-  const executor_type& get_executor() noexcept
-  {
-    return impl_.get_executor();
-  }
+  const executor_type &get_executor() noexcept { return impl_.get_executor(); }
 
 #if !defined(ASIO_NO_EXTENSIONS)
   /// Get a reference to the lowest layer.
@@ -383,10 +351,7 @@ public:
    * @return A reference to the lowest layer in the stack of layers. Ownership
    * is not transferred to the caller.
    */
-  lowest_layer_type& lowest_layer()
-  {
-    return *this;
-  }
+  lowest_layer_type &lowest_layer() { return *this; }
 
   /// Get a const reference to the lowest layer.
   /**
@@ -397,10 +362,7 @@ public:
    * @return A const reference to the lowest layer in the stack of layers.
    * Ownership is not transferred to the caller.
    */
-  const lowest_layer_type& lowest_layer() const
-  {
-    return *this;
-  }
+  const lowest_layer_type &lowest_layer() const { return *this; }
 #endif // !defined(ASIO_NO_EXTENSIONS)
 
   /// Open the socket using the specified protocol.
@@ -417,8 +379,7 @@ public:
    * socket.open(asio::ip::tcp::v4());
    * @endcode
    */
-  void open(const protocol_type& protocol = protocol_type())
-  {
+  void open(const protocol_type &protocol = protocol_type()) {
     asio::error_code ec;
     impl_.get_service().open(impl_.get_implementation(), protocol, ec);
     asio::detail::throw_error(ec, "open");
@@ -443,9 +404,7 @@ public:
    * }
    * @endcode
    */
-  ASIO_SYNC_OP_VOID open(const protocol_type& protocol,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID open(const protocol_type &protocol, asio::error_code &ec) {
     impl_.get_service().open(impl_.get_implementation(), protocol, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -460,12 +419,11 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void assign(const protocol_type& protocol,
-      const native_handle_type& native_socket)
-  {
+  void assign(const protocol_type &protocol,
+              const native_handle_type &native_socket) {
     asio::error_code ec;
-    impl_.get_service().assign(impl_.get_implementation(),
-        protocol, native_socket, ec);
+    impl_.get_service().assign(impl_.get_implementation(), protocol,
+                               native_socket, ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -479,17 +437,16 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID assign(const protocol_type& protocol,
-      const native_handle_type& native_socket, asio::error_code& ec)
-  {
-    impl_.get_service().assign(impl_.get_implementation(),
-        protocol, native_socket, ec);
+  ASIO_SYNC_OP_VOID assign(const protocol_type &protocol,
+                           const native_handle_type &native_socket,
+                           asio::error_code &ec) {
+    impl_.get_service().assign(impl_.get_implementation(), protocol,
+                               native_socket, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Determine whether the socket is open.
-  bool is_open() const
-  {
+  bool is_open() const {
     return impl_.get_service().is_open(impl_.get_implementation());
   }
 
@@ -505,8 +462,7 @@ public:
    * @note For portable behaviour with respect to graceful closure of a
    * connected socket, call shutdown() before closing the socket.
    */
-  void close()
-  {
+  void close() {
     asio::error_code ec;
     impl_.get_service().close(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "close");
@@ -536,8 +492,7 @@ public:
    * @note For portable behaviour with respect to graceful closure of a
    * connected socket, call shutdown() before closing the socket.
    */
-  ASIO_SYNC_OP_VOID close(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID close(asio::error_code &ec) {
     impl_.get_service().close(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -555,17 +510,16 @@ public:
    * 8.1, and will fail with asio::error::operation_not_supported on
    * these platforms.
    */
-#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) \
-  && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0603)
+#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) &&                               \
+    (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0603)
   __declspec(deprecated("This function always fails with "
-        "operation_not_supported when used on Windows versions "
-        "prior to Windows 8.1."))
+                        "operation_not_supported when used on Windows versions "
+                        "prior to Windows 8.1."))
 #endif
-  native_handle_type release()
-  {
+      native_handle_type release() {
     asio::error_code ec;
-    native_handle_type s = impl_.get_service().release(
-        impl_.get_implementation(), ec);
+    native_handle_type s =
+        impl_.get_service().release(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "release");
     return s;
   }
@@ -583,14 +537,13 @@ public:
    * 8.1, and will fail with asio::error::operation_not_supported on
    * these platforms.
    */
-#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) \
-  && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0603)
+#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) &&                               \
+    (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0603)
   __declspec(deprecated("This function always fails with "
-        "operation_not_supported when used on Windows versions "
-        "prior to Windows 8.1."))
+                        "operation_not_supported when used on Windows versions "
+                        "prior to Windows 8.1."))
 #endif
-  native_handle_type release(asio::error_code& ec)
-  {
+      native_handle_type release(asio::error_code &ec) {
     return impl_.get_service().release(impl_.get_implementation(), ec);
   }
 
@@ -600,8 +553,7 @@ public:
    * socket. This is intended to allow access to native socket functionality
    * that is not otherwise provided.
    */
-  native_handle_type native_handle()
-  {
+  native_handle_type native_handle() {
     return impl_.get_service().native_handle(impl_.get_implementation());
   }
 
@@ -639,15 +591,15 @@ public:
    * CancelIoEx function is always used. This function does not have the
    * problems described above.
    */
-#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) \
-  && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600) \
-  && !defined(ASIO_ENABLE_CANCELIO)
-  __declspec(deprecated("By default, this function always fails with "
-        "operation_not_supported when used on Windows XP, Windows Server 2003, "
-        "or earlier. Consult documentation for details."))
+#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) &&                               \
+    (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600) &&                       \
+    !defined(ASIO_ENABLE_CANCELIO)
+  __declspec(deprecated(
+      "By default, this function always fails with "
+      "operation_not_supported when used on Windows XP, Windows Server 2003, "
+      "or earlier. Consult documentation for details."))
 #endif
-  void cancel()
-  {
+      void cancel() {
     asio::error_code ec;
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "cancel");
@@ -687,15 +639,15 @@ public:
    * CancelIoEx function is always used. This function does not have the
    * problems described above.
    */
-#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) \
-  && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600) \
-  && !defined(ASIO_ENABLE_CANCELIO)
-  __declspec(deprecated("By default, this function always fails with "
-        "operation_not_supported when used on Windows XP, Windows Server 2003, "
-        "or earlier. Consult documentation for details."))
+#if defined(ASIO_MSVC) && (ASIO_MSVC >= 1400) &&                               \
+    (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600) &&                       \
+    !defined(ASIO_ENABLE_CANCELIO)
+  __declspec(deprecated(
+      "By default, this function always fails with "
+      "operation_not_supported when used on Windows XP, Windows Server 2003, "
+      "or earlier. Consult documentation for details."))
 #endif
-  ASIO_SYNC_OP_VOID cancel(asio::error_code& ec)
-  {
+      ASIO_SYNC_OP_VOID cancel(asio::error_code &ec) {
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -710,8 +662,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  bool at_mark() const
-  {
+  bool at_mark() const {
     asio::error_code ec;
     bool b = impl_.get_service().at_mark(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "at_mark");
@@ -728,8 +679,7 @@ public:
    * @return A bool indicating whether the socket is at the out-of-band data
    * mark.
    */
-  bool at_mark(asio::error_code& ec) const
-  {
+  bool at_mark(asio::error_code &ec) const {
     return impl_.get_service().at_mark(impl_.get_implementation(), ec);
   }
 
@@ -743,11 +693,10 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  std::size_t available() const
-  {
+  std::size_t available() const {
     asio::error_code ec;
-    std::size_t s = impl_.get_service().available(
-        impl_.get_implementation(), ec);
+    std::size_t s =
+        impl_.get_service().available(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "available");
     return s;
   }
@@ -762,8 +711,7 @@ public:
    * @return The number of bytes that may be read without blocking, or 0 if an
    * error occurs.
    */
-  std::size_t available(asio::error_code& ec) const
-  {
+  std::size_t available(asio::error_code &ec) const {
     return impl_.get_service().available(impl_.get_implementation(), ec);
   }
 
@@ -785,8 +733,7 @@ public:
    *       asio::ip::tcp::v4(), 12345));
    * @endcode
    */
-  void bind(const endpoint_type& endpoint)
-  {
+  void bind(const endpoint_type &endpoint) {
     asio::error_code ec;
     impl_.get_service().bind(impl_.get_implementation(), endpoint, ec);
     asio::detail::throw_error(ec, "bind");
@@ -815,9 +762,7 @@ public:
    * }
    * @endcode
    */
-  ASIO_SYNC_OP_VOID bind(const endpoint_type& endpoint,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID bind(const endpoint_type &endpoint, asio::error_code &ec) {
     impl_.get_service().bind(impl_.get_implementation(), endpoint, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -845,13 +790,11 @@ public:
    * socket.connect(endpoint);
    * @endcode
    */
-  void connect(const endpoint_type& peer_endpoint)
-  {
+  void connect(const endpoint_type &peer_endpoint) {
     asio::error_code ec;
-    if (!is_open())
-    {
+    if (!is_open()) {
       impl_.get_service().open(impl_.get_implementation(),
-          peer_endpoint.protocol(), ec);
+                               peer_endpoint.protocol(), ec);
       asio::detail::throw_error(ec, "connect");
     }
     impl_.get_service().connect(impl_.get_implementation(), peer_endpoint, ec);
@@ -886,15 +829,12 @@ public:
    * }
    * @endcode
    */
-  ASIO_SYNC_OP_VOID connect(const endpoint_type& peer_endpoint,
-      asio::error_code& ec)
-  {
-    if (!is_open())
-    {
+  ASIO_SYNC_OP_VOID connect(const endpoint_type &peer_endpoint,
+                            asio::error_code &ec) {
+    if (!is_open()) {
       impl_.get_service().open(impl_.get_implementation(),
-            peer_endpoint.protocol(), ec);
-      if (ec)
-      {
+                               peer_endpoint.protocol(), ec);
+      if (ec) {
         ASIO_SYNC_OP_VOID_RETURN(ec);
       }
     }
@@ -960,24 +900,21 @@ public:
    *
    * @li @c cancellation_type::total
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code))
-        ConnectToken = default_completion_token_t<executor_type>>
-  auto async_connect(const endpoint_type& peer_endpoint,
-      ConnectToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<ConnectToken, void (asio::error_code)>(
-        declval<initiate_async_connect>(), token,
-        peer_endpoint, declval<asio::error_code&>()))
-  {
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code))
+                ConnectToken = default_completion_token_t<executor_type>>
+  auto async_connect(
+      const endpoint_type &peer_endpoint,
+      ConnectToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<ConnectToken, void(asio::error_code)>(
+          declval<initiate_async_connect>(), token, peer_endpoint,
+          declval<asio::error_code &>())) {
     asio::error_code open_ec;
-    if (!is_open())
-    {
+    if (!is_open()) {
       const protocol_type protocol = peer_endpoint.protocol();
       impl_.get_service().open(impl_.get_implementation(), protocol, open_ec);
     }
 
-    return async_initiate<ConnectToken, void (asio::error_code)>(
+    return async_initiate<ConnectToken, void(asio::error_code)>(
         initiate_async_connect(this), token, peer_endpoint, open_ec);
   }
 
@@ -1016,8 +953,7 @@ public:
    * @endcode
    */
   template <typename SettableSocketOption>
-  void set_option(const SettableSocketOption& option)
-  {
+  void set_option(const SettableSocketOption &option) {
     asio::error_code ec;
     impl_.get_service().set_option(impl_.get_implementation(), option, ec);
     asio::detail::throw_error(ec, "set_option");
@@ -1063,9 +999,8 @@ public:
    * @endcode
    */
   template <typename SettableSocketOption>
-  ASIO_SYNC_OP_VOID set_option(const SettableSocketOption& option,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID set_option(const SettableSocketOption &option,
+                               asio::error_code &ec) {
     impl_.get_service().set_option(impl_.get_implementation(), option, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -1106,8 +1041,7 @@ public:
    * @endcode
    */
   template <typename GettableSocketOption>
-  void get_option(GettableSocketOption& option) const
-  {
+  void get_option(GettableSocketOption &option) const {
     asio::error_code ec;
     impl_.get_service().get_option(impl_.get_implementation(), option, ec);
     asio::detail::throw_error(ec, "get_option");
@@ -1154,9 +1088,8 @@ public:
    * @endcode
    */
   template <typename GettableSocketOption>
-  ASIO_SYNC_OP_VOID get_option(GettableSocketOption& option,
-      asio::error_code& ec) const
-  {
+  ASIO_SYNC_OP_VOID get_option(GettableSocketOption &option,
+                               asio::error_code &ec) const {
     impl_.get_service().get_option(impl_.get_implementation(), option, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -1184,8 +1117,7 @@ public:
    * @endcode
    */
   template <typename IoControlCommand>
-  void io_control(IoControlCommand& command)
-  {
+  void io_control(IoControlCommand &command) {
     asio::error_code ec;
     impl_.get_service().io_control(impl_.get_implementation(), command, ec);
     asio::detail::throw_error(ec, "io_control");
@@ -1219,9 +1151,8 @@ public:
    * @endcode
    */
   template <typename IoControlCommand>
-  ASIO_SYNC_OP_VOID io_control(IoControlCommand& command,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID io_control(IoControlCommand &command,
+                               asio::error_code &ec) {
     impl_.get_service().io_control(impl_.get_implementation(), command, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -1237,8 +1168,7 @@ public:
    * operations. Asynchronous operations will never fail with the error
    * asio::error::would_block.
    */
-  bool non_blocking() const
-  {
+  bool non_blocking() const {
     return impl_.get_service().non_blocking(impl_.get_implementation());
   }
 
@@ -1255,8 +1185,7 @@ public:
    * operations. Asynchronous operations will never fail with the error
    * asio::error::would_block.
    */
-  void non_blocking(bool mode)
-  {
+  void non_blocking(bool mode) {
     asio::error_code ec;
     impl_.get_service().non_blocking(impl_.get_implementation(), mode, ec);
     asio::detail::throw_error(ec, "non_blocking");
@@ -1275,9 +1204,7 @@ public:
    * operations. Asynchronous operations will never fail with the error
    * asio::error::would_block.
    */
-  ASIO_SYNC_OP_VOID non_blocking(
-      bool mode, asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID non_blocking(bool mode, asio::error_code &ec) {
     impl_.get_service().non_blocking(impl_.get_implementation(), mode, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -1366,8 +1293,7 @@ public:
    *   sock.async_wait(tcp::socket::wait_write, op);
    * } @endcode
    */
-  bool native_non_blocking() const
-  {
+  bool native_non_blocking() const {
     return impl_.get_service().native_non_blocking(impl_.get_implementation());
   }
 
@@ -1456,11 +1382,10 @@ public:
    *   sock.async_wait(tcp::socket::wait_write, op);
    * } @endcode
    */
-  void native_non_blocking(bool mode)
-  {
+  void native_non_blocking(bool mode) {
     asio::error_code ec;
-    impl_.get_service().native_non_blocking(
-        impl_.get_implementation(), mode, ec);
+    impl_.get_service().native_non_blocking(impl_.get_implementation(), mode,
+                                            ec);
     asio::detail::throw_error(ec, "native_non_blocking");
   }
 
@@ -1549,11 +1474,9 @@ public:
    *   sock.async_wait(tcp::socket::wait_write, op);
    * } @endcode
    */
-  ASIO_SYNC_OP_VOID native_non_blocking(
-      bool mode, asio::error_code& ec)
-  {
-    impl_.get_service().native_non_blocking(
-        impl_.get_implementation(), mode, ec);
+  ASIO_SYNC_OP_VOID native_non_blocking(bool mode, asio::error_code &ec) {
+    impl_.get_service().native_non_blocking(impl_.get_implementation(), mode,
+                                            ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
@@ -1572,11 +1495,10 @@ public:
    * asio::ip::tcp::endpoint endpoint = socket.local_endpoint();
    * @endcode
    */
-  endpoint_type local_endpoint() const
-  {
+  endpoint_type local_endpoint() const {
     asio::error_code ec;
-    endpoint_type ep = impl_.get_service().local_endpoint(
-        impl_.get_implementation(), ec);
+    endpoint_type ep =
+        impl_.get_service().local_endpoint(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "local_endpoint");
     return ep;
   }
@@ -1602,8 +1524,7 @@ public:
    * }
    * @endcode
    */
-  endpoint_type local_endpoint(asio::error_code& ec) const
-  {
+  endpoint_type local_endpoint(asio::error_code &ec) const {
     return impl_.get_service().local_endpoint(impl_.get_implementation(), ec);
   }
 
@@ -1622,11 +1543,10 @@ public:
    * asio::ip::tcp::endpoint endpoint = socket.remote_endpoint();
    * @endcode
    */
-  endpoint_type remote_endpoint() const
-  {
+  endpoint_type remote_endpoint() const {
     asio::error_code ec;
-    endpoint_type ep = impl_.get_service().remote_endpoint(
-        impl_.get_implementation(), ec);
+    endpoint_type ep =
+        impl_.get_service().remote_endpoint(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "remote_endpoint");
     return ep;
   }
@@ -1652,8 +1572,7 @@ public:
    * }
    * @endcode
    */
-  endpoint_type remote_endpoint(asio::error_code& ec) const
-  {
+  endpoint_type remote_endpoint(asio::error_code &ec) const {
     return impl_.get_service().remote_endpoint(impl_.get_implementation(), ec);
   }
 
@@ -1674,8 +1593,7 @@ public:
    * socket.shutdown(asio::ip::tcp::socket::shutdown_send);
    * @endcode
    */
-  void shutdown(shutdown_type what)
-  {
+  void shutdown(shutdown_type what) {
     asio::error_code ec;
     impl_.get_service().shutdown(impl_.get_implementation(), what, ec);
     asio::detail::throw_error(ec, "shutdown");
@@ -1703,9 +1621,7 @@ public:
    * }
    * @endcode
    */
-  ASIO_SYNC_OP_VOID shutdown(shutdown_type what,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID shutdown(shutdown_type what, asio::error_code &ec) {
     impl_.get_service().shutdown(impl_.get_implementation(), what, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -1726,8 +1642,7 @@ public:
    * socket.wait(asio::ip::tcp::socket::wait_read);
    * @endcode
    */
-  void wait(wait_type w)
-  {
+  void wait(wait_type w) {
     asio::error_code ec;
     impl_.get_service().wait(impl_.get_implementation(), w, ec);
     asio::detail::throw_error(ec, "wait");
@@ -1752,8 +1667,7 @@ public:
    * socket.wait(asio::ip::tcp::socket::wait_read, ec);
    * @endcode
    */
-  ASIO_SYNC_OP_VOID wait(wait_type w, asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID wait(wait_type w, asio::error_code &ec) {
     impl_.get_service().wait(impl_.get_implementation(), w, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -1811,16 +1725,14 @@ public:
    *
    * @li @c cancellation_type::total
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code))
-        WaitToken = default_completion_token_t<executor_type>>
-  auto async_wait(wait_type w,
-      WaitToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WaitToken, void (asio::error_code)>(
-          declval<initiate_async_wait>(), token, w))
-  {
-    return async_initiate<WaitToken, void (asio::error_code)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code))
+                WaitToken = default_completion_token_t<executor_type>>
+  auto
+  async_wait(wait_type w,
+             WaitToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WaitToken, void(asio::error_code)>(
+          declval<initiate_async_wait>(), token, w)) {
+    return async_initiate<WaitToken, void(asio::error_code)>(
         initiate_async_wait(this), token, w);
   }
 
@@ -1830,102 +1742,84 @@ protected:
    * This function destroys the socket, cancelling any outstanding asynchronous
    * operations associated with the socket as if by calling @c cancel.
    */
-  ~basic_socket()
-  {
-  }
+  ~basic_socket() {}
 
 #if defined(ASIO_WINDOWS_RUNTIME)
-  detail::io_object_impl<
-    detail::null_socket_service<Protocol>, Executor> impl_;
+  detail::io_object_impl<detail::null_socket_service<Protocol>, Executor> impl_;
 #elif defined(ASIO_HAS_IOCP)
-  detail::io_object_impl<
-    detail::win_iocp_socket_service<Protocol>, Executor> impl_;
+  detail::io_object_impl<detail::win_iocp_socket_service<Protocol>, Executor>
+      impl_;
 #elif defined(ASIO_HAS_IO_URING_AS_DEFAULT)
-  detail::io_object_impl<
-    detail::io_uring_socket_service<Protocol>, Executor> impl_;
+  detail::io_object_impl<detail::io_uring_socket_service<Protocol>, Executor>
+      impl_;
 #else
-  detail::io_object_impl<
-    detail::reactive_socket_service<Protocol>, Executor> impl_;
+  detail::io_object_impl<detail::reactive_socket_service<Protocol>, Executor>
+      impl_;
 #endif
 
 private:
   // Disallow copying and assignment.
-  basic_socket(const basic_socket&) = delete;
-  basic_socket& operator=(const basic_socket&) = delete;
+  basic_socket(const basic_socket &) = delete;
+  basic_socket &operator=(const basic_socket &) = delete;
 
-  class initiate_async_connect
-  {
+  class initiate_async_connect {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_connect(basic_socket* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_connect(basic_socket *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename ConnectHandler>
-    void operator()(ConnectHandler&& handler,
-        const endpoint_type& peer_endpoint,
-        const asio::error_code& open_ec) const
-    {
+    void operator()(ConnectHandler &&handler,
+                    const endpoint_type &peer_endpoint,
+                    const asio::error_code &open_ec) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a ConnectHandler.
       ASIO_CONNECT_HANDLER_CHECK(ConnectHandler, handler) type_check;
 
-      if (open_ec)
-      {
-          asio::post(self_->impl_.get_executor(),
-              asio::detail::bind_handler(
-                static_cast<ConnectHandler&&>(handler), open_ec));
-      }
-      else
-      {
+      if (open_ec) {
+        asio::post(self_->impl_.get_executor(),
+                   asio::detail::bind_handler(
+                       static_cast<ConnectHandler &&>(handler), open_ec));
+      } else {
         detail::non_const_lvalue<ConnectHandler> handler2(handler);
         self_->impl_.get_service().async_connect(
-            self_->impl_.get_implementation(), peer_endpoint,
-            handler2.value, self_->impl_.get_executor());
+            self_->impl_.get_implementation(), peer_endpoint, handler2.value,
+            self_->impl_.get_executor());
       }
     }
 
   private:
-    basic_socket* self_;
+    basic_socket *self_;
   };
 
-  class initiate_async_wait
-  {
+  class initiate_async_wait {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_wait(basic_socket* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_wait(basic_socket *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename WaitHandler>
-    void operator()(WaitHandler&& handler, wait_type w) const
-    {
+    void operator()(WaitHandler &&handler, wait_type w) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WaitHandler.
       ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
       detail::non_const_lvalue<WaitHandler> handler2(handler);
-      self_->impl_.get_service().async_wait(
-          self_->impl_.get_implementation(), w,
-          handler2.value, self_->impl_.get_executor());
+      self_->impl_.get_service().async_wait(self_->impl_.get_implementation(),
+                                            w, handler2.value,
+                                            self_->impl_.get_executor());
     }
 
   private:
-    basic_socket* self_;
+    basic_socket *self_;
   };
 };
 

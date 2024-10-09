@@ -12,14 +12,14 @@
 #define ASIO_TS_NETFWD_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
 #include "asio/detail/chrono.hpp"
+#include "asio/detail/config.hpp"
 
 #if defined(ASIO_HAS_BOOST_DATE_TIME)
-# include "asio/detail/date_time_fwd.hpp"
+#include "asio/detail/date_time_fwd.hpp"
 #endif // defined(ASIO_HAS_BOOST_DATE_TIME)
 
 #if !defined(ASIO_USE_TS_EXECUTOR_AS_DEFAULT)
@@ -36,8 +36,7 @@ namespace asio {
 
 class execution_context;
 
-template <typename T, typename Executor>
-class executor_binder;
+template <typename T, typename Executor> class executor_binder;
 
 #if !defined(ASIO_EXECUTOR_WORK_GUARD_DECL)
 #define ASIO_EXECUTOR_WORK_GUARD_DECL
@@ -63,16 +62,13 @@ namespace execution {
 #if !defined(ASIO_EXECUTION_ANY_EXECUTOR_FWD_DECL)
 #define ASIO_EXECUTION_ANY_EXECUTOR_FWD_DECL
 
-template <typename... SupportableProperties>
-class any_executor;
+template <typename... SupportableProperties> class any_executor;
 
 #endif // !defined(ASIO_EXECUTION_ANY_EXECUTOR_FWD_DECL)
 
-template <typename U>
-struct context_as_t;
+template <typename U> struct context_as_t;
 
-template <typename Property>
-struct prefer_only;
+template <typename Property> struct prefer_only;
 
 } // namespace execution
 
@@ -80,27 +76,23 @@ class any_io_executor;
 
 #endif // defined(ASIO_USE_TS_EXECUTOR_AS_DEFAULT)
 
-template <typename Executor>
-class strand;
+template <typename Executor> class strand;
 
 class io_context;
 
-template <typename Clock>
-struct wait_traits;
+template <typename Clock> struct wait_traits;
 
 #if defined(ASIO_HAS_BOOST_DATE_TIME)
 
-template <typename Time>
-struct time_traits;
+template <typename Time> struct time_traits;
 
 #endif // defined(ASIO_HAS_BOOST_DATE_TIME)
 
 #if !defined(ASIO_BASIC_WAITABLE_TIMER_FWD_DECL)
 #define ASIO_BASIC_WAITABLE_TIMER_FWD_DECL
 
-template <typename Clock,
-    typename WaitTraits = wait_traits<Clock>,
-    typename Executor = any_io_executor>
+template <typename Clock, typename WaitTraits = wait_traits<Clock>,
+          typename Executor = any_io_executor>
 class basic_waitable_timer;
 
 #endif // !defined(ASIO_BASIC_WAITABLE_TIMER_FWD_DECL)
@@ -110,7 +102,7 @@ typedef basic_waitable_timer<chrono::system_clock> system_timer;
 typedef basic_waitable_timer<chrono::steady_clock> steady_timer;
 
 typedef basic_waitable_timer<chrono::high_resolution_clock>
-  high_resolution_timer;
+    high_resolution_timer;
 
 #if !defined(ASIO_BASIC_SOCKET_FWD_DECL)
 #define ASIO_BASIC_SOCKET_FWD_DECL
@@ -150,13 +142,12 @@ class basic_socket_acceptor;
 
 // Forward declaration with defaulted arguments.
 template <typename Protocol,
-#if defined(ASIO_HAS_BOOST_DATE_TIME) \
-  || defined(GENERATING_DOCUMENTATION)
-    typename Clock = boost::posix_time::ptime,
-    typename WaitTraits = time_traits<Clock>>
+#if defined(ASIO_HAS_BOOST_DATE_TIME) || defined(GENERATING_DOCUMENTATION)
+          typename Clock = boost::posix_time::ptime,
+          typename WaitTraits = time_traits<Clock>>
 #else
-    typename Clock = chrono::steady_clock,
-    typename WaitTraits = wait_traits<Clock>>
+          typename Clock = chrono::steady_clock,
+          typename WaitTraits = wait_traits<Clock>>
 #endif
 class basic_socket_streambuf;
 
@@ -167,13 +158,12 @@ class basic_socket_streambuf;
 
 // Forward declaration with defaulted arguments.
 template <typename Protocol,
-#if defined(ASIO_HAS_BOOST_DATE_TIME) \
-  || defined(GENERATING_DOCUMENTATION)
-    typename Clock = boost::posix_time::ptime,
-    typename WaitTraits = time_traits<Clock>>
+#if defined(ASIO_HAS_BOOST_DATE_TIME) || defined(GENERATING_DOCUMENTATION)
+          typename Clock = boost::posix_time::ptime,
+          typename WaitTraits = time_traits<Clock>>
 #else
-    typename Clock = chrono::steady_clock,
-    typename WaitTraits = wait_traits<Clock>>
+          typename Clock = chrono::steady_clock,
+          typename WaitTraits = wait_traits<Clock>>
 #endif
 class basic_socket_iostream;
 
@@ -187,15 +177,13 @@ class address_v4;
 
 class address_v6;
 
-template <typename Address>
-class basic_address_iterator;
+template <typename Address> class basic_address_iterator;
 
 typedef basic_address_iterator<address_v4> address_v4_iterator;
 
 typedef basic_address_iterator<address_v6> address_v6_iterator;
 
-template <typename Address>
-class basic_address_range;
+template <typename Address> class basic_address_range;
 
 typedef basic_address_range<address_v4> address_v4_range;
 
@@ -205,14 +193,11 @@ class network_v4;
 
 class network_v6;
 
-template <typename InternetProtocol>
-class basic_endpoint;
+template <typename InternetProtocol> class basic_endpoint;
 
-template <typename InternetProtocol>
-class basic_resolver_entry;
+template <typename InternetProtocol> class basic_resolver_entry;
 
-template <typename InternetProtocol>
-class basic_resolver_results;
+template <typename InternetProtocol> class basic_resolver_results;
 
 #if !defined(ASIO_IP_BASIC_RESOLVER_FWD_DECL)
 #define ASIO_IP_BASIC_RESOLVER_FWD_DECL

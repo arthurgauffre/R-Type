@@ -12,13 +12,12 @@
 #define ASIO_LOCAL_STREAM_PROTOCOL_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_LOCAL_SOCKETS) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_LOCAL_SOCKETS) || defined(GENERATING_DOCUMENTATION)
 
 #include "asio/basic_socket_acceptor.hpp"
 #include "asio/basic_socket_iostream.hpp"
@@ -43,26 +42,16 @@ namespace local {
  * @par Concepts:
  * Protocol.
  */
-class stream_protocol
-{
+class stream_protocol {
 public:
   /// Obtain an identifier for the type of the protocol.
-  int type() const noexcept
-  {
-    return SOCK_STREAM;
-  }
+  int type() const noexcept { return SOCK_STREAM; }
 
   /// Obtain an identifier for the protocol.
-  int protocol() const noexcept
-  {
-    return 0;
-  }
+  int protocol() const noexcept { return 0; }
 
   /// Obtain an identifier for the protocol family.
-  int family() const noexcept
-  {
-    return AF_UNIX;
-  }
+  int family() const noexcept { return AF_UNIX; }
 
   /// The type of a UNIX domain endpoint.
   typedef basic_endpoint<stream_protocol> endpoint;

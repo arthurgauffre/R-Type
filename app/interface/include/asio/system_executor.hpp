@@ -12,7 +12,7 @@
 #define ASIO_SYSTEM_EXECUTOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -35,14 +35,10 @@ class system_context;
  * immediately.
  */
 template <typename Blocking, typename Relationship, typename Allocator>
-class basic_system_executor
-{
+class basic_system_executor {
 public:
   /// Default constructor.
-  basic_system_executor() noexcept
-    : allocator_(Allocator())
-  {
-  }
+  basic_system_executor() noexcept : allocator_(Allocator()) {}
 
 #if !defined(GENERATING_DOCUMENTATION)
 private:
@@ -60,12 +56,11 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::blocking.possibly); @endcode
    */
-  basic_system_executor<execution::blocking_t::possibly_t,
-      Relationship, Allocator>
-  require(execution::blocking_t::possibly_t) const
-  {
+  basic_system_executor<execution::blocking_t::possibly_t, Relationship,
+                        Allocator>
+  require(execution::blocking_t::possibly_t) const {
     return basic_system_executor<execution::blocking_t::possibly_t,
-        Relationship, Allocator>(allocator_);
+                                 Relationship, Allocator>(allocator_);
   }
 
   /// Obtain an executor with the @c blocking.always property.
@@ -78,12 +73,11 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::blocking.always); @endcode
    */
-  basic_system_executor<execution::blocking_t::always_t,
-      Relationship, Allocator>
-  require(execution::blocking_t::always_t) const
-  {
-    return basic_system_executor<execution::blocking_t::always_t,
-        Relationship, Allocator>(allocator_);
+  basic_system_executor<execution::blocking_t::always_t, Relationship,
+                        Allocator>
+  require(execution::blocking_t::always_t) const {
+    return basic_system_executor<execution::blocking_t::always_t, Relationship,
+                                 Allocator>(allocator_);
   }
 
   /// Obtain an executor with the @c blocking.never property.
@@ -96,12 +90,10 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::blocking.never); @endcode
    */
-  basic_system_executor<execution::blocking_t::never_t,
-      Relationship, Allocator>
-  require(execution::blocking_t::never_t) const
-  {
-    return basic_system_executor<execution::blocking_t::never_t,
-        Relationship, Allocator>(allocator_);
+  basic_system_executor<execution::blocking_t::never_t, Relationship, Allocator>
+  require(execution::blocking_t::never_t) const {
+    return basic_system_executor<execution::blocking_t::never_t, Relationship,
+                                 Allocator>(allocator_);
   }
 
   /// Obtain an executor with the @c relationship.continuation property.
@@ -114,12 +106,12 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::relationship.continuation); @endcode
    */
-  basic_system_executor<Blocking,
-      execution::relationship_t::continuation_t, Allocator>
-  require(execution::relationship_t::continuation_t) const
-  {
-    return basic_system_executor<Blocking,
-        execution::relationship_t::continuation_t, Allocator>(allocator_);
+  basic_system_executor<Blocking, execution::relationship_t::continuation_t,
+                        Allocator>
+  require(execution::relationship_t::continuation_t) const {
+    return basic_system_executor<
+        Blocking, execution::relationship_t::continuation_t, Allocator>(
+        allocator_);
   }
 
   /// Obtain an executor with the @c relationship.fork property.
@@ -132,12 +124,10 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::relationship.fork); @endcode
    */
-  basic_system_executor<Blocking,
-      execution::relationship_t::fork_t, Allocator>
-  require(execution::relationship_t::fork_t) const
-  {
-    return basic_system_executor<Blocking,
-        execution::relationship_t::fork_t, Allocator>(allocator_);
+  basic_system_executor<Blocking, execution::relationship_t::fork_t, Allocator>
+  require(execution::relationship_t::fork_t) const {
+    return basic_system_executor<Blocking, execution::relationship_t::fork_t,
+                                 Allocator>(allocator_);
   }
 
   /// Obtain an executor with the specified @c allocator property.
@@ -152,10 +142,9 @@ private:
    */
   template <typename OtherAllocator>
   basic_system_executor<Blocking, Relationship, OtherAllocator>
-  require(execution::allocator_t<OtherAllocator> a) const
-  {
-    return basic_system_executor<Blocking,
-        Relationship, OtherAllocator>(a.value());
+  require(execution::allocator_t<OtherAllocator> a) const {
+    return basic_system_executor<Blocking, Relationship, OtherAllocator>(
+        a.value());
   }
 
   /// Obtain an executor with the default @c allocator property.
@@ -169,10 +158,9 @@ private:
    *     asio::execution::allocator); @endcode
    */
   basic_system_executor<Blocking, Relationship, std::allocator<void>>
-  require(execution::allocator_t<void>) const
-  {
-    return basic_system_executor<Blocking,
-        Relationship, std::allocator<void>>();
+  require(execution::allocator_t<void>) const {
+    return basic_system_executor<Blocking, Relationship,
+                                 std::allocator<void>>();
   }
 
 #if !defined(GENERATING_DOCUMENTATION)
@@ -195,9 +183,7 @@ private:
    *       == asio::execution::mapping.thread)
    *   ... @endcode
    */
-  static constexpr execution::mapping_t query(
-      execution::mapping_t) noexcept
-  {
+  static constexpr execution::mapping_t query(execution::mapping_t) noexcept {
     return execution::mapping.thread;
   }
 
@@ -211,7 +197,7 @@ private:
    * asio::system_context& pool = asio::query(
    *     ex, asio::execution::context); @endcode
    */
-  static system_context& query(execution::context_t) noexcept;
+  static system_context &query(execution::context_t) noexcept;
 
   /// Query the current value of the @c blocking property.
   /**
@@ -224,9 +210,7 @@ private:
    *       == asio::execution::blocking.always)
    *   ... @endcode
    */
-  static constexpr execution::blocking_t query(
-      execution::blocking_t) noexcept
-  {
+  static constexpr execution::blocking_t query(execution::blocking_t) noexcept {
     return Blocking();
   }
 
@@ -241,9 +225,8 @@ private:
    *       == asio::execution::relationship.continuation)
    *   ... @endcode
    */
-  static constexpr execution::relationship_t query(
-      execution::relationship_t) noexcept
-  {
+  static constexpr execution::relationship_t
+  query(execution::relationship_t) noexcept {
     return Relationship();
   }
 
@@ -258,9 +241,8 @@ private:
    *     asio::execution::allocator); @endcode
    */
   template <typename OtherAllocator>
-  constexpr Allocator query(
-      execution::allocator_t<OtherAllocator>) const noexcept
-  {
+  constexpr Allocator
+  query(execution::allocator_t<OtherAllocator>) const noexcept {
     return allocator_;
   }
 
@@ -274,9 +256,7 @@ private:
    * auto alloc = asio::query(ex,
    *     asio::execution::allocator); @endcode
    */
-  constexpr Allocator query(
-      execution::allocator_t<void>) const noexcept
-  {
+  constexpr Allocator query(execution::allocator_t<void>) const noexcept {
     return allocator_;
   }
 
@@ -298,9 +278,8 @@ public:
   /**
    * Two executors are equal if they refer to the same underlying io_context.
    */
-  friend bool operator==(const basic_system_executor&,
-      const basic_system_executor&) noexcept
-  {
+  friend bool operator==(const basic_system_executor &,
+                         const basic_system_executor &) noexcept {
     return true;
   }
 
@@ -308,39 +287,32 @@ public:
   /**
    * Two executors are equal if they refer to the same underlying io_context.
    */
-  friend bool operator!=(const basic_system_executor&,
-      const basic_system_executor&) noexcept
-  {
+  friend bool operator!=(const basic_system_executor &,
+                         const basic_system_executor &) noexcept {
     return false;
   }
 
   /// Execution function.
-  template <typename Function>
-  void execute(Function&& f) const
-  {
-    this->do_execute(static_cast<Function&&>(f), Blocking());
+  template <typename Function> void execute(Function &&f) const {
+    this->do_execute(static_cast<Function &&>(f), Blocking());
   }
 
 #if !defined(ASIO_NO_TS_EXECUTORS)
 public:
   /// Obtain the underlying execution context.
-  system_context& context() const noexcept;
+  system_context &context() const noexcept;
 
   /// Inform the executor that it has some outstanding work to do.
   /**
    * For the system executor, this is a no-op.
    */
-  void on_work_started() const noexcept
-  {
-  }
+  void on_work_started() const noexcept {}
 
   /// Inform the executor that some work is no longer outstanding.
   /**
    * For the system executor, this is a no-op.
    */
-  void on_work_finished() const noexcept
-  {
-  }
+  void on_work_finished() const noexcept {}
 
   /// Request the system executor to invoke the given function object.
   /**
@@ -355,7 +327,7 @@ public:
    * internal storage needed for function invocation.
    */
   template <typename Function, typename OtherAllocator>
-  void dispatch(Function&& f, const OtherAllocator& a) const;
+  void dispatch(Function &&f, const OtherAllocator &a) const;
 
   /// Request the system executor to invoke the given function object.
   /**
@@ -371,7 +343,7 @@ public:
    * internal storage needed for function invocation.
    */
   template <typename Function, typename OtherAllocator>
-  void post(Function&& f, const OtherAllocator& a) const;
+  void post(Function &&f, const OtherAllocator &a) const;
 
   /// Request the system executor to invoke the given function object.
   /**
@@ -387,32 +359,26 @@ public:
    * internal storage needed for function invocation.
    */
   template <typename Function, typename OtherAllocator>
-  void defer(Function&& f, const OtherAllocator& a) const;
+  void defer(Function &&f, const OtherAllocator &a) const;
 #endif // !defined(ASIO_NO_TS_EXECUTORS)
 
 private:
   template <typename, typename, typename> friend class basic_system_executor;
 
   // Constructor used by require().
-  basic_system_executor(const Allocator& a)
-    : allocator_(a)
-  {
-  }
+  basic_system_executor(const Allocator &a) : allocator_(a) {}
 
   /// Execution helper implementation for the possibly blocking property.
   template <typename Function>
-  void do_execute(Function&& f,
-      execution::blocking_t::possibly_t) const;
+  void do_execute(Function &&f, execution::blocking_t::possibly_t) const;
 
   /// Execution helper implementation for the always blocking property.
   template <typename Function>
-  void do_execute(Function&& f,
-      execution::blocking_t::always_t) const;
+  void do_execute(Function &&f, execution::blocking_t::always_t) const;
 
   /// Execution helper implementation for the never blocking property.
   template <typename Function>
-  void do_execute(Function&& f,
-      execution::blocking_t::never_t) const;
+  void do_execute(Function &&f, execution::blocking_t::never_t) const;
 
   // The allocator used for execution functions.
   Allocator allocator_;
@@ -428,8 +394,9 @@ private:
  * immediately.
  */
 typedef basic_system_executor<execution::blocking_t::possibly_t,
-    execution::relationship_t::fork_t, std::allocator<void>>
-  system_executor;
+                              execution::relationship_t::fork_t,
+                              std::allocator<void>>
+    system_executor;
 
 #if !defined(GENERATING_DOCUMENTATION)
 
@@ -439,9 +406,7 @@ namespace traits {
 
 template <typename Blocking, typename Relationship, typename Allocator>
 struct equality_comparable<
-    asio::basic_system_executor<Blocking, Relationship, Allocator>
-  >
-{
+    asio::basic_system_executor<Blocking, Relationship, Allocator>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
 };
@@ -450,13 +415,10 @@ struct equality_comparable<
 
 #if !defined(ASIO_HAS_DEDUCED_EXECUTE_MEMBER_TRAIT)
 
-template <typename Blocking, typename Relationship,
-    typename Allocator, typename Function>
+template <typename Blocking, typename Relationship, typename Allocator,
+          typename Function>
 struct execute_member<
-    asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    Function
-  >
-{
+    asio::basic_system_executor<Blocking, Relationship, Allocator>, Function> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
   typedef void result_type;
@@ -469,155 +431,118 @@ struct execute_member<
 template <typename Blocking, typename Relationship, typename Allocator>
 struct require_member<
     asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::blocking_t::possibly_t
-  >
-{
+    asio::execution::blocking_t::possibly_t> {
+  static constexpr bool is_valid = true;
+  static constexpr bool is_noexcept = false;
+  typedef asio::basic_system_executor<asio::execution::blocking_t::possibly_t,
+                                      Relationship, Allocator>
+      result_type;
+};
+
+template <typename Blocking, typename Relationship, typename Allocator>
+struct require_member<
+    asio::basic_system_executor<Blocking, Relationship, Allocator>,
+    asio::execution::blocking_t::always_t> {
+  static constexpr bool is_valid = true;
+  static constexpr bool is_noexcept = false;
+  typedef asio::basic_system_executor<asio::execution::blocking_t::always_t,
+                                      Relationship, Allocator>
+      result_type;
+};
+
+template <typename Blocking, typename Relationship, typename Allocator>
+struct require_member<
+    asio::basic_system_executor<Blocking, Relationship, Allocator>,
+    asio::execution::blocking_t::never_t> {
+  static constexpr bool is_valid = true;
+  static constexpr bool is_noexcept = false;
+  typedef asio::basic_system_executor<asio::execution::blocking_t::never_t,
+                                      Relationship, Allocator>
+      result_type;
+};
+
+template <typename Blocking, typename Relationship, typename Allocator>
+struct require_member<
+    asio::basic_system_executor<Blocking, Relationship, Allocator>,
+    asio::execution::relationship_t::fork_t> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
   typedef asio::basic_system_executor<
-      asio::execution::blocking_t::possibly_t,
-      Relationship, Allocator> result_type;
+      Blocking, asio::execution::relationship_t::fork_t, Allocator>
+      result_type;
 };
 
 template <typename Blocking, typename Relationship, typename Allocator>
 struct require_member<
     asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::blocking_t::always_t
-  >
-{
+    asio::execution::relationship_t::continuation_t> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
   typedef asio::basic_system_executor<
-      asio::execution::blocking_t::always_t,
-      Relationship, Allocator> result_type;
+      Blocking, asio::execution::relationship_t::continuation_t, Allocator>
+      result_type;
 };
 
 template <typename Blocking, typename Relationship, typename Allocator>
 struct require_member<
     asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::blocking_t::never_t
-  >
-{
+    asio::execution::allocator_t<void>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
-  typedef asio::basic_system_executor<
-      asio::execution::blocking_t::never_t,
-      Relationship, Allocator> result_type;
+  typedef asio::basic_system_executor<Blocking, Relationship,
+                                      std::allocator<void>>
+      result_type;
 };
 
-template <typename Blocking, typename Relationship, typename Allocator>
+template <typename Blocking, typename Relationship, typename Allocator,
+          typename OtherAllocator>
 struct require_member<
     asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::relationship_t::fork_t
-  >
-{
+    asio::execution::allocator_t<OtherAllocator>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
-  typedef asio::basic_system_executor<Blocking,
-      asio::execution::relationship_t::fork_t,
-      Allocator> result_type;
-};
-
-template <typename Blocking, typename Relationship, typename Allocator>
-struct require_member<
-    asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::relationship_t::continuation_t
-  >
-{
-  static constexpr bool is_valid = true;
-  static constexpr bool is_noexcept = false;
-  typedef asio::basic_system_executor<Blocking,
-      asio::execution::relationship_t::continuation_t,
-      Allocator> result_type;
-};
-
-template <typename Blocking, typename Relationship, typename Allocator>
-struct require_member<
-    asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::allocator_t<void>
-  >
-{
-  static constexpr bool is_valid = true;
-  static constexpr bool is_noexcept = false;
-  typedef asio::basic_system_executor<Blocking,
-      Relationship, std::allocator<void>> result_type;
-};
-
-template <typename Blocking, typename Relationship,
-    typename Allocator, typename OtherAllocator>
-struct require_member<
-    asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::allocator_t<OtherAllocator>
-  >
-{
-  static constexpr bool is_valid = true;
-  static constexpr bool is_noexcept = false;
-  typedef asio::basic_system_executor<Blocking,
-      Relationship, OtherAllocator> result_type;
+  typedef asio::basic_system_executor<Blocking, Relationship, OtherAllocator>
+      result_type;
 };
 
 #endif // !defined(ASIO_HAS_DEDUCED_REQUIRE_MEMBER_TRAIT)
 
 #if !defined(ASIO_HAS_DEDUCED_QUERY_STATIC_CONSTEXPR_MEMBER_TRAIT)
 
-template <typename Blocking, typename Relationship,
-    typename Allocator, typename Property>
+template <typename Blocking, typename Relationship, typename Allocator,
+          typename Property>
 struct query_static_constexpr_member<
-    asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    Property,
-    typename asio::enable_if<
-      asio::is_convertible<
-        Property,
-        asio::execution::mapping_t
-      >::value
-    >::type
-  >
-{
+    asio::basic_system_executor<Blocking, Relationship, Allocator>, Property,
+    typename asio::enable_if<asio::is_convertible<
+        Property, asio::execution::mapping_t>::value>::type> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef asio::execution::mapping_t::thread_t result_type;
 
-  static constexpr result_type value() noexcept
-  {
-    return result_type();
-  }
+  static constexpr result_type value() noexcept { return result_type(); }
 };
 
 #endif // !defined(ASIO_HAS_DEDUCED_QUERY_STATIC_CONSTEXPR_MEMBER_TRAIT)
 
 #if !defined(ASIO_HAS_DEDUCED_QUERY_MEMBER_TRAIT)
 
-template <typename Blocking, typename Relationship,
-    typename Allocator, typename Property>
+template <typename Blocking, typename Relationship, typename Allocator,
+          typename Property>
 struct query_member<
-    asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    Property,
-    typename asio::enable_if<
-      asio::is_convertible<
-        Property,
-        asio::execution::blocking_t
-      >::value
-    >::type
-  >
-{
+    asio::basic_system_executor<Blocking, Relationship, Allocator>, Property,
+    typename asio::enable_if<asio::is_convertible<
+        Property, asio::execution::blocking_t>::value>::type> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef asio::execution::blocking_t result_type;
 };
 
-template <typename Blocking, typename Relationship,
-    typename Allocator, typename Property>
+template <typename Blocking, typename Relationship, typename Allocator,
+          typename Property>
 struct query_member<
-    asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    Property,
-    typename asio::enable_if<
-      asio::is_convertible<
-        Property,
-        asio::execution::relationship_t
-      >::value
-    >::type
-  >
-{
+    asio::basic_system_executor<Blocking, Relationship, Allocator>, Property,
+    typename asio::enable_if<asio::is_convertible<
+        Property, asio::execution::relationship_t>::value>::type> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef asio::execution::relationship_t result_type;
@@ -626,20 +551,16 @@ struct query_member<
 template <typename Blocking, typename Relationship, typename Allocator>
 struct query_member<
     asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::context_t
-  >
-{
+    asio::execution::context_t> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
-  typedef asio::system_context& result_type;
+  typedef asio::system_context &result_type;
 };
 
 template <typename Blocking, typename Relationship, typename Allocator>
 struct query_member<
     asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::allocator_t<void>
-  >
-{
+    asio::execution::allocator_t<void>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef Allocator result_type;
@@ -648,9 +569,7 @@ struct query_member<
 template <typename Blocking, typename Relationship, typename Allocator>
 struct query_member<
     asio::basic_system_executor<Blocking, Relationship, Allocator>,
-    asio::execution::allocator_t<Allocator>
-  >
-{
+    asio::execution::allocator_t<Allocator>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef Allocator result_type;

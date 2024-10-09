@@ -12,7 +12,7 @@
 #define ASIO_PLACEHOLDERS_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -58,12 +58,12 @@ unspecified signal_number;
 
 #else
 
-static constexpr auto& error = std::placeholders::_1;
-static constexpr auto& bytes_transferred = std::placeholders::_2;
-static constexpr auto& iterator = std::placeholders::_2;
-static constexpr auto& results = std::placeholders::_2;
-static constexpr auto& endpoint = std::placeholders::_2;
-static constexpr auto& signal_number = std::placeholders::_2;
+static constexpr auto &error = std::placeholders::_1;
+static constexpr auto &bytes_transferred = std::placeholders::_2;
+static constexpr auto &iterator = std::placeholders::_2;
+static constexpr auto &results = std::placeholders::_2;
+static constexpr auto &endpoint = std::placeholders::_2;
+static constexpr auto &signal_number = std::placeholders::_2;
 
 #endif
 

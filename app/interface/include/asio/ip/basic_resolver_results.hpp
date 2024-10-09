@@ -12,18 +12,18 @@
 #define ASIO_IP_BASIC_RESOLVER_RESULTS_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include <cstddef>
-#include <cstring>
 #include "asio/detail/socket_ops.hpp"
 #include "asio/detail/socket_types.hpp"
 #include "asio/ip/basic_resolver_iterator.hpp"
+#include <cstddef>
+#include <cstring>
 
 #if defined(ASIO_WINDOWS_RUNTIME)
-# include "asio/detail/winrt_utils.hpp"
+#include "asio/detail/winrt_utils.hpp"
 #endif // defined(ASIO_WINDOWS_RUNTIME)
 
 #include "asio/detail/push_options.hpp"
@@ -49,9 +49,9 @@ namespace ip {
 template <typename InternetProtocol>
 class basic_resolver_results
 #if !defined(ASIO_NO_DEPRECATED)
-  : public basic_resolver_iterator<InternetProtocol>
-#else // !defined(ASIO_NO_DEPRECATED)
-  : private basic_resolver_iterator<InternetProtocol>
+    : public basic_resolver_iterator<InternetProtocol>
+#else  // !defined(ASIO_NO_DEPRECATED)
+    : private basic_resolver_iterator<InternetProtocol>
 #endif // !defined(ASIO_NO_DEPRECATED)
 {
 public:
@@ -65,10 +65,10 @@ public:
   typedef basic_resolver_entry<protocol_type> value_type;
 
   /// The type of a const reference to a value in the range.
-  typedef const value_type& const_reference;
+  typedef const value_type &const_reference;
 
   /// The type of a non-const reference to a value in the range.
-  typedef value_type& reference;
+  typedef value_type &reference;
 
   /// The type of an iterator into the range.
   typedef basic_resolver_iterator<protocol_type> const_iterator;
@@ -83,44 +83,35 @@ public:
   typedef std::size_t size_type;
 
   /// Default constructor creates an empty range.
-  basic_resolver_results()
-  {
-  }
+  basic_resolver_results() {}
 
   /// Copy constructor.
-  basic_resolver_results(const basic_resolver_results& other)
-    : basic_resolver_iterator<InternetProtocol>(other)
-  {
-  }
+  basic_resolver_results(const basic_resolver_results &other)
+      : basic_resolver_iterator<InternetProtocol>(other) {}
 
   /// Move constructor.
-  basic_resolver_results(basic_resolver_results&& other)
-    : basic_resolver_iterator<InternetProtocol>(
-        static_cast<basic_resolver_results&&>(other))
-  {
-  }
+  basic_resolver_results(basic_resolver_results &&other)
+      : basic_resolver_iterator<InternetProtocol>(
+            static_cast<basic_resolver_results &&>(other)) {}
 
   /// Assignment operator.
-  basic_resolver_results& operator=(const basic_resolver_results& other)
-  {
+  basic_resolver_results &operator=(const basic_resolver_results &other) {
     basic_resolver_iterator<InternetProtocol>::operator=(other);
     return *this;
   }
 
   /// Move-assignment operator.
-  basic_resolver_results& operator=(basic_resolver_results&& other)
-  {
+  basic_resolver_results &operator=(basic_resolver_results &&other) {
     basic_resolver_iterator<InternetProtocol>::operator=(
-        static_cast<basic_resolver_results&&>(other));
+        static_cast<basic_resolver_results &&>(other));
     return *this;
   }
 
 #if !defined(GENERATING_DOCUMENTATION)
   // Create results from an addrinfo list returned by getaddrinfo.
-  static basic_resolver_results create(
-      asio::detail::addrinfo_type* address_info,
-      const std::string& host_name, const std::string& service_name)
-  {
+  static basic_resolver_results
+  create(asio::detail::addrinfo_type *address_info,
+         const std::string &host_name, const std::string &service_name) {
     basic_resolver_results results;
     if (!address_info)
       return results;
@@ -131,19 +122,16 @@ public:
 
     results.values_.reset(new values_type);
 
-    while (address_info)
-    {
-      if (address_info->ai_family == ASIO_OS_DEF(AF_INET)
-          || address_info->ai_family == ASIO_OS_DEF(AF_INET6))
-      {
+    while (address_info) {
+      if (address_info->ai_family == ASIO_OS_DEF(AF_INET) ||
+          address_info->ai_family == ASIO_OS_DEF(AF_INET6)) {
         using namespace std; // For memcpy.
         typename InternetProtocol::endpoint endpoint;
         endpoint.resize(static_cast<std::size_t>(address_info->ai_addrlen));
         memcpy(endpoint.data(), address_info->ai_addr,
-            address_info->ai_addrlen);
-        results.values_->push_back(
-            basic_resolver_entry<InternetProtocol>(endpoint,
-              actual_host_name, service_name));
+               address_info->ai_addrlen);
+        results.values_->push_back(basic_resolver_entry<InternetProtocol>(
+            endpoint, actual_host_name, service_name));
       }
       address_info = address_info->ai_next;
     }
@@ -152,128 +140,103 @@ public:
   }
 
   // Create results from an endpoint, host name and service name.
-  static basic_resolver_results create(const endpoint_type& endpoint,
-      const std::string& host_name, const std::string& service_name)
-  {
+  static basic_resolver_results create(const endpoint_type &endpoint,
+                                       const std::string &host_name,
+                                       const std::string &service_name) {
     basic_resolver_results results;
     results.values_.reset(new values_type);
-    results.values_->push_back(
-        basic_resolver_entry<InternetProtocol>(
-          endpoint, host_name, service_name));
+    results.values_->push_back(basic_resolver_entry<InternetProtocol>(
+        endpoint, host_name, service_name));
     return results;
   }
 
   // Create results from a sequence of endpoints, host and service name.
   template <typename EndpointIterator>
-  static basic_resolver_results create(
-      EndpointIterator begin, EndpointIterator end,
-      const std::string& host_name, const std::string& service_name)
-  {
+  static basic_resolver_results
+  create(EndpointIterator begin, EndpointIterator end,
+         const std::string &host_name, const std::string &service_name) {
     basic_resolver_results results;
-    if (begin != end)
-    {
+    if (begin != end) {
       results.values_.reset(new values_type);
-      for (EndpointIterator ep_iter = begin; ep_iter != end; ++ep_iter)
-      {
-        results.values_->push_back(
-            basic_resolver_entry<InternetProtocol>(
-              *ep_iter, host_name, service_name));
+      for (EndpointIterator ep_iter = begin; ep_iter != end; ++ep_iter) {
+        results.values_->push_back(basic_resolver_entry<InternetProtocol>(
+            *ep_iter, host_name, service_name));
       }
     }
     return results;
   }
 
-# if defined(ASIO_WINDOWS_RUNTIME)
+#if defined(ASIO_WINDOWS_RUNTIME)
   // Create results from a Windows Runtime list of EndpointPair objects.
-  static basic_resolver_results create(
-      Windows::Foundation::Collections::IVectorView<
-        Windows::Networking::EndpointPair^>^ endpoints,
-      const asio::detail::addrinfo_type& hints,
-      const std::string& host_name, const std::string& service_name)
-  {
+  static basic_resolver_results
+  create(Windows::Foundation::Collections::IVectorView<
+             Windows::Networking::EndpointPair ^> ^
+             endpoints,
+         const asio::detail::addrinfo_type &hints, const std::string &host_name,
+         const std::string &service_name) {
     basic_resolver_results results;
-    if (endpoints->Size)
-    {
+    if (endpoints->Size) {
       results.values_.reset(new values_type);
-      for (unsigned int i = 0; i < endpoints->Size; ++i)
-      {
+      for (unsigned int i = 0; i < endpoints->Size; ++i) {
         auto pair = endpoints->GetAt(i);
 
-        if (hints.ai_family == ASIO_OS_DEF(AF_INET)
-            && pair->RemoteHostName->Type
-              != Windows::Networking::HostNameType::Ipv4)
+        if (hints.ai_family == ASIO_OS_DEF(AF_INET) &&
+            pair->RemoteHostName->Type !=
+                Windows::Networking::HostNameType::Ipv4)
           continue;
 
-        if (hints.ai_family == ASIO_OS_DEF(AF_INET6)
-            && pair->RemoteHostName->Type
-              != Windows::Networking::HostNameType::Ipv6)
+        if (hints.ai_family == ASIO_OS_DEF(AF_INET6) &&
+            pair->RemoteHostName->Type !=
+                Windows::Networking::HostNameType::Ipv6)
           continue;
 
-        results.values_->push_back(
-            basic_resolver_entry<InternetProtocol>(
-              typename InternetProtocol::endpoint(
-                ip::make_address(
-                  asio::detail::winrt_utils::string(
+        results.values_->push_back(basic_resolver_entry<InternetProtocol>(
+            typename InternetProtocol::endpoint(
+                ip::make_address(asio::detail::winrt_utils::string(
                     pair->RemoteHostName->CanonicalName)),
-                asio::detail::winrt_utils::integer(
-                  pair->RemoteServiceName)),
-              host_name, service_name));
+                asio::detail::winrt_utils::integer(pair->RemoteServiceName)),
+            host_name, service_name));
       }
     }
     return results;
   }
-# endif // defined(ASIO_WINDOWS_RUNTIME)
+#endif // defined(ASIO_WINDOWS_RUNTIME)
 #endif // !defined(GENERATING_DOCUMENTATION)
 
   /// Get the number of entries in the results range.
-  size_type size() const noexcept
-  {
+  size_type size() const noexcept {
     return this->values_ ? this->values_->size() : 0;
   }
 
   /// Get the maximum number of entries permitted in a results range.
-  size_type max_size() const noexcept
-  {
+  size_type max_size() const noexcept {
     return this->values_ ? this->values_->max_size() : values_type().max_size();
   }
 
   /// Determine whether the results range is empty.
-  bool empty() const noexcept
-  {
+  bool empty() const noexcept {
     return this->values_ ? this->values_->empty() : true;
   }
 
   /// Obtain a begin iterator for the results range.
-  const_iterator begin() const
-  {
+  const_iterator begin() const {
     basic_resolver_results tmp(*this);
     tmp.index_ = 0;
-    return static_cast<basic_resolver_results&&>(tmp);
+    return static_cast<basic_resolver_results &&>(tmp);
   }
 
   /// Obtain an end iterator for the results range.
-  const_iterator end() const
-  {
-    return const_iterator();
-  }
+  const_iterator end() const { return const_iterator(); }
 
   /// Obtain a begin iterator for the results range.
-  const_iterator cbegin() const
-  {
-    return begin();
-  }
+  const_iterator cbegin() const { return begin(); }
 
   /// Obtain an end iterator for the results range.
-  const_iterator cend() const
-  {
-    return end();
-  }
+  const_iterator cend() const { return end(); }
 
   /// Swap the results range with another.
-  void swap(basic_resolver_results& that) noexcept
-  {
-    if (this != &that)
-    {
+  void swap(basic_resolver_results &that) noexcept {
+    if (this != &that) {
       this->values_.swap(that.values_);
       std::size_t index = this->index_;
       this->index_ = that.index_;
@@ -282,16 +245,14 @@ public:
   }
 
   /// Test two iterators for equality.
-  friend bool operator==(const basic_resolver_results& a,
-      const basic_resolver_results& b)
-  {
+  friend bool operator==(const basic_resolver_results &a,
+                         const basic_resolver_results &b) {
     return a.equal(b);
   }
 
   /// Test two iterators for inequality.
-  friend bool operator!=(const basic_resolver_results& a,
-      const basic_resolver_results& b)
-  {
+  friend bool operator!=(const basic_resolver_results &a,
+                         const basic_resolver_results &b) {
     return !a.equal(b);
   }
 

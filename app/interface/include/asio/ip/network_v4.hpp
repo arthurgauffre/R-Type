@@ -13,14 +13,14 @@
 #define ASIO_IP_NETWORK_V4_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include <string>
 #include "asio/detail/string_view.hpp"
 #include "asio/error_code.hpp"
 #include "asio/ip/address_v4_range.hpp"
+#include <string>
 
 #include "asio/detail/push_options.hpp"
 
@@ -36,79 +36,57 @@ namespace ip {
  * @e Distinct @e objects: Safe.@n
  * @e Shared @e objects: Unsafe.
  */
-class network_v4
-{
+class network_v4 {
 public:
   /// Default constructor.
-  network_v4() noexcept
-    : address_(),
-      prefix_length_(0)
-  {
-  }
+  network_v4() noexcept : address_(), prefix_length_(0) {}
 
   /// Construct a network based on the specified address and prefix length.
-  ASIO_DECL network_v4(const address_v4& addr,
-      unsigned short prefix_len);
+  ASIO_DECL network_v4(const address_v4 &addr, unsigned short prefix_len);
 
   /// Construct network based on the specified address and netmask.
-  ASIO_DECL network_v4(const address_v4& addr,
-      const address_v4& mask);
+  ASIO_DECL network_v4(const address_v4 &addr, const address_v4 &mask);
 
   /// Copy constructor.
-  network_v4(const network_v4& other) noexcept
-    : address_(other.address_),
-      prefix_length_(other.prefix_length_)
-  {
-  }
+  network_v4(const network_v4 &other) noexcept
+      : address_(other.address_), prefix_length_(other.prefix_length_) {}
 
   /// Move constructor.
-  network_v4(network_v4&& other) noexcept
-    : address_(static_cast<address_v4&&>(other.address_)),
-      prefix_length_(other.prefix_length_)
-  {
-  }
+  network_v4(network_v4 &&other) noexcept
+      : address_(static_cast<address_v4 &&>(other.address_)),
+        prefix_length_(other.prefix_length_) {}
 
   /// Assign from another network.
-  network_v4& operator=(const network_v4& other) noexcept
-  {
+  network_v4 &operator=(const network_v4 &other) noexcept {
     address_ = other.address_;
     prefix_length_ = other.prefix_length_;
     return *this;
   }
 
   /// Move-assign from another network.
-  network_v4& operator=(network_v4&& other) noexcept
-  {
-    address_ = static_cast<address_v4&&>(other.address_);
+  network_v4 &operator=(network_v4 &&other) noexcept {
+    address_ = static_cast<address_v4 &&>(other.address_);
     prefix_length_ = other.prefix_length_;
     return *this;
   }
 
   /// Obtain the address object specified when the network object was created.
-  address_v4 address() const noexcept
-  {
-    return address_;
-  }
+  address_v4 address() const noexcept { return address_; }
 
   /// Obtain the prefix length that was specified when the network object was
   /// created.
-  unsigned short prefix_length() const noexcept
-  {
-    return prefix_length_;
-  }
+  unsigned short prefix_length() const noexcept { return prefix_length_; }
 
   /// Obtain the netmask that was specified when the network object was created.
   ASIO_DECL address_v4 netmask() const noexcept;
 
   /// Obtain an address object that represents the network address.
-  address_v4 network() const noexcept
-  {
+  address_v4 network() const noexcept {
     return address_v4(address_.to_uint() & netmask().to_uint());
   }
 
   /// Obtain an address object that represents the network's broadcast address.
-  address_v4 broadcast() const noexcept
-  {
+  address_v4 broadcast() const noexcept {
     return address_v4(network().to_uint() | (netmask().to_uint() ^ 0xFFFFFFFF));
   }
 
@@ -116,35 +94,29 @@ public:
   ASIO_DECL address_v4_range hosts() const noexcept;
 
   /// Obtain the true network address, omitting any host bits.
-  network_v4 canonical() const noexcept
-  {
+  network_v4 canonical() const noexcept {
     return network_v4(network(), prefix_length());
   }
 
   /// Test if network is a valid host address.
-  bool is_host() const noexcept
-  {
-    return prefix_length_ == 32;
-  }
+  bool is_host() const noexcept { return prefix_length_ == 32; }
 
   /// Test if a network is a real subnet of another network.
-  ASIO_DECL bool is_subnet_of(const network_v4& other) const;
+  ASIO_DECL bool is_subnet_of(const network_v4 &other) const;
 
   /// Get the network as an address in dotted decimal format.
   ASIO_DECL std::string to_string() const;
 
   /// Get the network as an address in dotted decimal format.
-  ASIO_DECL std::string to_string(asio::error_code& ec) const;
+  ASIO_DECL std::string to_string(asio::error_code &ec) const;
 
   /// Compare two networks for equality.
-  friend bool operator==(const network_v4& a, const network_v4& b)
-  {
+  friend bool operator==(const network_v4 &a, const network_v4 &b) {
     return a.address_ == b.address_ && a.prefix_length_ == b.prefix_length_;
   }
 
   /// Compare two networks for inequality.
-  friend bool operator!=(const network_v4& a, const network_v4& b)
-  {
+  friend bool operator!=(const network_v4 &a, const network_v4 &b) {
     return !(a == b);
   }
 
@@ -157,9 +129,8 @@ private:
 /**
  * @relates address_v4
  */
-inline network_v4 make_network_v4(
-    const address_v4& addr, unsigned short prefix_len)
-{
+inline network_v4 make_network_v4(const address_v4 &addr,
+                                  unsigned short prefix_len) {
   return network_v4(addr, prefix_len);
 }
 
@@ -167,9 +138,8 @@ inline network_v4 make_network_v4(
 /**
  * @relates address_v4
  */
-inline network_v4 make_network_v4(
-    const address_v4& addr, const address_v4& mask)
-{
+inline network_v4 make_network_v4(const address_v4 &addr,
+                                  const address_v4 &mask) {
   return network_v4(addr, mask);
 }
 
@@ -178,33 +148,31 @@ inline network_v4 make_network_v4(
 /**
  * @relates network_v4
  */
-ASIO_DECL network_v4 make_network_v4(const char* str);
+ASIO_DECL network_v4 make_network_v4(const char *str);
 
 /// Create an IPv4 network from a string containing IP address and prefix
 /// length.
 /**
  * @relates network_v4
  */
-ASIO_DECL network_v4 make_network_v4(
-    const char* str, asio::error_code& ec);
+ASIO_DECL network_v4 make_network_v4(const char *str, asio::error_code &ec);
 
 /// Create an IPv4 network from a string containing IP address and prefix
 /// length.
 /**
  * @relates network_v4
  */
-ASIO_DECL network_v4 make_network_v4(const std::string& str);
+ASIO_DECL network_v4 make_network_v4(const std::string &str);
 
 /// Create an IPv4 network from a string containing IP address and prefix
 /// length.
 /**
  * @relates network_v4
  */
-ASIO_DECL network_v4 make_network_v4(
-    const std::string& str, asio::error_code& ec);
+ASIO_DECL network_v4 make_network_v4(const std::string &str,
+                                     asio::error_code &ec);
 
-#if defined(ASIO_HAS_STRING_VIEW) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_STRING_VIEW) || defined(GENERATING_DOCUMENTATION)
 
 /// Create an IPv4 network from a string containing IP address and prefix
 /// length.
@@ -218,8 +186,7 @@ ASIO_DECL network_v4 make_network_v4(string_view str);
 /**
  * @relates network_v4
  */
-ASIO_DECL network_v4 make_network_v4(
-    string_view str, asio::error_code& ec);
+ASIO_DECL network_v4 make_network_v4(string_view str, asio::error_code &ec);
 
 #endif // defined(ASIO_HAS_STRING_VIEW)
        //  || defined(GENERATING_DOCUMENTATION)
@@ -239,8 +206,8 @@ ASIO_DECL network_v4 make_network_v4(
  * @relates asio::ip::address_v4
  */
 template <typename Elem, typename Traits>
-std::basic_ostream<Elem, Traits>& operator<<(
-    std::basic_ostream<Elem, Traits>& os, const network_v4& net);
+std::basic_ostream<Elem, Traits> &
+operator<<(std::basic_ostream<Elem, Traits> &os, const network_v4 &net);
 
 #endif // !defined(ASIO_NO_IOSTREAM)
 
@@ -251,7 +218,7 @@ std::basic_ostream<Elem, Traits>& operator<<(
 
 #include "asio/ip/impl/network_v4.hpp"
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/ip/impl/network_v4.ipp"
+#include "asio/ip/impl/network_v4.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_IP_NETWORK_V4_HPP

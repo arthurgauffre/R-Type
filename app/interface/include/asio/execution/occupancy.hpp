@@ -12,7 +12,7 @@
 #define ASIO_EXECUTION_OCCUPANCY_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -32,8 +32,7 @@ namespace execution {
 
 /// A property that gives an estimate of the number of execution agents that
 /// should occupy the associated execution context.
-struct occupancy_t
-{
+struct occupancy_t {
   /// The occupancy_t property applies to executors.
   template <typename T>
   static constexpr bool is_applicable_property_v = is_executor_v<T>;
@@ -58,9 +57,7 @@ constexpr occupancy_t occupancy;
 namespace execution {
 namespace detail {
 
-template <int I = 0>
-struct occupancy_t
-{
+template <int I = 0> struct occupancy_t {
 #if defined(ASIO_HAS_VARIABLE_TEMPLATES)
   template <typename T>
   static constexpr bool is_applicable_property_v = is_executor<T>::value;
@@ -70,47 +67,33 @@ struct occupancy_t
   static constexpr bool is_preferable = false;
   typedef std::size_t polymorphic_query_result_type;
 
-  constexpr occupancy_t()
-  {
-  }
+  constexpr occupancy_t() {}
 
-  template <typename T>
-  struct static_proxy
-  {
+  template <typename T> struct static_proxy {
 #if defined(ASIO_HAS_DEDUCED_QUERY_STATIC_CONSTEXPR_MEMBER_TRAIT)
-    struct type
-    {
+    struct type {
       template <typename P>
-      static constexpr auto query(P&& p)
-        noexcept(
-          noexcept(
-            conditional_t<true, T, P>::query(static_cast<P&&>(p))
-          )
-        )
-        -> decltype(
-          conditional_t<true, T, P>::query(static_cast<P&&>(p))
-        )
-      {
-        return T::query(static_cast<P&&>(p));
+      static constexpr auto query(P &&p) noexcept(
+          noexcept(conditional_t<true, T, P>::query(static_cast<P &&>(p))))
+          -> decltype(conditional_t<true, T, P>::query(static_cast<P &&>(p))) {
+        return T::query(static_cast<P &&>(p));
       }
     };
-#else // defined(ASIO_HAS_DEDUCED_QUERY_STATIC_CONSTEXPR_MEMBER_TRAIT)
+#else  // defined(ASIO_HAS_DEDUCED_QUERY_STATIC_CONSTEXPR_MEMBER_TRAIT)
     typedef T type;
 #endif // defined(ASIO_HAS_DEDUCED_QUERY_STATIC_CONSTEXPR_MEMBER_TRAIT)
   };
 
   template <typename T>
-  struct query_static_constexpr_member :
-    traits::query_static_constexpr_member<
-      typename static_proxy<T>::type, occupancy_t> {};
+  struct query_static_constexpr_member
+      : traits::query_static_constexpr_member<typename static_proxy<T>::type,
+                                              occupancy_t> {};
 
-#if defined(ASIO_HAS_DEDUCED_STATIC_QUERY_TRAIT) \
-  && defined(ASIO_HAS_SFINAE_VARIABLE_TEMPLATES)
+#if defined(ASIO_HAS_DEDUCED_STATIC_QUERY_TRAIT) &&                            \
+    defined(ASIO_HAS_SFINAE_VARIABLE_TEMPLATES)
   template <typename T>
   static constexpr typename query_static_constexpr_member<T>::result_type
-  static_query()
-    noexcept(query_static_constexpr_member<T>::is_noexcept)
-  {
+  static_query() noexcept(query_static_constexpr_member<T>::is_noexcept) {
     return query_static_constexpr_member<T>::value();
   }
 
@@ -120,9 +103,10 @@ struct occupancy_t
        //   && defined(ASIO_HAS_SFINAE_VARIABLE_TEMPLATES)
 };
 
-#if defined(ASIO_HAS_DEDUCED_STATIC_QUERY_TRAIT) \
-  && defined(ASIO_HAS_SFINAE_VARIABLE_TEMPLATES)
-template <int I> template <typename E, typename T>
+#if defined(ASIO_HAS_DEDUCED_STATIC_QUERY_TRAIT) &&                            \
+    defined(ASIO_HAS_SFINAE_VARIABLE_TEMPLATES)
+template <int I>
+template <typename E, typename T>
 const T occupancy_t<I>::static_query_v;
 #endif // defined(ASIO_HAS_DEDUCED_STATIC_QUERY_TRAIT)
        //   && defined(ASIO_HAS_SFINAE_VARIABLE_TEMPLATES)
@@ -139,34 +123,28 @@ constexpr occupancy_t occupancy;
 
 template <typename T>
 struct is_applicable_property<T, execution::occupancy_t>
-  : integral_constant<bool, execution::is_executor<T>::value>
-{
-};
+    : integral_constant<bool, execution::is_executor<T>::value> {};
 
 #endif // !defined(ASIO_HAS_VARIABLE_TEMPLATES)
 
 namespace traits {
 
-#if !defined(ASIO_HAS_DEDUCED_STATIC_QUERY_TRAIT) \
-  || !defined(ASIO_HAS_SFINAE_VARIABLE_TEMPLATES)
+#if !defined(ASIO_HAS_DEDUCED_STATIC_QUERY_TRAIT) ||                           \
+    !defined(ASIO_HAS_SFINAE_VARIABLE_TEMPLATES)
 
 template <typename T>
 struct static_query<T, execution::occupancy_t,
-  enable_if_t<
-    execution::detail::occupancy_t<0>::
-      query_static_constexpr_member<T>::is_valid
-  >>
-{
+                    enable_if_t<execution::detail::occupancy_t<
+                        0>::query_static_constexpr_member<T>::is_valid>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
 
-  typedef typename execution::detail::occupancy_t<0>::
-    query_static_constexpr_member<T>::result_type result_type;
+  typedef typename execution::detail::occupancy_t<
+      0>::query_static_constexpr_member<T>::result_type result_type;
 
-  static constexpr result_type value()
-  {
-    return execution::detail::occupancy_t<0>::
-      query_static_constexpr_member<T>::value();
+  static constexpr result_type value() {
+    return execution::detail::occupancy_t<0>::query_static_constexpr_member<
+        T>::value();
   }
 };
 

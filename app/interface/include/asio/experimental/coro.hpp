@@ -13,7 +13,7 @@
 #define ASIO_EXPERIMENTAL_CORO_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -31,12 +31,11 @@ namespace asio {
 namespace experimental {
 namespace detail {
 
-template <typename Signature, typename Return,
-    typename Executor, typename Allocator>
+template <typename Signature, typename Return, typename Executor,
+          typename Allocator>
 struct coro_promise;
 
-template <typename T, typename Coroutine>
-struct coro_with_arg;
+template <typename T, typename Coroutine> struct coro_with_arg;
 
 } // namespace detail
 
@@ -47,10 +46,9 @@ struct coro_with_arg;
  * the underlying executor type.
  */
 template <typename Yield = void, typename Return = void,
-    typename Executor = any_io_executor,
-    typename Allocator = std::allocator<void>>
-struct coro
-{
+          typename Executor = any_io_executor,
+          typename Allocator = std::allocator<void>>
+struct coro {
   /// The traits of the coroutine. See asio::experimental::coro_traits
   /// for details.
   using traits = coro_traits<Yield, Return, Executor>;
@@ -85,8 +83,7 @@ struct coro
   using promise_type = detail::coro_promise<Yield, Return, Executor, Allocator>;
 
 #if !defined(GENERATING_DOCUMENTATION)
-  template <typename T, typename Coroutine>
-  friend struct detail::coro_with_arg;
+  template <typename T, typename Coroutine> friend struct detail::coro_with_arg;
 #endif // !defined(GENERATING_DOCUMENTATION)
 
   /// The executor type.
@@ -103,21 +100,17 @@ struct coro
   coro() = default;
 
   /// Move constructor.
-  coro(coro&& lhs) noexcept
-    : coro_(std::exchange(lhs.coro_, nullptr))
-  {
-  }
+  coro(coro &&lhs) noexcept : coro_(std::exchange(lhs.coro_, nullptr)) {}
 
-  coro(const coro&) = delete;
+  coro(const coro &) = delete;
 
   /// Move assignment.
-  coro& operator=(coro&& lhs) noexcept
-  {
+  coro &operator=(coro &&lhs) noexcept {
     std::swap(coro_, lhs.coro_);
     return *this;
   }
 
-  coro& operator=(const coro&) = delete;
+  coro &operator=(const coro &) = delete;
 
   /// Destructor. Destroys the coroutine, if it holds a valid one.
   /**
@@ -125,44 +118,36 @@ struct coro
    * coroutine, i.e. one with a call to async_resume that has not completed, is
    * undefined behaviour.
    */
-  ~coro()
-  {
-    if (coro_ != nullptr)
-    {
-      struct destroyer
-      {
+  ~coro() {
+    if (coro_ != nullptr) {
+      struct destroyer {
         detail::coroutine_handle<promise_type> handle;
 
-        destroyer(const detail::coroutine_handle<promise_type>& handle)
-          : handle(handle)
-        { }
+        destroyer(const detail::coroutine_handle<promise_type> &handle)
+            : handle(handle) {}
 
-        destroyer(destroyer&& lhs)
-          : handle(std::exchange(lhs.handle, nullptr))
-        {
-        }
+        destroyer(destroyer &&lhs)
+            : handle(std::exchange(lhs.handle, nullptr)) {}
 
-        destroyer(const destroyer&) = delete;
+        destroyer(const destroyer &) = delete;
 
         void operator()() {}
 
-        ~destroyer()
-        {
+        ~destroyer() {
           if (handle)
             handle.destroy();
         }
       };
 
       auto handle =
-        detail::coroutine_handle<promise_type>::from_promise(*coro_);
+          detail::coroutine_handle<promise_type>::from_promise(*coro_);
       if (handle)
         asio::dispatch(coro_->get_executor(), destroyer{handle});
     }
   }
 
   /// Get the used executor.
-  executor_type get_executor() const
-  {
+  executor_type get_executor() const {
     if (coro_)
       return coro_->get_executor();
 
@@ -173,8 +158,7 @@ struct coro
   }
 
   /// Get the used allocator.
-  allocator_type get_allocator() const
-  {
+  allocator_type get_allocator() const {
     if (coro_)
       return coro_->get_allocator();
 
@@ -196,12 +180,10 @@ struct coro
    * value.
    */
   template <typename CompletionToken>
-    requires std::is_void_v<input_type>
-  auto async_resume(CompletionToken&& token) &
-  {
-    return async_initiate<CompletionToken,
-        typename traits::completion_handler>(
-          initiate_async_resume(this), token);
+  requires std::is_void_v<input_type>
+  auto async_resume(CompletionToken &&token) & {
+    return async_initiate<CompletionToken, typename traits::completion_handler>(
+        initiate_async_resume(this), token);
   }
 
   /// Resume the coroutine.
@@ -214,16 +196,13 @@ struct coro
    * @note This overload is only available for coroutines with an input value.
    */
   template <typename CompletionToken, detail::convertible_to<input_type> T>
-  auto async_resume(T&& ip, CompletionToken&& token) &
-  {
-    return async_initiate<CompletionToken,
-        typename traits::completion_handler>(
-          initiate_async_resume(this), token, std::forward<T>(ip));
+  auto async_resume(T &&ip, CompletionToken &&token) & {
+    return async_initiate<CompletionToken, typename traits::completion_handler>(
+        initiate_async_resume(this), token, std::forward<T>(ip));
   }
 
   /// Operator used for coroutines without input value.
-  auto operator co_await() requires (std::is_void_v<input_type>)
-  {
+  auto operator co_await() requires(std::is_void_v<input_type>) {
     return awaitable_t{*this};
   }
 
@@ -240,23 +219,18 @@ struct coro
    * }
    * @endcode
    */
-  template <detail::convertible_to<input_type> T>
-  auto operator()(T&& ip)
-  {
-    return detail::coro_with_arg<std::decay_t<T>, coro>{
-        std::forward<T>(ip), *this};
+  template <detail::convertible_to<input_type> T> auto operator()(T &&ip) {
+    return detail::coro_with_arg<std::decay_t<T>, coro>{std::forward<T>(ip),
+                                                        *this};
   }
 
   /// Check whether the coroutine is open, i.e. can be resumed.
-  bool is_open() const
-  {
-    if (coro_)
-    {
+  bool is_open() const {
+    if (coro_) {
       auto handle =
-        detail::coroutine_handle<promise_type>::from_promise(*coro_);
+          detail::coroutine_handle<promise_type>::from_promise(*coro_);
       return handle && !handle.done();
-    }
-    else
+    } else
       return false;
   }
 
@@ -268,19 +242,19 @@ private:
 
   struct initiate_async_resume;
 
-  explicit coro(promise_type* const cr) : coro_(cr) {}
+  explicit coro(promise_type *const cr) : coro_(cr) {}
 
-  promise_type* coro_{nullptr};
+  promise_type *coro_{nullptr};
 };
 
 /// A generator is a coro that returns void and yields value.
-template<typename T, typename Executor = asio::any_io_executor,
-    typename Allocator = std::allocator<void>>
+template <typename T, typename Executor = asio::any_io_executor,
+          typename Allocator = std::allocator<void>>
 using generator = coro<T, void, Executor, Allocator>;
 
 /// A task is a coro that does not yield values
-template<typename T, typename Executor = asio::any_io_executor,
-    typename Allocator = std::allocator<void>>
+template <typename T, typename Executor = asio::any_io_executor,
+          typename Allocator = std::allocator<void>>
 using task = coro<void(), T, Executor, Allocator>;
 
 } // namespace experimental

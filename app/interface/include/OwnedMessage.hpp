@@ -11,21 +11,19 @@
 #include <memory>
 
 namespace rtype {
-    namespace network {
-        template <typename T>
-        class NetworkConnection;
-        template <typename T>
-        struct OwnedMessage
-        {
-            std::shared_ptr<NetworkConnection<T>> remoteConnection;
-            Message<T> message;
+namespace network {
+template <typename T> class NetworkConnection;
+template <typename T> struct OwnedMessage {
+  std::shared_ptr<NetworkConnection<T>> remoteConnection;
+  Message<T> message;
 
-            friend std::ostream& operator<<(std::ostream& os, const OwnedMessage<T>& message) {
-                os << message.message;
-                return os;
-            }
-        };
-    }
-}
+  friend std::ostream &operator<<(std::ostream &os,
+                                  const OwnedMessage<T> &message) {
+    os << message.message;
+    return os;
+  }
+};
+} // namespace network
+} // namespace rtype
 
 #endif /* !OWNEDMESSAGE_HPP_ */

@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_WIN_MUTEX_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -28,9 +28,7 @@
 namespace asio {
 namespace detail {
 
-class win_mutex
-  : private noncopyable
-{
+class win_mutex : private noncopyable {
 public:
   typedef asio::detail::scoped_lock<win_mutex> scoped_lock;
 
@@ -38,22 +36,13 @@ public:
   ASIO_DECL win_mutex();
 
   // Destructor.
-  ~win_mutex()
-  {
-    ::DeleteCriticalSection(&crit_section_);
-  }
+  ~win_mutex() { ::DeleteCriticalSection(&crit_section_); }
 
   // Lock the mutex.
-  void lock()
-  {
-    ::EnterCriticalSection(&crit_section_);
-  }
+  void lock() { ::EnterCriticalSection(&crit_section_); }
 
   // Unlock the mutex.
-  void unlock()
-  {
-    ::LeaveCriticalSection(&crit_section_);
-  }
+  void unlock() { ::LeaveCriticalSection(&crit_section_); }
 
 private:
   // Initialisation must be performed in a separate function to the constructor
@@ -70,7 +59,7 @@ private:
 #include "asio/detail/pop_options.hpp"
 
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/win_mutex.ipp"
+#include "asio/detail/impl/win_mutex.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // defined(ASIO_WINDOWS)

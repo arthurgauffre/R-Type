@@ -12,15 +12,14 @@
 #define ASIO_POSIX_BASIC_DESCRIPTOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_POSIX_STREAM_DESCRIPTOR) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_POSIX_STREAM_DESCRIPTOR) ||                               \
+    defined(GENERATING_DOCUMENTATION)
 
-#include <utility>
 #include "asio/any_io_executor.hpp"
 #include "asio/async_result.hpp"
 #include "asio/detail/handler_type_requirements.hpp"
@@ -30,11 +29,12 @@
 #include "asio/error.hpp"
 #include "asio/execution_context.hpp"
 #include "asio/posix/descriptor_base.hpp"
+#include <utility>
 
 #if defined(ASIO_HAS_IO_URING_AS_DEFAULT)
-# include "asio/detail/io_uring_descriptor_service.hpp"
+#include "asio/detail/io_uring_descriptor_service.hpp"
 #else // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
-# include "asio/detail/reactive_descriptor_service.hpp"
+#include "asio/detail/reactive_descriptor_service.hpp"
 #endif // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
 #include "asio/detail/push_options.hpp"
@@ -52,9 +52,7 @@ namespace posix {
  * @e Shared @e objects: Unsafe.
  */
 template <typename Executor = any_io_executor>
-class basic_descriptor
-  : public descriptor_base
-{
+class basic_descriptor : public descriptor_base {
 private:
   class initiate_async_wait;
 
@@ -63,9 +61,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the descriptor type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The descriptor type when rebound to the specified executor.
     typedef basic_descriptor<Executor1> other;
   };
@@ -75,10 +71,10 @@ public:
   typedef implementation_defined native_handle_type;
 #elif defined(ASIO_HAS_IO_URING_AS_DEFAULT)
   typedef detail::io_uring_descriptor_service::native_handle_type
-    native_handle_type;
-#else // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
+      native_handle_type;
+#else  // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
   typedef detail::reactive_descriptor_service::native_handle_type
-    native_handle_type;
+      native_handle_type;
 #endif // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
   /// A descriptor is always the lowest layer.
@@ -92,10 +88,7 @@ public:
    * dispatch handlers for any asynchronous operations performed on the
    * descriptor.
    */
-  explicit basic_descriptor(const executor_type& ex)
-    : impl_(0, ex)
-  {
-  }
+  explicit basic_descriptor(const executor_type &ex) : impl_(0, ex) {}
 
   /// Construct a descriptor without opening it.
   /**
@@ -106,14 +99,12 @@ public:
    * asynchronous operations performed on the descriptor.
    */
   template <typename ExecutionContext>
-  explicit basic_descriptor(ExecutionContext& context,
+  explicit basic_descriptor(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {}
 
   /// Construct a descriptor on an existing native descriptor.
   /**
@@ -128,13 +119,12 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_descriptor(const executor_type& ex,
-      const native_handle_type& native_descriptor)
-    : impl_(0, ex)
-  {
+  basic_descriptor(const executor_type &ex,
+                   const native_handle_type &native_descriptor)
+      : impl_(0, ex) {
     asio::error_code ec;
-    impl_.get_service().assign(impl_.get_implementation(),
-        native_descriptor, ec);
+    impl_.get_service().assign(impl_.get_implementation(), native_descriptor,
+                               ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -152,16 +142,14 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_descriptor(ExecutionContext& context,
-      const native_handle_type& native_descriptor,
+  basic_descriptor(
+      ExecutionContext &context, const native_handle_type &native_descriptor,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : impl_(0, 0, context) {
     asio::error_code ec;
-    impl_.get_service().assign(impl_.get_implementation(),
-        native_descriptor, ec);
+    impl_.get_service().assign(impl_.get_implementation(), native_descriptor,
+                               ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -176,10 +164,8 @@ public:
    * constructed using the @c basic_descriptor(const executor_type&)
    * constructor.
    */
-  basic_descriptor(basic_descriptor&& other) noexcept
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_descriptor(basic_descriptor &&other) noexcept
+      : impl_(std::move(other.impl_)) {}
 
   /// Move-assign a descriptor from another.
   /**
@@ -192,15 +178,13 @@ public:
    * constructed using the @c basic_descriptor(const executor_type&)
    * constructor.
    */
-  basic_descriptor& operator=(basic_descriptor&& other)
-  {
+  basic_descriptor &operator=(basic_descriptor &&other) {
     impl_ = std::move(other.impl_);
     return *this;
   }
 
   // All descriptors have access to each other's implementations.
-  template <typename Executor1>
-  friend class basic_descriptor;
+  template <typename Executor1> friend class basic_descriptor;
 
   /// Move-construct a basic_descriptor from a descriptor of another executor
   /// type.
@@ -215,14 +199,10 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  basic_descriptor(basic_descriptor<Executor1>&& other,
-      constraint_t<
-        is_convertible<Executor1, Executor>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_descriptor(basic_descriptor<Executor1> &&other,
+                   constraint_t<is_convertible<Executor1, Executor>::value,
+                                defaulted_constraint> = defaulted_constraint())
+      : impl_(std::move(other.impl_)) {}
 
   /// Move-assign a basic_descriptor from a descriptor of another executor type.
   /**
@@ -236,21 +216,15 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  constraint_t<
-    is_convertible<Executor1, Executor>::value,
-    basic_descriptor&
-  > operator=(basic_descriptor<Executor1> && other)
-  {
+  constraint_t<is_convertible<Executor1, Executor>::value, basic_descriptor &>
+  operator=(basic_descriptor<Executor1> &&other) {
     basic_descriptor tmp(std::move(other));
     impl_ = std::move(tmp.impl_);
     return *this;
   }
 
   /// Get the executor associated with the object.
-  const executor_type& get_executor() noexcept
-  {
-    return impl_.get_executor();
-  }
+  const executor_type &get_executor() noexcept { return impl_.get_executor(); }
 
   /// Get a reference to the lowest layer.
   /**
@@ -261,10 +235,7 @@ public:
    * @return A reference to the lowest layer in the stack of layers. Ownership
    * is not transferred to the caller.
    */
-  lowest_layer_type& lowest_layer()
-  {
-    return *this;
-  }
+  lowest_layer_type &lowest_layer() { return *this; }
 
   /// Get a const reference to the lowest layer.
   /**
@@ -275,10 +246,7 @@ public:
    * @return A const reference to the lowest layer in the stack of layers.
    * Ownership is not transferred to the caller.
    */
-  const lowest_layer_type& lowest_layer() const
-  {
-    return *this;
-  }
+  const lowest_layer_type &lowest_layer() const { return *this; }
 
   /// Assign an existing native descriptor to the descriptor.
   /*
@@ -288,11 +256,10 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void assign(const native_handle_type& native_descriptor)
-  {
+  void assign(const native_handle_type &native_descriptor) {
     asio::error_code ec;
-    impl_.get_service().assign(impl_.get_implementation(),
-        native_descriptor, ec);
+    impl_.get_service().assign(impl_.get_implementation(), native_descriptor,
+                               ec);
     asio::detail::throw_error(ec, "assign");
   }
 
@@ -304,17 +271,15 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID assign(const native_handle_type& native_descriptor,
-      asio::error_code& ec)
-  {
-    impl_.get_service().assign(
-        impl_.get_implementation(), native_descriptor, ec);
+  ASIO_SYNC_OP_VOID assign(const native_handle_type &native_descriptor,
+                           asio::error_code &ec) {
+    impl_.get_service().assign(impl_.get_implementation(), native_descriptor,
+                               ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Determine whether the descriptor is open.
-  bool is_open() const
-  {
+  bool is_open() const {
     return impl_.get_service().is_open(impl_.get_implementation());
   }
 
@@ -327,8 +292,7 @@ public:
    * @throws asio::system_error Thrown on failure. Note that, even if
    * the function indicates an error, the underlying descriptor is closed.
    */
-  void close()
-  {
+  void close() {
     asio::error_code ec;
     impl_.get_service().close(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "close");
@@ -343,8 +307,7 @@ public:
    * @param ec Set to indicate what error occurred, if any. Note that, even if
    * the function indicates an error, the underlying descriptor is closed.
    */
-  ASIO_SYNC_OP_VOID close(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID close(asio::error_code &ec) {
     impl_.get_service().close(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -355,8 +318,7 @@ public:
    * descriptor. This is intended to allow access to native descriptor
    * functionality that is not otherwise provided.
    */
-  native_handle_type native_handle()
-  {
+  native_handle_type native_handle() {
     return impl_.get_service().native_handle(impl_.get_implementation());
   }
 
@@ -370,8 +332,7 @@ public:
    * immediately, and the handlers for cancelled operations will be passed the
    * asio::error::operation_aborted error.
    */
-  native_handle_type release()
-  {
+  native_handle_type release() {
     return impl_.get_service().release(impl_.get_implementation());
   }
 
@@ -383,8 +344,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void cancel()
-  {
+  void cancel() {
     asio::error_code ec;
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "cancel");
@@ -398,8 +358,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID cancel(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID cancel(asio::error_code &ec) {
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -427,8 +386,7 @@ public:
    * @endcode
    */
   template <typename IoControlCommand>
-  void io_control(IoControlCommand& command)
-  {
+  void io_control(IoControlCommand &command) {
     asio::error_code ec;
     impl_.get_service().io_control(impl_.get_implementation(), command, ec);
     asio::detail::throw_error(ec, "io_control");
@@ -462,9 +420,8 @@ public:
    * @endcode
    */
   template <typename IoControlCommand>
-  ASIO_SYNC_OP_VOID io_control(IoControlCommand& command,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID io_control(IoControlCommand &command,
+                               asio::error_code &ec) {
     impl_.get_service().io_control(impl_.get_implementation(), command, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -480,8 +437,7 @@ public:
    * operations. Asynchronous operations will never fail with the error
    * asio::error::would_block.
    */
-  bool non_blocking() const
-  {
+  bool non_blocking() const {
     return impl_.get_service().non_blocking(impl_.get_implementation());
   }
 
@@ -498,8 +454,7 @@ public:
    * operations. Asynchronous operations will never fail with the error
    * asio::error::would_block.
    */
-  void non_blocking(bool mode)
-  {
+  void non_blocking(bool mode) {
     asio::error_code ec;
     impl_.get_service().non_blocking(impl_.get_implementation(), mode, ec);
     asio::detail::throw_error(ec, "non_blocking");
@@ -518,9 +473,7 @@ public:
    * operations. Asynchronous operations will never fail with the error
    * asio::error::would_block.
    */
-  ASIO_SYNC_OP_VOID non_blocking(
-      bool mode, asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID non_blocking(bool mode, asio::error_code &ec) {
     impl_.get_service().non_blocking(impl_.get_implementation(), mode, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -539,10 +492,8 @@ public:
    * Consequently, the return value may be incorrect if the non-blocking mode
    * was set directly on the native descriptor.
    */
-  bool native_non_blocking() const
-  {
-    return impl_.get_service().native_non_blocking(
-        impl_.get_implementation());
+  bool native_non_blocking() const {
+    return impl_.get_service().native_non_blocking(impl_.get_implementation());
   }
 
   /// Sets the non-blocking mode of the native descriptor implementation.
@@ -560,11 +511,10 @@ public:
    * function fails with asio::error::invalid_argument, as the
    * combination does not make sense.
    */
-  void native_non_blocking(bool mode)
-  {
+  void native_non_blocking(bool mode) {
     asio::error_code ec;
-    impl_.get_service().native_non_blocking(
-        impl_.get_implementation(), mode, ec);
+    impl_.get_service().native_non_blocking(impl_.get_implementation(), mode,
+                                            ec);
     asio::detail::throw_error(ec, "native_non_blocking");
   }
 
@@ -583,11 +533,9 @@ public:
    * function fails with asio::error::invalid_argument, as the
    * combination does not make sense.
    */
-  ASIO_SYNC_OP_VOID native_non_blocking(
-      bool mode, asio::error_code& ec)
-  {
-    impl_.get_service().native_non_blocking(
-        impl_.get_implementation(), mode, ec);
+  ASIO_SYNC_OP_VOID native_non_blocking(bool mode, asio::error_code &ec) {
+    impl_.get_service().native_non_blocking(impl_.get_implementation(), mode,
+                                            ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
@@ -607,8 +555,7 @@ public:
    * descriptor.wait(asio::posix::stream_descriptor::wait_read);
    * @endcode
    */
-  void wait(wait_type w)
-  {
+  void wait(wait_type w) {
     asio::error_code ec;
     impl_.get_service().wait(impl_.get_implementation(), w, ec);
     asio::detail::throw_error(ec, "wait");
@@ -633,8 +580,7 @@ public:
    * descriptor.wait(asio::posix::stream_descriptor::wait_read, ec);
    * @endcode
    */
-  ASIO_SYNC_OP_VOID wait(wait_type w, asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID wait(wait_type w, asio::error_code &ec) {
     impl_.get_service().wait(impl_.get_implementation(), w, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -694,16 +640,14 @@ public:
    *
    * @li @c cancellation_type::total
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code))
-        WaitToken = default_completion_token_t<executor_type>>
-  auto async_wait(wait_type w,
-      WaitToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WaitToken, void (asio::error_code)>(
-        declval<initiate_async_wait>(), token, w))
-  {
-    return async_initiate<WaitToken, void (asio::error_code)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code))
+                WaitToken = default_completion_token_t<executor_type>>
+  auto
+  async_wait(wait_type w,
+             WaitToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WaitToken, void(asio::error_code)>(
+          declval<initiate_async_wait>(), token, w)) {
+    return async_initiate<WaitToken, void(asio::error_code)>(
         initiate_async_wait(this), token, w);
   }
 
@@ -714,51 +658,43 @@ protected:
    * asynchronous wait operations associated with the descriptor as if by
    * calling @c cancel.
    */
-  ~basic_descriptor()
-  {
-  }
+  ~basic_descriptor() {}
 
 #if defined(ASIO_HAS_IO_URING_AS_DEFAULT)
   detail::io_object_impl<detail::io_uring_descriptor_service, Executor> impl_;
-#else // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
+#else  // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
   detail::io_object_impl<detail::reactive_descriptor_service, Executor> impl_;
 #endif // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
 private:
   // Disallow copying and assignment.
-  basic_descriptor(const basic_descriptor&) = delete;
-  basic_descriptor& operator=(const basic_descriptor&) = delete;
+  basic_descriptor(const basic_descriptor &) = delete;
+  basic_descriptor &operator=(const basic_descriptor &) = delete;
 
-  class initiate_async_wait
-  {
+  class initiate_async_wait {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_wait(basic_descriptor* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_wait(basic_descriptor *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename WaitHandler>
-    void operator()(WaitHandler&& handler, wait_type w) const
-    {
+    void operator()(WaitHandler &&handler, wait_type w) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WaitHandler.
       ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
       detail::non_const_lvalue<WaitHandler> handler2(handler);
-      self_->impl_.get_service().async_wait(
-          self_->impl_.get_implementation(), w,
-          handler2.value, self_->impl_.get_executor());
+      self_->impl_.get_service().async_wait(self_->impl_.get_implementation(),
+                                            w, handler2.value,
+                                            self_->impl_.get_executor());
     }
 
   private:
-    basic_descriptor* self_;
+    basic_descriptor *self_;
   };
 };
 

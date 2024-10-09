@@ -12,21 +12,20 @@
 #define ASIO_BASIC_RANDOM_ACCESS_FILE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_FILE) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_FILE) || defined(GENERATING_DOCUMENTATION)
 
-#include <cstddef>
 #include "asio/async_result.hpp"
 #include "asio/basic_file.hpp"
 #include "asio/detail/handler_type_requirements.hpp"
 #include "asio/detail/non_const_lvalue.hpp"
 #include "asio/detail/throw_error.hpp"
 #include "asio/error.hpp"
+#include <cstddef>
 
 #include "asio/detail/push_options.hpp"
 
@@ -36,8 +35,7 @@ namespace asio {
 #define ASIO_BASIC_RANDOM_ACCESS_FILE_FWD_DECL
 
 // Forward declaration with defaulted arguments.
-template <typename Executor = any_io_executor>
-class basic_random_access_file;
+template <typename Executor = any_io_executor> class basic_random_access_file;
 
 #endif // !defined(ASIO_BASIC_RANDOM_ACCESS_FILE_FWD_DECL)
 
@@ -57,9 +55,7 @@ class basic_random_access_file;
  * synchronous operations, such as @c open or @c close, are not thread safe.
  */
 template <typename Executor>
-class basic_random_access_file
-  : public basic_file<Executor>
-{
+class basic_random_access_file : public basic_file<Executor> {
 private:
   class initiate_async_write_some_at;
   class initiate_async_read_some_at;
@@ -69,9 +65,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the file type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The file type when rebound to the specified executor.
     typedef basic_random_access_file<Executor1> other;
   };
@@ -91,10 +85,8 @@ public:
    * @param ex The I/O executor that the file will use, by default, to
    * dispatch handlers for any asynchronous operations performed on the file.
    */
-  explicit basic_random_access_file(const executor_type& ex)
-    : basic_file<Executor>(ex)
-  {
-  }
+  explicit basic_random_access_file(const executor_type &ex)
+      : basic_file<Executor>(ex) {}
 
   /// Construct a basic_random_access_file without opening it.
   /**
@@ -106,14 +98,12 @@ public:
    * operations performed on the file.
    */
   template <typename ExecutionContext>
-  explicit basic_random_access_file(ExecutionContext& context,
+  explicit basic_random_access_file(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(context) {}
 
   /// Construct and open a basic_random_access_file.
   /**
@@ -129,11 +119,9 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_random_access_file(const executor_type& ex,
-      const char* path, file_base::flags open_flags)
-    : basic_file<Executor>(ex, path, open_flags)
-  {
-  }
+  basic_random_access_file(const executor_type &ex, const char *path,
+                           file_base::flags open_flags)
+      : basic_file<Executor>(ex, path, open_flags) {}
 
   /// Construct and open a basic_random_access_file.
   /**
@@ -151,15 +139,12 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_random_access_file(ExecutionContext& context,
-      const char* path, file_base::flags open_flags,
+  basic_random_access_file(
+      ExecutionContext &context, const char *path, file_base::flags open_flags,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(context, path, open_flags)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(context, path, open_flags) {}
 
   /// Construct and open a basic_random_access_file.
   /**
@@ -175,11 +160,9 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_random_access_file(const executor_type& ex,
-      const std::string& path, file_base::flags open_flags)
-    : basic_file<Executor>(ex, path, open_flags)
-  {
-  }
+  basic_random_access_file(const executor_type &ex, const std::string &path,
+                           file_base::flags open_flags)
+      : basic_file<Executor>(ex, path, open_flags) {}
 
   /// Construct and open a basic_random_access_file.
   /**
@@ -197,15 +180,13 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_random_access_file(ExecutionContext& context,
-      const std::string& path, file_base::flags open_flags,
+  basic_random_access_file(
+      ExecutionContext &context, const std::string &path,
+      file_base::flags open_flags,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(context, path, open_flags)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(context, path, open_flags) {}
 
   /// Construct a basic_random_access_file on an existing native file.
   /**
@@ -219,11 +200,9 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_random_access_file(const executor_type& ex,
-      const native_handle_type& native_file)
-    : basic_file<Executor>(ex, native_file)
-  {
-  }
+  basic_random_access_file(const executor_type &ex,
+                           const native_handle_type &native_file)
+      : basic_file<Executor>(ex, native_file) {}
 
   /// Construct a basic_random_access_file on an existing native file.
   /**
@@ -239,15 +218,12 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_random_access_file(ExecutionContext& context,
-      const native_handle_type& native_file,
+  basic_random_access_file(
+      ExecutionContext &context, const native_handle_type &native_file,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(context, native_file)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(context, native_file) {}
 
   /// Move-construct a basic_random_access_file from another.
   /**
@@ -260,10 +236,8 @@ public:
    * constructed using the @c basic_random_access_file(const executor_type&)
    * constructor.
    */
-  basic_random_access_file(basic_random_access_file&& other) noexcept
-    : basic_file<Executor>(std::move(other))
-  {
-  }
+  basic_random_access_file(basic_random_access_file &&other) noexcept
+      : basic_file<Executor>(std::move(other)) {}
 
   /// Move-assign a basic_random_access_file from another.
   /**
@@ -277,8 +251,7 @@ public:
    * constructed using the @c basic_random_access_file(const executor_type&)
    * constructor.
    */
-  basic_random_access_file& operator=(basic_random_access_file&& other)
-  {
+  basic_random_access_file &operator=(basic_random_access_file &&other) {
     basic_file<Executor>::operator=(std::move(other));
     return *this;
   }
@@ -296,14 +269,11 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  basic_random_access_file(basic_random_access_file<Executor1>&& other,
-      constraint_t<
-        is_convertible<Executor1, Executor>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(std::move(other))
-  {
-  }
+  basic_random_access_file(
+      basic_random_access_file<Executor1> &&other,
+      constraint_t<is_convertible<Executor1, Executor>::value,
+                   defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(std::move(other)) {}
 
   /// Move-assign a basic_random_access_file from a file of another executor
   /// type.
@@ -319,11 +289,9 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  constraint_t<
-    is_convertible<Executor1, Executor>::value,
-    basic_random_access_file&
-  > operator=(basic_random_access_file<Executor1>&& other)
-  {
+  constraint_t<is_convertible<Executor1, Executor>::value,
+               basic_random_access_file &>
+  operator=(basic_random_access_file<Executor1> &&other) {
     basic_file<Executor>::operator=(std::move(other));
     return *this;
   }
@@ -333,9 +301,7 @@ public:
    * This function destroys the file, cancelling any outstanding asynchronous
    * operations associated with the file as if by calling @c cancel.
    */
-  ~basic_random_access_file()
-  {
-  }
+  ~basic_random_access_file() {}
 
   /// Write some data to the handle at the specified offset.
   /**
@@ -367,8 +333,7 @@ public:
    */
   template <typename ConstBufferSequence>
   std::size_t write_some_at(uint64_t offset,
-      const ConstBufferSequence& buffers)
-  {
+                            const ConstBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().write_some_at(
         this->impl_.get_implementation(), offset, buffers, ec);
@@ -395,9 +360,8 @@ public:
    * all data is written before the blocking operation completes.
    */
   template <typename ConstBufferSequence>
-  std::size_t write_some_at(uint64_t offset,
-      const ConstBufferSequence& buffers, asio::error_code& ec)
-  {
+  std::size_t write_some_at(uint64_t offset, const ConstBufferSequence &buffers,
+                            asio::error_code &ec) {
     return this->impl_.get_service().write_some_at(
         this->impl_.get_implementation(), offset, buffers, ec);
   }
@@ -456,17 +420,15 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename ConstBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) WriteToken = default_completion_token_t<executor_type>>
-  auto async_write_some_at(uint64_t offset, const ConstBufferSequence& buffers,
-      WriteToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WriteToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_write_some_at>(), token, offset, buffers))
-  {
-    return async_initiate<WriteToken,
-      void (asio::error_code, std::size_t)>(
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                WriteToken = default_completion_token_t<executor_type>>
+  auto async_write_some_at(
+      uint64_t offset, const ConstBufferSequence &buffers,
+      WriteToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WriteToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_write_some_at>(), token, offset, buffers)) {
+    return async_initiate<WriteToken, void(asio::error_code, std::size_t)>(
         initiate_async_write_some_at(this), token, offset, buffers);
   }
 
@@ -501,8 +463,7 @@ public:
    */
   template <typename MutableBufferSequence>
   std::size_t read_some_at(uint64_t offset,
-      const MutableBufferSequence& buffers)
-  {
+                           const MutableBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().read_some_at(
         this->impl_.get_implementation(), offset, buffers, ec);
@@ -531,8 +492,8 @@ public:
    */
   template <typename MutableBufferSequence>
   std::size_t read_some_at(uint64_t offset,
-      const MutableBufferSequence& buffers, asio::error_code& ec)
-  {
+                           const MutableBufferSequence &buffers,
+                           asio::error_code &ec) {
     return this->impl_.get_service().read_some_at(
         this->impl_.get_implementation(), offset, buffers, ec);
   }
@@ -592,90 +553,78 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename MutableBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) ReadToken = default_completion_token_t<executor_type>>
-  auto async_read_some_at(uint64_t offset, const MutableBufferSequence& buffers,
-      ReadToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<ReadToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_read_some_at>(), token, offset, buffers))
-  {
-    return async_initiate<ReadToken,
-      void (asio::error_code, std::size_t)>(
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                ReadToken = default_completion_token_t<executor_type>>
+  auto async_read_some_at(
+      uint64_t offset, const MutableBufferSequence &buffers,
+      ReadToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<ReadToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_read_some_at>(), token, offset, buffers)) {
+    return async_initiate<ReadToken, void(asio::error_code, std::size_t)>(
         initiate_async_read_some_at(this), token, offset, buffers);
   }
 
 private:
   // Disallow copying and assignment.
-  basic_random_access_file(const basic_random_access_file&) = delete;
-  basic_random_access_file& operator=(
-      const basic_random_access_file&) = delete;
+  basic_random_access_file(const basic_random_access_file &) = delete;
+  basic_random_access_file &
+  operator=(const basic_random_access_file &) = delete;
 
-  class initiate_async_write_some_at
-  {
+  class initiate_async_write_some_at {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_write_some_at(basic_random_access_file* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_write_some_at(basic_random_access_file *self)
+        : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename WriteHandler, typename ConstBufferSequence>
-    void operator()(WriteHandler&& handler,
-        uint64_t offset, const ConstBufferSequence& buffers) const
-    {
+    void operator()(WriteHandler &&handler, uint64_t offset,
+                    const ConstBufferSequence &buffers) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WriteHandler.
       ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
 
       detail::non_const_lvalue<WriteHandler> handler2(handler);
       self_->impl_.get_service().async_write_some_at(
-          self_->impl_.get_implementation(), offset, buffers,
-          handler2.value, self_->impl_.get_executor());
+          self_->impl_.get_implementation(), offset, buffers, handler2.value,
+          self_->impl_.get_executor());
     }
 
   private:
-    basic_random_access_file* self_;
+    basic_random_access_file *self_;
   };
 
-  class initiate_async_read_some_at
-  {
+  class initiate_async_read_some_at {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_read_some_at(basic_random_access_file* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_read_some_at(basic_random_access_file *self)
+        : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename ReadHandler, typename MutableBufferSequence>
-    void operator()(ReadHandler&& handler,
-        uint64_t offset, const MutableBufferSequence& buffers) const
-    {
+    void operator()(ReadHandler &&handler, uint64_t offset,
+                    const MutableBufferSequence &buffers) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a ReadHandler.
       ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
 
       detail::non_const_lvalue<ReadHandler> handler2(handler);
       self_->impl_.get_service().async_read_some_at(
-          self_->impl_.get_implementation(), offset, buffers,
-          handler2.value, self_->impl_.get_executor());
+          self_->impl_.get_implementation(), offset, buffers, handler2.value,
+          self_->impl_.get_executor());
     }
 
   private:
-    basic_random_access_file* self_;
+    basic_random_access_file *self_;
   };
 };
 

@@ -12,7 +12,7 @@
 #define ASIO_EXPERIMENTAL_PREPEND_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -24,8 +24,8 @@ namespace asio {
 namespace experimental {
 
 #if !defined(ASIO_NO_DEPRECATED)
-using asio::prepend_t;
 using asio::prepend;
+using asio::prepend_t;
 #endif // !defined(ASIO_NO_DEPRECATED)
 
 } // namespace experimental

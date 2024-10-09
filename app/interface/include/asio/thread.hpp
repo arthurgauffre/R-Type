@@ -12,7 +12,7 @@
 #define ASIO_THREAD_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -45,9 +45,7 @@ namespace asio {
  * // ...
  * t.join(); @endcode
  */
-class thread
-  : private noncopyable
-{
+class thread : private noncopyable {
 public:
   /// Start a new thread that executes the supplied function.
   /**
@@ -57,16 +55,10 @@ public:
    * @param f The function or function object to be run in the thread. The
    * function signature must be: @code void f(); @endcode
    */
-  template <typename Function>
-  explicit thread(Function f)
-    : impl_(f)
-  {
-  }
+  template <typename Function> explicit thread(Function f) : impl_(f) {}
 
   /// Destructor.
-  ~thread()
-  {
-  }
+  ~thread() {}
 
   /// Wait for the thread to exit.
   /**
@@ -76,10 +68,7 @@ public:
    * thread itself will continue to run until completion. You will, however,
    * no longer have the ability to wait for it to exit.
    */
-  void join()
-  {
-    impl_.join();
-  }
+  void join() { impl_.join(); }
 
 private:
   detail::thread impl_;

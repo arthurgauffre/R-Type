@@ -12,14 +12,14 @@
 #define ASIO_BIND_IMMEDIATE_EXECUTOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/detail/type_traits.hpp"
 #include "asio/associated_immediate_executor.hpp"
 #include "asio/associator.hpp"
 #include "asio/async_result.hpp"
+#include "asio/detail/config.hpp"
+#include "asio/detail/type_traits.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -29,64 +29,62 @@ namespace detail {
 // Helper to automatically define nested typedef result_type.
 
 template <typename T, typename = void>
-struct immediate_executor_binder_result_type
-{
+struct immediate_executor_binder_result_type {
 protected:
   typedef void result_type_or_void;
 };
 
 template <typename T>
-struct immediate_executor_binder_result_type<T, void_t<typename T::result_type>>
-{
+struct immediate_executor_binder_result_type<T,
+                                             void_t<typename T::result_type>> {
   typedef typename T::result_type result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
-template <typename R>
-struct immediate_executor_binder_result_type<R(*)()>
-{
+template <typename R> struct immediate_executor_binder_result_type<R (*)()> {
   typedef R result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
-template <typename R>
-struct immediate_executor_binder_result_type<R(&)()>
-{
+template <typename R> struct immediate_executor_binder_result_type<R (&)()> {
   typedef R result_type;
-protected:
-  typedef result_type result_type_or_void;
-};
 
-template <typename R, typename A1>
-struct immediate_executor_binder_result_type<R(*)(A1)>
-{
-  typedef R result_type;
 protected:
   typedef result_type result_type_or_void;
 };
 
 template <typename R, typename A1>
-struct immediate_executor_binder_result_type<R(&)(A1)>
-{
+struct immediate_executor_binder_result_type<R (*)(A1)> {
   typedef R result_type;
+
+protected:
+  typedef result_type result_type_or_void;
+};
+
+template <typename R, typename A1>
+struct immediate_executor_binder_result_type<R (&)(A1)> {
+  typedef R result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
 template <typename R, typename A1, typename A2>
-struct immediate_executor_binder_result_type<R(*)(A1, A2)>
-{
+struct immediate_executor_binder_result_type<R (*)(A1, A2)> {
   typedef R result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
 
 template <typename R, typename A1, typename A2>
-struct immediate_executor_binder_result_type<R(&)(A1, A2)>
-{
+struct immediate_executor_binder_result_type<R (&)(A1, A2)> {
   typedef R result_type;
+
 protected:
   typedef result_type result_type_or_void;
 };
@@ -97,21 +95,18 @@ template <typename T, typename = void>
 struct immediate_executor_binder_argument_type {};
 
 template <typename T>
-struct immediate_executor_binder_argument_type<T,
-  void_t<typename T::argument_type>>
-{
+struct immediate_executor_binder_argument_type<
+    T, void_t<typename T::argument_type>> {
   typedef typename T::argument_type argument_type;
 };
 
 template <typename R, typename A1>
-struct immediate_executor_binder_argument_type<R(*)(A1)>
-{
+struct immediate_executor_binder_argument_type<R (*)(A1)> {
   typedef A1 argument_type;
 };
 
 template <typename R, typename A1>
-struct immediate_executor_binder_argument_type<R(&)(A1)>
-{
+struct immediate_executor_binder_argument_type<R (&)(A1)> {
   typedef A1 argument_type;
 };
 
@@ -122,23 +117,20 @@ template <typename T, typename = void>
 struct immediate_executor_binder_argument_types {};
 
 template <typename T>
-struct immediate_executor_binder_argument_types<T,
-  void_t<typename T::first_argument_type>>
-{
+struct immediate_executor_binder_argument_types<
+    T, void_t<typename T::first_argument_type>> {
   typedef typename T::first_argument_type first_argument_type;
   typedef typename T::second_argument_type second_argument_type;
 };
 
 template <typename R, typename A1, typename A2>
-struct immediate_executor_binder_argument_type<R(*)(A1, A2)>
-{
+struct immediate_executor_binder_argument_type<R (*)(A1, A2)> {
   typedef A1 first_argument_type;
   typedef A2 second_argument_type;
 };
 
 template <typename R, typename A1, typename A2>
-struct immediate_executor_binder_argument_type<R(&)(A1, A2)>
-{
+struct immediate_executor_binder_argument_type<R (&)(A1, A2)> {
   typedef A1 first_argument_type;
   typedef A2 second_argument_type;
 };
@@ -150,9 +142,9 @@ struct immediate_executor_binder_argument_type<R(&)(A1, A2)>
 template <typename T, typename Executor>
 class immediate_executor_binder
 #if !defined(GENERATING_DOCUMENTATION)
-  : public detail::immediate_executor_binder_result_type<T>,
-    public detail::immediate_executor_binder_argument_type<T>,
-    public detail::immediate_executor_binder_argument_types<T>
+    : public detail::immediate_executor_binder_result_type<T>,
+      public detail::immediate_executor_binder_argument_type<T>,
+      public detail::immediate_executor_binder_argument_types<T>
 #endif // !defined(GENERATING_DOCUMENTATION)
 {
 public:
@@ -230,27 +222,17 @@ public:
    * @c U.
    */
   template <typename U>
-  immediate_executor_binder(const immediate_executor_type& e,
-      U&& u)
-    : executor_(e),
-      target_(static_cast<U&&>(u))
-  {
-  }
+  immediate_executor_binder(const immediate_executor_type &e, U &&u)
+      : executor_(e), target_(static_cast<U &&>(u)) {}
 
   /// Copy constructor.
-  immediate_executor_binder(const immediate_executor_binder& other)
-    : executor_(other.get_immediate_executor()),
-      target_(other.get())
-  {
-  }
+  immediate_executor_binder(const immediate_executor_binder &other)
+      : executor_(other.get_immediate_executor()), target_(other.get()) {}
 
   /// Construct a copy, but specify a different immediate executor.
-  immediate_executor_binder(const immediate_executor_type& e,
-      const immediate_executor_binder& other)
-    : executor_(e),
-      target_(other.get())
-  {
-  }
+  immediate_executor_binder(const immediate_executor_type &e,
+                            const immediate_executor_binder &other)
+      : executor_(e), target_(other.get()) {}
 
   /// Construct a copy of a different immediate executor wrapper type.
   /**
@@ -260,13 +242,10 @@ public:
    */
   template <typename U, typename OtherExecutor>
   immediate_executor_binder(
-      const immediate_executor_binder<U, OtherExecutor>& other,
+      const immediate_executor_binder<U, OtherExecutor> &other,
       constraint_t<is_constructible<Executor, OtherExecutor>::value> = 0,
       constraint_t<is_constructible<T, U>::value> = 0)
-    : executor_(other.get_immediate_executor()),
-      target_(other.get())
-  {
-  }
+      : executor_(other.get_immediate_executor()), target_(other.get()) {}
 
   /// Construct a copy of a different immediate executor wrapper type, but
   /// specify a different immediate executor.
@@ -275,89 +254,66 @@ public:
    * @c U.
    */
   template <typename U, typename OtherExecutor>
-  immediate_executor_binder(const immediate_executor_type& e,
-      const immediate_executor_binder<U, OtherExecutor>& other,
+  immediate_executor_binder(
+      const immediate_executor_type &e,
+      const immediate_executor_binder<U, OtherExecutor> &other,
       constraint_t<is_constructible<T, U>::value> = 0)
-    : executor_(e),
-      target_(other.get())
-  {
-  }
+      : executor_(e), target_(other.get()) {}
 
   /// Move constructor.
-  immediate_executor_binder(immediate_executor_binder&& other)
-    : executor_(static_cast<immediate_executor_type&&>(
-          other.get_immediate_executor())),
-      target_(static_cast<T&&>(other.get()))
-  {
-  }
+  immediate_executor_binder(immediate_executor_binder &&other)
+      : executor_(static_cast<immediate_executor_type &&>(
+            other.get_immediate_executor())),
+        target_(static_cast<T &&>(other.get())) {}
 
   /// Move construct the target object, but specify a different immediate
   /// executor.
-  immediate_executor_binder(const immediate_executor_type& e,
-      immediate_executor_binder&& other)
-    : executor_(e),
-      target_(static_cast<T&&>(other.get()))
-  {
-  }
+  immediate_executor_binder(const immediate_executor_type &e,
+                            immediate_executor_binder &&other)
+      : executor_(e), target_(static_cast<T &&>(other.get())) {}
 
   /// Move construct from a different immediate executor wrapper type.
   template <typename U, typename OtherExecutor>
   immediate_executor_binder(
-      immediate_executor_binder<U, OtherExecutor>&& other,
+      immediate_executor_binder<U, OtherExecutor> &&other,
       constraint_t<is_constructible<Executor, OtherExecutor>::value> = 0,
       constraint_t<is_constructible<T, U>::value> = 0)
-    : executor_(static_cast<OtherExecutor&&>(
-          other.get_immediate_executor())),
-      target_(static_cast<U&&>(other.get()))
-  {
-  }
+      : executor_(
+            static_cast<OtherExecutor &&>(other.get_immediate_executor())),
+        target_(static_cast<U &&>(other.get())) {}
 
   /// Move construct from a different immediate executor wrapper type, but
   /// specify a different immediate executor.
   template <typename U, typename OtherExecutor>
-  immediate_executor_binder(const immediate_executor_type& e,
-      immediate_executor_binder<U, OtherExecutor>&& other,
-      constraint_t<is_constructible<T, U>::value> = 0)
-    : executor_(e),
-      target_(static_cast<U&&>(other.get()))
-  {
-  }
+  immediate_executor_binder(const immediate_executor_type &e,
+                            immediate_executor_binder<U, OtherExecutor> &&other,
+                            constraint_t<is_constructible<T, U>::value> = 0)
+      : executor_(e), target_(static_cast<U &&>(other.get())) {}
 
   /// Destructor.
-  ~immediate_executor_binder()
-  {
-  }
+  ~immediate_executor_binder() {}
 
   /// Obtain a reference to the target object.
-  target_type& get() noexcept
-  {
-    return target_;
-  }
+  target_type &get() noexcept { return target_; }
 
   /// Obtain a reference to the target object.
-  const target_type& get() const noexcept
-  {
-    return target_;
-  }
+  const target_type &get() const noexcept { return target_; }
 
   /// Obtain the associated immediate executor.
-  immediate_executor_type get_immediate_executor() const noexcept
-  {
+  immediate_executor_type get_immediate_executor() const noexcept {
     return executor_;
   }
 
   /// Forwarding function call operator.
   template <typename... Args>
-  result_of_t<T(Args...)> operator()(Args&&... args)
-  {
-    return target_(static_cast<Args&&>(args)...);
+  result_of_t<T(Args...)> operator()(Args &&...args) {
+    return target_(static_cast<Args &&>(args)...);
   }
 
   /// Forwarding function call operator.
   template <typename... Args>
-  result_of_t<T(Args...)> operator()(Args&&... args) const
-  {
-    return target_(static_cast<Args&&>(args)...);
+  result_of_t<T(Args...)> operator()(Args &&...args) const {
+    return target_(static_cast<Args &&>(args)...);
   }
 
 private:
@@ -369,11 +325,9 @@ private:
 /// @c Executor.
 template <typename Executor, typename T>
 ASIO_NODISCARD inline immediate_executor_binder<decay_t<T>, Executor>
-bind_immediate_executor(const Executor& e, T&& t)
-{
-  return immediate_executor_binder<
-    decay_t<T>, Executor>(
-      e, static_cast<T&&>(t));
+bind_immediate_executor(const Executor &e, T &&t) {
+  return immediate_executor_binder<decay_t<T>, Executor>(e,
+                                                         static_cast<T &&>(t));
 }
 
 #if !defined(GENERATING_DOCUMENTATION)
@@ -381,101 +335,71 @@ bind_immediate_executor(const Executor& e, T&& t)
 namespace detail {
 
 template <typename TargetAsyncResult, typename Executor, typename = void>
-class immediate_executor_binder_completion_handler_async_result
-{
+class immediate_executor_binder_completion_handler_async_result {
 public:
   template <typename T>
-  explicit immediate_executor_binder_completion_handler_async_result(T&)
-  {
-  }
+  explicit immediate_executor_binder_completion_handler_async_result(T &) {}
 };
 
 template <typename TargetAsyncResult, typename Executor>
 class immediate_executor_binder_completion_handler_async_result<
-  TargetAsyncResult, Executor,
-  void_t<
-    typename TargetAsyncResult::completion_handler_type
-  >>
-{
+    TargetAsyncResult, Executor,
+    void_t<typename TargetAsyncResult::completion_handler_type>> {
 private:
   TargetAsyncResult target_;
 
 public:
   typedef immediate_executor_binder<
-    typename TargetAsyncResult::completion_handler_type, Executor>
+      typename TargetAsyncResult::completion_handler_type, Executor>
       completion_handler_type;
 
   explicit immediate_executor_binder_completion_handler_async_result(
-      typename TargetAsyncResult::completion_handler_type& handler)
-    : target_(handler)
-  {
-  }
+      typename TargetAsyncResult::completion_handler_type &handler)
+      : target_(handler) {}
 
-  auto get() -> decltype(target_.get())
-  {
-    return target_.get();
-  }
+  auto get() -> decltype(target_.get()) { return target_.get(); }
 };
 
 template <typename TargetAsyncResult, typename = void>
-struct immediate_executor_binder_async_result_return_type
-{
-};
+struct immediate_executor_binder_async_result_return_type {};
 
 template <typename TargetAsyncResult>
 struct immediate_executor_binder_async_result_return_type<
-  TargetAsyncResult,
-  void_t<
-    typename TargetAsyncResult::return_type
-  >>
-{
+    TargetAsyncResult, void_t<typename TargetAsyncResult::return_type>> {
   typedef typename TargetAsyncResult::return_type return_type;
 };
 
 } // namespace detail
 
 template <typename T, typename Executor, typename Signature>
-class async_result<immediate_executor_binder<T, Executor>, Signature> :
-  public detail::immediate_executor_binder_completion_handler_async_result<
-    async_result<T, Signature>, Executor>,
-  public detail::immediate_executor_binder_async_result_return_type<
-    async_result<T, Signature>>
-{
+class async_result<immediate_executor_binder<T, Executor>, Signature>
+    : public detail::immediate_executor_binder_completion_handler_async_result<
+          async_result<T, Signature>, Executor>,
+      public detail::immediate_executor_binder_async_result_return_type<
+          async_result<T, Signature>> {
 public:
-  explicit async_result(immediate_executor_binder<T, Executor>& b)
-    : detail::immediate_executor_binder_completion_handler_async_result<
-        async_result<T, Signature>, Executor>(b.get())
-  {
-  }
+  explicit async_result(immediate_executor_binder<T, Executor> &b)
+      : detail::immediate_executor_binder_completion_handler_async_result<
+            async_result<T, Signature>, Executor>(b.get()) {}
 
-  template <typename Initiation>
-  struct init_wrapper
-  {
+  template <typename Initiation> struct init_wrapper {
     template <typename Init>
-    init_wrapper(const Executor& e, Init&& init)
-      : executor_(e),
-        initiation_(static_cast<Init&&>(init))
-    {
+    init_wrapper(const Executor &e, Init &&init)
+        : executor_(e), initiation_(static_cast<Init &&>(init)) {}
+
+    template <typename Handler, typename... Args>
+    void operator()(Handler &&handler, Args &&...args) {
+      static_cast<Initiation &&>(initiation_)(
+          immediate_executor_binder<decay_t<Handler>, Executor>(
+              executor_, static_cast<Handler &&>(handler)),
+          static_cast<Args &&>(args)...);
     }
 
     template <typename Handler, typename... Args>
-    void operator()(Handler&& handler, Args&&... args)
-    {
-      static_cast<Initiation&&>(initiation_)(
-          immediate_executor_binder<
-            decay_t<Handler>, Executor>(
-              executor_, static_cast<Handler&&>(handler)),
-          static_cast<Args&&>(args)...);
-    }
-
-    template <typename Handler, typename... Args>
-    void operator()(Handler&& handler, Args&&... args) const
-    {
-      initiation_(
-          immediate_executor_binder<
-            decay_t<Handler>, Executor>(
-              executor_, static_cast<Handler&&>(handler)),
-          static_cast<Args&&>(args)...);
+    void operator()(Handler &&handler, Args &&...args) const {
+      initiation_(immediate_executor_binder<decay_t<Handler>, Executor>(
+                      executor_, static_cast<Handler &&>(handler)),
+                  static_cast<Args &&>(args)...);
     }
 
     Executor executor_;
@@ -483,59 +407,49 @@ public:
   };
 
   template <typename Initiation, typename RawCompletionToken, typename... Args>
-  static auto initiate(Initiation&& initiation,
-      RawCompletionToken&& token, Args&&... args)
-    -> decltype(
-      async_initiate<T, Signature>(
-        declval<init_wrapper<decay_t<Initiation>>>(),
-        token.get(), static_cast<Args&&>(args)...))
-  {
+  static auto initiate(Initiation &&initiation, RawCompletionToken &&token,
+                       Args &&...args)
+      -> decltype(async_initiate<T, Signature>(
+          declval<init_wrapper<decay_t<Initiation>>>(), token.get(),
+          static_cast<Args &&>(args)...)) {
     return async_initiate<T, Signature>(
         init_wrapper<decay_t<Initiation>>(
-          token.get_immediate_executor(),
-          static_cast<Initiation&&>(initiation)),
-        token.get(), static_cast<Args&&>(args)...);
+            token.get_immediate_executor(),
+            static_cast<Initiation &&>(initiation)),
+        token.get(), static_cast<Args &&>(args)...);
   }
 
 private:
-  async_result(const async_result&) = delete;
-  async_result& operator=(const async_result&) = delete;
+  async_result(const async_result &) = delete;
+  async_result &operator=(const async_result &) = delete;
 
   async_result<T, Signature> target_;
 };
 
-template <template <typename, typename> class Associator,
-    typename T, typename Executor, typename DefaultCandidate>
-struct associator<Associator,
-    immediate_executor_binder<T, Executor>,
-    DefaultCandidate>
-  : Associator<T, DefaultCandidate>
-{
-  static typename Associator<T, DefaultCandidate>::type get(
-      const immediate_executor_binder<T, Executor>& b) noexcept
-  {
+template <template <typename, typename> class Associator, typename T,
+          typename Executor, typename DefaultCandidate>
+struct associator<Associator, immediate_executor_binder<T, Executor>,
+                  DefaultCandidate> : Associator<T, DefaultCandidate> {
+  static typename Associator<T, DefaultCandidate>::type
+  get(const immediate_executor_binder<T, Executor> &b) noexcept {
     return Associator<T, DefaultCandidate>::get(b.get());
   }
 
-  static auto get(const immediate_executor_binder<T, Executor>& b,
-      const DefaultCandidate& c) noexcept
-    -> decltype(Associator<T, DefaultCandidate>::get(b.get(), c))
-  {
+  static auto get(const immediate_executor_binder<T, Executor> &b,
+                  const DefaultCandidate &c) noexcept
+      -> decltype(Associator<T, DefaultCandidate>::get(b.get(), c)) {
     return Associator<T, DefaultCandidate>::get(b.get(), c);
   }
 };
 
 template <typename T, typename Executor, typename Executor1>
-struct associated_immediate_executor<
-    immediate_executor_binder<T, Executor>,
-    Executor1>
-{
+struct associated_immediate_executor<immediate_executor_binder<T, Executor>,
+                                     Executor1> {
   typedef Executor type;
 
-  static auto get(const immediate_executor_binder<T, Executor>& b,
-      const Executor1& = Executor1()) noexcept
-    -> decltype(b.get_immediate_executor())
-  {
+  static auto get(const immediate_executor_binder<T, Executor> &b,
+                  const Executor1 & = Executor1()) noexcept
+      -> decltype(b.get_immediate_executor()) {
     return b.get_immediate_executor();
   }
 };

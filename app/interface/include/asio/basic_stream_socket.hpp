@@ -12,17 +12,17 @@
 #define ASIO_BASIC_STREAM_SOCKET_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include <cstddef>
 #include "asio/async_result.hpp"
 #include "asio/basic_socket.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/handler_type_requirements.hpp"
 #include "asio/detail/non_const_lvalue.hpp"
 #include "asio/detail/throw_error.hpp"
 #include "asio/error.hpp"
+#include <cstddef>
 
 #include "asio/detail/push_options.hpp"
 
@@ -57,9 +57,7 @@ class basic_stream_socket;
  * AsyncReadStream, AsyncWriteStream, Stream, SyncReadStream, SyncWriteStream.
  */
 template <typename Protocol, typename Executor>
-class basic_stream_socket
-  : public basic_socket<Protocol, Executor>
-{
+class basic_stream_socket : public basic_socket<Protocol, Executor> {
 private:
   class initiate_async_send;
   class initiate_async_receive;
@@ -69,9 +67,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the socket type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The socket type when rebound to the specified executor.
     typedef basic_stream_socket<Protocol, Executor1> other;
   };
@@ -80,8 +76,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined native_handle_type;
 #else
-  typedef typename basic_socket<Protocol,
-    Executor>::native_handle_type native_handle_type;
+  typedef typename basic_socket<Protocol, Executor>::native_handle_type
+      native_handle_type;
 #endif
 
   /// The protocol type.
@@ -99,10 +95,8 @@ public:
    * @param ex The I/O executor that the socket will use, by default, to
    * dispatch handlers for any asynchronous operations performed on the socket.
    */
-  explicit basic_stream_socket(const executor_type& ex)
-    : basic_socket<Protocol, Executor>(ex)
-  {
-  }
+  explicit basic_stream_socket(const executor_type &ex)
+      : basic_socket<Protocol, Executor>(ex) {}
 
   /// Construct a basic_stream_socket without opening it.
   /**
@@ -115,13 +109,11 @@ public:
    * operations performed on the socket.
    */
   template <typename ExecutionContext>
-  explicit basic_stream_socket(ExecutionContext& context,
+  explicit basic_stream_socket(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : basic_socket<Protocol, Executor>(context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : basic_socket<Protocol, Executor>(context) {}
 
   /// Construct and open a basic_stream_socket.
   /**
@@ -135,10 +127,8 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_stream_socket(const executor_type& ex, const protocol_type& protocol)
-    : basic_socket<Protocol, Executor>(ex, protocol)
-  {
-  }
+  basic_stream_socket(const executor_type &ex, const protocol_type &protocol)
+      : basic_socket<Protocol, Executor>(ex, protocol) {}
 
   /// Construct and open a basic_stream_socket.
   /**
@@ -154,14 +144,12 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_stream_socket(ExecutionContext& context, const protocol_type& protocol,
+  basic_stream_socket(
+      ExecutionContext &context, const protocol_type &protocol,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_socket<Protocol, Executor>(context, protocol)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_socket<Protocol, Executor>(context, protocol) {}
 
   /// Construct a basic_stream_socket, opening it and binding it to the given
   /// local endpoint.
@@ -178,10 +166,8 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_stream_socket(const executor_type& ex, const endpoint_type& endpoint)
-    : basic_socket<Protocol, Executor>(ex, endpoint)
-  {
-  }
+  basic_stream_socket(const executor_type &ex, const endpoint_type &endpoint)
+      : basic_socket<Protocol, Executor>(ex, endpoint) {}
 
   /// Construct a basic_stream_socket, opening it and binding it to the given
   /// local endpoint.
@@ -200,13 +186,11 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_stream_socket(ExecutionContext& context, const endpoint_type& endpoint,
+  basic_stream_socket(
+      ExecutionContext &context, const endpoint_type &endpoint,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : basic_socket<Protocol, Executor>(context, endpoint)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : basic_socket<Protocol, Executor>(context, endpoint) {}
 
   /// Construct a basic_stream_socket on an existing native socket.
   /**
@@ -222,11 +206,9 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_stream_socket(const executor_type& ex,
-      const protocol_type& protocol, const native_handle_type& native_socket)
-    : basic_socket<Protocol, Executor>(ex, protocol, native_socket)
-  {
-  }
+  basic_stream_socket(const executor_type &ex, const protocol_type &protocol,
+                      const native_handle_type &native_socket)
+      : basic_socket<Protocol, Executor>(ex, protocol, native_socket) {}
 
   /// Construct a basic_stream_socket on an existing native socket.
   /**
@@ -244,14 +226,12 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_stream_socket(ExecutionContext& context,
-      const protocol_type& protocol, const native_handle_type& native_socket,
+  basic_stream_socket(
+      ExecutionContext &context, const protocol_type &protocol,
+      const native_handle_type &native_socket,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : basic_socket<Protocol, Executor>(context, protocol, native_socket)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : basic_socket<Protocol, Executor>(context, protocol, native_socket) {}
 
   /// Move-construct a basic_stream_socket from another.
   /**
@@ -264,10 +244,8 @@ public:
    * constructed using the @c basic_stream_socket(const executor_type&)
    * constructor.
    */
-  basic_stream_socket(basic_stream_socket&& other) noexcept
-    : basic_socket<Protocol, Executor>(std::move(other))
-  {
-  }
+  basic_stream_socket(basic_stream_socket &&other) noexcept
+      : basic_socket<Protocol, Executor>(std::move(other)) {}
 
   /// Move-assign a basic_stream_socket from another.
   /**
@@ -280,8 +258,7 @@ public:
    * constructed using the @c basic_stream_socket(const executor_type&)
    * constructor.
    */
-  basic_stream_socket& operator=(basic_stream_socket&& other)
-  {
+  basic_stream_socket &operator=(basic_stream_socket &&other) {
     basic_socket<Protocol, Executor>::operator=(std::move(other));
     return *this;
   }
@@ -299,14 +276,11 @@ public:
    * constructor.
    */
   template <typename Protocol1, typename Executor1>
-  basic_stream_socket(basic_stream_socket<Protocol1, Executor1>&& other,
-      constraint_t<
-        is_convertible<Protocol1, Protocol>::value
-          && is_convertible<Executor1, Executor>::value
-      > = 0)
-    : basic_socket<Protocol, Executor>(std::move(other))
-  {
-  }
+  basic_stream_socket(
+      basic_stream_socket<Protocol1, Executor1> &&other,
+      constraint_t<is_convertible<Protocol1, Protocol>::value &&
+                   is_convertible<Executor1, Executor>::value> = 0)
+      : basic_socket<Protocol, Executor>(std::move(other)) {}
 
   /// Move-assign a basic_stream_socket from a socket of another protocol type.
   /**
@@ -320,12 +294,10 @@ public:
    * constructor.
    */
   template <typename Protocol1, typename Executor1>
-  constraint_t<
-    is_convertible<Protocol1, Protocol>::value
-      && is_convertible<Executor1, Executor>::value,
-    basic_stream_socket&
-  > operator=(basic_stream_socket<Protocol1, Executor1>&& other)
-  {
+  constraint_t<is_convertible<Protocol1, Protocol>::value &&
+                   is_convertible<Executor1, Executor>::value,
+               basic_stream_socket &>
+  operator=(basic_stream_socket<Protocol1, Executor1> &&other) {
     basic_socket<Protocol, Executor>::operator=(std::move(other));
     return *this;
   }
@@ -335,9 +307,7 @@ public:
    * This function destroys the socket, cancelling any outstanding asynchronous
    * operations associated with the socket as if by calling @c cancel.
    */
-  ~basic_stream_socket()
-  {
-  }
+  ~basic_stream_socket() {}
 
   /// Send some data on the socket.
   /**
@@ -365,8 +335,7 @@ public:
    * std::vector.
    */
   template <typename ConstBufferSequence>
-  std::size_t send(const ConstBufferSequence& buffers)
-  {
+  std::size_t send(const ConstBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().send(
         this->impl_.get_implementation(), buffers, 0, ec);
@@ -402,9 +371,8 @@ public:
    * std::vector.
    */
   template <typename ConstBufferSequence>
-  std::size_t send(const ConstBufferSequence& buffers,
-      socket_base::message_flags flags)
-  {
+  std::size_t send(const ConstBufferSequence &buffers,
+                   socket_base::message_flags flags) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().send(
         this->impl_.get_implementation(), buffers, flags, ec);
@@ -431,11 +399,10 @@ public:
    * is written before the blocking operation completes.
    */
   template <typename ConstBufferSequence>
-  std::size_t send(const ConstBufferSequence& buffers,
-      socket_base::message_flags flags, asio::error_code& ec)
-  {
-    return this->impl_.get_service().send(
-        this->impl_.get_implementation(), buffers, flags, ec);
+  std::size_t send(const ConstBufferSequence &buffers,
+                   socket_base::message_flags flags, asio::error_code &ec) {
+    return this->impl_.get_service().send(this->impl_.get_implementation(),
+                                          buffers, flags, ec);
   }
 
   /// Start an asynchronous send.
@@ -490,20 +457,18 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename ConstBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) WriteToken = default_completion_token_t<executor_type>>
-  auto async_send(const ConstBufferSequence& buffers,
-      WriteToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WriteToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_send>(), token,
-          buffers, socket_base::message_flags(0)))
-  {
-    return async_initiate<WriteToken,
-      void (asio::error_code, std::size_t)>(
-        initiate_async_send(this), token,
-        buffers, socket_base::message_flags(0));
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                WriteToken = default_completion_token_t<executor_type>>
+  auto
+  async_send(const ConstBufferSequence &buffers,
+             WriteToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WriteToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_send>(), token, buffers,
+          socket_base::message_flags(0))) {
+    return async_initiate<WriteToken, void(asio::error_code, std::size_t)>(
+        initiate_async_send(this), token, buffers,
+        socket_base::message_flags(0));
   }
 
   /// Start an asynchronous send.
@@ -560,18 +525,16 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename ConstBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) WriteToken = default_completion_token_t<executor_type>>
-  auto async_send(const ConstBufferSequence& buffers,
-      socket_base::message_flags flags,
-      WriteToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WriteToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_send>(), token, buffers, flags))
-  {
-    return async_initiate<WriteToken,
-      void (asio::error_code, std::size_t)>(
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                WriteToken = default_completion_token_t<executor_type>>
+  auto
+  async_send(const ConstBufferSequence &buffers,
+             socket_base::message_flags flags,
+             WriteToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WriteToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_send>(), token, buffers, flags)) {
+    return async_initiate<WriteToken, void(asio::error_code, std::size_t)>(
         initiate_async_send(this), token, buffers, flags);
   }
 
@@ -604,8 +567,7 @@ public:
    * std::vector.
    */
   template <typename MutableBufferSequence>
-  std::size_t receive(const MutableBufferSequence& buffers)
-  {
+  std::size_t receive(const MutableBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().receive(
         this->impl_.get_implementation(), buffers, 0, ec);
@@ -644,9 +606,8 @@ public:
    * std::vector.
    */
   template <typename MutableBufferSequence>
-  std::size_t receive(const MutableBufferSequence& buffers,
-      socket_base::message_flags flags)
-  {
+  std::size_t receive(const MutableBufferSequence &buffers,
+                      socket_base::message_flags flags) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().receive(
         this->impl_.get_implementation(), buffers, flags, ec);
@@ -673,11 +634,10 @@ public:
    * requested amount of data is read before the blocking operation completes.
    */
   template <typename MutableBufferSequence>
-  std::size_t receive(const MutableBufferSequence& buffers,
-      socket_base::message_flags flags, asio::error_code& ec)
-  {
-    return this->impl_.get_service().receive(
-        this->impl_.get_implementation(), buffers, flags, ec);
+  std::size_t receive(const MutableBufferSequence &buffers,
+                      socket_base::message_flags flags, asio::error_code &ec) {
+    return this->impl_.get_service().receive(this->impl_.get_implementation(),
+                                             buffers, flags, ec);
   }
 
   /// Start an asynchronous receive.
@@ -734,20 +694,18 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename MutableBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) ReadToken = default_completion_token_t<executor_type>>
-  auto async_receive(const MutableBufferSequence& buffers,
-      ReadToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<ReadToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_receive>(), token,
-          buffers, socket_base::message_flags(0)))
-  {
-    return async_initiate<ReadToken,
-      void (asio::error_code, std::size_t)>(
-        initiate_async_receive(this), token,
-        buffers, socket_base::message_flags(0));
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                ReadToken = default_completion_token_t<executor_type>>
+  auto
+  async_receive(const MutableBufferSequence &buffers,
+                ReadToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<ReadToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_receive>(), token, buffers,
+          socket_base::message_flags(0))) {
+    return async_initiate<ReadToken, void(asio::error_code, std::size_t)>(
+        initiate_async_receive(this), token, buffers,
+        socket_base::message_flags(0));
   }
 
   /// Start an asynchronous receive.
@@ -806,18 +764,16 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename MutableBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) ReadToken = default_completion_token_t<executor_type>>
-  auto async_receive(const MutableBufferSequence& buffers,
-      socket_base::message_flags flags,
-      ReadToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<ReadToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_receive>(), token, buffers, flags))
-  {
-    return async_initiate<ReadToken,
-      void (asio::error_code, std::size_t)>(
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                ReadToken = default_completion_token_t<executor_type>>
+  auto
+  async_receive(const MutableBufferSequence &buffers,
+                socket_base::message_flags flags,
+                ReadToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<ReadToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_receive>(), token, buffers, flags)) {
+    return async_initiate<ReadToken, void(asio::error_code, std::size_t)>(
         initiate_async_receive(this), token, buffers, flags);
   }
 
@@ -849,8 +805,7 @@ public:
    * std::vector.
    */
   template <typename ConstBufferSequence>
-  std::size_t write_some(const ConstBufferSequence& buffers)
-  {
+  std::size_t write_some(const ConstBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().send(
         this->impl_.get_implementation(), buffers, 0, ec);
@@ -875,11 +830,10 @@ public:
    * all data is written before the blocking operation completes.
    */
   template <typename ConstBufferSequence>
-  std::size_t write_some(const ConstBufferSequence& buffers,
-      asio::error_code& ec)
-  {
-    return this->impl_.get_service().send(
-        this->impl_.get_implementation(), buffers, 0, ec);
+  std::size_t write_some(const ConstBufferSequence &buffers,
+                         asio::error_code &ec) {
+    return this->impl_.get_service().send(this->impl_.get_implementation(),
+                                          buffers, 0, ec);
   }
 
   /// Start an asynchronous write.
@@ -934,20 +888,18 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename ConstBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) WriteToken = default_completion_token_t<executor_type>>
-  auto async_write_some(const ConstBufferSequence& buffers,
-      WriteToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WriteToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_send>(), token,
-          buffers, socket_base::message_flags(0)))
-  {
-    return async_initiate<WriteToken,
-      void (asio::error_code, std::size_t)>(
-        initiate_async_send(this), token,
-        buffers, socket_base::message_flags(0));
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                WriteToken = default_completion_token_t<executor_type>>
+  auto async_write_some(
+      const ConstBufferSequence &buffers,
+      WriteToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WriteToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_send>(), token, buffers,
+          socket_base::message_flags(0))) {
+    return async_initiate<WriteToken, void(asio::error_code, std::size_t)>(
+        initiate_async_send(this), token, buffers,
+        socket_base::message_flags(0));
   }
 
   /// Read some data from the socket.
@@ -979,8 +931,7 @@ public:
    * std::vector.
    */
   template <typename MutableBufferSequence>
-  std::size_t read_some(const MutableBufferSequence& buffers)
-  {
+  std::size_t read_some(const MutableBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().receive(
         this->impl_.get_implementation(), buffers, 0, ec);
@@ -1006,11 +957,10 @@ public:
    * completes.
    */
   template <typename MutableBufferSequence>
-  std::size_t read_some(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
-  {
-    return this->impl_.get_service().receive(
-        this->impl_.get_implementation(), buffers, 0, ec);
+  std::size_t read_some(const MutableBufferSequence &buffers,
+                        asio::error_code &ec) {
+    return this->impl_.get_service().receive(this->impl_.get_implementation(),
+                                             buffers, 0, ec);
   }
 
   /// Start an asynchronous read.
@@ -1066,93 +1016,77 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename MutableBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) ReadToken = default_completion_token_t<executor_type>>
-  auto async_read_some(const MutableBufferSequence& buffers,
-      ReadToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<ReadToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_receive>(), token,
-          buffers, socket_base::message_flags(0)))
-  {
-    return async_initiate<ReadToken,
-      void (asio::error_code, std::size_t)>(
-        initiate_async_receive(this), token,
-        buffers, socket_base::message_flags(0));
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                ReadToken = default_completion_token_t<executor_type>>
+  auto async_read_some(
+      const MutableBufferSequence &buffers,
+      ReadToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<ReadToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_receive>(), token, buffers,
+          socket_base::message_flags(0))) {
+    return async_initiate<ReadToken, void(asio::error_code, std::size_t)>(
+        initiate_async_receive(this), token, buffers,
+        socket_base::message_flags(0));
   }
 
 private:
   // Disallow copying and assignment.
-  basic_stream_socket(const basic_stream_socket&) = delete;
-  basic_stream_socket& operator=(const basic_stream_socket&) = delete;
+  basic_stream_socket(const basic_stream_socket &) = delete;
+  basic_stream_socket &operator=(const basic_stream_socket &) = delete;
 
-  class initiate_async_send
-  {
+  class initiate_async_send {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_send(basic_stream_socket* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_send(basic_stream_socket *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename WriteHandler, typename ConstBufferSequence>
-    void operator()(WriteHandler&& handler,
-        const ConstBufferSequence& buffers,
-        socket_base::message_flags flags) const
-    {
+    void operator()(WriteHandler &&handler, const ConstBufferSequence &buffers,
+                    socket_base::message_flags flags) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WriteHandler.
       ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
 
       detail::non_const_lvalue<WriteHandler> handler2(handler);
-      self_->impl_.get_service().async_send(
-          self_->impl_.get_implementation(), buffers, flags,
-          handler2.value, self_->impl_.get_executor());
+      self_->impl_.get_service().async_send(self_->impl_.get_implementation(),
+                                            buffers, flags, handler2.value,
+                                            self_->impl_.get_executor());
     }
 
   private:
-    basic_stream_socket* self_;
+    basic_stream_socket *self_;
   };
 
-  class initiate_async_receive
-  {
+  class initiate_async_receive {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_receive(basic_stream_socket* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_receive(basic_stream_socket *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename ReadHandler, typename MutableBufferSequence>
-    void operator()(ReadHandler&& handler,
-        const MutableBufferSequence& buffers,
-        socket_base::message_flags flags) const
-    {
+    void operator()(ReadHandler &&handler, const MutableBufferSequence &buffers,
+                    socket_base::message_flags flags) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a ReadHandler.
       ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
 
       detail::non_const_lvalue<ReadHandler> handler2(handler);
       self_->impl_.get_service().async_receive(
-          self_->impl_.get_implementation(), buffers, flags,
-          handler2.value, self_->impl_.get_executor());
+          self_->impl_.get_implementation(), buffers, flags, handler2.value,
+          self_->impl_.get_executor());
     }
 
   private:
-    basic_stream_socket* self_;
+    basic_stream_socket *self_;
   };
 };
 

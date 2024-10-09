@@ -13,15 +13,13 @@
 #define ASIO_WINDOWS_BASIC_OBJECT_HANDLE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_WINDOWS_OBJECT_HANDLE) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_WINDOWS_OBJECT_HANDLE) || defined(GENERATING_DOCUMENTATION)
 
-#include <utility>
 #include "asio/any_io_executor.hpp"
 #include "asio/async_result.hpp"
 #include "asio/detail/io_object_impl.hpp"
@@ -29,6 +27,7 @@
 #include "asio/detail/win_object_handle_service.hpp"
 #include "asio/error.hpp"
 #include "asio/execution_context.hpp"
+#include <utility>
 
 #include "asio/detail/push_options.hpp"
 
@@ -44,9 +43,7 @@ namespace windows {
  * @e Distinct @e objects: Safe.@n
  * @e Shared @e objects: Unsafe.
  */
-template <typename Executor = any_io_executor>
-class basic_object_handle
-{
+template <typename Executor = any_io_executor> class basic_object_handle {
 private:
   class initiate_async_wait;
 
@@ -55,9 +52,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the handle type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The handle type when rebound to the specified executor.
     typedef basic_object_handle<Executor1> other;
   };
@@ -67,7 +62,7 @@ public:
   typedef implementation_defined native_handle_type;
 #else
   typedef asio::detail::win_object_handle_service::native_handle_type
-    native_handle_type;
+      native_handle_type;
 #endif
 
   /// An object handle is always the lowest layer.
@@ -81,10 +76,7 @@ public:
    * dispatch handlers for any asynchronous operations performed on the
    * object handle.
    */
-  explicit basic_object_handle(const executor_type& ex)
-    : impl_(0, ex)
-  {
-  }
+  explicit basic_object_handle(const executor_type &ex) : impl_(0, ex) {}
 
   /// Construct an object handle without opening it.
   /**
@@ -95,14 +87,12 @@ public:
    * asynchronous operations performed on the object handle.
    */
   template <typename ExecutionContext>
-  explicit basic_object_handle(ExecutionContext& context,
+  explicit basic_object_handle(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(0, 0, context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : impl_(0, 0, context) {}
 
   /// Construct an object handle on an existing native handle.
   /**
@@ -117,10 +107,9 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_object_handle(const executor_type& ex,
-      const native_handle_type& native_handle)
-    : impl_(0, ex)
-  {
+  basic_object_handle(const executor_type &ex,
+                      const native_handle_type &native_handle)
+      : impl_(0, ex) {
     asio::error_code ec;
     impl_.get_service().assign(impl_.get_implementation(), native_handle, ec);
     asio::detail::throw_error(ec, "assign");
@@ -140,13 +129,11 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_object_handle(ExecutionContext& context,
-      const native_handle_type& native_handle,
+  basic_object_handle(
+      ExecutionContext &context, const native_handle_type &native_handle,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : impl_(0, 0, context) {
     asio::error_code ec;
     impl_.get_service().assign(impl_.get_implementation(), native_handle, ec);
     asio::detail::throw_error(ec, "assign");
@@ -163,10 +150,8 @@ public:
    * constructed using the @c basic_object_handle(const executor_type&)
    * constructor.
    */
-  basic_object_handle(basic_object_handle&& other)
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_object_handle(basic_object_handle &&other)
+      : impl_(std::move(other.impl_)) {}
 
   /// Move-assign an object handle from another.
   /**
@@ -179,15 +164,13 @@ public:
    * constructed using the @c basic_object_handle(const executor_type&)
    * constructor.
    */
-  basic_object_handle& operator=(basic_object_handle&& other)
-  {
+  basic_object_handle &operator=(basic_object_handle &&other) {
     impl_ = std::move(other.impl_);
     return *this;
   }
 
   // All handles have access to each other's implementations.
-  template <typename Executor1>
-  friend class basic_object_handle;
+  template <typename Executor1> friend class basic_object_handle;
 
   /// Move-construct an object handle from a handle of another executor type.
   /**
@@ -200,15 +183,12 @@ public:
    * constructed using the @c basic_object_handle(const executor_type&)
    * constructor.
    */
-  template<typename Executor1>
-  basic_object_handle(basic_object_handle<Executor1>&& other,
-      constraint_t<
-        is_convertible<Executor1, Executor>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : impl_(std::move(other.impl_))
-  {
-  }
+  template <typename Executor1>
+  basic_object_handle(
+      basic_object_handle<Executor1> &&other,
+      constraint_t<is_convertible<Executor1, Executor>::value,
+                   defaulted_constraint> = defaulted_constraint())
+      : impl_(std::move(other.impl_)) {}
 
   /// Move-assign an object handle from a handle of another executor type.
   /**
@@ -221,21 +201,16 @@ public:
    * constructed using the @c basic_object_handle(const executor_type&)
    * constructor.
    */
-  template<typename Executor1>
-  constraint_t<
-    is_convertible<Executor1, Executor>::value,
-    basic_object_handle&
-  > operator=(basic_object_handle<Executor1>&& other)
-  {
+  template <typename Executor1>
+  constraint_t<is_convertible<Executor1, Executor>::value,
+               basic_object_handle &>
+  operator=(basic_object_handle<Executor1> &&other) {
     impl_ = std::move(other.impl_);
     return *this;
   }
 
   /// Get the executor associated with the object.
-  const executor_type& get_executor() noexcept
-  {
-    return impl_.get_executor();
-  }
+  const executor_type &get_executor() noexcept { return impl_.get_executor(); }
 
   /// Get a reference to the lowest layer.
   /**
@@ -246,10 +221,7 @@ public:
    * @return A reference to the lowest layer in the stack of layers. Ownership
    * is not transferred to the caller.
    */
-  lowest_layer_type& lowest_layer()
-  {
-    return *this;
-  }
+  lowest_layer_type &lowest_layer() { return *this; }
 
   /// Get a const reference to the lowest layer.
   /**
@@ -260,10 +232,7 @@ public:
    * @return A const reference to the lowest layer in the stack of layers.
    * Ownership is not transferred to the caller.
    */
-  const lowest_layer_type& lowest_layer() const
-  {
-    return *this;
-  }
+  const lowest_layer_type &lowest_layer() const { return *this; }
 
   /// Assign an existing native handle to the handle.
   /*
@@ -273,8 +242,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void assign(const native_handle_type& handle)
-  {
+  void assign(const native_handle_type &handle) {
     asio::error_code ec;
     impl_.get_service().assign(impl_.get_implementation(), handle, ec);
     asio::detail::throw_error(ec, "assign");
@@ -288,16 +256,14 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID assign(const native_handle_type& handle,
-      asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID assign(const native_handle_type &handle,
+                           asio::error_code &ec) {
     impl_.get_service().assign(impl_.get_implementation(), handle, ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
 
   /// Determine whether the handle is open.
-  bool is_open() const
-  {
+  bool is_open() const {
     return impl_.get_service().is_open(impl_.get_implementation());
   }
 
@@ -309,8 +275,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void close()
-  {
+  void close() {
     asio::error_code ec;
     impl_.get_service().close(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "close");
@@ -324,8 +289,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID close(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID close(asio::error_code &ec) {
     impl_.get_service().close(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -336,8 +300,7 @@ public:
    * handle. This is intended to allow access to native handle functionality
    * that is not otherwise provided.
    */
-  native_handle_type native_handle()
-  {
+  native_handle_type native_handle() {
     return impl_.get_service().native_handle(impl_.get_implementation());
   }
 
@@ -349,8 +312,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void cancel()
-  {
+  void cancel() {
     asio::error_code ec;
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "cancel");
@@ -364,8 +326,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  ASIO_SYNC_OP_VOID cancel(asio::error_code& ec)
-  {
+  ASIO_SYNC_OP_VOID cancel(asio::error_code &ec) {
     impl_.get_service().cancel(impl_.get_implementation(), ec);
     ASIO_SYNC_OP_VOID_RETURN(ec);
   }
@@ -378,8 +339,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void wait()
-  {
+  void wait() {
     asio::error_code ec;
     impl_.get_service().wait(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "wait");
@@ -393,8 +353,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  void wait(asio::error_code& ec)
-  {
+  void wait(asio::error_code &ec) {
     impl_.get_service().wait(impl_.get_implementation(), ec);
   }
 
@@ -420,58 +379,50 @@ public:
    * @par Completion Signature
    * @code void(asio::error_code) @endcode
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code))
-        WaitToken = default_completion_token_t<executor_type>>
-  auto async_wait(
-      WaitToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WaitToken, void (asio::error_code)>(
-        declval<initiate_async_wait>(), token))
-  {
-    return async_initiate<WaitToken, void (asio::error_code)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code))
+                WaitToken = default_completion_token_t<executor_type>>
+  auto
+  async_wait(WaitToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WaitToken, void(asio::error_code)>(
+          declval<initiate_async_wait>(), token)) {
+    return async_initiate<WaitToken, void(asio::error_code)>(
         initiate_async_wait(this), token);
   }
 
 private:
   // Disallow copying and assignment.
-  basic_object_handle(const basic_object_handle&) = delete;
-  basic_object_handle& operator=(const basic_object_handle&) = delete;
+  basic_object_handle(const basic_object_handle &) = delete;
+  basic_object_handle &operator=(const basic_object_handle &) = delete;
 
-  class initiate_async_wait
-  {
+  class initiate_async_wait {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_wait(basic_object_handle* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_wait(basic_object_handle *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename WaitHandler>
-    void operator()(WaitHandler&& handler) const
-    {
+    void operator()(WaitHandler &&handler) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WaitHandler.
       ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
       detail::non_const_lvalue<WaitHandler> handler2(handler);
-      self_->impl_.get_service().async_wait(
-          self_->impl_.get_implementation(),
-          handler2.value, self_->impl_.get_executor());
+      self_->impl_.get_service().async_wait(self_->impl_.get_implementation(),
+                                            handler2.value,
+                                            self_->impl_.get_executor());
     }
 
   private:
-    basic_object_handle* self_;
+    basic_object_handle *self_;
   };
 
-  asio::detail::io_object_impl<
-    asio::detail::win_object_handle_service, Executor> impl_;
+  asio::detail::io_object_impl<asio::detail::win_object_handle_service,
+                               Executor>
+      impl_;
 };
 
 } // namespace windows

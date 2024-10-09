@@ -12,21 +12,20 @@
 #define ASIO_BASIC_STREAM_FILE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_FILE) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_FILE) || defined(GENERATING_DOCUMENTATION)
 
-#include <cstddef>
 #include "asio/async_result.hpp"
 #include "asio/basic_file.hpp"
 #include "asio/detail/handler_type_requirements.hpp"
 #include "asio/detail/non_const_lvalue.hpp"
 #include "asio/detail/throw_error.hpp"
 #include "asio/error.hpp"
+#include <cstddef>
 
 #include "asio/detail/push_options.hpp"
 
@@ -36,8 +35,7 @@ namespace asio {
 #define ASIO_BASIC_STREAM_FILE_FWD_DECL
 
 // Forward declaration with defaulted arguments.
-template <typename Executor = any_io_executor>
-class basic_stream_file;
+template <typename Executor = any_io_executor> class basic_stream_file;
 
 #endif // !defined(ASIO_BASIC_STREAM_FILE_FWD_DECL)
 
@@ -54,9 +52,7 @@ class basic_stream_file;
  * AsyncReadStream, AsyncWriteStream, Stream, SyncReadStream, SyncWriteStream.
  */
 template <typename Executor>
-class basic_stream_file
-  : public basic_file<Executor>
-{
+class basic_stream_file : public basic_file<Executor> {
 private:
   class initiate_async_write_some;
   class initiate_async_read_some;
@@ -66,9 +62,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the file type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The file type when rebound to the specified executor.
     typedef basic_stream_file<Executor1> other;
   };
@@ -88,11 +82,10 @@ public:
    * @param ex The I/O executor that the file will use, by default, to
    * dispatch handlers for any asynchronous operations performed on the file.
    */
-  explicit basic_stream_file(const executor_type& ex)
-    : basic_file<Executor>(ex)
-  {
-    this->impl_.get_service().set_is_stream(
-        this->impl_.get_implementation(), true);
+  explicit basic_stream_file(const executor_type &ex)
+      : basic_file<Executor>(ex) {
+    this->impl_.get_service().set_is_stream(this->impl_.get_implementation(),
+                                            true);
   }
 
   /// Construct a basic_stream_file without opening it.
@@ -105,15 +98,14 @@ public:
    * operations performed on the file.
    */
   template <typename ExecutionContext>
-  explicit basic_stream_file(ExecutionContext& context,
+  explicit basic_stream_file(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(context)
-  {
-    this->impl_.get_service().set_is_stream(
-        this->impl_.get_implementation(), true);
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(context) {
+    this->impl_.get_service().set_is_stream(this->impl_.get_implementation(),
+                                            true);
   }
 
   /// Construct and open a basic_stream_file.
@@ -130,16 +122,14 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_stream_file(const executor_type& ex,
-      const char* path, file_base::flags open_flags)
-    : basic_file<Executor>(ex)
-  {
+  basic_stream_file(const executor_type &ex, const char *path,
+                    file_base::flags open_flags)
+      : basic_file<Executor>(ex) {
     asio::error_code ec;
-    this->impl_.get_service().set_is_stream(
-        this->impl_.get_implementation(), true);
-    this->impl_.get_service().open(
-        this->impl_.get_implementation(),
-        path, open_flags, ec);
+    this->impl_.get_service().set_is_stream(this->impl_.get_implementation(),
+                                            true);
+    this->impl_.get_service().open(this->impl_.get_implementation(), path,
+                                   open_flags, ec);
     asio::detail::throw_error(ec, "open");
   }
 
@@ -159,20 +149,17 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_stream_file(ExecutionContext& context,
-      const char* path, file_base::flags open_flags,
+  basic_stream_file(
+      ExecutionContext &context, const char *path, file_base::flags open_flags,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(context)
-  {
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(context) {
     asio::error_code ec;
-    this->impl_.get_service().set_is_stream(
-        this->impl_.get_implementation(), true);
-    this->impl_.get_service().open(
-        this->impl_.get_implementation(),
-        path, open_flags, ec);
+    this->impl_.get_service().set_is_stream(this->impl_.get_implementation(),
+                                            true);
+    this->impl_.get_service().open(this->impl_.get_implementation(), path,
+                                   open_flags, ec);
     asio::detail::throw_error(ec, "open");
   }
 
@@ -190,16 +177,14 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_stream_file(const executor_type& ex,
-      const std::string& path, file_base::flags open_flags)
-    : basic_file<Executor>(ex)
-  {
+  basic_stream_file(const executor_type &ex, const std::string &path,
+                    file_base::flags open_flags)
+      : basic_file<Executor>(ex) {
     asio::error_code ec;
-    this->impl_.get_service().set_is_stream(
-        this->impl_.get_implementation(), true);
-    this->impl_.get_service().open(
-        this->impl_.get_implementation(),
-        path.c_str(), open_flags, ec);
+    this->impl_.get_service().set_is_stream(this->impl_.get_implementation(),
+                                            true);
+    this->impl_.get_service().open(this->impl_.get_implementation(),
+                                   path.c_str(), open_flags, ec);
     asio::detail::throw_error(ec, "open");
   }
 
@@ -219,20 +204,17 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_stream_file(ExecutionContext& context,
-      const std::string& path, file_base::flags open_flags,
-      constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(context)
-  {
+  basic_stream_file(ExecutionContext &context, const std::string &path,
+                    file_base::flags open_flags,
+                    constraint_t<is_convertible<ExecutionContext &,
+                                                execution_context &>::value,
+                                 defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(context) {
     asio::error_code ec;
-    this->impl_.get_service().set_is_stream(
-        this->impl_.get_implementation(), true);
-    this->impl_.get_service().open(
-        this->impl_.get_implementation(),
-        path.c_str(), open_flags, ec);
+    this->impl_.get_service().set_is_stream(this->impl_.get_implementation(),
+                                            true);
+    this->impl_.get_service().open(this->impl_.get_implementation(),
+                                   path.c_str(), open_flags, ec);
     asio::detail::throw_error(ec, "open");
   }
 
@@ -248,12 +230,11 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_stream_file(const executor_type& ex,
-      const native_handle_type& native_file)
-    : basic_file<Executor>(ex, native_file)
-  {
-    this->impl_.get_service().set_is_stream(
-        this->impl_.get_implementation(), true);
+  basic_stream_file(const executor_type &ex,
+                    const native_handle_type &native_file)
+      : basic_file<Executor>(ex, native_file) {
+    this->impl_.get_service().set_is_stream(this->impl_.get_implementation(),
+                                            true);
   }
 
   /// Construct a basic_stream_file on an existing native file.
@@ -270,16 +251,14 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_stream_file(ExecutionContext& context,
-      const native_handle_type& native_file,
+  basic_stream_file(
+      ExecutionContext &context, const native_handle_type &native_file,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(context, native_file)
-  {
-    this->impl_.get_service().set_is_stream(
-        this->impl_.get_implementation(), true);
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(context, native_file) {
+    this->impl_.get_service().set_is_stream(this->impl_.get_implementation(),
+                                            true);
   }
 
   /// Move-construct a basic_stream_file from another.
@@ -293,10 +272,8 @@ public:
    * constructed using the @c basic_stream_file(const executor_type&)
    * constructor.
    */
-  basic_stream_file(basic_stream_file&& other) noexcept
-    : basic_file<Executor>(std::move(other))
-  {
-  }
+  basic_stream_file(basic_stream_file &&other) noexcept
+      : basic_file<Executor>(std::move(other)) {}
 
   /// Move-assign a basic_stream_file from another.
   /**
@@ -309,8 +286,7 @@ public:
    * constructed using the @c basic_stream_file(const executor_type&)
    * constructor.
    */
-  basic_stream_file& operator=(basic_stream_file&& other)
-  {
+  basic_stream_file &operator=(basic_stream_file &&other) {
     basic_file<Executor>::operator=(std::move(other));
     return *this;
   }
@@ -328,14 +304,10 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  basic_stream_file(basic_stream_file<Executor1>&& other,
-      constraint_t<
-        is_convertible<Executor1, Executor>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_file<Executor>(std::move(other))
-  {
-  }
+  basic_stream_file(basic_stream_file<Executor1> &&other,
+                    constraint_t<is_convertible<Executor1, Executor>::value,
+                                 defaulted_constraint> = defaulted_constraint())
+      : basic_file<Executor>(std::move(other)) {}
 
   /// Move-assign a basic_stream_file from a file of another executor type.
   /**
@@ -349,11 +321,8 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  constraint_t<
-    is_convertible<Executor1, Executor>::value,
-    basic_stream_file&
-  > operator=(basic_stream_file<Executor1>&& other)
-  {
+  constraint_t<is_convertible<Executor1, Executor>::value, basic_stream_file &>
+  operator=(basic_stream_file<Executor1> &&other) {
     basic_file<Executor>::operator=(std::move(other));
     return *this;
   }
@@ -363,9 +332,7 @@ public:
    * This function destroys the file, cancelling any outstanding asynchronous
    * operations associated with the file as if by calling @c cancel.
    */
-  ~basic_stream_file()
-  {
-  }
+  ~basic_stream_file() {}
 
   /// Seek to a position in the file.
   /**
@@ -379,8 +346,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  uint64_t seek(int64_t offset, file_base::seek_basis whence)
-  {
+  uint64_t seek(int64_t offset, file_base::seek_basis whence) {
     asio::error_code ec;
     uint64_t n = this->impl_.get_service().seek(
         this->impl_.get_implementation(), offset, whence, ec);
@@ -401,10 +367,9 @@ public:
    * @returns The new position relative to the beginning of the file.
    */
   uint64_t seek(int64_t offset, file_base::seek_basis whence,
-      asio::error_code& ec)
-  {
-    return this->impl_.get_service().seek(
-        this->impl_.get_implementation(), offset, whence, ec);
+                asio::error_code &ec) {
+    return this->impl_.get_service().seek(this->impl_.get_implementation(),
+                                          offset, whence, ec);
   }
 
   /// Write some data to the file.
@@ -434,8 +399,7 @@ public:
    * std::vector.
    */
   template <typename ConstBufferSequence>
-  std::size_t write_some(const ConstBufferSequence& buffers)
-  {
+  std::size_t write_some(const ConstBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().write_some(
         this->impl_.get_implementation(), buffers, ec);
@@ -460,9 +424,8 @@ public:
    * all data is written before the blocking operation completes.
    */
   template <typename ConstBufferSequence>
-  std::size_t write_some(const ConstBufferSequence& buffers,
-      asio::error_code& ec)
-  {
+  std::size_t write_some(const ConstBufferSequence &buffers,
+                         asio::error_code &ec) {
     return this->impl_.get_service().write_some(
         this->impl_.get_implementation(), buffers, ec);
   }
@@ -519,17 +482,15 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename ConstBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) WriteToken = default_completion_token_t<executor_type>>
-  auto async_write_some(const ConstBufferSequence& buffers,
-      WriteToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WriteToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_write_some>(), token, buffers))
-  {
-    return async_initiate<WriteToken,
-      void (asio::error_code, std::size_t)>(
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                WriteToken = default_completion_token_t<executor_type>>
+  auto async_write_some(
+      const ConstBufferSequence &buffers,
+      WriteToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WriteToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_write_some>(), token, buffers)) {
+    return async_initiate<WriteToken, void(asio::error_code, std::size_t)>(
         initiate_async_write_some(this), token, buffers);
   }
 
@@ -561,8 +522,7 @@ public:
    * std::vector.
    */
   template <typename MutableBufferSequence>
-  std::size_t read_some(const MutableBufferSequence& buffers)
-  {
+  std::size_t read_some(const MutableBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().read_some(
         this->impl_.get_implementation(), buffers, ec);
@@ -588,11 +548,10 @@ public:
    * completes.
    */
   template <typename MutableBufferSequence>
-  std::size_t read_some(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
-  {
-    return this->impl_.get_service().read_some(
-        this->impl_.get_implementation(), buffers, ec);
+  std::size_t read_some(const MutableBufferSequence &buffers,
+                        asio::error_code &ec) {
+    return this->impl_.get_service().read_some(this->impl_.get_implementation(),
+                                               buffers, ec);
   }
 
   /// Start an asynchronous read.
@@ -648,89 +607,75 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename MutableBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) ReadToken = default_completion_token_t<executor_type>>
-  auto async_read_some(const MutableBufferSequence& buffers,
-      ReadToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<ReadToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_read_some>(), token, buffers))
-  {
-    return async_initiate<ReadToken,
-      void (asio::error_code, std::size_t)>(
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                ReadToken = default_completion_token_t<executor_type>>
+  auto async_read_some(
+      const MutableBufferSequence &buffers,
+      ReadToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<ReadToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_read_some>(), token, buffers)) {
+    return async_initiate<ReadToken, void(asio::error_code, std::size_t)>(
         initiate_async_read_some(this), token, buffers);
   }
 
 private:
   // Disallow copying and assignment.
-  basic_stream_file(const basic_stream_file&) = delete;
-  basic_stream_file& operator=(const basic_stream_file&) = delete;
+  basic_stream_file(const basic_stream_file &) = delete;
+  basic_stream_file &operator=(const basic_stream_file &) = delete;
 
-  class initiate_async_write_some
-  {
+  class initiate_async_write_some {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_write_some(basic_stream_file* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_write_some(basic_stream_file *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename WriteHandler, typename ConstBufferSequence>
-    void operator()(WriteHandler&& handler,
-        const ConstBufferSequence& buffers) const
-    {
+    void operator()(WriteHandler &&handler,
+                    const ConstBufferSequence &buffers) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WriteHandler.
       ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
 
       detail::non_const_lvalue<WriteHandler> handler2(handler);
       self_->impl_.get_service().async_write_some(
-          self_->impl_.get_implementation(), buffers,
-          handler2.value, self_->impl_.get_executor());
+          self_->impl_.get_implementation(), buffers, handler2.value,
+          self_->impl_.get_executor());
     }
 
   private:
-    basic_stream_file* self_;
+    basic_stream_file *self_;
   };
 
-  class initiate_async_read_some
-  {
+  class initiate_async_read_some {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_read_some(basic_stream_file* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_read_some(basic_stream_file *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename ReadHandler, typename MutableBufferSequence>
-    void operator()(ReadHandler&& handler,
-        const MutableBufferSequence& buffers) const
-    {
+    void operator()(ReadHandler &&handler,
+                    const MutableBufferSequence &buffers) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a ReadHandler.
       ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
 
       detail::non_const_lvalue<ReadHandler> handler2(handler);
       self_->impl_.get_service().async_read_some(
-          self_->impl_.get_implementation(), buffers,
-          handler2.value, self_->impl_.get_executor());
+          self_->impl_.get_implementation(), buffers, handler2.value,
+          self_->impl_.get_executor());
     }
 
   private:
-    basic_stream_file* self_;
+    basic_stream_file *self_;
   };
 };
 

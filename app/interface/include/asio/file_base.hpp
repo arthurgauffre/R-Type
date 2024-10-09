@@ -12,16 +12,15 @@
 #define ASIO_FILE_BASE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_FILE) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_FILE) || defined(GENERATING_DOCUMENTATION)
 
 #if !defined(ASIO_WINDOWS)
-# include <fcntl.h>
+#include <fcntl.h>
 #endif // !defined(ASIO_WINDOWS)
 
 #include "asio/detail/push_options.hpp"
@@ -31,8 +30,7 @@ namespace asio {
 /// The file_base class is used as a base for the basic_stream_file and
 /// basic_random_access_file class templates so that we have a common place to
 /// define flags.
-class file_base
-{
+class file_base {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// A bitmask type (C++ Std [lib.bitmask.types]).
@@ -63,8 +61,7 @@ public:
   /// data and metadata to disk.
   static const flags sync_all_on_write = implementation_defined;
 #else
-  enum flags
-  {
+  enum flags {
 #if defined(ASIO_WINDOWS)
     read_only = 1,
     write_only = 2,
@@ -74,7 +71,7 @@ public:
     exclusive = 32,
     truncate = 64,
     sync_all_on_write = 128
-#else // defined(ASIO_WINDOWS)
+#else  // defined(ASIO_WINDOWS)
     read_only = O_RDONLY,
     write_only = O_WRONLY,
     read_write = O_RDWR,
@@ -88,51 +85,43 @@ public:
 
   // Implement bitmask operations as shown in C++ Std [lib.bitmask.types].
 
-  friend flags operator&(flags x, flags y)
-  {
-    return static_cast<flags>(
-        static_cast<unsigned int>(x) & static_cast<unsigned int>(y));
+  friend flags operator&(flags x, flags y) {
+    return static_cast<flags>(static_cast<unsigned int>(x) &
+                              static_cast<unsigned int>(y));
   }
 
-  friend flags operator|(flags x, flags y)
-  {
-    return static_cast<flags>(
-        static_cast<unsigned int>(x) | static_cast<unsigned int>(y));
+  friend flags operator|(flags x, flags y) {
+    return static_cast<flags>(static_cast<unsigned int>(x) |
+                              static_cast<unsigned int>(y));
   }
 
-  friend flags operator^(flags x, flags y)
-  {
-    return static_cast<flags>(
-        static_cast<unsigned int>(x) ^ static_cast<unsigned int>(y));
+  friend flags operator^(flags x, flags y) {
+    return static_cast<flags>(static_cast<unsigned int>(x) ^
+                              static_cast<unsigned int>(y));
   }
 
-  friend flags operator~(flags x)
-  {
+  friend flags operator~(flags x) {
     return static_cast<flags>(~static_cast<unsigned int>(x));
   }
 
-  friend flags& operator&=(flags& x, flags y)
-  {
+  friend flags &operator&=(flags &x, flags y) {
     x = x & y;
     return x;
   }
 
-  friend flags& operator|=(flags& x, flags y)
-  {
+  friend flags &operator|=(flags &x, flags y) {
     x = x | y;
     return x;
   }
 
-  friend flags& operator^=(flags& x, flags y)
-  {
+  friend flags &operator^=(flags &x, flags y) {
     x = x ^ y;
     return x;
   }
 #endif
 
   /// Basis for seeking in a file.
-  enum seek_basis
-  {
+  enum seek_basis {
 #if defined(GENERATING_DOCUMENTATION)
     /// Seek to an absolute position.
     seek_set = implementation_defined,
@@ -151,9 +140,7 @@ public:
 
 protected:
   /// Protected destructor to prevent deletion through this type.
-  ~file_base()
-  {
-  }
+  ~file_base() {}
 };
 
 } // namespace asio

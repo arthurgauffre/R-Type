@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_SCOPED_PTR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -22,61 +22,42 @@
 namespace asio {
 namespace detail {
 
-template <typename T>
-class scoped_ptr
-{
+template <typename T> class scoped_ptr {
 public:
   // Constructor.
-  explicit scoped_ptr(T* p = 0)
-    : p_(p)
-  {
-  }
+  explicit scoped_ptr(T *p = 0) : p_(p) {}
 
   // Destructor.
-  ~scoped_ptr()
-  {
-    delete p_;
-  }
+  ~scoped_ptr() { delete p_; }
 
   // Access.
-  T* get()
-  {
-    return p_;
-  }
+  T *get() { return p_; }
 
   // Access.
-  T* operator->()
-  {
-    return p_;
-  }
+  T *operator->() { return p_; }
 
   // Dereference.
-  T& operator*()
-  {
-    return *p_;
-  }
+  T &operator*() { return *p_; }
 
   // Reset pointer.
-  void reset(T* p = 0)
-  {
+  void reset(T *p = 0) {
     delete p_;
     p_ = p;
   }
 
   // Release ownership of the pointer.
-  T* release()
-  {
-    T* tmp = p_;
+  T *release() {
+    T *tmp = p_;
     p_ = 0;
     return tmp;
   }
 
 private:
   // Disallow copying and assignment.
-  scoped_ptr(const scoped_ptr&);
-  scoped_ptr& operator=(const scoped_ptr&);
+  scoped_ptr(const scoped_ptr &);
+  scoped_ptr &operator=(const scoped_ptr &);
 
-  T* p_;
+  T *p_;
 };
 
 } // namespace detail

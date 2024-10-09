@@ -12,17 +12,17 @@
 #define ASIO_DETAIL_HASH_MAP_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "asio/detail/assert.hpp"
 #include "asio/detail/config.hpp"
+#include "asio/detail/noncopyable.hpp"
 #include <list>
 #include <utility>
-#include "asio/detail/assert.hpp"
-#include "asio/detail/noncopyable.hpp"
 
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-# include "asio/detail/socket_types.hpp"
+#include "asio/detail/socket_types.hpp"
 #endif // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
 
 #include "asio/detail/push_options.hpp"
@@ -30,29 +30,23 @@
 namespace asio {
 namespace detail {
 
-inline std::size_t calculate_hash_value(int i)
-{
+inline std::size_t calculate_hash_value(int i) {
   return static_cast<std::size_t>(i);
 }
 
-inline std::size_t calculate_hash_value(void* p)
-{
-  return reinterpret_cast<std::size_t>(p)
-    + (reinterpret_cast<std::size_t>(p) >> 3);
+inline std::size_t calculate_hash_value(void *p) {
+  return reinterpret_cast<std::size_t>(p) +
+         (reinterpret_cast<std::size_t>(p) >> 3);
 }
 
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-inline std::size_t calculate_hash_value(SOCKET s)
-{
+inline std::size_t calculate_hash_value(SOCKET s) {
   return static_cast<std::size_t>(s);
 }
 #endif // defined(ASIO_WINDOWS) || defined(__CYGWIN__)
 
 // Note: assumes K and V are POD types.
-template <typename K, typename V>
-class hash_map
-  : private noncopyable
-{
+template <typename K, typename V> class hash_map : private noncopyable {
 public:
   // The type of a value in the map.
   typedef std::pair<K, V> value_type;
@@ -64,62 +58,36 @@ public:
   typedef typename std::list<value_type>::const_iterator const_iterator;
 
   // Constructor.
-  hash_map()
-    : size_(0),
-      buckets_(0),
-      num_buckets_(0)
-  {
-  }
+  hash_map() : size_(0), buckets_(0), num_buckets_(0) {}
 
   // Destructor.
-  ~hash_map()
-  {
-    delete[] buckets_;
-  }
+  ~hash_map() { delete[] buckets_; }
 
   // Get an iterator for the beginning of the map.
-  iterator begin()
-  {
-    return values_.begin();
-  }
+  iterator begin() { return values_.begin(); }
 
   // Get an iterator for the beginning of the map.
-  const_iterator begin() const
-  {
-    return values_.begin();
-  }
+  const_iterator begin() const { return values_.begin(); }
 
   // Get an iterator for the end of the map.
-  iterator end()
-  {
-    return values_.end();
-  }
+  iterator end() { return values_.end(); }
 
   // Get an iterator for the end of the map.
-  const_iterator end() const
-  {
-    return values_.end();
-  }
+  const_iterator end() const { return values_.end(); }
 
   // Check whether the map is empty.
-  bool empty() const
-  {
-    return values_.empty();
-  }
+  bool empty() const { return values_.empty(); }
 
   // Find an entry in the map.
-  iterator find(const K& k)
-  {
-    if (num_buckets_)
-    {
+  iterator find(const K &k) {
+    if (num_buckets_) {
       size_t bucket = calculate_hash_value(k) % num_buckets_;
       iterator it = buckets_[bucket].first;
       if (it == values_.end())
         return values_.end();
       iterator end_it = buckets_[bucket].last;
       ++end_it;
-      while (it != end_it)
-      {
+      while (it != end_it) {
         if (it->first == k)
           return it;
         ++it;
@@ -129,18 +97,15 @@ public:
   }
 
   // Find an entry in the map.
-  const_iterator find(const K& k) const
-  {
-    if (num_buckets_)
-    {
+  const_iterator find(const K &k) const {
+    if (num_buckets_) {
       size_t bucket = calculate_hash_value(k) % num_buckets_;
       const_iterator it = buckets_[bucket].first;
       if (it == values_.end())
         return it;
       const_iterator end_it = buckets_[bucket].last;
       ++end_it;
-      while (it != end_it)
-      {
+      while (it != end_it) {
         if (it->first == k)
           return it;
         ++it;
@@ -150,23 +115,20 @@ public:
   }
 
   // Insert a new entry into the map.
-  std::pair<iterator, bool> insert(const value_type& v)
-  {
+  std::pair<iterator, bool> insert(const value_type &v) {
     if (size_ + 1 >= num_buckets_)
       rehash(hash_size(size_ + 1));
     size_t bucket = calculate_hash_value(v.first) % num_buckets_;
     iterator it = buckets_[bucket].first;
-    if (it == values_.end())
-    {
+    if (it == values_.end()) {
       buckets_[bucket].first = buckets_[bucket].last =
-        values_insert(values_.end(), v);
+          values_insert(values_.end(), v);
       ++size_;
       return std::pair<iterator, bool>(buckets_[bucket].last, true);
     }
     iterator end_it = buckets_[bucket].last;
     ++end_it;
-    while (it != end_it)
-    {
+    while (it != end_it) {
       if (it->first == v.first)
         return std::pair<iterator, bool>(it, false);
       ++it;
@@ -177,8 +139,7 @@ public:
   }
 
   // Erase an entry from the map.
-  void erase(iterator it)
-  {
+  void erase(iterator it) {
     ASIO_ASSERT(it != values_.end());
     ASIO_ASSERT(num_buckets_ != 0);
 
@@ -197,16 +158,14 @@ public:
   }
 
   // Erase a key from the map.
-  void erase(const K& k)
-  {
+  void erase(const K &k) {
     iterator it = find(k);
     if (it != values_.end())
       erase(it);
   }
 
   // Remove all entries from the map.
-  void clear()
-  {
+  void clear() {
     // Clear the values.
     values_.clear();
     size_ = 0;
@@ -219,16 +178,34 @@ public:
 
 private:
   // Calculate the hash size for the specified number of elements.
-  static std::size_t hash_size(std::size_t num_elems)
-  {
-    static std::size_t sizes[] =
-    {
+  static std::size_t hash_size(std::size_t num_elems) {
+    static std::size_t sizes[] = {
 #if defined(ASIO_HASH_MAP_BUCKETS)
       ASIO_HASH_MAP_BUCKETS
-#else // ASIO_HASH_MAP_BUCKETS
-      3, 13, 23, 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593,
-      49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469,
-      12582917, 25165843
+#else  // ASIO_HASH_MAP_BUCKETS
+      3,
+      13,
+      23,
+      53,
+      97,
+      193,
+      389,
+      769,
+      1543,
+      3079,
+      6151,
+      12289,
+      24593,
+      49157,
+      98317,
+      196613,
+      393241,
+      786433,
+      1572869,
+      3145739,
+      6291469,
+      12582917,
+      25165843
 #endif // ASIO_HASH_MAP_BUCKETS
     };
     const std::size_t nth_size = sizeof(sizes) / sizeof(std::size_t) - 1;
@@ -239,8 +216,7 @@ private:
   }
 
   // Re-initialise the hash from the values already contained in the list.
-  void rehash(std::size_t num_buckets)
-  {
+  void rehash(std::size_t num_buckets) {
     if (num_buckets == num_buckets_)
       return;
     ASIO_ASSERT(num_buckets != 0);
@@ -248,7 +224,7 @@ private:
     iterator end_iter = values_.end();
 
     // Update number of buckets and initialise all buckets to empty.
-    bucket_type* tmp = new bucket_type[num_buckets];
+    bucket_type *tmp = new bucket_type[num_buckets];
     delete[] buckets_;
     buckets_ = tmp;
     num_buckets_ = num_buckets;
@@ -257,19 +233,13 @@ private:
 
     // Put all values back into the hash.
     iterator iter = values_.begin();
-    while (iter != end_iter)
-    {
+    while (iter != end_iter) {
       std::size_t bucket = calculate_hash_value(iter->first) % num_buckets_;
-      if (buckets_[bucket].last == end_iter)
-      {
+      if (buckets_[bucket].last == end_iter) {
         buckets_[bucket].first = buckets_[bucket].last = iter++;
-      }
-      else if (++buckets_[bucket].last == iter)
-      {
+      } else if (++buckets_[bucket].last == iter) {
         ++iter;
-      }
-      else
-      {
+      } else {
         values_.splice(buckets_[bucket].last, values_, iter++);
         --buckets_[bucket].last;
       }
@@ -278,14 +248,10 @@ private:
 
   // Insert an element into the values list by splicing from the spares list,
   // if a spare is available, and otherwise by inserting a new element.
-  iterator values_insert(iterator it, const value_type& v)
-  {
-    if (spares_.empty())
-    {
+  iterator values_insert(iterator it, const value_type &v) {
+    if (spares_.empty()) {
       return values_.insert(it, v);
-    }
-    else
-    {
+    } else {
       spares_.front() = v;
       values_.splice(it, spares_, spares_.begin());
       return --it;
@@ -293,8 +259,7 @@ private:
   }
 
   // Erase an element from the values list by splicing it to the spares list.
-  void values_erase(iterator it)
-  {
+  void values_erase(iterator it) {
     *it = value_type();
     spares_.splice(spares_.begin(), values_, it);
   }
@@ -310,14 +275,13 @@ private:
   std::list<value_type> spares_;
 
   // The type for a bucket in the hash table.
-  struct bucket_type
-  {
+  struct bucket_type {
     iterator first;
     iterator last;
   };
 
   // The buckets in the hash.
-  bucket_type* buckets_;
+  bucket_type *buckets_;
 
   // The number of buckets in the hash.
   std::size_t num_buckets_;

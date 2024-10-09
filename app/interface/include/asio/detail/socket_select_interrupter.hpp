@@ -12,16 +12,14 @@
 #define ASIO_DETAIL_SOCKET_SELECT_INTERRUPTER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
 #if !defined(ASIO_WINDOWS_RUNTIME)
 
-#if defined(ASIO_WINDOWS) \
-  || defined(__CYGWIN__) \
-  || defined(__SYMBIAN32__)
+#if defined(ASIO_WINDOWS) || defined(__CYGWIN__) || defined(__SYMBIAN32__)
 
 #include "asio/detail/socket_types.hpp"
 
@@ -30,8 +28,7 @@
 namespace asio {
 namespace detail {
 
-class socket_select_interrupter
-{
+class socket_select_interrupter {
 public:
   // Constructor.
   ASIO_DECL socket_select_interrupter();
@@ -49,10 +46,7 @@ public:
   ASIO_DECL bool reset();
 
   // Get the read descriptor to be passed to select.
-  socket_type read_descriptor() const
-  {
-    return read_descriptor_;
-  }
+  socket_type read_descriptor() const { return read_descriptor_; }
 
 private:
   // Open the descriptors. Throws on error.
@@ -79,7 +73,7 @@ private:
 #include "asio/detail/pop_options.hpp"
 
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/socket_select_interrupter.ipp"
+#include "asio/detail/impl/socket_select_interrupter.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // defined(ASIO_WINDOWS)

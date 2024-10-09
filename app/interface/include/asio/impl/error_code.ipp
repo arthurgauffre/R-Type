@@ -12,18 +12,18 @@
 #define ASIO_IMPL_ERROR_CODE_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 #if defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-# include <winerror.h>
+#include <winerror.h>
 #elif defined(ASIO_WINDOWS_RUNTIME)
-# include <windows.h>
+#include <windows.h>
 #else
-# include <cerrno>
-# include <cstring>
-# include <string>
+#include <cerrno>
+#include <cstring>
+#include <string>
 #endif
 #include "asio/detail/local_free_on_block_exit.hpp"
 #include "asio/detail/socket_types.hpp"
@@ -34,26 +34,19 @@
 namespace asio {
 namespace detail {
 
-class system_category : public error_category
-{
+class system_category : public error_category {
 public:
-  const char* name() const noexcept
-  {
-    return "asio.system";
-  }
+  const char *name() const noexcept { return "asio.system"; }
 
-  std::string message(int value) const
-  {
+  std::string message(int value) const {
 #if defined(ASIO_WINDOWS_RUNTIME) || defined(ASIO_WINDOWS_APP)
     std::wstring wmsg(128, wchar_t());
-    for (;;)
-    {
-      DWORD wlength = ::FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM
-          | FORMAT_MESSAGE_IGNORE_INSERTS, 0, value,
-          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-          &wmsg[0], static_cast<DWORD>(wmsg.size()), 0);
-      if (wlength == 0 && ::GetLastError() == ERROR_INSUFFICIENT_BUFFER)
-      {
+    for (;;) {
+      DWORD wlength = ::FormatMessageW(
+          FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, 0, value,
+          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &wmsg[0],
+          static_cast<DWORD>(wmsg.size()), 0);
+      if (wlength == 0 && ::GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
         wmsg.resize(wmsg.size() + wmsg.size() / 2);
         continue;
       }
@@ -61,26 +54,25 @@ public:
         --wlength;
       if (wlength && wmsg[wlength - 1] == '\r')
         --wlength;
-      if (wlength)
-      {
+      if (wlength) {
         std::string msg(wlength * 2, char());
-        int length = ::WideCharToMultiByte(CP_ACP, 0,
-            wmsg.c_str(), static_cast<int>(wlength),
-            &msg[0], static_cast<int>(wlength * 2), 0, 0);
+        int length = ::WideCharToMultiByte(CP_ACP, 0, wmsg.c_str(),
+                                           static_cast<int>(wlength), &msg[0],
+                                           static_cast<int>(wlength * 2), 0, 0);
         if (length <= 0)
           return "asio.system error";
         msg.resize(static_cast<std::size_t>(length));
         return msg;
-      }
-      else
+      } else
         return "asio.system error";
     }
 #elif defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-    char* msg = 0;
-    DWORD length = ::FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER
-        | FORMAT_MESSAGE_FROM_SYSTEM
-        | FORMAT_MESSAGE_IGNORE_INSERTS, 0, value,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (char*)&msg, 0, 0);
+    char *msg = 0;
+    DWORD length = ::FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+            FORMAT_MESSAGE_IGNORE_INSERTS,
+        0, value, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (char *)&msg, 0,
+        0);
     detail::local_free_on_block_exit local_free_obj(msg);
     if (length && msg[length - 1] == '\n')
       msg[--length] = '\0';
@@ -107,11 +99,8 @@ public:
   }
 
 #if defined(ASIO_HAS_STD_ERROR_CODE)
-  std::error_condition default_error_condition(
-      int ev) const noexcept
-  {
-    switch (ev)
-    {
+  std::error_condition default_error_condition(int ev) const noexcept {
+    switch (ev) {
     case access_denied:
       return std::errc::permission_denied;
     case address_family_not_supported:
@@ -182,19 +171,21 @@ public:
       return std::errc::operation_would_block;
     default:
       return std::make_error_condition(ev, *this);
-  }
+    }
 #endif // defined(ASIO_HAS_STD_ERROR_CODE)
 
-private:
-  // Helper function to adapt the result from glibc's variant of strerror_r.
-  static const char* strerror_result(int, const char* s) { return s; }
-  static const char* strerror_result(const char* s, const char*) { return s; }
-};
+  private:
+    // Helper function to adapt the result from glibc's variant of strerror_r.
+    static const char *strerror_result(int, const char *s) { return s; }
+    static const char *strerror_result(const char *s, const char *) {
+      return s;
+    }
+  };
 
 } // namespace detail
 
-const error_category& system_category()
-{
+const error_category &
+system_category() {
   static detail::system_category instance;
   return instance;
 }

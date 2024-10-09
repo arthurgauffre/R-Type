@@ -12,11 +12,11 @@
 #define ASIO_THREAD_POOL_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
 #include "asio/detail/atomic_count.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/scheduler.hpp"
 #include "asio/detail/thread_group.hpp"
 #include "asio/execution.hpp"
@@ -26,14 +26,13 @@
 
 namespace asio {
 namespace detail {
-  struct thread_pool_bits
-  {
-    static constexpr unsigned int blocking_never = 1;
-    static constexpr unsigned int blocking_always = 2;
-    static constexpr unsigned int blocking_mask = 3;
-    static constexpr unsigned int relationship_continuation = 4;
-    static constexpr unsigned int outstanding_work_tracked = 8;
-  };
+struct thread_pool_bits {
+  static constexpr unsigned int blocking_never = 1;
+  static constexpr unsigned int blocking_always = 2;
+  static constexpr unsigned int blocking_mask = 3;
+  static constexpr unsigned int relationship_continuation = 4;
+  static constexpr unsigned int outstanding_work_tracked = 8;
+};
 } // namespace detail
 
 /// A simple fixed-size thread pool.
@@ -71,12 +70,9 @@ namespace detail {
  * // Wait for all tasks in the pool to complete.
  * pool.join(); @endcode
  */
-class thread_pool
-  : public execution_context
-{
+class thread_pool : public execution_context {
 public:
-  template <typename Allocator, unsigned int Bits>
-  class basic_executor_type;
+  template <typename Allocator, unsigned int Bits> class basic_executor_type;
 
   template <typename Allocator, unsigned int Bits>
   friend class basic_executor_type;
@@ -136,16 +132,16 @@ public:
   ASIO_DECL void wait();
 
 private:
-  thread_pool(const thread_pool&) = delete;
-  thread_pool& operator=(const thread_pool&) = delete;
+  thread_pool(const thread_pool &) = delete;
+  thread_pool &operator=(const thread_pool &) = delete;
 
   struct thread_function;
 
   // Helper function to create the underlying scheduler.
-  ASIO_DECL detail::scheduler& add_scheduler(detail::scheduler* s);
+  ASIO_DECL detail::scheduler &add_scheduler(detail::scheduler *s);
 
   // The underlying scheduler.
-  detail::scheduler& scheduler_;
+  detail::scheduler &scheduler_;
 
   // The threads in the pool.
   detail::thread_group threads_;
@@ -156,43 +152,37 @@ private:
 
 /// Executor implementation type used to submit functions to a thread pool.
 template <typename Allocator, unsigned int Bits>
-class thread_pool::basic_executor_type : detail::thread_pool_bits
-{
+class thread_pool::basic_executor_type : detail::thread_pool_bits {
 public:
   /// Copy constructor.
-  basic_executor_type(const basic_executor_type& other) noexcept
-    : pool_(other.pool_),
-      allocator_(other.allocator_),
-      bits_(other.bits_)
-  {
+  basic_executor_type(const basic_executor_type &other) noexcept
+      : pool_(other.pool_), allocator_(other.allocator_), bits_(other.bits_) {
     if (Bits & outstanding_work_tracked)
       if (pool_)
         pool_->scheduler_.work_started();
   }
 
   /// Move constructor.
-  basic_executor_type(basic_executor_type&& other) noexcept
-    : pool_(other.pool_),
-      allocator_(static_cast<Allocator&&>(other.allocator_)),
-      bits_(other.bits_)
-  {
+  basic_executor_type(basic_executor_type &&other) noexcept
+      : pool_(other.pool_),
+        allocator_(static_cast<Allocator &&>(other.allocator_)),
+        bits_(other.bits_) {
     if (Bits & outstanding_work_tracked)
       other.pool_ = 0;
   }
 
   /// Destructor.
-  ~basic_executor_type() noexcept
-  {
+  ~basic_executor_type() noexcept {
     if (Bits & outstanding_work_tracked)
       if (pool_)
         pool_->scheduler_.work_finished();
   }
 
   /// Assignment operator.
-  basic_executor_type& operator=(const basic_executor_type& other) noexcept;
+  basic_executor_type &operator=(const basic_executor_type &other) noexcept;
 
   /// Move assignment operator.
-  basic_executor_type& operator=(basic_executor_type&& other) noexcept;
+  basic_executor_type &operator=(basic_executor_type &&other) noexcept;
 
 #if !defined(GENERATING_DOCUMENTATION)
 private:
@@ -211,9 +201,8 @@ private:
    *     asio::execution::blocking.possibly); @endcode
    */
   constexpr basic_executor_type<Allocator,
-      ASIO_UNSPECIFIED(Bits & ~blocking_mask)>
-  require(execution::blocking_t::possibly_t) const
-  {
+                                ASIO_UNSPECIFIED(Bits & ~blocking_mask)>
+  require(execution::blocking_t::possibly_t) const {
     return basic_executor_type<Allocator, Bits & ~blocking_mask>(
         pool_, allocator_, bits_ & ~blocking_mask);
   }
@@ -228,13 +217,12 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::blocking.always); @endcode
    */
-  constexpr basic_executor_type<Allocator,
-      ASIO_UNSPECIFIED((Bits & ~blocking_mask) | blocking_always)>
-  require(execution::blocking_t::always_t) const
-  {
-    return basic_executor_type<Allocator,
-        ASIO_UNSPECIFIED((Bits & ~blocking_mask) | blocking_always)>(
-          pool_, allocator_, bits_ & ~blocking_mask);
+  constexpr basic_executor_type<
+      Allocator, ASIO_UNSPECIFIED((Bits & ~blocking_mask) | blocking_always)>
+  require(execution::blocking_t::always_t) const {
+    return basic_executor_type<
+        Allocator, ASIO_UNSPECIFIED((Bits & ~blocking_mask) | blocking_always)>(
+        pool_, allocator_, bits_ & ~blocking_mask);
   }
 
   /// Obtain an executor with the @c blocking.never property.
@@ -248,9 +236,8 @@ private:
    *     asio::execution::blocking.never); @endcode
    */
   constexpr basic_executor_type<Allocator,
-      ASIO_UNSPECIFIED(Bits & ~blocking_mask)>
-  require(execution::blocking_t::never_t) const
-  {
+                                ASIO_UNSPECIFIED(Bits & ~blocking_mask)>
+  require(execution::blocking_t::never_t) const {
     return basic_executor_type<Allocator, Bits & ~blocking_mask>(
         pool_, allocator_, (bits_ & ~blocking_mask) | blocking_never);
   }
@@ -265,10 +252,10 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::relationship.fork); @endcode
    */
-  constexpr basic_executor_type require(execution::relationship_t::fork_t) const
-  {
-    return basic_executor_type(pool_,
-        allocator_, bits_ & ~relationship_continuation);
+  constexpr basic_executor_type
+  require(execution::relationship_t::fork_t) const {
+    return basic_executor_type(pool_, allocator_,
+                               bits_ & ~relationship_continuation);
   }
 
   /// Obtain an executor with the @c relationship.continuation property.
@@ -281,11 +268,10 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::relationship.continuation); @endcode
    */
-  constexpr basic_executor_type require(
-      execution::relationship_t::continuation_t) const
-  {
-    return basic_executor_type(pool_,
-        allocator_, bits_ | relationship_continuation);
+  constexpr basic_executor_type
+  require(execution::relationship_t::continuation_t) const {
+    return basic_executor_type(pool_, allocator_,
+                               bits_ | relationship_continuation);
   }
 
   /// Obtain an executor with the @c outstanding_work.tracked property.
@@ -298,10 +284,9 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::outstanding_work.tracked); @endcode
    */
-  constexpr basic_executor_type<Allocator,
-      ASIO_UNSPECIFIED(Bits | outstanding_work_tracked)>
-  require(execution::outstanding_work_t::tracked_t) const
-  {
+  constexpr basic_executor_type<
+      Allocator, ASIO_UNSPECIFIED(Bits | outstanding_work_tracked)>
+  require(execution::outstanding_work_t::tracked_t) const {
     return basic_executor_type<Allocator, Bits | outstanding_work_tracked>(
         pool_, allocator_, bits_);
   }
@@ -316,10 +301,9 @@ private:
    * auto ex2 = asio::require(ex1,
    *     asio::execution::outstanding_work.untracked); @endcode
    */
-  constexpr basic_executor_type<Allocator,
-      ASIO_UNSPECIFIED(Bits & ~outstanding_work_tracked)>
-  require(execution::outstanding_work_t::untracked_t) const
-  {
+  constexpr basic_executor_type<
+      Allocator, ASIO_UNSPECIFIED(Bits & ~outstanding_work_tracked)>
+  require(execution::outstanding_work_t::untracked_t) const {
     return basic_executor_type<Allocator, Bits & ~outstanding_work_tracked>(
         pool_, allocator_, bits_);
   }
@@ -336,10 +320,8 @@ private:
    */
   template <typename OtherAllocator>
   constexpr basic_executor_type<OtherAllocator, Bits>
-  require(execution::allocator_t<OtherAllocator> a) const
-  {
-    return basic_executor_type<OtherAllocator, Bits>(
-        pool_, a.value(), bits_);
+  require(execution::allocator_t<OtherAllocator> a) const {
+    return basic_executor_type<OtherAllocator, Bits>(pool_, a.value(), bits_);
   }
 
   /// Obtain an executor with the default @c allocator property.
@@ -353,8 +335,7 @@ private:
    *     asio::execution::allocator); @endcode
    */
   constexpr basic_executor_type<std::allocator<void>, Bits>
-  require(execution::allocator_t<void>) const
-  {
+  require(execution::allocator_t<void>) const {
     return basic_executor_type<std::allocator<void>, Bits>(
         pool_, std::allocator<void>(), bits_);
   }
@@ -377,8 +358,7 @@ private:
    *       == asio::execution::mapping.thread)
    *   ... @endcode
    */
-  static constexpr execution::mapping_t query(execution::mapping_t) noexcept
-  {
+  static constexpr execution::mapping_t query(execution::mapping_t) noexcept {
     return execution::mapping.thread;
   }
 
@@ -392,10 +372,7 @@ private:
    * asio::thread_pool& pool = asio::query(
    *     ex, asio::execution::context); @endcode
    */
-  thread_pool& query(execution::context_t) const noexcept
-  {
-    return *pool_;
-  }
+  thread_pool &query(execution::context_t) const noexcept { return *pool_; }
 
   /// Query the current value of the @c blocking property.
   /**
@@ -408,13 +385,12 @@ private:
    *       == asio::execution::blocking.always)
    *   ... @endcode
    */
-  constexpr execution::blocking_t query(execution::blocking_t) const noexcept
-  {
+  constexpr execution::blocking_t query(execution::blocking_t) const noexcept {
     return (bits_ & blocking_never)
-      ? execution::blocking_t(execution::blocking.never)
-      : ((Bits & blocking_always)
-          ? execution::blocking_t(execution::blocking.always)
-          : execution::blocking_t(execution::blocking.possibly));
+               ? execution::blocking_t(execution::blocking.never)
+               : ((Bits & blocking_always)
+                      ? execution::blocking_t(execution::blocking.always)
+                      : execution::blocking_t(execution::blocking.possibly));
   }
 
   /// Query the current value of the @c relationship property.
@@ -428,12 +404,11 @@ private:
    *       == asio::execution::relationship.continuation)
    *   ... @endcode
    */
-  constexpr execution::relationship_t query(
-      execution::relationship_t) const noexcept
-  {
+  constexpr execution::relationship_t
+  query(execution::relationship_t) const noexcept {
     return (bits_ & relationship_continuation)
-      ? execution::relationship_t(execution::relationship.continuation)
-      : execution::relationship_t(execution::relationship.fork);
+               ? execution::relationship_t(execution::relationship.continuation)
+               : execution::relationship_t(execution::relationship.fork);
   }
 
   /// Query the current value of the @c outstanding_work property.
@@ -447,12 +422,13 @@ private:
    *       == asio::execution::outstanding_work.tracked)
    *   ... @endcode
    */
-  static constexpr execution::outstanding_work_t query(
-      execution::outstanding_work_t) noexcept
-  {
+  static constexpr execution::outstanding_work_t
+  query(execution::outstanding_work_t) noexcept {
     return (Bits & outstanding_work_tracked)
-      ? execution::outstanding_work_t(execution::outstanding_work.tracked)
-      : execution::outstanding_work_t(execution::outstanding_work.untracked);
+               ? execution::outstanding_work_t(
+                     execution::outstanding_work.tracked)
+               : execution::outstanding_work_t(
+                     execution::outstanding_work.untracked);
   }
 
   /// Query the current value of the @c allocator property.
@@ -466,9 +442,8 @@ private:
    *     asio::execution::allocator); @endcode
    */
   template <typename OtherAllocator>
-  constexpr Allocator query(
-      execution::allocator_t<OtherAllocator>) const noexcept
-  {
+  constexpr Allocator
+  query(execution::allocator_t<OtherAllocator>) const noexcept {
     return allocator_;
   }
 
@@ -482,8 +457,7 @@ private:
    * auto alloc = asio::query(ex,
    *     asio::execution::allocator); @endcode
    */
-  constexpr Allocator query(execution::allocator_t<void>) const noexcept
-  {
+  constexpr Allocator query(execution::allocator_t<void>) const noexcept {
     return allocator_;
   }
 
@@ -497,8 +471,7 @@ private:
    * std::size_t occupancy = asio::query(
    *     ex, asio::execution::occupancy); @endcode
    */
-  std::size_t query(execution::occupancy_t) const noexcept
-  {
+  std::size_t query(execution::occupancy_t) const noexcept {
     return static_cast<std::size_t>(pool_->num_threads_);
   }
 
@@ -514,38 +487,32 @@ public:
   /**
    * Two executors are equal if they refer to the same underlying thread pool.
    */
-  friend bool operator==(const basic_executor_type& a,
-      const basic_executor_type& b) noexcept
-  {
-    return a.pool_ == b.pool_
-      && a.allocator_ == b.allocator_
-      && a.bits_ == b.bits_;
+  friend bool operator==(const basic_executor_type &a,
+                         const basic_executor_type &b) noexcept {
+    return a.pool_ == b.pool_ && a.allocator_ == b.allocator_ &&
+           a.bits_ == b.bits_;
   }
 
   /// Compare two executors for inequality.
   /**
    * Two executors are equal if they refer to the same underlying thread pool.
    */
-  friend bool operator!=(const basic_executor_type& a,
-      const basic_executor_type& b) noexcept
-  {
-    return a.pool_ != b.pool_
-      || a.allocator_ != b.allocator_
-      || a.bits_ != b.bits_;
+  friend bool operator!=(const basic_executor_type &a,
+                         const basic_executor_type &b) noexcept {
+    return a.pool_ != b.pool_ || a.allocator_ != b.allocator_ ||
+           a.bits_ != b.bits_;
   }
 
   /// Execution function.
-  template <typename Function>
-  void execute(Function&& f) const
-  {
-    this->do_execute(static_cast<Function&&>(f),
-        integral_constant<bool, (Bits & blocking_always) != 0>());
+  template <typename Function> void execute(Function &&f) const {
+    this->do_execute(static_cast<Function &&>(f),
+                     integral_constant<bool, (Bits & blocking_always) != 0>());
   }
 
 public:
 #if !defined(ASIO_NO_TS_EXECUTORS)
   /// Obtain the underlying execution context.
-  thread_pool& context() const noexcept;
+  thread_pool &context() const noexcept;
 
   /// Inform the thread pool that it has some outstanding work to do.
   /**
@@ -578,7 +545,7 @@ public:
    * internal storage needed for function invocation.
    */
   template <typename Function, typename OtherAllocator>
-  void dispatch(Function&& f, const OtherAllocator& a) const;
+  void dispatch(Function &&f, const OtherAllocator &a) const;
 
   /// Request the thread pool to invoke the given function object.
   /**
@@ -594,7 +561,7 @@ public:
    * internal storage needed for function invocation.
    */
   template <typename Function, typename OtherAllocator>
-  void post(Function&& f, const OtherAllocator& a) const;
+  void post(Function &&f, const OtherAllocator &a) const;
 
   /// Request the thread pool to invoke the given function object.
   /**
@@ -614,7 +581,7 @@ public:
    * internal storage needed for function invocation.
    */
   template <typename Function, typename OtherAllocator>
-  void defer(Function&& f, const OtherAllocator& a) const;
+  void defer(Function &&f, const OtherAllocator &a) const;
 #endif // !defined(ASIO_NO_TS_EXECUTORS)
 
 private:
@@ -622,37 +589,29 @@ private:
   template <typename, unsigned int> friend class basic_executor_type;
 
   // Constructor used by thread_pool::get_executor().
-  explicit basic_executor_type(thread_pool& p) noexcept
-    : pool_(&p),
-      allocator_(),
-      bits_(0)
-  {
+  explicit basic_executor_type(thread_pool &p) noexcept
+      : pool_(&p), allocator_(), bits_(0) {
     if (Bits & outstanding_work_tracked)
       pool_->scheduler_.work_started();
   }
 
   // Constructor used by require().
-  basic_executor_type(thread_pool* p,
-      const Allocator& a, unsigned int bits) noexcept
-    : pool_(p),
-      allocator_(a),
-      bits_(bits)
-  {
+  basic_executor_type(thread_pool *p, const Allocator &a,
+                      unsigned int bits) noexcept
+      : pool_(p), allocator_(a), bits_(bits) {
     if (Bits & outstanding_work_tracked)
       if (pool_)
         pool_->scheduler_.work_started();
   }
 
   /// Execution helper implementation for possibly and never blocking.
-  template <typename Function>
-  void do_execute(Function&& f, false_type) const;
+  template <typename Function> void do_execute(Function &&f, false_type) const;
 
   /// Execution helper implementation for always blocking.
-  template <typename Function>
-  void do_execute(Function&& f, true_type) const;
+  template <typename Function> void do_execute(Function &&f, true_type) const;
 
   // The underlying thread pool.
-  thread_pool* pool_;
+  thread_pool *pool_;
 
   // The allocator used for execution functions.
   Allocator allocator_;
@@ -669,9 +628,7 @@ namespace traits {
 
 template <typename Allocator, unsigned int Bits>
 struct equality_comparable<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>
-  >
-{
+    asio::thread_pool::basic_executor_type<Allocator, Bits>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
 };
@@ -681,11 +638,8 @@ struct equality_comparable<
 #if !defined(ASIO_HAS_DEDUCED_EXECUTE_MEMBER_TRAIT)
 
 template <typename Allocator, unsigned int Bits, typename Function>
-struct execute_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    Function
-  >
-{
+struct execute_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      Function> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
   typedef void result_type;
@@ -696,112 +650,92 @@ struct execute_member<
 #if !defined(ASIO_HAS_DEDUCED_REQUIRE_MEMBER_TRAIT)
 
 template <typename Allocator, unsigned int Bits>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::blocking_t::possibly_t
-  > : asio::detail::thread_pool_bits
-{
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::blocking_t::possibly_t>
+    : asio::detail::thread_pool_bits {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
-  typedef asio::thread_pool::basic_executor_type<
-      Allocator, Bits & ~blocking_mask> result_type;
+  typedef asio::thread_pool::basic_executor_type<Allocator,
+                                                 Bits & ~blocking_mask>
+      result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::blocking_t::always_t
-  > : asio::detail::thread_pool_bits
-{
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::blocking_t::always_t>
+    : asio::detail::thread_pool_bits {
+  static constexpr bool is_valid = true;
+  static constexpr bool is_noexcept = false;
+  typedef asio::thread_pool::basic_executor_type<
+      Allocator, (Bits & ~blocking_mask) | blocking_always>
+      result_type;
+};
+
+template <typename Allocator, unsigned int Bits>
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::blocking_t::never_t>
+    : asio::detail::thread_pool_bits {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
   typedef asio::thread_pool::basic_executor_type<Allocator,
-      (Bits & ~blocking_mask) | blocking_always> result_type;
+                                                 Bits & ~blocking_mask>
+      result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::blocking_t::never_t
-  > : asio::detail::thread_pool_bits
-{
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::relationship_t::fork_t> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
-  typedef asio::thread_pool::basic_executor_type<
-      Allocator, Bits & ~blocking_mask> result_type;
+  typedef asio::thread_pool::basic_executor_type<Allocator, Bits> result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::relationship_t::fork_t
-  >
-{
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::relationship_t::continuation_t> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
-  typedef asio::thread_pool::basic_executor_type<
-      Allocator, Bits> result_type;
+  typedef asio::thread_pool::basic_executor_type<Allocator, Bits> result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::relationship_t::continuation_t
-  >
-{
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::outstanding_work_t::tracked_t>
+    : asio::detail::thread_pool_bits {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
   typedef asio::thread_pool::basic_executor_type<
-      Allocator, Bits> result_type;
+      Allocator, Bits | outstanding_work_tracked>
+      result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::outstanding_work_t::tracked_t
-  > : asio::detail::thread_pool_bits
-{
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::outstanding_work_t::untracked_t>
+    : asio::detail::thread_pool_bits {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
   typedef asio::thread_pool::basic_executor_type<
-      Allocator, Bits | outstanding_work_tracked> result_type;
+      Allocator, Bits & ~outstanding_work_tracked>
+      result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::outstanding_work_t::untracked_t
-  > : asio::detail::thread_pool_bits
-{
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::allocator_t<void>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
-  typedef asio::thread_pool::basic_executor_type<
-      Allocator, Bits & ~outstanding_work_tracked> result_type;
+  typedef asio::thread_pool::basic_executor_type<std::allocator<void>, Bits>
+      result_type;
 };
 
-template <typename Allocator, unsigned int Bits>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::allocator_t<void>
-  >
-{
+template <unsigned int Bits, typename Allocator, typename OtherAllocator>
+struct require_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                      asio::execution::allocator_t<OtherAllocator>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = false;
-  typedef asio::thread_pool::basic_executor_type<
-      std::allocator<void>, Bits> result_type;
-};
-
-template <unsigned int Bits,
-    typename Allocator, typename OtherAllocator>
-struct require_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::allocator_t<OtherAllocator>
-  >
-{
-  static constexpr bool is_valid = true;
-  static constexpr bool is_noexcept = false;
-  typedef asio::thread_pool::basic_executor_type<
-      OtherAllocator, Bits> result_type;
+  typedef asio::thread_pool::basic_executor_type<OtherAllocator, Bits>
+      result_type;
 };
 
 #endif // !defined(ASIO_HAS_DEDUCED_REQUIRE_MEMBER_TRAIT)
@@ -810,48 +744,33 @@ struct require_member<
 
 template <typename Allocator, unsigned int Bits, typename Property>
 struct query_static_constexpr_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    Property,
-    typename asio::enable_if<
-      asio::is_convertible<
-        Property,
-        asio::execution::outstanding_work_t
-      >::value
-    >::type
-  > : asio::detail::thread_pool_bits
-{
+    asio::thread_pool::basic_executor_type<Allocator, Bits>, Property,
+    typename asio::enable_if<asio::is_convertible<
+        Property, asio::execution::outstanding_work_t>::value>::type>
+    : asio::detail::thread_pool_bits {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef asio::execution::outstanding_work_t result_type;
 
-  static constexpr result_type value() noexcept
-  {
+  static constexpr result_type value() noexcept {
     return (Bits & outstanding_work_tracked)
-      ? execution::outstanding_work_t(execution::outstanding_work.tracked)
-      : execution::outstanding_work_t(execution::outstanding_work.untracked);
+               ? execution::outstanding_work_t(
+                     execution::outstanding_work.tracked)
+               : execution::outstanding_work_t(
+                     execution::outstanding_work.untracked);
   }
 };
 
 template <typename Allocator, unsigned int Bits, typename Property>
 struct query_static_constexpr_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    Property,
-    typename asio::enable_if<
-      asio::is_convertible<
-        Property,
-        asio::execution::mapping_t
-      >::value
-    >::type
-  >
-{
+    asio::thread_pool::basic_executor_type<Allocator, Bits>, Property,
+    typename asio::enable_if<asio::is_convertible<
+        Property, asio::execution::mapping_t>::value>::type> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef asio::execution::mapping_t::thread_t result_type;
 
-  static constexpr result_type value() noexcept
-  {
-    return result_type();
-  }
+  static constexpr result_type value() noexcept { return result_type(); }
 };
 
 #endif // !defined(ASIO_HAS_DEDUCED_QUERY_STATIC_CONSTEXPR_MEMBER_TRAIT)
@@ -859,17 +778,10 @@ struct query_static_constexpr_member<
 #if !defined(ASIO_HAS_DEDUCED_QUERY_MEMBER_TRAIT)
 
 template <typename Allocator, unsigned int Bits, typename Property>
-struct query_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    Property,
-    typename asio::enable_if<
-      asio::is_convertible<
-        Property,
-        asio::execution::blocking_t
-      >::value
-    >::type
-  >
-{
+struct query_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                    Property,
+                    typename asio::enable_if<asio::is_convertible<
+                        Property, asio::execution::blocking_t>::value>::type> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef asio::execution::blocking_t result_type;
@@ -877,60 +789,41 @@ struct query_member<
 
 template <typename Allocator, unsigned int Bits, typename Property>
 struct query_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    Property,
-    typename asio::enable_if<
-      asio::is_convertible<
-        Property,
-        asio::execution::relationship_t
-      >::value
-    >::type
-  >
-{
+    asio::thread_pool::basic_executor_type<Allocator, Bits>, Property,
+    typename asio::enable_if<asio::is_convertible<
+        Property, asio::execution::relationship_t>::value>::type> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef asio::execution::relationship_t result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct query_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::occupancy_t
-  >
-{
+struct query_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                    asio::execution::occupancy_t> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef std::size_t result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct query_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::context_t
-  >
-{
+struct query_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                    asio::execution::context_t> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
-  typedef asio::thread_pool& result_type;
+  typedef asio::thread_pool &result_type;
 };
 
 template <typename Allocator, unsigned int Bits>
-struct query_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::allocator_t<void>
-  >
-{
+struct query_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                    asio::execution::allocator_t<void>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef Allocator result_type;
 };
 
 template <typename Allocator, unsigned int Bits, typename OtherAllocator>
-struct query_member<
-    asio::thread_pool::basic_executor_type<Allocator, Bits>,
-    asio::execution::allocator_t<OtherAllocator>
-  >
-{
+struct query_member<asio::thread_pool::basic_executor_type<Allocator, Bits>,
+                    asio::execution::allocator_t<OtherAllocator>> {
   static constexpr bool is_valid = true;
   static constexpr bool is_noexcept = true;
   typedef Allocator result_type;
@@ -942,10 +835,7 @@ struct query_member<
 
 namespace execution {
 
-template <>
-struct is_executor<thread_pool> : false_type
-{
-};
+template <> struct is_executor<thread_pool> : false_type {};
 
 } // namespace execution
 
@@ -957,7 +847,7 @@ struct is_executor<thread_pool> : false_type
 
 #include "asio/impl/thread_pool.hpp"
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/impl/thread_pool.ipp"
+#include "asio/impl/thread_pool.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_THREAD_POOL_HPP

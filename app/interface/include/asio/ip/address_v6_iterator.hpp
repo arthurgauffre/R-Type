@@ -13,7 +13,7 @@
 #define ASIO_IP_ADDRESS_V6_ITERATOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -35,8 +35,7 @@ template <typename> class basic_address_iterator;
  * @e Distinct @e objects: Safe.@n
  * @e Shared @e objects: Unsafe.
  */
-template <> class basic_address_iterator<address_v6>
-{
+template <> class basic_address_iterator<address_v6> {
 public:
   /// The type of the elements pointed to by the iterator.
   typedef address_v6 value_type;
@@ -45,67 +44,48 @@ public:
   typedef std::ptrdiff_t difference_type;
 
   /// The type of a pointer to an element pointed to by the iterator.
-  typedef const address_v6* pointer;
+  typedef const address_v6 *pointer;
 
   /// The type of a reference to an element pointed to by the iterator.
-  typedef const address_v6& reference;
+  typedef const address_v6 &reference;
 
   /// Denotes that the iterator satisfies the input iterator requirements.
   typedef std::input_iterator_tag iterator_category;
 
   /// Construct an iterator that points to the specified address.
-  basic_address_iterator(const address_v6& addr) noexcept
-    : address_(addr)
-  {
-  }
+  basic_address_iterator(const address_v6 &addr) noexcept : address_(addr) {}
 
   /// Copy constructor.
-  basic_address_iterator(
-      const basic_address_iterator& other) noexcept
-    : address_(other.address_)
-  {
-  }
+  basic_address_iterator(const basic_address_iterator &other) noexcept
+      : address_(other.address_) {}
 
   /// Move constructor.
-  basic_address_iterator(basic_address_iterator&& other) noexcept
-    : address_(static_cast<address_v6&&>(other.address_))
-  {
-  }
+  basic_address_iterator(basic_address_iterator &&other) noexcept
+      : address_(static_cast<address_v6 &&>(other.address_)) {}
 
   /// Assignment operator.
-  basic_address_iterator& operator=(
-      const basic_address_iterator& other) noexcept
-  {
+  basic_address_iterator &
+  operator=(const basic_address_iterator &other) noexcept {
     address_ = other.address_;
     return *this;
   }
 
   /// Move assignment operator.
-  basic_address_iterator& operator=(basic_address_iterator&& other) noexcept
-  {
-    address_ = static_cast<address_v6&&>(other.address_);
+  basic_address_iterator &operator=(basic_address_iterator &&other) noexcept {
+    address_ = static_cast<address_v6 &&>(other.address_);
     return *this;
   }
 
   /// Dereference the iterator.
-  const address_v6& operator*() const noexcept
-  {
-    return address_;
-  }
+  const address_v6 &operator*() const noexcept { return address_; }
 
   /// Dereference the iterator.
-  const address_v6* operator->() const noexcept
-  {
-    return &address_;
-  }
+  const address_v6 *operator->() const noexcept { return &address_; }
 
   /// Pre-increment operator.
-  basic_address_iterator& operator++() noexcept
-  {
-    for (int i = 15; i >= 0; --i)
-    {
-      if (address_.addr_.s6_addr[i] < 0xFF)
-      {
+  basic_address_iterator &operator++() noexcept {
+    for (int i = 15; i >= 0; --i) {
+      if (address_.addr_.s6_addr[i] < 0xFF) {
         ++address_.addr_.s6_addr[i];
         break;
       }
@@ -117,20 +97,16 @@ public:
   }
 
   /// Post-increment operator.
-  basic_address_iterator operator++(int) noexcept
-  {
+  basic_address_iterator operator++(int) noexcept {
     basic_address_iterator tmp(*this);
     ++*this;
     return tmp;
   }
 
   /// Pre-decrement operator.
-  basic_address_iterator& operator--() noexcept
-  {
-    for (int i = 15; i >= 0; --i)
-    {
-      if (address_.addr_.s6_addr[i] > 0)
-      {
+  basic_address_iterator &operator--() noexcept {
+    for (int i = 15; i >= 0; --i) {
+      if (address_.addr_.s6_addr[i] > 0) {
         --address_.addr_.s6_addr[i];
         break;
       }
@@ -142,24 +118,21 @@ public:
   }
 
   /// Post-decrement operator.
-  basic_address_iterator operator--(int)
-  {
+  basic_address_iterator operator--(int) {
     basic_address_iterator tmp(*this);
     --*this;
     return tmp;
   }
 
   /// Compare two addresses for equality.
-  friend bool operator==(const basic_address_iterator& a,
-      const basic_address_iterator& b)
-  {
+  friend bool operator==(const basic_address_iterator &a,
+                         const basic_address_iterator &b) {
     return a.address_ == b.address_;
   }
 
   /// Compare two addresses for inequality.
-  friend bool operator!=(const basic_address_iterator& a,
-      const basic_address_iterator& b)
-  {
+  friend bool operator!=(const basic_address_iterator &a,
+                         const basic_address_iterator &b) {
     return a.address_ != b.address_;
   }
 

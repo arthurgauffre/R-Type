@@ -12,13 +12,11 @@
 #define ASIO_DETAIL_SCHEDULER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#include "asio/error_code.hpp"
-#include "asio/execution_context.hpp"
 #include "asio/detail/atomic_count.hpp"
 #include "asio/detail/conditionally_enabled_event.hpp"
 #include "asio/detail/conditionally_enabled_mutex.hpp"
@@ -27,6 +25,8 @@
 #include "asio/detail/scheduler_task.hpp"
 #include "asio/detail/thread.hpp"
 #include "asio/detail/thread_context.hpp"
+#include "asio/error_code.hpp"
+#include "asio/execution_context.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -35,22 +35,20 @@ namespace detail {
 
 struct scheduler_thread_info;
 
-class scheduler
-  : public execution_context_service_base<scheduler>,
-    public thread_context
-{
+class scheduler : public execution_context_service_base<scheduler>,
+                  public thread_context {
 public:
   typedef scheduler_operation operation;
 
   // The type of a function used to obtain a task instance.
-  typedef scheduler_task* (*get_task_func_type)(
-      asio::execution_context&);
+  typedef scheduler_task *(*get_task_func_type)(asio::execution_context &);
 
   // Constructor. Specifies the number of concurrent threads that are likely to
   // run the scheduler. If set to 1 certain optimisation are performed.
-  ASIO_DECL scheduler(asio::execution_context& ctx,
-      int concurrency_hint = 0, bool own_thread = true,
-      get_task_func_type get_task = &scheduler::get_default_task);
+  ASIO_DECL
+  scheduler(asio::execution_context &ctx, int concurrency_hint = 0,
+            bool own_thread = true,
+            get_task_func_type get_task = &scheduler::get_default_task);
 
   // Destructor.
   ASIO_DECL ~scheduler();
@@ -62,20 +60,19 @@ public:
   ASIO_DECL void init_task();
 
   // Run the event loop until interrupted or no more work.
-  ASIO_DECL std::size_t run(asio::error_code& ec);
+  ASIO_DECL std::size_t run(asio::error_code &ec);
 
   // Run until interrupted or one operation is performed.
-  ASIO_DECL std::size_t run_one(asio::error_code& ec);
+  ASIO_DECL std::size_t run_one(asio::error_code &ec);
 
   // Run until timeout, interrupted, or one operation is performed.
-  ASIO_DECL std::size_t wait_one(
-      long usec, asio::error_code& ec);
+  ASIO_DECL std::size_t wait_one(long usec, asio::error_code &ec);
 
   // Poll for operations without blocking.
-  ASIO_DECL std::size_t poll(asio::error_code& ec);
+  ASIO_DECL std::size_t poll(asio::error_code &ec);
 
   // Poll for one operation without blocking.
-  ASIO_DECL std::size_t poll_one(asio::error_code& ec);
+  ASIO_DECL std::size_t poll_one(asio::error_code &ec);
 
   // Interrupt the event processing loop.
   ASIO_DECL void stop();
@@ -87,18 +84,14 @@ public:
   ASIO_DECL void restart();
 
   // Notify that some work has started.
-  void work_started()
-  {
-    ++outstanding_work_;
-  }
+  void work_started() { ++outstanding_work_; }
 
   // Used to compensate for a forthcoming work_finished call. Must be called
   // from within a scheduler-owned thread.
   ASIO_DECL void compensating_work_started();
 
   // Notify that some work has finished.
-  void work_finished()
-  {
+  void work_finished() {
     if (--outstanding_work_ == 0)
       stop();
   }
@@ -111,35 +104,32 @@ public:
 
   // Request invocation of the given operation and return immediately. Assumes
   // that work_started() has not yet been called for the operation.
-  ASIO_DECL void post_immediate_completion(
-      operation* op, bool is_continuation);
+  ASIO_DECL void post_immediate_completion(operation *op, bool is_continuation);
 
   // Request invocation of the given operations and return immediately. Assumes
   // that work_started() has not yet been called for the operations.
   ASIO_DECL void post_immediate_completions(std::size_t n,
-      op_queue<operation>& ops, bool is_continuation);
+                                            op_queue<operation> &ops,
+                                            bool is_continuation);
 
   // Request invocation of the given operation and return immediately. Assumes
   // that work_started() was previously called for the operation.
-  ASIO_DECL void post_deferred_completion(operation* op);
+  ASIO_DECL void post_deferred_completion(operation *op);
 
   // Request invocation of the given operations and return immediately. Assumes
   // that work_started() was previously called for each operation.
-  ASIO_DECL void post_deferred_completions(op_queue<operation>& ops);
+  ASIO_DECL void post_deferred_completions(op_queue<operation> &ops);
 
   // Enqueue the given operation following a failed attempt to dispatch the
   // operation for immediate invocation.
-  ASIO_DECL void do_dispatch(operation* op);
+  ASIO_DECL void do_dispatch(operation *op);
 
   // Process unfinished operations as part of a shutdownoperation. Assumes that
   // work_started() was previously called for the operations.
-  ASIO_DECL void abandon_operations(op_queue<operation>& ops);
+  ASIO_DECL void abandon_operations(op_queue<operation> &ops);
 
   // Get the concurrency hint that was used to initialise the scheduler.
-  int concurrency_hint() const
-  {
-    return concurrency_hint_;
-  }
+  int concurrency_hint() const { return concurrency_hint_; }
 
 private:
   // The mutex type used by this scheduler.
@@ -152,27 +142,29 @@ private:
   typedef scheduler_thread_info thread_info;
 
   // Run at most one operation. May block.
-  ASIO_DECL std::size_t do_run_one(mutex::scoped_lock& lock,
-      thread_info& this_thread, const asio::error_code& ec);
+  ASIO_DECL std::size_t do_run_one(mutex::scoped_lock &lock,
+                                   thread_info &this_thread,
+                                   const asio::error_code &ec);
 
   // Run at most one operation with a timeout. May block.
-  ASIO_DECL std::size_t do_wait_one(mutex::scoped_lock& lock,
-      thread_info& this_thread, long usec, const asio::error_code& ec);
+  ASIO_DECL std::size_t do_wait_one(mutex::scoped_lock &lock,
+                                    thread_info &this_thread, long usec,
+                                    const asio::error_code &ec);
 
   // Poll for at most one operation.
-  ASIO_DECL std::size_t do_poll_one(mutex::scoped_lock& lock,
-      thread_info& this_thread, const asio::error_code& ec);
+  ASIO_DECL std::size_t do_poll_one(mutex::scoped_lock &lock,
+                                    thread_info &this_thread,
+                                    const asio::error_code &ec);
 
   // Stop the task and all idle threads.
-  ASIO_DECL void stop_all_threads(mutex::scoped_lock& lock);
+  ASIO_DECL void stop_all_threads(mutex::scoped_lock &lock);
 
   // Wake a single idle thread, or the task, and always unlock the mutex.
-  ASIO_DECL void wake_one_thread_and_unlock(
-      mutex::scoped_lock& lock);
+  ASIO_DECL void wake_one_thread_and_unlock(mutex::scoped_lock &lock);
 
   // Get the default task.
-  ASIO_DECL static scheduler_task* get_default_task(
-      asio::execution_context& ctx);
+  ASIO_DECL static scheduler_task *
+  get_default_task(asio::execution_context &ctx);
 
   // Helper class to run the scheduler in its own thread.
   class thread_function;
@@ -196,14 +188,13 @@ private:
   event wakeup_event_;
 
   // The task to be run by this service.
-  scheduler_task* task_;
+  scheduler_task *task_;
 
   // The function used to get the task.
   get_task_func_type get_task_;
 
   // Operation object to represent the position of the task in the queue.
-  struct task_operation : operation
-  {
+  struct task_operation : operation {
     task_operation() : operation(0) {}
   } task_operation_;
 
@@ -226,7 +217,7 @@ private:
   const int concurrency_hint_;
 
   // The thread that is running the scheduler.
-  asio::detail::thread* thread_;
+  asio::detail::thread *thread_;
 };
 
 } // namespace detail
@@ -235,7 +226,7 @@ private:
 #include "asio/detail/pop_options.hpp"
 
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/scheduler.ipp"
+#include "asio/detail/impl/scheduler.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_DETAIL_SCHEDULER_HPP

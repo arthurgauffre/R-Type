@@ -12,11 +12,11 @@
 #define ASIO_DETAIL_CONDITIONALLY_ENABLED_EVENT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
 #include "asio/detail/conditionally_enabled_mutex.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/event.hpp"
 #include "asio/detail/noncopyable.hpp"
 #include "asio/detail/null_event.hpp"
@@ -28,54 +28,42 @@ namespace asio {
 namespace detail {
 
 // Mutex adapter used to conditionally enable or disable locking.
-class conditionally_enabled_event
-  : private noncopyable
-{
+class conditionally_enabled_event : private noncopyable {
 public:
   // Constructor.
-  conditionally_enabled_event()
-  {
-  }
+  conditionally_enabled_event() {}
 
   // Destructor.
-  ~conditionally_enabled_event()
-  {
-  }
+  ~conditionally_enabled_event() {}
 
   // Signal the event. (Retained for backward compatibility.)
-  void signal(conditionally_enabled_mutex::scoped_lock& lock)
-  {
+  void signal(conditionally_enabled_mutex::scoped_lock &lock) {
     if (lock.mutex_.enabled_)
       event_.signal(lock);
   }
 
   // Signal all waiters.
-  void signal_all(conditionally_enabled_mutex::scoped_lock& lock)
-  {
+  void signal_all(conditionally_enabled_mutex::scoped_lock &lock) {
     if (lock.mutex_.enabled_)
       event_.signal_all(lock);
   }
 
   // Unlock the mutex and signal one waiter.
-  void unlock_and_signal_one(
-      conditionally_enabled_mutex::scoped_lock& lock)
-  {
+  void unlock_and_signal_one(conditionally_enabled_mutex::scoped_lock &lock) {
     if (lock.mutex_.enabled_)
       event_.unlock_and_signal_one(lock);
   }
 
   // Unlock the mutex and signal one waiter who may destroy us.
   void unlock_and_signal_one_for_destruction(
-      conditionally_enabled_mutex::scoped_lock& lock)
-  {
+      conditionally_enabled_mutex::scoped_lock &lock) {
     if (lock.mutex_.enabled_)
       event_.unlock_and_signal_one(lock);
   }
 
   // If there's a waiter, unlock the mutex and signal it.
-  bool maybe_unlock_and_signal_one(
-      conditionally_enabled_mutex::scoped_lock& lock)
-  {
+  bool
+  maybe_unlock_and_signal_one(conditionally_enabled_mutex::scoped_lock &lock) {
     if (lock.mutex_.enabled_)
       return event_.maybe_unlock_and_signal_one(lock);
     else
@@ -83,15 +71,13 @@ public:
   }
 
   // Reset the event.
-  void clear(conditionally_enabled_mutex::scoped_lock& lock)
-  {
+  void clear(conditionally_enabled_mutex::scoped_lock &lock) {
     if (lock.mutex_.enabled_)
       event_.clear(lock);
   }
 
   // Wait for the event to become signalled.
-  void wait(conditionally_enabled_mutex::scoped_lock& lock)
-  {
+  void wait(conditionally_enabled_mutex::scoped_lock &lock) {
     if (lock.mutex_.enabled_)
       event_.wait(lock);
     else
@@ -99,9 +85,8 @@ public:
   }
 
   // Timed wait for the event to become signalled.
-  bool wait_for_usec(
-      conditionally_enabled_mutex::scoped_lock& lock, long usec)
-  {
+  bool wait_for_usec(conditionally_enabled_mutex::scoped_lock &lock,
+                     long usec) {
     if (lock.mutex_.enabled_)
       return event_.wait_for_usec(lock, usec);
     else

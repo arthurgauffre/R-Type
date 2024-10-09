@@ -12,11 +12,11 @@
 #define ASIO_DETAIL_STRAND_EXECUTOR_SERVICE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
 #include "asio/detail/atomic_count.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/executor_op.hpp"
 #include "asio/detail/memory.hpp"
 #include "asio/detail/mutex.hpp"
@@ -34,12 +34,10 @@ namespace detail {
 
 // Default service implementation for a strand.
 class strand_executor_service
-  : public execution_context_service_base<strand_executor_service>
-{
+    : public execution_context_service_base<strand_executor_service> {
 public:
   // The underlying implementation of a strand.
-  class strand_impl
-  {
+  class strand_impl {
   public:
     ASIO_DECL ~strand_impl();
 
@@ -47,7 +45,7 @@ public:
     friend class strand_executor_service;
 
     // Mutex to protect access to internal data.
-    mutex* mutex_;
+    mutex *mutex_;
 
     // Indicates whether the strand is currently "locked" by a handler. This
     // means that there is a handler upcall in progress, or that the strand
@@ -69,17 +67,17 @@ public:
     op_queue<scheduler_operation> ready_queue_;
 
     // Pointers to adjacent handle implementations in linked list.
-    strand_impl* next_;
-    strand_impl* prev_;
+    strand_impl *next_;
+    strand_impl *prev_;
 
     // The strand service in where the implementation is held.
-    strand_executor_service* service_;
+    strand_executor_service *service_;
   };
 
   typedef shared_ptr<strand_impl> implementation_type;
 
   // Construct a new strand service for the specified context.
-  ASIO_DECL explicit strand_executor_service(execution_context& context);
+  ASIO_DECL explicit strand_executor_service(execution_context &context);
 
   // Destroy all user-defined handler objects owned by the service.
   ASIO_DECL void shutdown();
@@ -89,38 +87,35 @@ public:
 
   // Request invocation of the given function.
   template <typename Executor, typename Function>
-  static void execute(const implementation_type& impl, Executor& ex,
-      Function&& function,
-      enable_if_t<
-        can_query<Executor, execution::allocator_t<void>>::value
-      >* = 0);
+  static void execute(
+      const implementation_type &impl, Executor &ex, Function &&function,
+      enable_if_t<can_query<Executor, execution::allocator_t<void>>::value> * =
+          0);
 
   // Request invocation of the given function.
   template <typename Executor, typename Function>
-  static void execute(const implementation_type& impl, Executor& ex,
-      Function&& function,
-      enable_if_t<
-        !can_query<Executor, execution::allocator_t<void>>::value
-      >* = 0);
+  static void execute(
+      const implementation_type &impl, Executor &ex, Function &&function,
+      enable_if_t<!can_query<Executor, execution::allocator_t<void>>::value> * =
+          0);
 
   // Request invocation of the given function.
   template <typename Executor, typename Function, typename Allocator>
-  static void dispatch(const implementation_type& impl, Executor& ex,
-      Function&& function, const Allocator& a);
+  static void dispatch(const implementation_type &impl, Executor &ex,
+                       Function &&function, const Allocator &a);
 
   // Request invocation of the given function and return immediately.
   template <typename Executor, typename Function, typename Allocator>
-  static void post(const implementation_type& impl, Executor& ex,
-      Function&& function, const Allocator& a);
+  static void post(const implementation_type &impl, Executor &ex,
+                   Function &&function, const Allocator &a);
 
   // Request invocation of the given function and return immediately.
   template <typename Executor, typename Function, typename Allocator>
-  static void defer(const implementation_type& impl, Executor& ex,
-      Function&& function, const Allocator& a);
+  static void defer(const implementation_type &impl, Executor &ex,
+                    Function &&function, const Allocator &a);
 
   // Determine whether the strand is running in the current thread.
-  ASIO_DECL static bool running_in_this_thread(
-      const implementation_type& impl);
+  ASIO_DECL static bool running_in_this_thread(const implementation_type &impl);
 
 private:
   friend class strand_impl;
@@ -128,20 +123,20 @@ private:
   template <typename Executor, typename = void> class invoker;
 
   // Adds a function to the strand. Returns true if it acquires the lock.
-  ASIO_DECL static bool enqueue(const implementation_type& impl,
-      scheduler_operation* op);
+  ASIO_DECL static bool enqueue(const implementation_type &impl,
+                                scheduler_operation *op);
 
   // Transfers waiting handlers to the ready queue. Returns true if one or more
   // handlers were transferred.
-  ASIO_DECL static bool push_waiting_to_ready(implementation_type& impl);
+  ASIO_DECL static bool push_waiting_to_ready(implementation_type &impl);
 
   // Invokes all ready-to-run handlers.
-  ASIO_DECL static void run_ready_handlers(implementation_type& impl);
+  ASIO_DECL static void run_ready_handlers(implementation_type &impl);
 
   // Helper function to request invocation of the given function.
   template <typename Executor, typename Function, typename Allocator>
-  static void do_execute(const implementation_type& impl, Executor& ex,
-      Function&& function, const Allocator& a);
+  static void do_execute(const implementation_type &impl, Executor &ex,
+                         Function &&function, const Allocator &a);
 
   // Mutex to protect access to the service-wide state.
   mutex mutex_;
@@ -157,7 +152,7 @@ private:
   std::size_t salt_;
 
   // The head of a linked list of all implementations.
-  strand_impl* impl_list_;
+  strand_impl *impl_list_;
 };
 
 } // namespace detail
@@ -167,7 +162,7 @@ private:
 
 #include "asio/detail/impl/strand_executor_service.hpp"
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/strand_executor_service.ipp"
+#include "asio/detail/impl/strand_executor_service.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_DETAIL_STRAND_EXECUTOR_SERVICE_HPP

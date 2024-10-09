@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_TIMER_QUEUE_BASE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -25,9 +25,7 @@
 namespace asio {
 namespace detail {
 
-class timer_queue_base
-  : private noncopyable
-{
+class timer_queue_base : private noncopyable {
 public:
   // Constructor.
   timer_queue_base() : next_(0) {}
@@ -45,20 +43,19 @@ public:
   virtual long wait_duration_usec(long max_duration) const = 0;
 
   // Dequeue all ready timers.
-  virtual void get_ready_timers(op_queue<operation>& ops) = 0;
+  virtual void get_ready_timers(op_queue<operation> &ops) = 0;
 
   // Dequeue all timers.
-  virtual void get_all_timers(op_queue<operation>& ops) = 0;
+  virtual void get_all_timers(op_queue<operation> &ops) = 0;
 
 private:
   friend class timer_queue_set;
 
   // Next timer queue in the set.
-  timer_queue_base* next_;
+  timer_queue_base *next_;
 };
 
-template <typename Time_Traits>
-class timer_queue;
+template <typename Time_Traits> class timer_queue;
 
 } // namespace detail
 } // namespace asio

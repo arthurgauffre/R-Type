@@ -12,15 +12,13 @@
 #define ASIO_BASIC_DEADLINE_TIMER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_BOOST_DATE_TIME) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_BOOST_DATE_TIME) || defined(GENERATING_DOCUMENTATION)
 
-#include <cstddef>
 #include "asio/any_io_executor.hpp"
 #include "asio/detail/deadline_timer_service.hpp"
 #include "asio/detail/handler_type_requirements.hpp"
@@ -30,6 +28,7 @@
 #include "asio/error.hpp"
 #include "asio/execution_context.hpp"
 #include "asio/time_traits.hpp"
+#include <cstddef>
 
 #include "asio/detail/push_options.hpp"
 
@@ -63,7 +62,7 @@ namespace asio {
  * timer.wait();
  * @endcode
  *
- * @par 
+ * @par
  * Performing an asynchronous wait:
  * @code
  * void handler(const asio::error_code& error)
@@ -123,11 +122,9 @@ namespace asio {
  * @li If a wait handler is cancelled, the asio::error_code passed to
  * it contains the value asio::error::operation_aborted.
  */
-template <typename Time,
-    typename TimeTraits = asio::time_traits<Time>,
-    typename Executor = any_io_executor>
-class basic_deadline_timer
-{
+template <typename Time, typename TimeTraits = asio::time_traits<Time>,
+          typename Executor = any_io_executor>
+class basic_deadline_timer {
 private:
   class initiate_async_wait;
 
@@ -136,9 +133,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the timer type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The timer type when rebound to the specified executor.
     typedef basic_deadline_timer<Time, TimeTraits, Executor1> other;
   };
@@ -161,10 +156,7 @@ public:
    * @param ex The I/O executor that the timer will use, by default, to
    * dispatch handlers for any asynchronous operations performed on the timer.
    */
-  explicit basic_deadline_timer(const executor_type& ex)
-    : impl_(0, ex)
-  {
-  }
+  explicit basic_deadline_timer(const executor_type &ex) : impl_(0, ex) {}
 
   /// Constructor.
   /**
@@ -177,13 +169,11 @@ public:
    * operations performed on the timer.
    */
   template <typename ExecutionContext>
-  explicit basic_deadline_timer(ExecutionContext& context,
+  explicit basic_deadline_timer(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : impl_(0, 0, context) {}
 
   /// Constructor to set a particular expiry time as an absolute time.
   /**
@@ -195,9 +185,8 @@ public:
    * @param expiry_time The expiry time to be used for the timer, expressed
    * as an absolute time.
    */
-  basic_deadline_timer(const executor_type& ex, const time_type& expiry_time)
-    : impl_(0, ex)
-  {
+  basic_deadline_timer(const executor_type &ex, const time_type &expiry_time)
+      : impl_(0, ex) {
     asio::error_code ec;
     impl_.get_service().expires_at(impl_.get_implementation(), expiry_time, ec);
     asio::detail::throw_error(ec, "expires_at");
@@ -215,12 +204,11 @@ public:
    * as an absolute time.
    */
   template <typename ExecutionContext>
-  basic_deadline_timer(ExecutionContext& context, const time_type& expiry_time,
+  basic_deadline_timer(
+      ExecutionContext &context, const time_type &expiry_time,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : impl_(0, 0, context) {
     asio::error_code ec;
     impl_.get_service().expires_at(impl_.get_implementation(), expiry_time, ec);
     asio::detail::throw_error(ec, "expires_at");
@@ -236,13 +224,12 @@ public:
    * @param expiry_time The expiry time to be used for the timer, relative to
    * now.
    */
-  basic_deadline_timer(const executor_type& ex,
-      const duration_type& expiry_time)
-    : impl_(0, ex)
-  {
+  basic_deadline_timer(const executor_type &ex,
+                       const duration_type &expiry_time)
+      : impl_(0, ex) {
     asio::error_code ec;
-    impl_.get_service().expires_from_now(
-        impl_.get_implementation(), expiry_time, ec);
+    impl_.get_service().expires_from_now(impl_.get_implementation(),
+                                         expiry_time, ec);
     asio::detail::throw_error(ec, "expires_from_now");
   }
 
@@ -258,16 +245,14 @@ public:
    * now.
    */
   template <typename ExecutionContext>
-  basic_deadline_timer(ExecutionContext& context,
-      const duration_type& expiry_time,
+  basic_deadline_timer(
+      ExecutionContext &context, const duration_type &expiry_time,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : impl_(0, 0, context) {
     asio::error_code ec;
-    impl_.get_service().expires_from_now(
-        impl_.get_implementation(), expiry_time, ec);
+    impl_.get_service().expires_from_now(impl_.get_implementation(),
+                                         expiry_time, ec);
     asio::detail::throw_error(ec, "expires_from_now");
   }
 
@@ -282,10 +267,8 @@ public:
    * constructed using the @c basic_deadline_timer(const executor_type&)
    * constructor.
    */
-  basic_deadline_timer(basic_deadline_timer&& other)
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_deadline_timer(basic_deadline_timer &&other)
+      : impl_(std::move(other.impl_)) {}
 
   /// Move-assign a basic_deadline_timer from another.
   /**
@@ -299,8 +282,7 @@ public:
    * constructed using the @c basic_deadline_timer(const executor_type&)
    * constructor.
    */
-  basic_deadline_timer& operator=(basic_deadline_timer&& other)
-  {
+  basic_deadline_timer &operator=(basic_deadline_timer &&other) {
     impl_ = std::move(other.impl_);
     return *this;
   }
@@ -310,15 +292,10 @@ public:
    * This function destroys the timer, cancelling any outstanding asynchronous
    * wait operations associated with the timer as if by calling @c cancel.
    */
-  ~basic_deadline_timer()
-  {
-  }
+  ~basic_deadline_timer() {}
 
   /// Get the executor associated with the object.
-  const executor_type& get_executor() noexcept
-  {
-    return impl_.get_executor();
-  }
+  const executor_type &get_executor() noexcept { return impl_.get_executor(); }
 
   /// Cancel any asynchronous operations that are waiting on the timer.
   /**
@@ -342,8 +319,7 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  std::size_t cancel()
-  {
+  std::size_t cancel() {
     asio::error_code ec;
     std::size_t s = impl_.get_service().cancel(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "cancel");
@@ -372,8 +348,7 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  std::size_t cancel(asio::error_code& ec)
-  {
+  std::size_t cancel(asio::error_code &ec) {
     return impl_.get_service().cancel(impl_.get_implementation(), ec);
   }
 
@@ -401,11 +376,10 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  std::size_t cancel_one()
-  {
+  std::size_t cancel_one() {
     asio::error_code ec;
-    std::size_t s = impl_.get_service().cancel_one(
-        impl_.get_implementation(), ec);
+    std::size_t s =
+        impl_.get_service().cancel_one(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "cancel_one");
     return s;
   }
@@ -434,8 +408,7 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  std::size_t cancel_one(asio::error_code& ec)
-  {
+  std::size_t cancel_one(asio::error_code &ec) {
     return impl_.get_service().cancel_one(impl_.get_implementation(), ec);
   }
 
@@ -444,8 +417,7 @@ public:
    * This function may be used to obtain the timer's current expiry time.
    * Whether the timer has expired or not does not affect this value.
    */
-  time_type expires_at() const
-  {
+  time_type expires_at() const {
     return impl_.get_service().expires_at(impl_.get_implementation());
   }
 
@@ -471,11 +443,10 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  std::size_t expires_at(const time_type& expiry_time)
-  {
+  std::size_t expires_at(const time_type &expiry_time) {
     asio::error_code ec;
-    std::size_t s = impl_.get_service().expires_at(
-        impl_.get_implementation(), expiry_time, ec);
+    std::size_t s = impl_.get_service().expires_at(impl_.get_implementation(),
+                                                   expiry_time, ec);
     asio::detail::throw_error(ec, "expires_at");
     return s;
   }
@@ -502,11 +473,9 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  std::size_t expires_at(const time_type& expiry_time,
-      asio::error_code& ec)
-  {
-    return impl_.get_service().expires_at(
-        impl_.get_implementation(), expiry_time, ec);
+  std::size_t expires_at(const time_type &expiry_time, asio::error_code &ec) {
+    return impl_.get_service().expires_at(impl_.get_implementation(),
+                                          expiry_time, ec);
   }
 
   /// Get the timer's expiry time relative to now.
@@ -514,8 +483,7 @@ public:
    * This function may be used to obtain the timer's current expiry time.
    * Whether the timer has expired or not does not affect this value.
    */
-  duration_type expires_from_now() const
-  {
+  duration_type expires_from_now() const {
     return impl_.get_service().expires_from_now(impl_.get_implementation());
   }
 
@@ -541,8 +509,7 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  std::size_t expires_from_now(const duration_type& expiry_time)
-  {
+  std::size_t expires_from_now(const duration_type &expiry_time) {
     asio::error_code ec;
     std::size_t s = impl_.get_service().expires_from_now(
         impl_.get_implementation(), expiry_time, ec);
@@ -572,11 +539,10 @@ public:
    * These handlers can no longer be cancelled, and therefore are passed an
    * error code that indicates the successful completion of the wait operation.
    */
-  std::size_t expires_from_now(const duration_type& expiry_time,
-      asio::error_code& ec)
-  {
-    return impl_.get_service().expires_from_now(
-        impl_.get_implementation(), expiry_time, ec);
+  std::size_t expires_from_now(const duration_type &expiry_time,
+                               asio::error_code &ec) {
+    return impl_.get_service().expires_from_now(impl_.get_implementation(),
+                                                expiry_time, ec);
   }
 
   /// Perform a blocking wait on the timer.
@@ -586,8 +552,7 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  void wait()
-  {
+  void wait() {
     asio::error_code ec;
     impl_.get_service().wait(impl_.get_implementation(), ec);
     asio::detail::throw_error(ec, "wait");
@@ -600,8 +565,7 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    */
-  void wait(asio::error_code& ec)
-  {
+  void wait(asio::error_code &ec) {
     impl_.get_service().wait(impl_.get_implementation(), ec);
   }
 
@@ -645,59 +609,49 @@ public:
    *
    * @li @c cancellation_type::total
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code))
-        WaitToken = default_completion_token_t<executor_type>>
-  auto async_wait(
-      WaitToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WaitToken, void (asio::error_code)>(
-        declval<initiate_async_wait>(), token))
-  {
-    return async_initiate<WaitToken, void (asio::error_code)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code))
+                WaitToken = default_completion_token_t<executor_type>>
+  auto
+  async_wait(WaitToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WaitToken, void(asio::error_code)>(
+          declval<initiate_async_wait>(), token)) {
+    return async_initiate<WaitToken, void(asio::error_code)>(
         initiate_async_wait(this), token);
   }
 
 private:
   // Disallow copying and assignment.
-  basic_deadline_timer(const basic_deadline_timer&) = delete;
-  basic_deadline_timer& operator=(
-      const basic_deadline_timer&) = delete;
+  basic_deadline_timer(const basic_deadline_timer &) = delete;
+  basic_deadline_timer &operator=(const basic_deadline_timer &) = delete;
 
-  class initiate_async_wait
-  {
+  class initiate_async_wait {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_wait(basic_deadline_timer* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_wait(basic_deadline_timer *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename WaitHandler>
-    void operator()(WaitHandler&& handler) const
-    {
+    void operator()(WaitHandler &&handler) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WaitHandler.
       ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
       detail::non_const_lvalue<WaitHandler> handler2(handler);
-      self_->impl_.get_service().async_wait(
-          self_->impl_.get_implementation(),
-          handler2.value, self_->impl_.get_executor());
+      self_->impl_.get_service().async_wait(self_->impl_.get_implementation(),
+                                            handler2.value,
+                                            self_->impl_.get_executor());
     }
 
   private:
-    basic_deadline_timer* self_;
+    basic_deadline_timer *self_;
   };
 
-  detail::io_object_impl<
-    detail::deadline_timer_service<TimeTraits>, Executor> impl_;
+  detail::io_object_impl<detail::deadline_timer_service<TimeTraits>, Executor>
+      impl_;
 };
 
 } // namespace asio

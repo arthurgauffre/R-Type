@@ -12,16 +12,16 @@
 #define ASIO_GENERIC_SEQ_PACKET_PROTOCOL_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#include <typeinfo>
 #include "asio/basic_seq_packet_socket.hpp"
 #include "asio/detail/socket_types.hpp"
 #include "asio/detail/throw_exception.hpp"
 #include "asio/generic/basic_endpoint.hpp"
+#include <typeinfo>
 
 #include "asio/detail/push_options.hpp"
 
@@ -44,15 +44,11 @@ namespace generic {
  * @par Concepts:
  * Protocol.
  */
-class seq_packet_protocol
-{
+class seq_packet_protocol {
 public:
   /// Construct a protocol object for a specific address family and protocol.
   seq_packet_protocol(int address_family, int socket_protocol)
-    : family_(address_family),
-      protocol_(socket_protocol)
-  {
-  }
+      : family_(address_family), protocol_(socket_protocol) {}
 
   /// Construct a generic protocol object from a specific protocol.
   /**
@@ -60,46 +56,33 @@ public:
    * sequenced packets.
    */
   template <typename Protocol>
-  seq_packet_protocol(const Protocol& source_protocol)
-    : family_(source_protocol.family()),
-      protocol_(source_protocol.protocol())
-  {
-    if (source_protocol.type() != type())
-    {
+  seq_packet_protocol(const Protocol &source_protocol)
+      : family_(source_protocol.family()),
+        protocol_(source_protocol.protocol()) {
+    if (source_protocol.type() != type()) {
       std::bad_cast ex;
       asio::detail::throw_exception(ex);
     }
   }
 
   /// Obtain an identifier for the type of the protocol.
-  int type() const noexcept
-  {
-    return ASIO_OS_DEF(SOCK_SEQPACKET);
-  }
+  int type() const noexcept { return ASIO_OS_DEF(SOCK_SEQPACKET); }
 
   /// Obtain an identifier for the protocol.
-  int protocol() const noexcept
-  {
-    return protocol_;
-  }
+  int protocol() const noexcept { return protocol_; }
 
   /// Obtain an identifier for the protocol family.
-  int family() const noexcept
-  {
-    return family_;
-  }
+  int family() const noexcept { return family_; }
 
   /// Compare two protocols for equality.
-  friend bool operator==(const seq_packet_protocol& p1,
-      const seq_packet_protocol& p2)
-  {
+  friend bool operator==(const seq_packet_protocol &p1,
+                         const seq_packet_protocol &p2) {
     return p1.family_ == p2.family_ && p1.protocol_ == p2.protocol_;
   }
 
   /// Compare two protocols for inequality.
-  friend bool operator!=(const seq_packet_protocol& p1,
-      const seq_packet_protocol& p2)
-  {
+  friend bool operator!=(const seq_packet_protocol &p1,
+                         const seq_packet_protocol &p2) {
     return !(p1 == p2);
   }
 

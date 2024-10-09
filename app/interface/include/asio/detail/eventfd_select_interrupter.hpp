@@ -13,7 +13,7 @@
 #define ASIO_DETAIL_EVENTFD_SELECT_INTERRUPTER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -25,8 +25,7 @@
 namespace asio {
 namespace detail {
 
-class eventfd_select_interrupter
-{
+class eventfd_select_interrupter {
 public:
   // Constructor.
   ASIO_DECL eventfd_select_interrupter();
@@ -44,10 +43,7 @@ public:
   ASIO_DECL bool reset();
 
   // Get the read descriptor to be passed to select.
-  int read_descriptor() const
-  {
-    return read_descriptor_;
-  }
+  int read_descriptor() const { return read_descriptor_; }
 
 private:
   // Open the descriptors. Throws on error.
@@ -75,7 +71,7 @@ private:
 #include "asio/detail/pop_options.hpp"
 
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/eventfd_select_interrupter.ipp"
+#include "asio/detail/impl/eventfd_select_interrupter.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // defined(ASIO_HAS_EVENTFD)

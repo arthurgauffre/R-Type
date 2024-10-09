@@ -12,7 +12,7 @@
 #define ASIO_SOCKET_BASE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -27,12 +27,10 @@ namespace asio {
 /// The socket_base class is used as a base for the basic_stream_socket and
 /// basic_datagram_socket class templates so that we have a common place to
 /// define the shutdown_type and enum.
-class socket_base
-{
+class socket_base {
 public:
   /// Different ways a socket may be shutdown.
-  enum shutdown_type
-  {
+  enum shutdown_type {
 #if defined(GENERATING_DOCUMENTATION)
     /// Shutdown the receive side of the socket.
     shutdown_receive = implementation_defined,
@@ -65,22 +63,17 @@ public:
   /// Specifies that the data marks the end of a record.
   static const int message_end_of_record = implementation_defined;
 #else
-  ASIO_STATIC_CONSTANT(int,
-      message_peek = ASIO_OS_DEF(MSG_PEEK));
-  ASIO_STATIC_CONSTANT(int,
-      message_out_of_band = ASIO_OS_DEF(MSG_OOB));
-  ASIO_STATIC_CONSTANT(int,
-      message_do_not_route = ASIO_OS_DEF(MSG_DONTROUTE));
-  ASIO_STATIC_CONSTANT(int,
-      message_end_of_record = ASIO_OS_DEF(MSG_EOR));
+  ASIO_STATIC_CONSTANT(int, message_peek = ASIO_OS_DEF(MSG_PEEK));
+  ASIO_STATIC_CONSTANT(int, message_out_of_band = ASIO_OS_DEF(MSG_OOB));
+  ASIO_STATIC_CONSTANT(int, message_do_not_route = ASIO_OS_DEF(MSG_DONTROUTE));
+  ASIO_STATIC_CONSTANT(int, message_end_of_record = ASIO_OS_DEF(MSG_EOR));
 #endif
 
   /// Wait types.
   /**
    * For use with basic_socket::wait() and basic_socket::async_wait().
    */
-  enum wait_type
-  {
+  enum wait_type {
     /// Wait for a socket to become ready to read.
     wait_read,
 
@@ -120,8 +113,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined broadcast;
 #else
-  typedef asio::detail::socket_option::boolean<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_BROADCAST)>
+  typedef asio::detail::socket_option::boolean<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_BROADCAST)>
       broadcast;
 #endif
 
@@ -154,8 +147,9 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined debug;
 #else
-  typedef asio::detail::socket_option::boolean<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_DEBUG)> debug;
+  typedef asio::detail::socket_option::boolean<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_DEBUG)>
+      debug;
 #endif
 
   /// Socket option to prevent routing, use local interfaces only.
@@ -187,8 +181,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined do_not_route;
 #else
-  typedef asio::detail::socket_option::boolean<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_DONTROUTE)>
+  typedef asio::detail::socket_option::boolean<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_DONTROUTE)>
       do_not_route;
 #endif
 
@@ -221,8 +215,9 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined keep_alive;
 #else
-  typedef asio::detail::socket_option::boolean<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_KEEPALIVE)> keep_alive;
+  typedef asio::detail::socket_option::boolean<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_KEEPALIVE)>
+      keep_alive;
 #endif
 
   /// Socket option for the send buffer size of a socket.
@@ -254,8 +249,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined send_buffer_size;
 #else
-  typedef asio::detail::socket_option::integer<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_SNDBUF)>
+  typedef asio::detail::socket_option::integer<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_SNDBUF)>
       send_buffer_size;
 #endif
 
@@ -288,8 +283,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined send_low_watermark;
 #else
-  typedef asio::detail::socket_option::integer<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_SNDLOWAT)>
+  typedef asio::detail::socket_option::integer<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_SNDLOWAT)>
       send_low_watermark;
 #endif
 
@@ -322,8 +317,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined receive_buffer_size;
 #else
-  typedef asio::detail::socket_option::integer<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_RCVBUF)>
+  typedef asio::detail::socket_option::integer<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_RCVBUF)>
       receive_buffer_size;
 #endif
 
@@ -356,8 +351,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined receive_low_watermark;
 #else
-  typedef asio::detail::socket_option::integer<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_RCVLOWAT)>
+  typedef asio::detail::socket_option::integer<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_RCVLOWAT)>
       receive_low_watermark;
 #endif
 
@@ -391,8 +386,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined reuse_address;
 #else
-  typedef asio::detail::socket_option::boolean<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_REUSEADDR)>
+  typedef asio::detail::socket_option::boolean<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_REUSEADDR)>
       reuse_address;
 #endif
 
@@ -427,8 +422,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined linger;
 #else
-  typedef asio::detail::socket_option::linger<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_LINGER)>
+  typedef asio::detail::socket_option::linger<ASIO_OS_DEF(SOL_SOCKET),
+                                              ASIO_OS_DEF(SO_LINGER)>
       linger;
 #endif
 
@@ -461,8 +456,8 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   typedef implementation_defined out_of_band_inline;
 #else
-  typedef asio::detail::socket_option::boolean<
-    ASIO_OS_DEF(SOL_SOCKET), ASIO_OS_DEF(SO_OOBINLINE)>
+  typedef asio::detail::socket_option::boolean<ASIO_OS_DEF(SOL_SOCKET),
+                                               ASIO_OS_DEF(SO_OOBINLINE)>
       out_of_band_inline;
 #endif
 
@@ -498,9 +493,9 @@ public:
   typedef implementation_defined enable_connection_aborted;
 #else
   typedef asio::detail::socket_option::boolean<
-    asio::detail::custom_socket_option_level,
-    asio::detail::enable_connection_aborted_option>
-    enable_connection_aborted;
+      asio::detail::custom_socket_option_level,
+      asio::detail::enable_connection_aborted_option>
+      enable_connection_aborted;
 #endif
 
   /// IO control command to get the amount of data that can be read without
@@ -530,8 +525,7 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   static const int max_listen_connections = implementation_defined;
 #else
-  ASIO_STATIC_CONSTANT(int, max_listen_connections
-      = ASIO_OS_DEF(SOMAXCONN));
+  ASIO_STATIC_CONSTANT(int, max_listen_connections = ASIO_OS_DEF(SOMAXCONN));
 #endif
 
 #if !defined(ASIO_NO_DEPRECATED)
@@ -540,16 +534,13 @@ public:
 #if defined(GENERATING_DOCUMENTATION)
   static const int max_connections = implementation_defined;
 #else
-  ASIO_STATIC_CONSTANT(int, max_connections
-      = ASIO_OS_DEF(SOMAXCONN));
+  ASIO_STATIC_CONSTANT(int, max_connections = ASIO_OS_DEF(SOMAXCONN));
 #endif
 #endif // !defined(ASIO_NO_DEPRECATED)
 
 protected:
   /// Protected destructor to prevent deletion through this type.
-  ~socket_base()
-  {
-  }
+  ~socket_base() {}
 };
 
 } // namespace asio

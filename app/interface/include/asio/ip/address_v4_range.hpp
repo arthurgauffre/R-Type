@@ -12,7 +12,7 @@
 #define ASIO_IP_ADDRESS_V4_RANGE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -31,84 +31,58 @@ template <typename> class basic_address_range;
  * @e Distinct @e objects: Safe.@n
  * @e Shared @e objects: Unsafe.
  */
-template <> class basic_address_range<address_v4>
-{
+template <> class basic_address_range<address_v4> {
 public:
   /// The type of an iterator that points into the range.
   typedef basic_address_iterator<address_v4> iterator;
 
   /// Construct an empty range.
-  basic_address_range() noexcept
-    : begin_(address_v4()),
-      end_(address_v4())
-  {
-  }
+  basic_address_range() noexcept : begin_(address_v4()), end_(address_v4()) {}
 
   /// Construct an range that represents the given range of addresses.
-  explicit basic_address_range(const iterator& first,
-      const iterator& last) noexcept
-    : begin_(first),
-      end_(last)
-  {
-  }
+  explicit basic_address_range(const iterator &first,
+                               const iterator &last) noexcept
+      : begin_(first), end_(last) {}
 
   /// Copy constructor.
-  basic_address_range(const basic_address_range& other) noexcept
-    : begin_(other.begin_),
-      end_(other.end_)
-  {
-  }
+  basic_address_range(const basic_address_range &other) noexcept
+      : begin_(other.begin_), end_(other.end_) {}
 
   /// Move constructor.
-  basic_address_range(basic_address_range&& other) noexcept
-    : begin_(static_cast<iterator&&>(other.begin_)),
-      end_(static_cast<iterator&&>(other.end_))
-  {
-  }
+  basic_address_range(basic_address_range &&other) noexcept
+      : begin_(static_cast<iterator &&>(other.begin_)),
+        end_(static_cast<iterator &&>(other.end_)) {}
 
   /// Assignment operator.
-  basic_address_range& operator=(const basic_address_range& other) noexcept
-  {
+  basic_address_range &operator=(const basic_address_range &other) noexcept {
     begin_ = other.begin_;
     end_ = other.end_;
     return *this;
   }
 
   /// Move assignment operator.
-  basic_address_range& operator=(basic_address_range&& other) noexcept
-  {
-    begin_ = static_cast<iterator&&>(other.begin_);
-    end_ = static_cast<iterator&&>(other.end_);
+  basic_address_range &operator=(basic_address_range &&other) noexcept {
+    begin_ = static_cast<iterator &&>(other.begin_);
+    end_ = static_cast<iterator &&>(other.end_);
     return *this;
   }
 
   /// Obtain an iterator that points to the start of the range.
-  iterator begin() const noexcept
-  {
-    return begin_;
-  }
+  iterator begin() const noexcept { return begin_; }
 
   /// Obtain an iterator that points to the end of the range.
-  iterator end() const noexcept
-  {
-    return end_;
-  }
+  iterator end() const noexcept { return end_; }
 
   /// Determine whether the range is empty.
-  bool empty() const noexcept
-  {
-    return size() == 0;
-  }
+  bool empty() const noexcept { return size() == 0; }
 
   /// Return the size of the range.
-  std::size_t size() const noexcept
-  {
+  std::size_t size() const noexcept {
     return end_->to_uint() - begin_->to_uint();
   }
 
   /// Find an address in the range.
-  iterator find(const address_v4& addr) const noexcept
-  {
+  iterator find(const address_v4 &addr) const noexcept {
     return addr >= *begin_ && addr < *end_ ? iterator(addr) : end_;
   }
 

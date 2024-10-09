@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_WIN_STATIC_MUTEX_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -26,8 +26,7 @@
 namespace asio {
 namespace detail {
 
-struct win_static_mutex
-{
+struct win_static_mutex {
   typedef asio::detail::scoped_lock<win_static_mutex> scoped_lock;
 
   // Initialise the mutex.
@@ -39,25 +38,25 @@ struct win_static_mutex
   ASIO_DECL int do_init();
 
   // Lock the mutex.
-  void lock()
-  {
-    ::EnterCriticalSection(&crit_section_);
-  }
+  void lock() { ::EnterCriticalSection(&crit_section_); }
 
   // Unlock the mutex.
-  void unlock()
-  {
-    ::LeaveCriticalSection(&crit_section_);
-  }
+  void unlock() { ::LeaveCriticalSection(&crit_section_); }
 
   bool initialised_;
   ::CRITICAL_SECTION crit_section_;
 };
 
 #if defined(UNDER_CE)
-# define ASIO_WIN_STATIC_MUTEX_INIT { false, { 0, 0, 0, 0, 0 } }
+#define ASIO_WIN_STATIC_MUTEX_INIT                                             \
+  {                                                                            \
+    false, { 0, 0, 0, 0, 0 }                                                   \
+  }
 #else // defined(UNDER_CE)
-# define ASIO_WIN_STATIC_MUTEX_INIT { false, { 0, 0, 0, 0, 0, 0 } }
+#define ASIO_WIN_STATIC_MUTEX_INIT                                             \
+  {                                                                            \
+    false, { 0, 0, 0, 0, 0, 0 }                                                \
+  }
 #endif // defined(UNDER_CE)
 
 } // namespace detail
@@ -66,7 +65,7 @@ struct win_static_mutex
 #include "asio/detail/pop_options.hpp"
 
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/win_static_mutex.ipp"
+#include "asio/detail/impl/win_static_mutex.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // defined(ASIO_WINDOWS)

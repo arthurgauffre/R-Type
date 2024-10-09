@@ -12,14 +12,12 @@
 #define ASIO_IP_BASIC_RESOLVER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include <string>
-#include <utility>
 #include "asio/any_io_executor.hpp"
 #include "asio/async_result.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/handler_type_requirements.hpp"
 #include "asio/detail/io_object_impl.hpp"
 #include "asio/detail/non_const_lvalue.hpp"
@@ -31,10 +29,12 @@
 #include "asio/ip/basic_resolver_query.hpp"
 #include "asio/ip/basic_resolver_results.hpp"
 #include "asio/ip/resolver_base.hpp"
+#include <string>
+#include <utility>
 #if defined(ASIO_WINDOWS_RUNTIME)
-# include "asio/detail/winrt_resolver_service.hpp"
+#include "asio/detail/winrt_resolver_service.hpp"
 #else
-# include "asio/detail/resolver_service.hpp"
+#include "asio/detail/resolver_service.hpp"
 #endif
 
 #include "asio/detail/push_options.hpp"
@@ -61,9 +61,7 @@ class basic_resolver;
  * @e Shared @e objects: Unsafe.
  */
 template <typename InternetProtocol, typename Executor>
-class basic_resolver
-  : public resolver_base
-{
+class basic_resolver : public resolver_base {
 private:
   class initiate_async_resolve;
 
@@ -72,9 +70,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the resolver type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The resolver type when rebound to the specified executor.
     typedef basic_resolver<InternetProtocol, Executor1> other;
   };
@@ -104,10 +100,7 @@ public:
    * dispatch handlers for any asynchronous operations performed on the
    * resolver.
    */
-  explicit basic_resolver(const executor_type& ex)
-    : impl_(0, ex)
-  {
-  }
+  explicit basic_resolver(const executor_type &ex) : impl_(0, ex) {}
 
   /// Construct with execution context.
   /**
@@ -118,13 +111,11 @@ public:
    * asynchronous operations performed on the resolver.
    */
   template <typename ExecutionContext>
-  explicit basic_resolver(ExecutionContext& context,
+  explicit basic_resolver(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : impl_(0, 0, context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : impl_(0, 0, context) {}
 
   /// Move-construct a basic_resolver from another.
   /**
@@ -136,10 +127,7 @@ public:
    * @note Following the move, the moved-from object is in the same state as if
    * constructed using the @c basic_resolver(const executor_type&) constructor.
    */
-  basic_resolver(basic_resolver&& other)
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_resolver(basic_resolver &&other) : impl_(std::move(other.impl_)) {}
 
   // All resolvers have access to each other's implementations.
   template <typename InternetProtocol1, typename Executor1>
@@ -156,13 +144,9 @@ public:
    * constructed using the @c basic_resolver(const executor_type&) constructor.
    */
   template <typename Executor1>
-  basic_resolver(basic_resolver<InternetProtocol, Executor1>&& other,
-      constraint_t<
-          is_convertible<Executor1, Executor>::value
-      > = 0)
-    : impl_(std::move(other.impl_))
-  {
-  }
+  basic_resolver(basic_resolver<InternetProtocol, Executor1> &&other,
+                 constraint_t<is_convertible<Executor1, Executor>::value> = 0)
+      : impl_(std::move(other.impl_)) {}
 
   /// Move-assign a basic_resolver from another.
   /**
@@ -176,8 +160,7 @@ public:
    * @note Following the move, the moved-from object is in the same state as if
    * constructed using the @c basic_resolver(const executor_type&) constructor.
    */
-  basic_resolver& operator=(basic_resolver&& other)
-  {
+  basic_resolver &operator=(basic_resolver &&other) {
     impl_ = std::move(other.impl_);
     return *this;
   }
@@ -195,11 +178,8 @@ public:
    * constructed using the @c basic_resolver(const executor_type&) constructor.
    */
   template <typename Executor1>
-  constraint_t<
-    is_convertible<Executor1, Executor>::value,
-    basic_resolver&
-  > operator=(basic_resolver<InternetProtocol, Executor1>&& other)
-  {
+  constraint_t<is_convertible<Executor1, Executor>::value, basic_resolver &>
+  operator=(basic_resolver<InternetProtocol, Executor1> &&other) {
     basic_resolver tmp(std::move(other));
     impl_ = std::move(tmp.impl_);
     return *this;
@@ -211,15 +191,10 @@ public:
    * asynchronous wait operations associated with the resolver as if by calling
    * @c cancel.
    */
-  ~basic_resolver()
-  {
-  }
+  ~basic_resolver() {}
 
   /// Get the executor associated with the object.
-  executor_type get_executor() noexcept
-  {
-    return impl_.get_executor();
-  }
+  executor_type get_executor() noexcept { return impl_.get_executor(); }
 
   /// Cancel any asynchronous operations that are waiting on the resolver.
   /**
@@ -227,8 +202,7 @@ public:
    * operations on the host resolver. The handler for each cancelled operation
    * will be invoked with the asio::error::operation_aborted error code.
    */
-  void cancel()
-  {
+  void cancel() {
     return impl_.get_service().cancel(impl_.get_implementation());
   }
 
@@ -246,11 +220,10 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  results_type resolve(const query& q)
-  {
+  results_type resolve(const query &q) {
     asio::error_code ec;
-    results_type r = impl_.get_service().resolve(
-        impl_.get_implementation(), q, ec);
+    results_type r =
+        impl_.get_service().resolve(impl_.get_implementation(), q, ec);
     asio::detail::throw_error(ec, "resolve");
     return r;
   }
@@ -268,8 +241,7 @@ public:
    * empty range is returned if an error occurs. A successful call to this
    * function is guaranteed to return a non-empty range.
    */
-  results_type resolve(const query& q, asio::error_code& ec)
-  {
+  results_type resolve(const query &q, asio::error_code &ec) {
     return impl_.get_service().resolve(impl_.get_implementation(), q, ec);
   }
 #endif // !defined(ASIO_NO_DEPRECATED)
@@ -308,8 +280,7 @@ public:
    * may use additional locations when resolving service names.
    */
   results_type resolve(ASIO_STRING_VIEW_PARAM host,
-      ASIO_STRING_VIEW_PARAM service)
-  {
+                       ASIO_STRING_VIEW_PARAM service) {
     return resolve(host, service, resolver_base::flags());
   }
 
@@ -347,8 +318,7 @@ public:
    * may use additional locations when resolving service names.
    */
   results_type resolve(ASIO_STRING_VIEW_PARAM host,
-      ASIO_STRING_VIEW_PARAM service, asio::error_code& ec)
-  {
+                       ASIO_STRING_VIEW_PARAM service, asio::error_code &ec) {
     return resolve(host, service, resolver_base::flags(), ec);
   }
 
@@ -391,13 +361,14 @@ public:
    * may use additional locations when resolving service names.
    */
   results_type resolve(ASIO_STRING_VIEW_PARAM host,
-      ASIO_STRING_VIEW_PARAM service, resolver_base::flags resolve_flags)
-  {
+                       ASIO_STRING_VIEW_PARAM service,
+                       resolver_base::flags resolve_flags) {
     asio::error_code ec;
     basic_resolver_query<protocol_type> q(static_cast<std::string>(host),
-        static_cast<std::string>(service), resolve_flags);
-    results_type r = impl_.get_service().resolve(
-        impl_.get_implementation(), q, ec);
+                                          static_cast<std::string>(service),
+                                          resolve_flags);
+    results_type r =
+        impl_.get_service().resolve(impl_.get_implementation(), q, ec);
     asio::detail::throw_error(ec, "resolve");
     return r;
   }
@@ -441,11 +412,12 @@ public:
    * may use additional locations when resolving service names.
    */
   results_type resolve(ASIO_STRING_VIEW_PARAM host,
-      ASIO_STRING_VIEW_PARAM service, resolver_base::flags resolve_flags,
-      asio::error_code& ec)
-  {
+                       ASIO_STRING_VIEW_PARAM service,
+                       resolver_base::flags resolve_flags,
+                       asio::error_code &ec) {
     basic_resolver_query<protocol_type> q(static_cast<std::string>(host),
-        static_cast<std::string>(service), resolve_flags);
+                                          static_cast<std::string>(service),
+                                          resolve_flags);
     return impl_.get_service().resolve(impl_.get_implementation(), q, ec);
   }
 
@@ -485,9 +457,9 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  results_type resolve(const protocol_type& protocol,
-      ASIO_STRING_VIEW_PARAM host, ASIO_STRING_VIEW_PARAM service)
-  {
+  results_type resolve(const protocol_type &protocol,
+                       ASIO_STRING_VIEW_PARAM host,
+                       ASIO_STRING_VIEW_PARAM service) {
     return resolve(protocol, host, service, resolver_base::flags());
   }
 
@@ -527,10 +499,9 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  results_type resolve(const protocol_type& protocol,
-      ASIO_STRING_VIEW_PARAM host, ASIO_STRING_VIEW_PARAM service,
-      asio::error_code& ec)
-  {
+  results_type resolve(const protocol_type &protocol,
+                       ASIO_STRING_VIEW_PARAM host,
+                       ASIO_STRING_VIEW_PARAM service, asio::error_code &ec) {
     return resolve(protocol, host, service, resolver_base::flags(), ec);
   }
 
@@ -575,16 +546,16 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  results_type resolve(const protocol_type& protocol,
-      ASIO_STRING_VIEW_PARAM host, ASIO_STRING_VIEW_PARAM service,
-      resolver_base::flags resolve_flags)
-  {
+  results_type resolve(const protocol_type &protocol,
+                       ASIO_STRING_VIEW_PARAM host,
+                       ASIO_STRING_VIEW_PARAM service,
+                       resolver_base::flags resolve_flags) {
     asio::error_code ec;
     basic_resolver_query<protocol_type> q(
         protocol, static_cast<std::string>(host),
         static_cast<std::string>(service), resolve_flags);
-    results_type r = impl_.get_service().resolve(
-        impl_.get_implementation(), q, ec);
+    results_type r =
+        impl_.get_service().resolve(impl_.get_implementation(), q, ec);
     asio::detail::throw_error(ec, "resolve");
     return r;
   }
@@ -630,10 +601,11 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  results_type resolve(const protocol_type& protocol,
-      ASIO_STRING_VIEW_PARAM host, ASIO_STRING_VIEW_PARAM service,
-      resolver_base::flags resolve_flags, asio::error_code& ec)
-  {
+  results_type resolve(const protocol_type &protocol,
+                       ASIO_STRING_VIEW_PARAM host,
+                       ASIO_STRING_VIEW_PARAM service,
+                       resolver_base::flags resolve_flags,
+                       asio::error_code &ec) {
     basic_resolver_query<protocol_type> q(
         protocol, static_cast<std::string>(host),
         static_cast<std::string>(service), resolve_flags);
@@ -670,18 +642,16 @@ public:
    * @par Completion Signature
    * @code void(asio::error_code, results_type) @endcode
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        results_type)) ResolveToken = default_completion_token_t<executor_type>>
-  auto async_resolve(const query& q,
-      ResolveToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      asio::async_initiate<ResolveToken,
-        void (asio::error_code, results_type)>(
-          declval<initiate_async_resolve>(), token, q))
-  {
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, results_type))
+                ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(
+      const query &q,
+      ResolveToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(asio::async_initiate<ResolveToken,
+                                       void(asio::error_code, results_type)>(
+          declval<initiate_async_resolve>(), token, q)) {
     return asio::async_initiate<ResolveToken,
-      void (asio::error_code, results_type)>(
+                                void(asio::error_code, results_type)>(
         initiate_async_resolve(this), token, q);
   }
 #endif // !defined(ASIO_NO_DEPRECATED)
@@ -733,20 +703,17 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        results_type)) ResolveToken = default_completion_token_t<executor_type>>
-  auto async_resolve(ASIO_STRING_VIEW_PARAM host,
-      ASIO_STRING_VIEW_PARAM service,
-      ResolveToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      asio::async_initiate<ResolveToken,
-        void (asio::error_code, results_type)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, results_type))
+                ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(
+      ASIO_STRING_VIEW_PARAM host, ASIO_STRING_VIEW_PARAM service,
+      ResolveToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(asio::async_initiate<ResolveToken,
+                                       void(asio::error_code, results_type)>(
           declval<initiate_async_resolve>(), token,
-          declval<basic_resolver_query<protocol_type>&>()))
-  {
+          declval<basic_resolver_query<protocol_type> &>())) {
     return async_resolve(host, service, resolver_base::flags(),
-        static_cast<ResolveToken&&>(token));
+                         static_cast<ResolveToken &&>(token));
   }
 
   /// Asynchronously perform forward resolution of a query to a list of entries.
@@ -802,23 +769,22 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        results_type)) ResolveToken = default_completion_token_t<executor_type>>
-  auto async_resolve(ASIO_STRING_VIEW_PARAM host,
-      ASIO_STRING_VIEW_PARAM service, resolver_base::flags resolve_flags,
-      ResolveToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      asio::async_initiate<ResolveToken,
-        void (asio::error_code, results_type)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, results_type))
+                ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(
+      ASIO_STRING_VIEW_PARAM host, ASIO_STRING_VIEW_PARAM service,
+      resolver_base::flags resolve_flags,
+      ResolveToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(asio::async_initiate<ResolveToken,
+                                       void(asio::error_code, results_type)>(
           declval<initiate_async_resolve>(), token,
-          declval<basic_resolver_query<protocol_type>&>()))
-  {
+          declval<basic_resolver_query<protocol_type> &>())) {
     basic_resolver_query<protocol_type> q(static_cast<std::string>(host),
-        static_cast<std::string>(service), resolve_flags);
+                                          static_cast<std::string>(service),
+                                          resolve_flags);
 
     return asio::async_initiate<ResolveToken,
-      void (asio::error_code, results_type)>(
+                                void(asio::error_code, results_type)>(
         initiate_async_resolve(this), token, q);
   }
 
@@ -873,20 +839,18 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        results_type)) ResolveToken = default_completion_token_t<executor_type>>
-  auto async_resolve(const protocol_type& protocol,
-      ASIO_STRING_VIEW_PARAM host, ASIO_STRING_VIEW_PARAM service,
-      ResolveToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      asio::async_initiate<ResolveToken,
-        void (asio::error_code, results_type)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, results_type))
+                ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(
+      const protocol_type &protocol, ASIO_STRING_VIEW_PARAM host,
+      ASIO_STRING_VIEW_PARAM service,
+      ResolveToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(asio::async_initiate<ResolveToken,
+                                       void(asio::error_code, results_type)>(
           declval<initiate_async_resolve>(), token,
-          declval<basic_resolver_query<protocol_type>&>()))
-  {
+          declval<basic_resolver_query<protocol_type> &>())) {
     return async_resolve(protocol, host, service, resolver_base::flags(),
-        static_cast<ResolveToken&&>(token));
+                         static_cast<ResolveToken &&>(token));
   }
 
   /// Asynchronously perform forward resolution of a query to a list of entries.
@@ -945,25 +909,22 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        results_type)) ResolveToken = default_completion_token_t<executor_type>>
-  auto async_resolve(const protocol_type& protocol,
-      ASIO_STRING_VIEW_PARAM host, ASIO_STRING_VIEW_PARAM service,
-      resolver_base::flags resolve_flags,
-      ResolveToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      asio::async_initiate<ResolveToken,
-        void (asio::error_code, results_type)>(
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, results_type))
+                ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(
+      const protocol_type &protocol, ASIO_STRING_VIEW_PARAM host,
+      ASIO_STRING_VIEW_PARAM service, resolver_base::flags resolve_flags,
+      ResolveToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(asio::async_initiate<ResolveToken,
+                                       void(asio::error_code, results_type)>(
           declval<initiate_async_resolve>(), token,
-          declval<basic_resolver_query<protocol_type>&>()))
-  {
+          declval<basic_resolver_query<protocol_type> &>())) {
     basic_resolver_query<protocol_type> q(
         protocol, static_cast<std::string>(host),
         static_cast<std::string>(service), resolve_flags);
 
     return asio::async_initiate<ResolveToken,
-      void (asio::error_code, results_type)>(
+                                void(asio::error_code, results_type)>(
         initiate_async_resolve(this), token, q);
   }
 
@@ -981,11 +942,10 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  results_type resolve(const endpoint_type& e)
-  {
+  results_type resolve(const endpoint_type &e) {
     asio::error_code ec;
-    results_type i = impl_.get_service().resolve(
-        impl_.get_implementation(), e, ec);
+    results_type i =
+        impl_.get_service().resolve(impl_.get_implementation(), e, ec);
     asio::detail::throw_error(ec, "resolve");
     return i;
   }
@@ -1004,8 +964,7 @@ public:
    * empty range is returned if an error occurs. A successful call to this
    * function is guaranteed to return a non-empty range.
    */
-  results_type resolve(const endpoint_type& e, asio::error_code& ec)
-  {
+  results_type resolve(const endpoint_type &e, asio::error_code &ec) {
     return impl_.get_service().resolve(impl_.get_implementation(), e, ec);
   }
 
@@ -1039,69 +998,60 @@ public:
    * @par Completion Signature
    * @code void(asio::error_code, results_type) @endcode
    */
-  template <
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        results_type)) ResolveToken = default_completion_token_t<executor_type>>
-  auto async_resolve(const endpoint_type& e,
-      ResolveToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      asio::async_initiate<ResolveToken,
-        void (asio::error_code, results_type)>(
-          declval<initiate_async_resolve>(), token, e))
-  {
+  template <ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, results_type))
+                ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(
+      const endpoint_type &e,
+      ResolveToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(asio::async_initiate<ResolveToken,
+                                       void(asio::error_code, results_type)>(
+          declval<initiate_async_resolve>(), token, e)) {
     return asio::async_initiate<ResolveToken,
-      void (asio::error_code, results_type)>(
+                                void(asio::error_code, results_type)>(
         initiate_async_resolve(this), token, e);
   }
 
 private:
   // Disallow copying and assignment.
-  basic_resolver(const basic_resolver&) = delete;
-  basic_resolver& operator=(const basic_resolver&) = delete;
+  basic_resolver(const basic_resolver &) = delete;
+  basic_resolver &operator=(const basic_resolver &) = delete;
 
-  class initiate_async_resolve
-  {
+  class initiate_async_resolve {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_resolve(basic_resolver* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_resolve(basic_resolver *self) : self_(self) {}
 
-    executor_type get_executor() const noexcept
-    {
+    executor_type get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename ResolveHandler, typename Query>
-    void operator()(ResolveHandler&& handler,
-        const Query& q) const
-    {
+    void operator()(ResolveHandler &&handler, const Query &q) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a ResolveHandler.
-      ASIO_RESOLVE_HANDLER_CHECK(
-          ResolveHandler, handler, results_type) type_check;
+      ASIO_RESOLVE_HANDLER_CHECK(ResolveHandler, handler, results_type)
+      type_check;
 
       asio::detail::non_const_lvalue<ResolveHandler> handler2(handler);
       self_->impl_.get_service().async_resolve(
-          self_->impl_.get_implementation(), q,
-          handler2.value, self_->impl_.get_executor());
+          self_->impl_.get_implementation(), q, handler2.value,
+          self_->impl_.get_executor());
     }
 
   private:
-    basic_resolver* self_;
+    basic_resolver *self_;
   };
 
-# if defined(ASIO_WINDOWS_RUNTIME)
+#if defined(ASIO_WINDOWS_RUNTIME)
   asio::detail::io_object_impl<
-    asio::detail::winrt_resolver_service<InternetProtocol>,
-    Executor> impl_;
-# else
-  asio::detail::io_object_impl<
-    asio::detail::resolver_service<InternetProtocol>,
-    Executor> impl_;
-# endif
+      asio::detail::winrt_resolver_service<InternetProtocol>, Executor>
+      impl_;
+#else
+  asio::detail::io_object_impl<asio::detail::resolver_service<InternetProtocol>,
+                               Executor>
+      impl_;
+#endif
 };
 
 } // namespace ip

@@ -12,7 +12,7 @@
 #define ASIO_IMPL_EXECUTOR_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -25,14 +25,9 @@
 
 namespace asio {
 
-bad_executor::bad_executor() noexcept
-{
-}
+bad_executor::bad_executor() noexcept {}
 
-const char* bad_executor::what() const noexcept
-{
-  return "bad executor";
-}
+const char *bad_executor::what() const noexcept { return "bad executor"; }
 
 } // namespace asio
 

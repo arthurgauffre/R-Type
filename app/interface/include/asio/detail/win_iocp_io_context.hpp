@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_WIN_IOCP_IO_CONTEXT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -41,14 +41,14 @@ namespace detail {
 class wait_op;
 
 class win_iocp_io_context
-  : public execution_context_service_base<win_iocp_io_context>,
-    public thread_context
-{
+    : public execution_context_service_base<win_iocp_io_context>,
+      public thread_context {
 public:
   // Constructor. Specifies a concurrency hint that is passed through to the
   // underlying I/O completion port.
-  ASIO_DECL win_iocp_io_context(asio::execution_context& ctx,
-      int concurrency_hint = -1, bool own_thread = true);
+  ASIO_DECL win_iocp_io_context(asio::execution_context &ctx,
+                                int concurrency_hint = -1,
+                                bool own_thread = true);
 
   // Destructor.
   ASIO_DECL ~win_iocp_io_context();
@@ -57,53 +57,41 @@ public:
   ASIO_DECL void shutdown();
 
   // Initialise the task. Nothing to do here.
-  void init_task()
-  {
-  }
+  void init_task() {}
 
   // Register a handle with the IO completion port.
-  ASIO_DECL asio::error_code register_handle(
-      HANDLE handle, asio::error_code& ec);
+  ASIO_DECL asio::error_code register_handle(HANDLE handle,
+                                             asio::error_code &ec);
 
   // Run the event loop until stopped or no more work.
-  ASIO_DECL size_t run(asio::error_code& ec);
+  ASIO_DECL size_t run(asio::error_code &ec);
 
   // Run until stopped or one operation is performed.
-  ASIO_DECL size_t run_one(asio::error_code& ec);
+  ASIO_DECL size_t run_one(asio::error_code &ec);
 
   // Run until timeout, interrupted, or one operation is performed.
-  ASIO_DECL size_t wait_one(long usec, asio::error_code& ec);
+  ASIO_DECL size_t wait_one(long usec, asio::error_code &ec);
 
   // Poll for operations without blocking.
-  ASIO_DECL size_t poll(asio::error_code& ec);
+  ASIO_DECL size_t poll(asio::error_code &ec);
 
   // Poll for one operation without blocking.
-  ASIO_DECL size_t poll_one(asio::error_code& ec);
+  ASIO_DECL size_t poll_one(asio::error_code &ec);
 
   // Stop the event processing loop.
   ASIO_DECL void stop();
 
   // Determine whether the io_context is stopped.
-  bool stopped() const
-  {
-    return ::InterlockedExchangeAdd(&stopped_, 0) != 0;
-  }
+  bool stopped() const { return ::InterlockedExchangeAdd(&stopped_, 0) != 0; }
 
   // Restart in preparation for a subsequent run invocation.
-  void restart()
-  {
-    ::InterlockedExchange(&stopped_, 0);
-  }
+  void restart() { ::InterlockedExchange(&stopped_, 0); }
 
   // Notify that some work has started.
-  void work_started()
-  {
-    ::InterlockedIncrement(&outstanding_work_);
-  }
+  void work_started() { ::InterlockedIncrement(&outstanding_work_); }
 
   // Notify that some work has finished.
-  void work_finished()
-  {
+  void work_finished() {
     if (::InterlockedDecrement(&outstanding_work_) == 0)
       stop();
   }
@@ -116,110 +104,104 @@ public:
 
   // Request invocation of the given operation and return immediately. Assumes
   // that work_started() has not yet been called for the operation.
-  void post_immediate_completion(win_iocp_operation* op, bool)
-  {
+  void post_immediate_completion(win_iocp_operation *op, bool) {
     work_started();
     post_deferred_completion(op);
   }
 
   // Request invocation of the given operation and return immediately. Assumes
   // that work_started() was previously called for the operation.
-  ASIO_DECL void post_deferred_completion(win_iocp_operation* op);
+  ASIO_DECL void post_deferred_completion(win_iocp_operation *op);
 
   // Request invocation of the given operation and return immediately. Assumes
   // that work_started() was previously called for the operations.
-  ASIO_DECL void post_deferred_completions(
-      op_queue<win_iocp_operation>& ops);
+  ASIO_DECL void post_deferred_completions(op_queue<win_iocp_operation> &ops);
 
   // Request invocation of the given operation using the thread-private queue
   // and return immediately. Assumes that work_started() has not yet been
   // called for the operation.
-  void post_private_immediate_completion(win_iocp_operation* op)
-  {
+  void post_private_immediate_completion(win_iocp_operation *op) {
     post_immediate_completion(op, false);
   }
 
   // Request invocation of the given operation using the thread-private queue
   // and return immediately. Assumes that work_started() was previously called
   // for the operation.
-  void post_private_deferred_completion(win_iocp_operation* op)
-  {
+  void post_private_deferred_completion(win_iocp_operation *op) {
     post_deferred_completion(op);
   }
 
   // Enqueue the given operation following a failed attempt to dispatch the
   // operation for immediate invocation.
-  void do_dispatch(operation* op)
-  {
-    post_immediate_completion(op, false);
-  }
+  void do_dispatch(operation *op) { post_immediate_completion(op, false); }
 
   // Process unfinished operations as part of a shutdown operation. Assumes
   // that work_started() was previously called for the operations.
-  ASIO_DECL void abandon_operations(op_queue<operation>& ops);
+  ASIO_DECL void abandon_operations(op_queue<operation> &ops);
 
   // Called after starting an overlapped I/O operation that did not complete
   // immediately. The caller must have already called work_started() prior to
   // starting the operation.
-  ASIO_DECL void on_pending(win_iocp_operation* op);
+  ASIO_DECL void on_pending(win_iocp_operation *op);
 
   // Called after starting an overlapped I/O operation that completed
   // immediately. The caller must have already called work_started() prior to
   // starting the operation.
-  ASIO_DECL void on_completion(win_iocp_operation* op,
-      DWORD last_error = 0, DWORD bytes_transferred = 0);
+  ASIO_DECL void on_completion(win_iocp_operation *op, DWORD last_error = 0,
+                               DWORD bytes_transferred = 0);
 
   // Called after starting an overlapped I/O operation that completed
   // immediately. The caller must have already called work_started() prior to
   // starting the operation.
-  ASIO_DECL void on_completion(win_iocp_operation* op,
-      const asio::error_code& ec, DWORD bytes_transferred = 0);
+  ASIO_DECL void on_completion(win_iocp_operation *op,
+                               const asio::error_code &ec,
+                               DWORD bytes_transferred = 0);
 
   // Add a new timer queue to the service.
   template <typename Time_Traits>
-  void add_timer_queue(timer_queue<Time_Traits>& timer_queue);
+  void add_timer_queue(timer_queue<Time_Traits> &timer_queue);
 
   // Remove a timer queue from the service.
   template <typename Time_Traits>
-  void remove_timer_queue(timer_queue<Time_Traits>& timer_queue);
+  void remove_timer_queue(timer_queue<Time_Traits> &timer_queue);
 
   // Schedule a new operation in the given timer queue to expire at the
   // specified absolute time.
   template <typename Time_Traits>
-  void schedule_timer(timer_queue<Time_Traits>& queue,
-      const typename Time_Traits::time_type& time,
-      typename timer_queue<Time_Traits>::per_timer_data& timer, wait_op* op);
+  void schedule_timer(timer_queue<Time_Traits> &queue,
+                      const typename Time_Traits::time_type &time,
+                      typename timer_queue<Time_Traits>::per_timer_data &timer,
+                      wait_op *op);
 
   // Cancel the timer associated with the given token. Returns the number of
   // handlers that have been posted or dispatched.
   template <typename Time_Traits>
-  std::size_t cancel_timer(timer_queue<Time_Traits>& queue,
-      typename timer_queue<Time_Traits>::per_timer_data& timer,
+  std::size_t cancel_timer(
+      timer_queue<Time_Traits> &queue,
+      typename timer_queue<Time_Traits>::per_timer_data &timer,
       std::size_t max_cancelled = (std::numeric_limits<std::size_t>::max)());
 
   // Cancel the timer operations associated with the given key.
   template <typename Time_Traits>
-  void cancel_timer_by_key(timer_queue<Time_Traits>& queue,
-      typename timer_queue<Time_Traits>::per_timer_data* timer,
-      void* cancellation_key);
+  void
+  cancel_timer_by_key(timer_queue<Time_Traits> &queue,
+                      typename timer_queue<Time_Traits>::per_timer_data *timer,
+                      void *cancellation_key);
 
   // Move the timer operations associated with the given timer.
   template <typename Time_Traits>
-  void move_timer(timer_queue<Time_Traits>& queue,
-      typename timer_queue<Time_Traits>::per_timer_data& to,
-      typename timer_queue<Time_Traits>::per_timer_data& from);
+  void move_timer(timer_queue<Time_Traits> &queue,
+                  typename timer_queue<Time_Traits>::per_timer_data &to,
+                  typename timer_queue<Time_Traits>::per_timer_data &from);
 
   // Get the concurrency hint that was used to initialise the io_context.
-  int concurrency_hint() const
-  {
-    return concurrency_hint_;
-  }
+  int concurrency_hint() const { return concurrency_hint_; }
 
 private:
 #if defined(WINVER) && (WINVER < 0x0500)
   typedef DWORD dword_ptr_t;
   typedef ULONG ulong_ptr_t;
-#else // defined(WINVER) && (WINVER < 0x0500)
+#else  // defined(WINVER) && (WINVER < 0x0500)
   typedef DWORD_PTR dword_ptr_t;
   typedef ULONG_PTR ulong_ptr_t;
 #endif // defined(WINVER) && (WINVER < 0x0500)
@@ -227,17 +209,17 @@ private:
   // Dequeues at most one operation from the I/O completion port, and then
   // executes it. Returns the number of operations that were dequeued (i.e.
   // either 0 or 1).
-  ASIO_DECL size_t do_one(DWORD msec,
-      win_iocp_thread_info& this_thread, asio::error_code& ec);
+  ASIO_DECL size_t do_one(DWORD msec, win_iocp_thread_info &this_thread,
+                          asio::error_code &ec);
 
   // Helper to calculate the GetQueuedCompletionStatus timeout.
   ASIO_DECL static DWORD get_gqcs_timeout();
 
   // Helper function to add a new timer queue.
-  ASIO_DECL void do_add_timer_queue(timer_queue_base& queue);
+  ASIO_DECL void do_add_timer_queue(timer_queue_base &queue);
 
   // Helper function to remove a timer queue.
-  ASIO_DECL void do_remove_timer_queue(timer_queue_base& queue);
+  ASIO_DECL void do_remove_timer_queue(timer_queue_base &queue);
 
   // Called to recalculate and update the timeout.
   ASIO_DECL void update_timeout();
@@ -246,11 +228,13 @@ private:
   struct work_finished_on_block_exit;
 
   // Helper class for managing a HANDLE.
-  struct auto_handle
-  {
+  struct auto_handle {
     HANDLE handle;
     auto_handle() : handle(0) {}
-    ~auto_handle() { if (handle) ::CloseHandle(handle); }
+    ~auto_handle() {
+      if (handle)
+        ::CloseHandle(handle);
+    }
   };
 
   // The IO completion port used for queueing operations.
@@ -270,8 +254,7 @@ private:
   // Flag to indicate whether the service has been shut down.
   long shutdown_;
 
-  enum
-  {
+  enum {
 #if !defined(_WIN32_WINNT) || (_WIN32_WINNT < 0x0600)
     // Timeout to use with GetQueuedCompletionStatus on older versions of
     // Windows. Some versions of windows have a "bug" where a call to
@@ -339,7 +322,7 @@ private:
 
 #include "asio/detail/impl/win_iocp_io_context.hpp"
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/win_iocp_io_context.ipp"
+#include "asio/detail/impl/win_iocp_io_context.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // defined(ASIO_HAS_IOCP)

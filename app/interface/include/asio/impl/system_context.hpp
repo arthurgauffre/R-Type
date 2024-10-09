@@ -12,7 +12,7 @@
 #define ASIO_IMPL_SYSTEM_CONTEXT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/system_executor.hpp"
@@ -21,9 +21,7 @@
 
 namespace asio {
 
-inline system_context::executor_type
-system_context::get_executor() noexcept
-{
+inline system_context::executor_type system_context::get_executor() noexcept {
   return system_executor();
 }
 

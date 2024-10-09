@@ -12,7 +12,7 @@
 #define ASIO_GENERIC_BASIC_ENDPOINT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -38,9 +38,7 @@ namespace generic {
  * @par Concepts:
  * Endpoint.
  */
-template <typename Protocol>
-class basic_endpoint
-{
+template <typename Protocol> class basic_endpoint {
 public:
   /// The protocol type associated with the endpoint.
   typedef Protocol protocol_type;
@@ -54,125 +52,90 @@ public:
 #endif
 
   /// Default constructor.
-  basic_endpoint() noexcept
-  {
-  }
+  basic_endpoint() noexcept {}
 
   /// Construct an endpoint from the specified socket address.
-  basic_endpoint(const void* socket_address,
-      std::size_t socket_address_size, int socket_protocol = 0)
-    : impl_(socket_address, socket_address_size, socket_protocol)
-  {
-  }
+  basic_endpoint(const void *socket_address, std::size_t socket_address_size,
+                 int socket_protocol = 0)
+      : impl_(socket_address, socket_address_size, socket_protocol) {}
 
   /// Construct an endpoint from the specific endpoint type.
   template <typename Endpoint>
-  basic_endpoint(const Endpoint& endpoint)
-    : impl_(endpoint.data(), endpoint.size(), endpoint.protocol().protocol())
-  {
-  }
+  basic_endpoint(const Endpoint &endpoint)
+      : impl_(endpoint.data(), endpoint.size(),
+              endpoint.protocol().protocol()) {}
 
   /// Copy constructor.
-  basic_endpoint(const basic_endpoint& other)
-    : impl_(other.impl_)
-  {
-  }
+  basic_endpoint(const basic_endpoint &other) : impl_(other.impl_) {}
 
   /// Move constructor.
-  basic_endpoint(basic_endpoint&& other)
-    : impl_(other.impl_)
-  {
-  }
+  basic_endpoint(basic_endpoint &&other) : impl_(other.impl_) {}
 
   /// Assign from another endpoint.
-  basic_endpoint& operator=(const basic_endpoint& other)
-  {
+  basic_endpoint &operator=(const basic_endpoint &other) {
     impl_ = other.impl_;
     return *this;
   }
 
   /// Move-assign from another endpoint.
-  basic_endpoint& operator=(basic_endpoint&& other)
-  {
+  basic_endpoint &operator=(basic_endpoint &&other) {
     impl_ = other.impl_;
     return *this;
   }
 
   /// The protocol associated with the endpoint.
-  protocol_type protocol() const
-  {
+  protocol_type protocol() const {
     return protocol_type(impl_.family(), impl_.protocol());
   }
 
   /// Get the underlying endpoint in the native type.
-  data_type* data()
-  {
-    return impl_.data();
-  }
+  data_type *data() { return impl_.data(); }
 
   /// Get the underlying endpoint in the native type.
-  const data_type* data() const
-  {
-    return impl_.data();
-  }
+  const data_type *data() const { return impl_.data(); }
 
   /// Get the underlying size of the endpoint in the native type.
-  std::size_t size() const
-  {
-    return impl_.size();
-  }
+  std::size_t size() const { return impl_.size(); }
 
   /// Set the underlying size of the endpoint in the native type.
-  void resize(std::size_t new_size)
-  {
-    impl_.resize(new_size);
-  }
+  void resize(std::size_t new_size) { impl_.resize(new_size); }
 
   /// Get the capacity of the endpoint in the native type.
-  std::size_t capacity() const
-  {
-    return impl_.capacity();
-  }
+  std::size_t capacity() const { return impl_.capacity(); }
 
   /// Compare two endpoints for equality.
-  friend bool operator==(const basic_endpoint<Protocol>& e1,
-      const basic_endpoint<Protocol>& e2)
-  {
+  friend bool operator==(const basic_endpoint<Protocol> &e1,
+                         const basic_endpoint<Protocol> &e2) {
     return e1.impl_ == e2.impl_;
   }
 
   /// Compare two endpoints for inequality.
-  friend bool operator!=(const basic_endpoint<Protocol>& e1,
-      const basic_endpoint<Protocol>& e2)
-  {
+  friend bool operator!=(const basic_endpoint<Protocol> &e1,
+                         const basic_endpoint<Protocol> &e2) {
     return !(e1.impl_ == e2.impl_);
   }
 
   /// Compare endpoints for ordering.
-  friend bool operator<(const basic_endpoint<Protocol>& e1,
-      const basic_endpoint<Protocol>& e2)
-  {
+  friend bool operator<(const basic_endpoint<Protocol> &e1,
+                        const basic_endpoint<Protocol> &e2) {
     return e1.impl_ < e2.impl_;
   }
 
   /// Compare endpoints for ordering.
-  friend bool operator>(const basic_endpoint<Protocol>& e1,
-      const basic_endpoint<Protocol>& e2)
-  {
+  friend bool operator>(const basic_endpoint<Protocol> &e1,
+                        const basic_endpoint<Protocol> &e2) {
     return e2.impl_ < e1.impl_;
   }
 
   /// Compare endpoints for ordering.
-  friend bool operator<=(const basic_endpoint<Protocol>& e1,
-      const basic_endpoint<Protocol>& e2)
-  {
+  friend bool operator<=(const basic_endpoint<Protocol> &e1,
+                         const basic_endpoint<Protocol> &e2) {
     return !(e2 < e1);
   }
 
   /// Compare endpoints for ordering.
-  friend bool operator>=(const basic_endpoint<Protocol>& e1,
-      const basic_endpoint<Protocol>& e2)
-  {
+  friend bool operator>=(const basic_endpoint<Protocol> &e1,
+                         const basic_endpoint<Protocol> &e2) {
     return !(e1 < e2);
   }
 

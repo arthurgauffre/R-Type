@@ -12,7 +12,7 @@
 #define ASIO_SYSTEM_CONTEXT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -29,15 +29,13 @@ template <typename Blocking, typename Relationship, typename Allocator>
 class basic_system_executor;
 
 /// The executor context for the system executor.
-class system_context : public execution_context
-{
+class system_context : public execution_context {
 public:
   /// The executor type associated with the context.
-  typedef basic_system_executor<
-      execution::blocking_t::possibly_t,
-      execution::relationship_t::fork_t,
-      std::allocator<void>
-    > executor_type;
+  typedef basic_system_executor<execution::blocking_t::possibly_t,
+                                execution::relationship_t::fork_t,
+                                std::allocator<void>>
+      executor_type;
 
   /// Destructor shuts down all threads in the system thread pool.
   ASIO_DECL ~system_context();
@@ -66,10 +64,10 @@ private:
   struct thread_function;
 
   // Helper function to create the underlying scheduler.
-  ASIO_DECL detail::scheduler& add_scheduler(detail::scheduler* s);
+  ASIO_DECL detail::scheduler &add_scheduler(detail::scheduler *s);
 
   // The underlying scheduler.
-  detail::scheduler& scheduler_;
+  detail::scheduler &scheduler_;
 
   // The threads in the system thread pool.
   detail::thread_group threads_;
@@ -84,7 +82,7 @@ private:
 
 #include "asio/impl/system_context.hpp"
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/impl/system_context.ipp"
+#include "asio/impl/system_context.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_SYSTEM_CONTEXT_HPP

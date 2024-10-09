@@ -12,7 +12,7 @@
 #define ASIO_CANCELLATION_TYPE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -21,12 +21,11 @@
 
 namespace asio {
 
-# if defined(GENERATING_DOCUMENTATION)
+#if defined(GENERATING_DOCUMENTATION)
 
 /// Enumeration representing the different types of cancellation that may
 /// be requested from or implemented by an asynchronous operation.
-enum cancellation_type
-{
+enum cancellation_type {
   /// Bitmask representing no types of cancellation.
   none = 0,
 
@@ -53,8 +52,7 @@ typedef cancellation_type cancellation_type_t;
 
 #else // defined(GENERATING_DOCUMENTATION)
 
-enum class cancellation_type : unsigned int
-{
+enum class cancellation_type : unsigned int {
   none = 0,
   terminal = 1,
   partial = 2,
@@ -70,8 +68,7 @@ typedef cancellation_type cancellation_type_t;
 /**
  * @relates cancellation_type
  */
-inline constexpr bool operator!(cancellation_type_t x)
-{
+inline constexpr bool operator!(cancellation_type_t x) {
   return static_cast<unsigned int>(x) == 0;
 }
 
@@ -79,41 +76,37 @@ inline constexpr bool operator!(cancellation_type_t x)
 /**
  * @relates cancellation_type
  */
-inline constexpr cancellation_type_t operator&(
-    cancellation_type_t x, cancellation_type_t y)
-{
-  return static_cast<cancellation_type_t>(
-      static_cast<unsigned int>(x) & static_cast<unsigned int>(y));
+inline constexpr cancellation_type_t operator&(cancellation_type_t x,
+                                               cancellation_type_t y) {
+  return static_cast<cancellation_type_t>(static_cast<unsigned int>(x) &
+                                          static_cast<unsigned int>(y));
 }
 
 /// Bitwise or operator.
 /**
  * @relates cancellation_type
  */
-inline constexpr cancellation_type_t operator|(
-    cancellation_type_t x, cancellation_type_t y)
-{
-  return static_cast<cancellation_type_t>(
-      static_cast<unsigned int>(x) | static_cast<unsigned int>(y));
+inline constexpr cancellation_type_t operator|(cancellation_type_t x,
+                                               cancellation_type_t y) {
+  return static_cast<cancellation_type_t>(static_cast<unsigned int>(x) |
+                                          static_cast<unsigned int>(y));
 }
 
 /// Bitwise xor operator.
 /**
  * @relates cancellation_type
  */
-inline constexpr cancellation_type_t operator^(
-    cancellation_type_t x, cancellation_type_t y)
-{
-  return static_cast<cancellation_type_t>(
-      static_cast<unsigned int>(x) ^ static_cast<unsigned int>(y));
+inline constexpr cancellation_type_t operator^(cancellation_type_t x,
+                                               cancellation_type_t y) {
+  return static_cast<cancellation_type_t>(static_cast<unsigned int>(x) ^
+                                          static_cast<unsigned int>(y));
 }
 
 /// Bitwise negation operator.
 /**
  * @relates cancellation_type
  */
-inline constexpr cancellation_type_t operator~(cancellation_type_t x)
-{
+inline constexpr cancellation_type_t operator~(cancellation_type_t x) {
   return static_cast<cancellation_type_t>(~static_cast<unsigned int>(x));
 }
 
@@ -121,9 +114,8 @@ inline constexpr cancellation_type_t operator~(cancellation_type_t x)
 /**
  * @relates cancellation_type
  */
-inline cancellation_type_t& operator&=(
-    cancellation_type_t& x, cancellation_type_t y)
-{
+inline cancellation_type_t &operator&=(cancellation_type_t &x,
+                                       cancellation_type_t y) {
   x = x & y;
   return x;
 }
@@ -132,9 +124,8 @@ inline cancellation_type_t& operator&=(
 /**
  * @relates cancellation_type
  */
-inline cancellation_type_t& operator|=(
-    cancellation_type_t& x, cancellation_type_t y)
-{
+inline cancellation_type_t &operator|=(cancellation_type_t &x,
+                                       cancellation_type_t y) {
   x = x | y;
   return x;
 }
@@ -143,9 +134,8 @@ inline cancellation_type_t& operator|=(
 /**
  * @relates cancellation_type
  */
-inline cancellation_type_t& operator^=(
-    cancellation_type_t& x, cancellation_type_t y)
-{
+inline cancellation_type_t &operator^=(cancellation_type_t &x,
+                                       cancellation_type_t y) {
   x = x ^ y;
   return x;
 }

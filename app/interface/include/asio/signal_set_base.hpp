@@ -12,7 +12,7 @@
 #define ASIO_SIGNAL_SET_BASE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -24,14 +24,12 @@ namespace asio {
 
 /// The signal_set_base class is used as a base for the basic_signal_set class
 /// templates so that we have a common place to define the flags enum.
-class signal_set_base
-{
+class signal_set_base {
 public:
-# if defined(GENERATING_DOCUMENTATION)
+#if defined(GENERATING_DOCUMENTATION)
   /// Enumeration representing the different types of flags that may specified
   /// when adding a signal to a set.
-  enum flags
-  {
+  enum flags {
     /// Bitmask representing no flags.
     none = 0,
 
@@ -59,8 +57,7 @@ public:
 
 #else // defined(GENERATING_DOCUMENTATION)
 
-  enum class flags : int
-  {
+  enum class flags : int {
     none = 0,
     restart = ASIO_OS_DEF(SA_RESTART),
     no_child_stop = ASIO_OS_DEF(SA_NOCLDSTOP),
@@ -74,17 +71,14 @@ public:
 
 protected:
   /// Protected destructor to prevent deletion through this type.
-  ~signal_set_base()
-  {
-  }
+  ~signal_set_base() {}
 };
 
 /// Negation operator.
 /**
  * @relates signal_set_base::flags
  */
-inline constexpr bool operator!(signal_set_base::flags_t x)
-{
+inline constexpr bool operator!(signal_set_base::flags_t x) {
   return static_cast<int>(x) == 0;
 }
 
@@ -92,42 +86,38 @@ inline constexpr bool operator!(signal_set_base::flags_t x)
 /**
  * @relates signal_set_base::flags
  */
-inline constexpr signal_set_base::flags_t operator&(
-    signal_set_base::flags_t x, signal_set_base::flags_t y)
-{
-  return static_cast<signal_set_base::flags_t>(
-      static_cast<int>(x) & static_cast<int>(y));
+inline constexpr signal_set_base::flags_t
+operator&(signal_set_base::flags_t x, signal_set_base::flags_t y) {
+  return static_cast<signal_set_base::flags_t>(static_cast<int>(x) &
+                                               static_cast<int>(y));
 }
 
 /// Bitwise or operator.
 /**
  * @relates signal_set_base::flags
  */
-inline constexpr signal_set_base::flags_t operator|(
-    signal_set_base::flags_t x, signal_set_base::flags_t y)
-{
-  return static_cast<signal_set_base::flags_t>(
-      static_cast<int>(x) | static_cast<int>(y));
+inline constexpr signal_set_base::flags_t
+operator|(signal_set_base::flags_t x, signal_set_base::flags_t y) {
+  return static_cast<signal_set_base::flags_t>(static_cast<int>(x) |
+                                               static_cast<int>(y));
 }
 
 /// Bitwise xor operator.
 /**
  * @relates signal_set_base::flags
  */
-inline constexpr signal_set_base::flags_t operator^(
-    signal_set_base::flags_t x, signal_set_base::flags_t y)
-{
-  return static_cast<signal_set_base::flags_t>(
-      static_cast<int>(x) ^ static_cast<int>(y));
+inline constexpr signal_set_base::flags_t
+operator^(signal_set_base::flags_t x, signal_set_base::flags_t y) {
+  return static_cast<signal_set_base::flags_t>(static_cast<int>(x) ^
+                                               static_cast<int>(y));
 }
 
 /// Bitwise negation operator.
 /**
  * @relates signal_set_base::flags
  */
-inline constexpr signal_set_base::flags_t operator~(
-    signal_set_base::flags_t x)
-{
+inline constexpr signal_set_base::flags_t
+operator~(signal_set_base::flags_t x) {
   return static_cast<signal_set_base::flags_t>(~static_cast<int>(x));
 }
 
@@ -135,9 +125,8 @@ inline constexpr signal_set_base::flags_t operator~(
 /**
  * @relates signal_set_base::flags
  */
-inline signal_set_base::flags_t& operator&=(
-    signal_set_base::flags_t& x, signal_set_base::flags_t y)
-{
+inline signal_set_base::flags_t &operator&=(signal_set_base::flags_t &x,
+                                            signal_set_base::flags_t y) {
   x = x & y;
   return x;
 }
@@ -146,9 +135,8 @@ inline signal_set_base::flags_t& operator&=(
 /**
  * @relates signal_set_base::flags
  */
-inline signal_set_base::flags_t& operator|=(
-    signal_set_base::flags_t& x, signal_set_base::flags_t y)
-{
+inline signal_set_base::flags_t &operator|=(signal_set_base::flags_t &x,
+                                            signal_set_base::flags_t y) {
   x = x | y;
   return x;
 }
@@ -157,9 +145,8 @@ inline signal_set_base::flags_t& operator|=(
 /**
  * @relates signal_set_base::flags
  */
-inline signal_set_base::flags_t& operator^=(
-    signal_set_base::flags_t& x, signal_set_base::flags_t y)
-{
+inline signal_set_base::flags_t &operator^=(signal_set_base::flags_t &x,
+                                            signal_set_base::flags_t y) {
   x = x ^ y;
   return x;
 }

@@ -12,14 +12,14 @@
 #define ASIO_POSIX_BASIC_STREAM_DESCRIPTOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 #include "asio/posix/basic_descriptor.hpp"
 
-#if defined(ASIO_HAS_POSIX_STREAM_DESCRIPTOR) \
-  || defined(GENERATING_DOCUMENTATION)
+#if defined(ASIO_HAS_POSIX_STREAM_DESCRIPTOR) ||                               \
+    defined(GENERATING_DOCUMENTATION)
 
 #include "asio/detail/push_options.hpp"
 
@@ -45,9 +45,7 @@ namespace posix {
  * AsyncReadStream, AsyncWriteStream, Stream, SyncReadStream, SyncWriteStream.
  */
 template <typename Executor = any_io_executor>
-class basic_stream_descriptor
-  : public basic_descriptor<Executor>
-{
+class basic_stream_descriptor : public basic_descriptor<Executor> {
 private:
   class initiate_async_write_some;
   class initiate_async_read_some;
@@ -57,16 +55,14 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the descriptor type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The descriptor type when rebound to the specified executor.
     typedef basic_stream_descriptor<Executor1> other;
   };
 
   /// The native representation of a descriptor.
   typedef typename basic_descriptor<Executor>::native_handle_type
-    native_handle_type;
+      native_handle_type;
 
   /// Construct a stream descriptor without opening it.
   /**
@@ -78,10 +74,8 @@ public:
    * dispatch handlers for any asynchronous operations performed on the
    * descriptor.
    */
-  explicit basic_stream_descriptor(const executor_type& ex)
-    : basic_descriptor<Executor>(ex)
-  {
-  }
+  explicit basic_stream_descriptor(const executor_type &ex)
+      : basic_descriptor<Executor>(ex) {}
 
   /// Construct a stream descriptor without opening it.
   /**
@@ -94,14 +88,12 @@ public:
    * asynchronous operations performed on the descriptor.
    */
   template <typename ExecutionContext>
-  explicit basic_stream_descriptor(ExecutionContext& context,
+  explicit basic_stream_descriptor(
+      ExecutionContext &context,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_descriptor<Executor>(context)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value,
+          defaulted_constraint> = defaulted_constraint())
+      : basic_descriptor<Executor>(context) {}
 
   /// Construct a stream descriptor on an existing native descriptor.
   /**
@@ -116,11 +108,9 @@ public:
    *
    * @throws asio::system_error Thrown on failure.
    */
-  basic_stream_descriptor(const executor_type& ex,
-      const native_handle_type& native_descriptor)
-    : basic_descriptor<Executor>(ex, native_descriptor)
-  {
-  }
+  basic_stream_descriptor(const executor_type &ex,
+                          const native_handle_type &native_descriptor)
+      : basic_descriptor<Executor>(ex, native_descriptor) {}
 
   /// Construct a stream descriptor on an existing native descriptor.
   /**
@@ -136,14 +126,11 @@ public:
    * @throws asio::system_error Thrown on failure.
    */
   template <typename ExecutionContext>
-  basic_stream_descriptor(ExecutionContext& context,
-      const native_handle_type& native_descriptor,
+  basic_stream_descriptor(
+      ExecutionContext &context, const native_handle_type &native_descriptor,
       constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value
-      > = 0)
-    : basic_descriptor<Executor>(context, native_descriptor)
-  {
-  }
+          is_convertible<ExecutionContext &, execution_context &>::value> = 0)
+      : basic_descriptor<Executor>(context, native_descriptor) {}
 
   /// Move-construct a stream descriptor from another.
   /**
@@ -156,10 +143,8 @@ public:
    * constructed using the @c basic_stream_descriptor(const executor_type&)
    * constructor.
    */
-  basic_stream_descriptor(basic_stream_descriptor&& other) noexcept
-    : basic_descriptor<Executor>(std::move(other))
-  {
-  }
+  basic_stream_descriptor(basic_stream_descriptor &&other) noexcept
+      : basic_descriptor<Executor>(std::move(other)) {}
 
   /// Move-assign a stream descriptor from another.
   /**
@@ -173,8 +158,7 @@ public:
    * constructed using the @c basic_stream_descriptor(const executor_type&)
    * constructor.
    */
-  basic_stream_descriptor& operator=(basic_stream_descriptor&& other)
-  {
+  basic_stream_descriptor &operator=(basic_stream_descriptor &&other) {
     basic_descriptor<Executor>::operator=(std::move(other));
     return *this;
   }
@@ -192,14 +176,11 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  basic_stream_descriptor(basic_stream_descriptor<Executor1>&& other,
-      constraint_t<
-        is_convertible<Executor1, Executor>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : basic_descriptor<Executor>(std::move(other))
-  {
-  }
+  basic_stream_descriptor(
+      basic_stream_descriptor<Executor1> &&other,
+      constraint_t<is_convertible<Executor1, Executor>::value,
+                   defaulted_constraint> = defaulted_constraint())
+      : basic_descriptor<Executor>(std::move(other)) {}
 
   /// Move-assign a basic_stream_descriptor from a descriptor of another
   /// executor type.
@@ -214,11 +195,9 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  constraint_t<
-    is_convertible<Executor1, Executor>::value,
-    basic_stream_descriptor&
-  > operator=(basic_stream_descriptor<Executor1> && other)
-  {
+  constraint_t<is_convertible<Executor1, Executor>::value,
+               basic_stream_descriptor &>
+  operator=(basic_stream_descriptor<Executor1> &&other) {
     basic_descriptor<Executor>::operator=(std::move(other));
     return *this;
   }
@@ -251,8 +230,7 @@ public:
    * std::vector.
    */
   template <typename ConstBufferSequence>
-  std::size_t write_some(const ConstBufferSequence& buffers)
-  {
+  std::size_t write_some(const ConstBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().write_some(
         this->impl_.get_implementation(), buffers, ec);
@@ -277,9 +255,8 @@ public:
    * all data is written before the blocking operation completes.
    */
   template <typename ConstBufferSequence>
-  std::size_t write_some(const ConstBufferSequence& buffers,
-      asio::error_code& ec)
-  {
+  std::size_t write_some(const ConstBufferSequence &buffers,
+                         asio::error_code &ec) {
     return this->impl_.get_service().write_some(
         this->impl_.get_implementation(), buffers, ec);
   }
@@ -336,17 +313,15 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename ConstBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) WriteToken = default_completion_token_t<executor_type>>
-  auto async_write_some(const ConstBufferSequence& buffers,
-      WriteToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<WriteToken,
-        void (asio::error_code, std::size_t)>(
-          initiate_async_write_some(this), token, buffers))
-  {
-    return async_initiate<WriteToken,
-      void (asio::error_code, std::size_t)>(
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                WriteToken = default_completion_token_t<executor_type>>
+  auto async_write_some(
+      const ConstBufferSequence &buffers,
+      WriteToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<WriteToken,
+                                 void(asio::error_code, std::size_t)>(
+          initiate_async_write_some(this), token, buffers)) {
+    return async_initiate<WriteToken, void(asio::error_code, std::size_t)>(
         initiate_async_write_some(this), token, buffers);
   }
 
@@ -379,8 +354,7 @@ public:
    * std::vector.
    */
   template <typename MutableBufferSequence>
-  std::size_t read_some(const MutableBufferSequence& buffers)
-  {
+  std::size_t read_some(const MutableBufferSequence &buffers) {
     asio::error_code ec;
     std::size_t s = this->impl_.get_service().read_some(
         this->impl_.get_implementation(), buffers, ec);
@@ -406,11 +380,10 @@ public:
    * completes.
    */
   template <typename MutableBufferSequence>
-  std::size_t read_some(const MutableBufferSequence& buffers,
-      asio::error_code& ec)
-  {
-    return this->impl_.get_service().read_some(
-        this->impl_.get_implementation(), buffers, ec);
+  std::size_t read_some(const MutableBufferSequence &buffers,
+                        asio::error_code &ec) {
+    return this->impl_.get_service().read_some(this->impl_.get_implementation(),
+                                               buffers, ec);
   }
 
   /// Start an asynchronous read.
@@ -466,85 +439,73 @@ public:
    * @li @c cancellation_type::total
    */
   template <typename MutableBufferSequence,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code,
-        std::size_t)) ReadToken = default_completion_token_t<executor_type>>
-  auto async_read_some(const MutableBufferSequence& buffers,
-      ReadToken&& token = default_completion_token_t<executor_type>())
-    -> decltype(
-      async_initiate<ReadToken,
-        void (asio::error_code, std::size_t)>(
-          declval<initiate_async_read_some>(), token, buffers))
-  {
-    return async_initiate<ReadToken,
-      void (asio::error_code, std::size_t)>(
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code, std::size_t))
+                ReadToken = default_completion_token_t<executor_type>>
+  auto async_read_some(
+      const MutableBufferSequence &buffers,
+      ReadToken &&token = default_completion_token_t<executor_type>())
+      -> decltype(async_initiate<ReadToken,
+                                 void(asio::error_code, std::size_t)>(
+          declval<initiate_async_read_some>(), token, buffers)) {
+    return async_initiate<ReadToken, void(asio::error_code, std::size_t)>(
         initiate_async_read_some(this), token, buffers);
   }
 
 private:
-  class initiate_async_write_some
-  {
+  class initiate_async_write_some {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_write_some(basic_stream_descriptor* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_write_some(basic_stream_descriptor *self)
+        : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename WriteHandler, typename ConstBufferSequence>
-    void operator()(WriteHandler&& handler,
-        const ConstBufferSequence& buffers) const
-    {
+    void operator()(WriteHandler &&handler,
+                    const ConstBufferSequence &buffers) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WriteHandler.
       ASIO_WRITE_HANDLER_CHECK(WriteHandler, handler) type_check;
 
       detail::non_const_lvalue<WriteHandler> handler2(handler);
       self_->impl_.get_service().async_write_some(
-          self_->impl_.get_implementation(), buffers,
-          handler2.value, self_->impl_.get_executor());
+          self_->impl_.get_implementation(), buffers, handler2.value,
+          self_->impl_.get_executor());
     }
 
   private:
-    basic_stream_descriptor* self_;
+    basic_stream_descriptor *self_;
   };
 
-  class initiate_async_read_some
-  {
+  class initiate_async_read_some {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_read_some(basic_stream_descriptor* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_read_some(basic_stream_descriptor *self)
+        : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename ReadHandler, typename MutableBufferSequence>
-    void operator()(ReadHandler&& handler,
-        const MutableBufferSequence& buffers) const
-    {
+    void operator()(ReadHandler &&handler,
+                    const MutableBufferSequence &buffers) const {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a ReadHandler.
       ASIO_READ_HANDLER_CHECK(ReadHandler, handler) type_check;
 
       detail::non_const_lvalue<ReadHandler> handler2(handler);
       self_->impl_.get_service().async_read_some(
-          self_->impl_.get_implementation(), buffers,
-          handler2.value, self_->impl_.get_executor());
+          self_->impl_.get_implementation(), buffers, handler2.value,
+          self_->impl_.get_executor());
     }
 
   private:
-    basic_stream_descriptor* self_;
+    basic_stream_descriptor *self_;
   };
 };
 

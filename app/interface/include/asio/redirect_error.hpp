@@ -12,7 +12,7 @@
 #define ASIO_REDIRECT_ERROR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -29,30 +29,24 @@ namespace asio {
  * The redirect_error_t class is used to indicate that any error_code produced
  * by an asynchronous operation is captured to a specified variable.
  */
-template <typename CompletionToken>
-class redirect_error_t
-{
+template <typename CompletionToken> class redirect_error_t {
 public:
-  /// Constructor. 
+  /// Constructor.
   template <typename T>
-  redirect_error_t(T&& completion_token, asio::error_code& ec)
-    : token_(static_cast<T&&>(completion_token)),
-      ec_(ec)
-  {
-  }
+  redirect_error_t(T &&completion_token, asio::error_code &ec)
+      : token_(static_cast<T &&>(completion_token)), ec_(ec) {}
 
-//private:
+  // private:
   CompletionToken token_;
-  asio::error_code& ec_;
+  asio::error_code &ec_;
 };
 
 /// Adapt a @ref completion_token to capture error_code values to a variable.
 template <typename CompletionToken>
-inline redirect_error_t<decay_t<CompletionToken>> redirect_error(
-    CompletionToken&& completion_token, asio::error_code& ec)
-{
+inline redirect_error_t<decay_t<CompletionToken>>
+redirect_error(CompletionToken &&completion_token, asio::error_code &ec) {
   return redirect_error_t<decay_t<CompletionToken>>(
-      static_cast<CompletionToken&&>(completion_token), ec);
+      static_cast<CompletionToken &&>(completion_token), ec);
 }
 
 } // namespace asio

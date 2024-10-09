@@ -12,7 +12,7 @@
 #define ASIO_SSL_CONTEXT_BASE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -25,12 +25,10 @@ namespace ssl {
 
 /// The context_base class is used as a base for the basic_context class
 /// template so that we have a common place to define various enums.
-class context_base
-{
+class context_base {
 public:
   /// Different methods supported by a context.
-  enum method
-  {
+  enum method {
     /// Generic SSL version 2.
     sslv2,
 
@@ -140,31 +138,30 @@ public:
   ASIO_STATIC_CONSTANT(uint64_t, no_sslv2 = SSL_OP_NO_SSLv2);
   ASIO_STATIC_CONSTANT(uint64_t, no_sslv3 = SSL_OP_NO_SSLv3);
   ASIO_STATIC_CONSTANT(uint64_t, no_tlsv1 = SSL_OP_NO_TLSv1);
-# if defined(SSL_OP_NO_TLSv1_1)
+#if defined(SSL_OP_NO_TLSv1_1)
   ASIO_STATIC_CONSTANT(uint64_t, no_tlsv1_1 = SSL_OP_NO_TLSv1_1);
-# else // defined(SSL_OP_NO_TLSv1_1)
+#else  // defined(SSL_OP_NO_TLSv1_1)
   ASIO_STATIC_CONSTANT(uint64_t, no_tlsv1_1 = 0x10000000L);
-# endif // defined(SSL_OP_NO_TLSv1_1)
-# if defined(SSL_OP_NO_TLSv1_2)
+#endif // defined(SSL_OP_NO_TLSv1_1)
+#if defined(SSL_OP_NO_TLSv1_2)
   ASIO_STATIC_CONSTANT(uint64_t, no_tlsv1_2 = SSL_OP_NO_TLSv1_2);
-# else // defined(SSL_OP_NO_TLSv1_2)
+#else  // defined(SSL_OP_NO_TLSv1_2)
   ASIO_STATIC_CONSTANT(uint64_t, no_tlsv1_2 = 0x08000000L);
-# endif // defined(SSL_OP_NO_TLSv1_2)
-# if defined(SSL_OP_NO_TLSv1_3)
+#endif // defined(SSL_OP_NO_TLSv1_2)
+#if defined(SSL_OP_NO_TLSv1_3)
   ASIO_STATIC_CONSTANT(uint64_t, no_tlsv1_3 = SSL_OP_NO_TLSv1_3);
-# else // defined(SSL_OP_NO_TLSv1_3)
+#else  // defined(SSL_OP_NO_TLSv1_3)
   ASIO_STATIC_CONSTANT(uint64_t, no_tlsv1_3 = 0x20000000L);
-# endif // defined(SSL_OP_NO_TLSv1_3)
-# if defined(SSL_OP_NO_COMPRESSION)
+#endif // defined(SSL_OP_NO_TLSv1_3)
+#if defined(SSL_OP_NO_COMPRESSION)
   ASIO_STATIC_CONSTANT(uint64_t, no_compression = SSL_OP_NO_COMPRESSION);
-# else // defined(SSL_OP_NO_COMPRESSION)
+#else  // defined(SSL_OP_NO_COMPRESSION)
   ASIO_STATIC_CONSTANT(uint64_t, no_compression = 0x20000L);
-# endif // defined(SSL_OP_NO_COMPRESSION)
+#endif // defined(SSL_OP_NO_COMPRESSION)
 #endif
 
   /// File format types.
-  enum file_format
-  {
+  enum file_format {
     /// ASN.1 file.
     asn1,
 
@@ -179,14 +176,13 @@ public:
   typedef int verify_mode;
   ASIO_STATIC_CONSTANT(int, verify_none = SSL_VERIFY_NONE);
   ASIO_STATIC_CONSTANT(int, verify_peer = SSL_VERIFY_PEER);
-  ASIO_STATIC_CONSTANT(int,
-      verify_fail_if_no_peer_cert = SSL_VERIFY_FAIL_IF_NO_PEER_CERT);
+  ASIO_STATIC_CONSTANT(
+      int, verify_fail_if_no_peer_cert = SSL_VERIFY_FAIL_IF_NO_PEER_CERT);
   ASIO_STATIC_CONSTANT(int, verify_client_once = SSL_VERIFY_CLIENT_ONCE);
 #endif
 
   /// Purpose of PEM password.
-  enum password_purpose
-  {
+  enum password_purpose {
     /// The password is needed for reading/decryption.
     for_reading,
 
@@ -196,9 +192,7 @@ public:
 
 protected:
   /// Protected destructor to prevent deletion through this type.
-  ~context_base()
-  {
-  }
+  ~context_base() {}
 };
 
 } // namespace ssl

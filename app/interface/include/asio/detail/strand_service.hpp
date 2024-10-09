@@ -12,15 +12,15 @@
 #define ASIO_DETAIL_STRAND_SERVICE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include "asio/io_context.hpp"
 #include "asio/detail/mutex.hpp"
 #include "asio/detail/op_queue.hpp"
 #include "asio/detail/operation.hpp"
 #include "asio/detail/scoped_ptr.hpp"
+#include "asio/io_context.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -28,9 +28,7 @@ namespace asio {
 namespace detail {
 
 // Default service implementation for a strand.
-class strand_service
-  : public asio::detail::service_base<strand_service>
-{
+class strand_service : public asio::detail::service_base<strand_service> {
 private:
   // Helper class to re-post the strand on exit.
   struct on_do_complete_exit;
@@ -39,11 +37,8 @@ private:
   struct on_dispatch_exit;
 
 public:
-
   // The underlying implementation of a strand.
-  class strand_impl
-    : public operation
-  {
+  class strand_impl : public operation {
   public:
     strand_impl();
 
@@ -72,54 +67,53 @@ public:
     op_queue<operation> ready_queue_;
   };
 
-  typedef strand_impl* implementation_type;
+  typedef strand_impl *implementation_type;
 
   // Construct a new strand service for the specified io_context.
-  ASIO_DECL explicit strand_service(asio::io_context& io_context);
+  ASIO_DECL explicit strand_service(asio::io_context &io_context);
 
   // Destroy all user-defined handler objects owned by the service.
   ASIO_DECL void shutdown();
 
   // Construct a new strand implementation.
-  ASIO_DECL void construct(implementation_type& impl);
+  ASIO_DECL void construct(implementation_type &impl);
 
   // Request the io_context to invoke the given handler.
   template <typename Handler>
-  void dispatch(implementation_type& impl, Handler& handler);
+  void dispatch(implementation_type &impl, Handler &handler);
 
   // Request the io_context to invoke the given handler and return immediately.
   template <typename Handler>
-  void post(implementation_type& impl, Handler& handler);
+  void post(implementation_type &impl, Handler &handler);
 
   // Determine whether the strand is running in the current thread.
-  ASIO_DECL bool running_in_this_thread(
-      const implementation_type& impl) const;
+  ASIO_DECL bool running_in_this_thread(const implementation_type &impl) const;
 
 private:
   // Helper function to dispatch a handler.
-  ASIO_DECL void do_dispatch(implementation_type& impl, operation* op);
+  ASIO_DECL void do_dispatch(implementation_type &impl, operation *op);
 
   // Helper function to post a handler.
-  ASIO_DECL void do_post(implementation_type& impl,
-      operation* op, bool is_continuation);
+  ASIO_DECL void do_post(implementation_type &impl, operation *op,
+                         bool is_continuation);
 
-  ASIO_DECL static void do_complete(void* owner,
-      operation* base, const asio::error_code& ec,
-      std::size_t bytes_transferred);
+  ASIO_DECL static void do_complete(void *owner, operation *base,
+                                    const asio::error_code &ec,
+                                    std::size_t bytes_transferred);
 
   // The io_context used to obtain an I/O executor.
-  io_context& io_context_;
+  io_context &io_context_;
 
   // The io_context implementation used to post completions.
-  io_context_impl& io_context_impl_;
+  io_context_impl &io_context_impl_;
 
   // Mutex to protect access to the array of implementations.
   asio::detail::mutex mutex_;
 
   // Number of implementations shared between all strand objects.
 #if defined(ASIO_STRAND_IMPLEMENTATIONS)
-  enum { num_implementations = ASIO_STRAND_IMPLEMENTATIONS };
-#else // defined(ASIO_STRAND_IMPLEMENTATIONS)
+  enum {num_implementations = ASIO_STRAND_IMPLEMENTATIONS};
+#else  // defined(ASIO_STRAND_IMPLEMENTATIONS)
   enum { num_implementations = 193 };
 #endif // defined(ASIO_STRAND_IMPLEMENTATIONS)
 
@@ -138,7 +132,7 @@ private:
 
 #include "asio/detail/impl/strand_service.hpp"
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/strand_service.ipp"
+#include "asio/detail/impl/strand_service.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_DETAIL_STRAND_SERVICE_HPP

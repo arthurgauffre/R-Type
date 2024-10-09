@@ -12,7 +12,7 @@
 #define ASIO_EXPERIMENTAL_BASIC_CHANNEL_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -27,9 +27,7 @@
 
 namespace asio {
 namespace experimental {
-namespace detail {
-
-} // namespace detail
+namespace detail {} // namespace detail
 
 /// A channel for messages.
 /**
@@ -96,9 +94,9 @@ namespace detail {
 template <typename Executor, typename Traits, typename... Signatures>
 class basic_channel
 #if !defined(GENERATING_DOCUMENTATION)
-  : public detail::channel_send_functions<
-      basic_channel<Executor, Traits, Signatures...>,
-      Executor, Signatures...>
+    : public detail::channel_send_functions<
+          basic_channel<Executor, Traits, Signatures...>, Executor,
+          Signatures...>
 #endif // !defined(GENERATING_DOCUMENTATION)
 {
 private:
@@ -109,13 +107,11 @@ private:
       Traits, Signatures...>::payload_type payload_type;
 
   template <typename... PayloadSignatures,
-      ASIO_COMPLETION_TOKEN_FOR(PayloadSignatures...) CompletionToken>
-  auto do_async_receive(detail::channel_payload<PayloadSignatures...>*,
-      CompletionToken&& token)
-    -> decltype(
-        async_initiate<CompletionToken, PayloadSignatures...>(
-          declval<initiate_async_receive>(), token))
-  {
+            ASIO_COMPLETION_TOKEN_FOR(PayloadSignatures...) CompletionToken>
+  auto do_async_receive(detail::channel_payload<PayloadSignatures...> *,
+                        CompletionToken &&token)
+      -> decltype(async_initiate<CompletionToken, PayloadSignatures...>(
+          declval<initiate_async_receive>(), token)) {
     return async_initiate<CompletionToken, PayloadSignatures...>(
         initiate_async_receive(this), token);
   }
@@ -125,9 +121,7 @@ public:
   typedef Executor executor_type;
 
   /// Rebinds the channel type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
+  template <typename Executor1> struct rebind_executor {
     /// The channel type when rebound to the specified executor.
     typedef basic_channel<Executor1, Traits, Signatures...> other;
   };
@@ -145,12 +139,10 @@ public:
    * @param max_buffer_size The maximum number of messages that may be buffered
    * in the channel.
    */
-  basic_channel(const executor_type& ex, std::size_t max_buffer_size = 0)
-    : service_(&asio::use_service<service_type>(
-            basic_channel::get_context(ex))),
-      impl_(),
-      executor_(ex)
-  {
+  basic_channel(const executor_type &ex, std::size_t max_buffer_size = 0)
+      : service_(
+            &asio::use_service<service_type>(basic_channel::get_context(ex))),
+        impl_(), executor_(ex) {
     service_->construct(impl_, max_buffer_size);
   }
 
@@ -166,15 +158,12 @@ public:
    * in the channel.
    */
   template <typename ExecutionContext>
-  basic_channel(ExecutionContext& context, std::size_t max_buffer_size = 0,
-      constraint_t<
-        is_convertible<ExecutionContext&, execution_context&>::value,
-        defaulted_constraint
-      > = defaulted_constraint())
-    : service_(&asio::use_service<service_type>(context)),
-      impl_(),
-      executor_(context.get_executor())
-  {
+  basic_channel(ExecutionContext &context, std::size_t max_buffer_size = 0,
+                constraint_t<is_convertible<ExecutionContext &,
+                                            execution_context &>::value,
+                             defaulted_constraint> = defaulted_constraint())
+      : service_(&asio::use_service<service_type>(context)), impl_(),
+        executor_(context.get_executor()) {
     service_->construct(impl_, max_buffer_size);
   }
 
@@ -187,10 +176,8 @@ public:
    * @note Following the move, the moved-from object is in the same state as if
    * constructed using the @c basic_channel(const executor_type&) constructor.
    */
-  basic_channel(basic_channel&& other)
-    : service_(other.service_),
-      executor_(other.executor_)
-  {
+  basic_channel(basic_channel &&other)
+      : service_(other.service_), executor_(other.executor_) {
     service_->move_construct(impl_, other.impl_);
   }
 
@@ -206,10 +193,8 @@ public:
    * constructed using the @c basic_channel(const executor_type&)
    * constructor.
    */
-  basic_channel& operator=(basic_channel&& other)
-  {
-    if (this != &other)
-    {
+  basic_channel &operator=(basic_channel &&other) {
+    if (this != &other) {
       service_->move_assign(impl_, *other.service_, other.impl_);
       executor_.~executor_type();
       new (&executor_) executor_type(other.executor_);
@@ -219,8 +204,7 @@ public:
   }
 
   // All channels have access to each other's implementations.
-  template <typename, typename, typename...>
-  friend class basic_channel;
+  template <typename, typename, typename...> friend class basic_channel;
 
   /// Move-construct a basic_channel from another.
   /**
@@ -233,14 +217,9 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  basic_channel(
-      basic_channel<Executor1, Traits, Signatures...>&& other,
-      constraint_t<
-          is_convertible<Executor1, Executor>::value
-      > = 0)
-    : service_(other.service_),
-      executor_(other.executor_)
-  {
+  basic_channel(basic_channel<Executor1, Traits, Signatures...> &&other,
+                constraint_t<is_convertible<Executor1, Executor>::value> = 0)
+      : service_(other.service_), executor_(other.executor_) {
     service_->move_construct(impl_, other.impl_);
   }
 
@@ -258,13 +237,9 @@ public:
    * constructor.
    */
   template <typename Executor1>
-  constraint_t<
-    is_convertible<Executor1, Executor>::value,
-    basic_channel&
-  > operator=(basic_channel<Executor1, Traits, Signatures...>&& other)
-  {
-    if (this != &other)
-    {
+  constraint_t<is_convertible<Executor1, Executor>::value, basic_channel &>
+  operator=(basic_channel<Executor1, Traits, Signatures...> &&other) {
+    if (this != &other) {
       service_->move_assign(impl_, *other.service_, other.impl_);
       executor_.~executor_type();
       new (&executor_) executor_type(other.executor_);
@@ -274,40 +249,22 @@ public:
   }
 
   /// Destructor.
-  ~basic_channel()
-  {
-    service_->destroy(impl_);
-  }
+  ~basic_channel() { service_->destroy(impl_); }
 
   /// Get the executor associated with the object.
-  const executor_type& get_executor() noexcept
-  {
-    return executor_;
-  }
+  const executor_type &get_executor() noexcept { return executor_; }
 
   /// Get the capacity of the channel's buffer.
-  std::size_t capacity() noexcept
-  {
-    return service_->capacity(impl_);
-  }
+  std::size_t capacity() noexcept { return service_->capacity(impl_); }
 
   /// Determine whether the channel is open.
-  bool is_open() const noexcept
-  {
-    return service_->is_open(impl_);
-  }
+  bool is_open() const noexcept { return service_->is_open(impl_); }
 
   /// Reset the channel to its initial state.
-  void reset()
-  {
-    service_->reset(impl_);
-  }
+  void reset() { service_->reset(impl_); }
 
   /// Close the channel.
-  void close()
-  {
-    service_->close(impl_);
-  }
+  void close() { service_->close(impl_); }
 
   /// Cancel all asynchronous operations waiting on the channel.
   /**
@@ -315,16 +272,10 @@ public:
    * @c asio::experimental::error::channel_cancelled. Outstanding receive
    * operations complete with the result as determined by the channel traits.
    */
-  void cancel()
-  {
-    service_->cancel(impl_);
-  }
+  void cancel() { service_->cancel(impl_); }
 
   /// Determine whether a message can be received without blocking.
-  bool ready() const noexcept
-  {
-    return service_->ready(impl_);
-  }
+  bool ready() const noexcept { return service_->ready(impl_); }
 
 #if defined(GENERATING_DOCUMENTATION)
 
@@ -334,8 +285,7 @@ public:
    *
    * @returns @c true on success, @c false on failure.
    */
-  template <typename... Args>
-  bool try_send(Args&&... args);
+  template <typename... Args> bool try_send(Args &&...args);
 
   /// Try to send a message without blocking, using dispatch semantics to call
   /// the receive operation's completion handler.
@@ -347,15 +297,14 @@ public:
    *
    * @returns @c true on success, @c false on failure.
    */
-  template <typename... Args>
-  bool try_send_via_dispatch(Args&&... args);
+  template <typename... Args> bool try_send_via_dispatch(Args &&...args);
 
   /// Try to send a number of messages without blocking.
   /**
    * @returns The number of messages that were sent.
    */
   template <typename... Args>
-  std::size_t try_send_n(std::size_t count, Args&&... args);
+  std::size_t try_send_n(std::size_t count, Args &&...args);
 
   /// Try to send a number of messages without blocking, using dispatch
   /// semantics to call the receive operations' completion handlers.
@@ -366,7 +315,7 @@ public:
    * @returns The number of messages that were sent.
    */
   template <typename... Args>
-  std::size_t try_send_n_via_dispatch(std::size_t count, Args&&... args);
+  std::size_t try_send_n_via_dispatch(std::size_t count, Args &&...args);
 
   /// Asynchronously send a message.
   /**
@@ -374,10 +323,9 @@ public:
    * @code void(asio::error_code) @endcode
    */
   template <typename... Args,
-      ASIO_COMPLETION_TOKEN_FOR(void (asio::error_code))
-        CompletionToken ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  auto async_send(Args&&... args,
-      CompletionToken&& token);
+            ASIO_COMPLETION_TOKEN_FOR(void(asio::error_code)) CompletionToken
+                ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
+  auto async_send(Args &&...args, CompletionToken &&token);
 
 #endif // defined(GENERATING_DOCUMENTATION)
 
@@ -387,10 +335,8 @@ public:
    *
    * @returns @c true on success, @c false on failure.
    */
-  template <typename Handler>
-  bool try_receive(Handler&& handler)
-  {
-    return service_->try_receive(impl_, static_cast<Handler&&>(handler));
+  template <typename Handler> bool try_receive(Handler &&handler) {
+    return service_->try_receive(impl_, static_cast<Handler &&>(handler));
   }
 
   /// Asynchronously receive a message.
@@ -399,107 +345,92 @@ public:
    * As determined by the <tt>Signatures...</tt> template parameter and the
    * channel traits.
    */
-  template <typename CompletionToken
-      ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  auto async_receive(
-      CompletionToken&& token
-        ASIO_DEFAULT_COMPLETION_TOKEN(Executor))
+  template <typename CompletionToken ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(
+      executor_type)>
+  auto
+  async_receive(CompletionToken &&token ASIO_DEFAULT_COMPLETION_TOKEN(Executor))
 #if !defined(GENERATING_DOCUMENTATION)
-    -> decltype(
-        this->do_async_receive(static_cast<payload_type*>(0),
-          static_cast<CompletionToken&&>(token)))
+      -> decltype(this->do_async_receive(
+          static_cast<payload_type *>(0),
+          static_cast<CompletionToken &&>(token)))
 #endif // !defined(GENERATING_DOCUMENTATION)
   {
-    return this->do_async_receive(static_cast<payload_type*>(0),
-        static_cast<CompletionToken&&>(token));
+    return this->do_async_receive(static_cast<payload_type *>(0),
+                                  static_cast<CompletionToken &&>(token));
   }
 
 private:
   // Disallow copying and assignment.
-  basic_channel(const basic_channel&) = delete;
-  basic_channel& operator=(const basic_channel&) = delete;
+  basic_channel(const basic_channel &) = delete;
+  basic_channel &operator=(const basic_channel &) = delete;
 
   template <typename, typename, typename...>
   friend class detail::channel_send_functions;
 
   // Helper function to get an executor's context.
   template <typename T>
-  static execution_context& get_context(const T& t,
-      enable_if_t<execution::is_executor<T>::value>* = 0)
-  {
+  static execution_context &
+  get_context(const T &t, enable_if_t<execution::is_executor<T>::value> * = 0) {
     return asio::query(t, execution::context);
   }
 
   // Helper function to get an executor's context.
   template <typename T>
-  static execution_context& get_context(const T& t,
-      enable_if_t<!execution::is_executor<T>::value>* = 0)
-  {
+  static execution_context &
+  get_context(const T &t,
+              enable_if_t<!execution::is_executor<T>::value> * = 0) {
     return t.context();
   }
 
-  class initiate_async_send
-  {
+  class initiate_async_send {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_send(basic_channel* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_send(basic_channel *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename SendHandler>
-    void operator()(SendHandler&& handler,
-        payload_type&& payload) const
-    {
+    void operator()(SendHandler &&handler, payload_type &&payload) const {
       asio::detail::non_const_lvalue<SendHandler> handler2(handler);
       self_->service_->async_send(self_->impl_,
-          static_cast<payload_type&&>(payload),
-          handler2.value, self_->get_executor());
+                                  static_cast<payload_type &&>(payload),
+                                  handler2.value, self_->get_executor());
     }
 
   private:
-    basic_channel* self_;
+    basic_channel *self_;
   };
 
-  class initiate_async_receive
-  {
+  class initiate_async_receive {
   public:
     typedef Executor executor_type;
 
-    explicit initiate_async_receive(basic_channel* self)
-      : self_(self)
-    {
-    }
+    explicit initiate_async_receive(basic_channel *self) : self_(self) {}
 
-    const executor_type& get_executor() const noexcept
-    {
+    const executor_type &get_executor() const noexcept {
       return self_->get_executor();
     }
 
     template <typename ReceiveHandler>
-    void operator()(ReceiveHandler&& handler) const
-    {
+    void operator()(ReceiveHandler &&handler) const {
       asio::detail::non_const_lvalue<ReceiveHandler> handler2(handler);
-      self_->service_->async_receive(self_->impl_,
-          handler2.value, self_->get_executor());
+      self_->service_->async_receive(self_->impl_, handler2.value,
+                                     self_->get_executor());
     }
 
   private:
-    basic_channel* self_;
+    basic_channel *self_;
   };
 
   // The service associated with the I/O object.
-  service_type* service_;
+  service_type *service_;
 
   // The underlying implementation of the I/O object.
-  typename service_type::template implementation_type<
-      Traits, Signatures...> impl_;
+  typename service_type::template implementation_type<Traits, Signatures...>
+      impl_;
 
   // The associated executor.
   Executor executor_;

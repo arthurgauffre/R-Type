@@ -12,23 +12,23 @@
 #define ASIO_BASIC_STREAMBUF_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
 #if !defined(ASIO_NO_IOSTREAM)
 
-#include <algorithm>
-#include <cstring>
-#include <stdexcept>
-#include <streambuf>
-#include <vector>
 #include "asio/basic_streambuf_fwd.hpp"
 #include "asio/buffer.hpp"
 #include "asio/detail/limits.hpp"
 #include "asio/detail/noncopyable.hpp"
 #include "asio/detail/throw_exception.hpp"
+#include <algorithm>
+#include <cstring>
+#include <stdexcept>
+#include <streambuf>
+#include <vector>
 
 #include "asio/detail/push_options.hpp"
 
@@ -107,10 +107,7 @@ template <typename Allocator = std::allocator<char>>
 #else
 template <typename Allocator>
 #endif
-class basic_streambuf
-  : public std::streambuf,
-    private noncopyable
-{
+class basic_streambuf : public std::streambuf, private noncopyable {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// The type used to represent the input sequence as a list of buffers.
@@ -130,10 +127,8 @@ public:
    */
   explicit basic_streambuf(
       std::size_t maximum_size = (std::numeric_limits<std::size_t>::max)(),
-      const Allocator& allocator = Allocator())
-    : max_size_(maximum_size),
-      buffer_(allocator)
-  {
+      const Allocator &allocator = Allocator())
+      : max_size_(maximum_size), buffer_(allocator) {
     std::size_t pend = (std::min<std::size_t>)(max_size_, buffer_delta);
     buffer_.resize((std::max<std::size_t>)(pend, 1));
     setg(&buffer_[0], &buffer_[0], &buffer_[0]);
@@ -155,30 +150,21 @@ public:
    * }
    * @endcode
    */
-  std::size_t size() const noexcept
-  {
-    return pptr() - gptr();
-  }
+  std::size_t size() const noexcept { return pptr() - gptr(); }
 
   /// Get the maximum size of the basic_streambuf.
   /**
    * @returns The allowed maximum of the sum of the sizes of the input sequence
    * and output sequence.
    */
-  std::size_t max_size() const noexcept
-  {
-    return max_size_;
-  }
+  std::size_t max_size() const noexcept { return max_size_; }
 
   /// Get the current capacity of the basic_streambuf.
   /**
    * @returns The current total capacity of the streambuf, i.e. for both the
    * input sequence and output sequence.
    */
-  std::size_t capacity() const noexcept
-  {
-    return buffer_.capacity();
-  }
+  std::size_t capacity() const noexcept { return buffer_.capacity(); }
 
   /// Get a list of buffers that represents the input sequence.
   /**
@@ -189,10 +175,9 @@ public:
    * @note The returned object is invalidated by any @c basic_streambuf member
    * function that modifies the input sequence or output sequence.
    */
-  const_buffers_type data() const noexcept
-  {
-    return asio::buffer(asio::const_buffer(gptr(),
-          (pptr() - gptr()) * sizeof(char_type)));
+  const_buffers_type data() const noexcept {
+    return asio::buffer(
+        asio::const_buffer(gptr(), (pptr() - gptr()) * sizeof(char_type)));
   }
 
   /// Get a list of buffers that represents the output sequence, with the given
@@ -211,11 +196,9 @@ public:
    * @note The returned object is invalidated by any @c basic_streambuf member
    * function that modifies the input sequence or output sequence.
    */
-  mutable_buffers_type prepare(std::size_t n)
-  {
+  mutable_buffers_type prepare(std::size_t n) {
     reserve(n);
-    return asio::buffer(asio::mutable_buffer(
-          pptr(), n * sizeof(char_type)));
+    return asio::buffer(asio::mutable_buffer(pptr(), n * sizeof(char_type)));
   }
 
   /// Move characters from the output sequence to the input sequence.
@@ -230,8 +213,7 @@ public:
    * @note If @c n is greater than the size of the output sequence, the entire
    * output sequence is moved to the input sequence and no error is issued.
    */
-  void commit(std::size_t n)
-  {
+  void commit(std::size_t n) {
     n = std::min<std::size_t>(n, epptr() - pptr());
     pbump(static_cast<int>(n));
     setg(eback(), gptr(), pptr());
@@ -244,8 +226,7 @@ public:
    * @note If @c n is greater than the size of the input sequence, the entire
    * input sequence is consumed and no error is issued.
    */
-  void consume(std::size_t n)
-  {
+  void consume(std::size_t n) {
     if (egptr() < pptr())
       setg(&buffer_[0], gptr(), pptr());
     if (gptr() + n > pptr())
@@ -260,15 +241,11 @@ protected:
   /**
    * Behaves according to the specification of @c std::streambuf::underflow().
    */
-  int_type underflow()
-  {
-    if (gptr() < pptr())
-    {
+  int_type underflow() {
+    if (gptr() < pptr()) {
       setg(&buffer_[0], gptr(), pptr());
       return traits_type::to_int_type(*gptr());
-    }
-    else
-    {
+    } else {
       return traits_type::eof();
     }
   }
@@ -280,19 +257,13 @@ protected:
    * the character to the input sequence would require the condition
    * <tt>size() > max_size()</tt> to be true.
    */
-  int_type overflow(int_type c)
-  {
-    if (!traits_type::eq_int_type(c, traits_type::eof()))
-    {
-      if (pptr() == epptr())
-      {
+  int_type overflow(int_type c) {
+    if (!traits_type::eq_int_type(c, traits_type::eof())) {
+      if (pptr() == epptr()) {
         std::size_t buffer_size = pptr() - gptr();
-        if (buffer_size < max_size_ && max_size_ - buffer_size < buffer_delta)
-        {
+        if (buffer_size < max_size_ && max_size_ - buffer_size < buffer_delta) {
           reserve(max_size_ - buffer_size);
-        }
-        else
-        {
+        } else {
           reserve(buffer_delta);
         }
       }
@@ -305,36 +276,29 @@ protected:
     return traits_type::not_eof(c);
   }
 
-  void reserve(std::size_t n)
-  {
+  void reserve(std::size_t n) {
     // Get current stream positions as offsets.
     std::size_t gnext = gptr() - &buffer_[0];
     std::size_t pnext = pptr() - &buffer_[0];
     std::size_t pend = epptr() - &buffer_[0];
 
     // Check if there is already enough space in the put area.
-    if (n <= pend - pnext)
-    {
+    if (n <= pend - pnext) {
       return;
     }
 
     // Shift existing contents of get area to start of buffer.
-    if (gnext > 0)
-    {
+    if (gnext > 0) {
       pnext -= gnext;
       std::memmove(&buffer_[0], &buffer_[0] + gnext, pnext);
     }
 
     // Ensure buffer is large enough to hold at least the specified size.
-    if (n > pend - pnext)
-    {
-      if (n <= max_size_ && pnext <= max_size_ - n)
-      {
+    if (n > pend - pnext) {
+      if (n <= max_size_ && pnext <= max_size_ - n) {
         pend = pnext + n;
         buffer_.resize((std::max<std::size_t>)(pend, 1));
-      }
-      else
-      {
+      } else {
         std::length_error ex("asio::streambuf too long");
         asio::detail::throw_exception(ex);
       }
@@ -350,9 +314,8 @@ private:
   std::vector<char_type, Allocator> buffer_;
 
   // Helper function to get the preferred size for reading data.
-  friend std::size_t read_size_helper(
-      basic_streambuf& sb, std::size_t max_size)
-  {
+  friend std::size_t read_size_helper(basic_streambuf &sb,
+                                      std::size_t max_size) {
     return std::min<std::size_t>(
         std::max<std::size_t>(512, sb.buffer_.capacity() - sb.size()),
         std::min<std::size_t>(max_size, sb.max_size() - sb.size()));
@@ -365,80 +328,50 @@ template <typename Allocator = std::allocator<char>>
 #else
 template <typename Allocator>
 #endif
-class basic_streambuf_ref
-{
+class basic_streambuf_ref {
 public:
   /// The type used to represent the input sequence as a list of buffers.
   typedef typename basic_streambuf<Allocator>::const_buffers_type
-    const_buffers_type;
+      const_buffers_type;
 
   /// The type used to represent the output sequence as a list of buffers.
   typedef typename basic_streambuf<Allocator>::mutable_buffers_type
-    mutable_buffers_type;
+      mutable_buffers_type;
 
   /// Construct a basic_streambuf_ref for the given basic_streambuf object.
-  explicit basic_streambuf_ref(basic_streambuf<Allocator>& sb)
-    : sb_(sb)
-  {
-  }
+  explicit basic_streambuf_ref(basic_streambuf<Allocator> &sb) : sb_(sb) {}
 
   /// Copy construct a basic_streambuf_ref.
-  basic_streambuf_ref(const basic_streambuf_ref& other) noexcept
-    : sb_(other.sb_)
-  {
-  }
+  basic_streambuf_ref(const basic_streambuf_ref &other) noexcept
+      : sb_(other.sb_) {}
 
   /// Move construct a basic_streambuf_ref.
-  basic_streambuf_ref(basic_streambuf_ref&& other) noexcept
-    : sb_(other.sb_)
-  {
-  }
+  basic_streambuf_ref(basic_streambuf_ref &&other) noexcept : sb_(other.sb_) {}
 
   /// Get the size of the input sequence.
-  std::size_t size() const noexcept
-  {
-    return sb_.size();
-  }
+  std::size_t size() const noexcept { return sb_.size(); }
 
   /// Get the maximum size of the dynamic buffer.
-  std::size_t max_size() const noexcept
-  {
-    return sb_.max_size();
-  }
+  std::size_t max_size() const noexcept { return sb_.max_size(); }
 
   /// Get the current capacity of the dynamic buffer.
-  std::size_t capacity() const noexcept
-  {
-    return sb_.capacity();
-  }
+  std::size_t capacity() const noexcept { return sb_.capacity(); }
 
   /// Get a list of buffers that represents the input sequence.
-  const_buffers_type data() const noexcept
-  {
-    return sb_.data();
-  }
+  const_buffers_type data() const noexcept { return sb_.data(); }
 
   /// Get a list of buffers that represents the output sequence, with the given
   /// size.
-  mutable_buffers_type prepare(std::size_t n)
-  {
-    return sb_.prepare(n);
-  }
+  mutable_buffers_type prepare(std::size_t n) { return sb_.prepare(n); }
 
   /// Move bytes from the output sequence to the input sequence.
-  void commit(std::size_t n)
-  {
-    return sb_.commit(n);
-  }
+  void commit(std::size_t n) { return sb_.commit(n); }
 
   /// Remove characters from the input sequence.
-  void consume(std::size_t n)
-  {
-    return sb_.consume(n);
-  }
+  void consume(std::size_t n) { return sb_.consume(n); }
 
 private:
-  basic_streambuf<Allocator>& sb_;
+  basic_streambuf<Allocator> &sb_;
 };
 
 } // namespace asio

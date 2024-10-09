@@ -12,17 +12,17 @@
 #define ASIO_IP_BASIC_ENDPOINT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include <functional>
 #include "asio/detail/cstdint.hpp"
 #include "asio/ip/address.hpp"
 #include "asio/ip/detail/endpoint.hpp"
+#include <functional>
 
 #if !defined(ASIO_NO_IOSTREAM)
-# include <iosfwd>
+#include <iosfwd>
 #endif // !defined(ASIO_NO_IOSTREAM)
 
 #include "asio/detail/push_options.hpp"
@@ -45,9 +45,7 @@ typedef uint_least16_t port_type;
  * @par Concepts:
  * Endpoint.
  */
-template <typename InternetProtocol>
-class basic_endpoint
-{
+template <typename InternetProtocol> class basic_endpoint {
 public:
   /// The protocol type associated with the endpoint.
   typedef InternetProtocol protocol_type;
@@ -61,10 +59,7 @@ public:
 #endif
 
   /// Default constructor.
-  basic_endpoint() noexcept
-    : impl_()
-  {
-  }
+  basic_endpoint() noexcept : impl_() {}
 
   /// Construct an endpoint using a port number, specified in the host's byte
   /// order. The IP address will be the any address (i.e. INADDR_ANY or
@@ -82,150 +77,103 @@ public:
    * asio::ip::udp::endpoint ep(asio::ip::udp::v6(), 9876);
    * @endcode
    */
-  basic_endpoint(const InternetProtocol& internet_protocol,
-      port_type port_num) noexcept
-    : impl_(internet_protocol.family(), port_num)
-  {
-  }
+  basic_endpoint(const InternetProtocol &internet_protocol,
+                 port_type port_num) noexcept
+      : impl_(internet_protocol.family(), port_num) {}
 
   /// Construct an endpoint using a port number and an IP address. This
   /// constructor may be used for accepting connections on a specific interface
   /// or for making a connection to a remote endpoint.
-  basic_endpoint(const asio::ip::address& addr,
-      port_type port_num) noexcept
-    : impl_(addr, port_num)
-  {
-  }
+  basic_endpoint(const asio::ip::address &addr, port_type port_num) noexcept
+      : impl_(addr, port_num) {}
 
   /// Copy constructor.
-  basic_endpoint(const basic_endpoint& other) noexcept
-    : impl_(other.impl_)
-  {
-  }
+  basic_endpoint(const basic_endpoint &other) noexcept : impl_(other.impl_) {}
 
   /// Move constructor.
-  basic_endpoint(basic_endpoint&& other) noexcept
-    : impl_(other.impl_)
-  {
-  }
+  basic_endpoint(basic_endpoint &&other) noexcept : impl_(other.impl_) {}
 
   /// Assign from another endpoint.
-  basic_endpoint& operator=(const basic_endpoint& other) noexcept
-  {
+  basic_endpoint &operator=(const basic_endpoint &other) noexcept {
     impl_ = other.impl_;
     return *this;
   }
 
   /// Move-assign from another endpoint.
-  basic_endpoint& operator=(basic_endpoint&& other) noexcept
-  {
+  basic_endpoint &operator=(basic_endpoint &&other) noexcept {
     impl_ = other.impl_;
     return *this;
   }
 
   /// The protocol associated with the endpoint.
-  protocol_type protocol() const noexcept
-  {
+  protocol_type protocol() const noexcept {
     if (impl_.is_v4())
       return InternetProtocol::v4();
     return InternetProtocol::v6();
   }
 
   /// Get the underlying endpoint in the native type.
-  data_type* data() noexcept
-  {
-    return impl_.data();
-  }
+  data_type *data() noexcept { return impl_.data(); }
 
   /// Get the underlying endpoint in the native type.
-  const data_type* data() const noexcept
-  {
-    return impl_.data();
-  }
+  const data_type *data() const noexcept { return impl_.data(); }
 
   /// Get the underlying size of the endpoint in the native type.
-  std::size_t size() const noexcept
-  {
-    return impl_.size();
-  }
+  std::size_t size() const noexcept { return impl_.size(); }
 
   /// Set the underlying size of the endpoint in the native type.
-  void resize(std::size_t new_size)
-  {
-    impl_.resize(new_size);
-  }
+  void resize(std::size_t new_size) { impl_.resize(new_size); }
 
   /// Get the capacity of the endpoint in the native type.
-  std::size_t capacity() const noexcept
-  {
-    return impl_.capacity();
-  }
+  std::size_t capacity() const noexcept { return impl_.capacity(); }
 
   /// Get the port associated with the endpoint. The port number is always in
   /// the host's byte order.
-  port_type port() const noexcept
-  {
-    return impl_.port();
-  }
+  port_type port() const noexcept { return impl_.port(); }
 
   /// Set the port associated with the endpoint. The port number is always in
   /// the host's byte order.
-  void port(port_type port_num) noexcept
-  {
-    impl_.port(port_num);
-  }
+  void port(port_type port_num) noexcept { impl_.port(port_num); }
 
   /// Get the IP address associated with the endpoint.
-  asio::ip::address address() const noexcept
-  {
-    return impl_.address();
-  }
+  asio::ip::address address() const noexcept { return impl_.address(); }
 
   /// Set the IP address associated with the endpoint.
-  void address(const asio::ip::address& addr) noexcept
-  {
-    impl_.address(addr);
-  }
+  void address(const asio::ip::address &addr) noexcept { impl_.address(addr); }
 
   /// Compare two endpoints for equality.
-  friend bool operator==(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2) noexcept
-  {
+  friend bool operator==(const basic_endpoint<InternetProtocol> &e1,
+                         const basic_endpoint<InternetProtocol> &e2) noexcept {
     return e1.impl_ == e2.impl_;
   }
 
   /// Compare two endpoints for inequality.
-  friend bool operator!=(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2) noexcept
-  {
+  friend bool operator!=(const basic_endpoint<InternetProtocol> &e1,
+                         const basic_endpoint<InternetProtocol> &e2) noexcept {
     return !(e1 == e2);
   }
 
   /// Compare endpoints for ordering.
-  friend bool operator<(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2) noexcept
-  {
+  friend bool operator<(const basic_endpoint<InternetProtocol> &e1,
+                        const basic_endpoint<InternetProtocol> &e2) noexcept {
     return e1.impl_ < e2.impl_;
   }
 
   /// Compare endpoints for ordering.
-  friend bool operator>(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2) noexcept
-  {
+  friend bool operator>(const basic_endpoint<InternetProtocol> &e1,
+                        const basic_endpoint<InternetProtocol> &e2) noexcept {
     return e2.impl_ < e1.impl_;
   }
 
   /// Compare endpoints for ordering.
-  friend bool operator<=(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2) noexcept
-  {
+  friend bool operator<=(const basic_endpoint<InternetProtocol> &e1,
+                         const basic_endpoint<InternetProtocol> &e2) noexcept {
     return !(e2 < e1);
   }
 
   /// Compare endpoints for ordering.
-  friend bool operator>=(const basic_endpoint<InternetProtocol>& e1,
-      const basic_endpoint<InternetProtocol>& e2) noexcept
-  {
+  friend bool operator>=(const basic_endpoint<InternetProtocol> &e1,
+                         const basic_endpoint<InternetProtocol> &e2) noexcept {
     return !(e1 < e2);
   }
 
@@ -249,9 +197,9 @@ private:
  * @relates asio::ip::basic_endpoint
  */
 template <typename Elem, typename Traits, typename InternetProtocol>
-std::basic_ostream<Elem, Traits>& operator<<(
-    std::basic_ostream<Elem, Traits>& os,
-    const basic_endpoint<InternetProtocol>& endpoint);
+std::basic_ostream<Elem, Traits> &
+operator<<(std::basic_ostream<Elem, Traits> &os,
+           const basic_endpoint<InternetProtocol> &endpoint);
 
 #endif // !defined(ASIO_NO_IOSTREAM)
 
@@ -261,12 +209,9 @@ std::basic_ostream<Elem, Traits>& operator<<(
 namespace std {
 
 template <typename InternetProtocol>
-struct hash<asio::ip::basic_endpoint<InternetProtocol>>
-{
+struct hash<asio::ip::basic_endpoint<InternetProtocol>> {
   std::size_t operator()(
-      const asio::ip::basic_endpoint<InternetProtocol>& ep)
-    const noexcept
-  {
+      const asio::ip::basic_endpoint<InternetProtocol> &ep) const noexcept {
     std::size_t hash1 = std::hash<asio::ip::address>()(ep.address());
     std::size_t hash2 = std::hash<unsigned short>()(ep.port());
     return hash1 ^ (hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2));

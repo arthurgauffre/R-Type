@@ -12,13 +12,13 @@
 #define ASIO_IP_BASIC_RESOLVER_QUERY_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include <string>
 #include "asio/detail/socket_ops.hpp"
 #include "asio/ip/resolver_query_base.hpp"
+#include <string>
 
 #include "asio/detail/push_options.hpp"
 
@@ -35,9 +35,7 @@ namespace ip {
  * @e Shared @e objects: Unsafe.
  */
 template <typename InternetProtocol>
-class basic_resolver_query
-  : public resolver_query_base
-{
+class basic_resolver_query : public resolver_query_base {
 public:
   /// The protocol type associated with the endpoint query.
   typedef InternetProtocol protocol_type;
@@ -59,12 +57,10 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  basic_resolver_query(const std::string& service,
+  basic_resolver_query(
+      const std::string &service,
       resolver_query_base::flags resolve_flags = passive | address_configured)
-    : hints_(),
-      host_name_(),
-      service_name_(service)
-  {
+      : hints_(), host_name_(), service_name_(service) {
     typename InternetProtocol::endpoint endpoint;
     hints_.ai_flags = static_cast<int>(resolve_flags);
     hints_.ai_family = PF_UNSPEC;
@@ -96,13 +92,10 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  basic_resolver_query(const protocol_type& protocol,
-      const std::string& service,
+  basic_resolver_query(
+      const protocol_type &protocol, const std::string &service,
       resolver_query_base::flags resolve_flags = passive | address_configured)
-    : hints_(),
-      host_name_(),
-      service_name_(service)
-  {
+      : hints_(), host_name_(), service_name_(service) {
     hints_.ai_flags = static_cast<int>(resolve_flags);
     hints_.ai_family = protocol.family();
     hints_.ai_socktype = protocol.type();
@@ -144,12 +137,10 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  basic_resolver_query(const std::string& host, const std::string& service,
+  basic_resolver_query(
+      const std::string &host, const std::string &service,
       resolver_query_base::flags resolve_flags = address_configured)
-    : hints_(),
-      host_name_(host),
-      service_name_(service)
-  {
+      : hints_(), host_name_(host), service_name_(service) {
     typename InternetProtocol::endpoint endpoint;
     hints_.ai_flags = static_cast<int>(resolve_flags);
     hints_.ai_family = ASIO_OS_DEF(AF_UNSPEC);
@@ -195,13 +186,11 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  basic_resolver_query(const protocol_type& protocol,
-      const std::string& host, const std::string& service,
+  basic_resolver_query(
+      const protocol_type &protocol, const std::string &host,
+      const std::string &service,
       resolver_query_base::flags resolve_flags = address_configured)
-    : hints_(),
-      host_name_(host),
-      service_name_(service)
-  {
+      : hints_(), host_name_(host), service_name_(service) {
     hints_.ai_flags = static_cast<int>(resolve_flags);
     hints_.ai_family = protocol.family();
     hints_.ai_socktype = protocol.type();
@@ -213,38 +202,24 @@ public:
   }
 
   /// Copy construct a @c basic_resolver_query from another.
-  basic_resolver_query(const basic_resolver_query& other)
-    : hints_(other.hints_),
-      host_name_(other.host_name_),
-      service_name_(other.service_name_)
-  {
-  }
+  basic_resolver_query(const basic_resolver_query &other)
+      : hints_(other.hints_), host_name_(other.host_name_),
+        service_name_(other.service_name_) {}
 
   /// Move construct a @c basic_resolver_query from another.
-  basic_resolver_query(basic_resolver_query&& other)
-    : hints_(other.hints_),
-      host_name_(static_cast<std::string&&>(other.host_name_)),
-      service_name_(static_cast<std::string&&>(other.service_name_))
-  {
-  }
+  basic_resolver_query(basic_resolver_query &&other)
+      : hints_(other.hints_),
+        host_name_(static_cast<std::string &&>(other.host_name_)),
+        service_name_(static_cast<std::string &&>(other.service_name_)) {}
 
   /// Get the hints associated with the query.
-  const asio::detail::addrinfo_type& hints() const
-  {
-    return hints_;
-  }
+  const asio::detail::addrinfo_type &hints() const { return hints_; }
 
   /// Get the host name associated with the query.
-  std::string host_name() const
-  {
-    return host_name_;
-  }
+  std::string host_name() const { return host_name_; }
 
   /// Get the service name associated with the query.
-  std::string service_name() const
-  {
-    return service_name_;
-  }
+  std::string service_name() const { return service_name_; }
 
 private:
   asio::detail::addrinfo_type hints_;

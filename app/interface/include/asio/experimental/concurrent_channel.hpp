@@ -12,16 +12,16 @@
 #define ASIO_EXPERIMENTAL_CONCURRENT_CHANNEL_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
 #include "asio/any_io_executor.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/type_traits.hpp"
 #include "asio/execution/executor.hpp"
-#include "asio/is_executor.hpp"
 #include "asio/experimental/basic_concurrent_channel.hpp"
 #include "asio/experimental/channel_traits.hpp"
+#include "asio/is_executor.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -30,28 +30,23 @@ namespace experimental {
 namespace detail {
 
 template <typename ExecutorOrSignature, typename = void>
-struct concurrent_channel_type
-{
-  template <typename... Signatures>
-  struct inner
-  {
+struct concurrent_channel_type {
+  template <typename... Signatures> struct inner {
     typedef basic_concurrent_channel<any_io_executor, channel_traits<>,
-        ExecutorOrSignature, Signatures...> type;
+                                     ExecutorOrSignature, Signatures...>
+        type;
   };
 };
 
 template <typename ExecutorOrSignature>
-struct concurrent_channel_type<ExecutorOrSignature,
-    enable_if_t<
-      is_executor<ExecutorOrSignature>::value
-        || execution::is_executor<ExecutorOrSignature>::value
-    >>
-{
-  template <typename... Signatures>
-  struct inner
-  {
-    typedef basic_concurrent_channel<ExecutorOrSignature,
-        channel_traits<>, Signatures...> type;
+struct concurrent_channel_type<
+    ExecutorOrSignature,
+    enable_if_t<is_executor<ExecutorOrSignature>::value ||
+                execution::is_executor<ExecutorOrSignature>::value>> {
+  template <typename... Signatures> struct inner {
+    typedef basic_concurrent_channel<ExecutorOrSignature, channel_traits<>,
+                                     Signatures...>
+        type;
   };
 };
 

@@ -12,14 +12,13 @@
 #define ASIO_DETAIL_NULL_REACTOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_IOCP) \
-  || defined(ASIO_WINDOWS_RUNTIME) \
-  || defined(ASIO_HAS_IO_URING_AS_DEFAULT)
+#if defined(ASIO_HAS_IOCP) || defined(ASIO_WINDOWS_RUNTIME) ||                 \
+    defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
 #include "asio/detail/scheduler_operation.hpp"
 #include "asio/detail/scheduler_task.hpp"
@@ -30,45 +29,29 @@
 namespace asio {
 namespace detail {
 
-class null_reactor
-  : public execution_context_service_base<null_reactor>,
-    public scheduler_task
-{
+class null_reactor : public execution_context_service_base<null_reactor>,
+                     public scheduler_task {
 public:
-  struct per_descriptor_data
-  {
-  };
+  struct per_descriptor_data {};
 
   // Constructor.
-  null_reactor(asio::execution_context& ctx)
-    : execution_context_service_base<null_reactor>(ctx)
-  {
-  }
+  null_reactor(asio::execution_context &ctx)
+      : execution_context_service_base<null_reactor>(ctx) {}
 
   // Destructor.
-  ~null_reactor()
-  {
-  }
+  ~null_reactor() {}
 
   // Initialise the task.
-  void init_task()
-  {
-  }
+  void init_task() {}
 
   // Destroy all user-defined handler objects owned by the service.
-  void shutdown()
-  {
-  }
+  void shutdown() {}
 
   // No-op because should never be called.
-  void run(long /*usec*/, op_queue<scheduler_operation>& /*ops*/)
-  {
-  }
+  void run(long /*usec*/, op_queue<scheduler_operation> & /*ops*/) {}
 
   // No-op.
-  void interrupt()
-  {
-  }
+  void interrupt() {}
 };
 
 } // namespace detail

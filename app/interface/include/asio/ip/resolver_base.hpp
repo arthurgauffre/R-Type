@@ -12,7 +12,7 @@
 #define ASIO_IP_RESOLVER_BASE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -25,8 +25,7 @@ namespace ip {
 
 /// The resolver_base class is used as a base for the basic_resolver class
 /// templates to provide a common place to define the flag constants.
-class resolver_base
-{
+class resolver_base {
 public:
 #if defined(GENERATING_DOCUMENTATION)
   /// A bitmask type (C++ Std [lib.bitmask.types]).
@@ -59,8 +58,7 @@ public:
   /// is configured for the system.
   static const flags address_configured = implementation_defined;
 #else
-  enum flags
-  {
+  enum flags {
     canonical_name = ASIO_OS_DEF(AI_CANONNAME),
     passive = ASIO_OS_DEF(AI_PASSIVE),
     numeric_host = ASIO_OS_DEF(AI_NUMERICHOST),
@@ -72,43 +70,36 @@ public:
 
   // Implement bitmask operations as shown in C++ Std [lib.bitmask.types].
 
-  friend flags operator&(flags x, flags y)
-  {
-    return static_cast<flags>(
-        static_cast<unsigned int>(x) & static_cast<unsigned int>(y));
+  friend flags operator&(flags x, flags y) {
+    return static_cast<flags>(static_cast<unsigned int>(x) &
+                              static_cast<unsigned int>(y));
   }
 
-  friend flags operator|(flags x, flags y)
-  {
-    return static_cast<flags>(
-        static_cast<unsigned int>(x) | static_cast<unsigned int>(y));
+  friend flags operator|(flags x, flags y) {
+    return static_cast<flags>(static_cast<unsigned int>(x) |
+                              static_cast<unsigned int>(y));
   }
 
-  friend flags operator^(flags x, flags y)
-  {
-    return static_cast<flags>(
-        static_cast<unsigned int>(x) ^ static_cast<unsigned int>(y));
+  friend flags operator^(flags x, flags y) {
+    return static_cast<flags>(static_cast<unsigned int>(x) ^
+                              static_cast<unsigned int>(y));
   }
 
-  friend flags operator~(flags x)
-  {
+  friend flags operator~(flags x) {
     return static_cast<flags>(~static_cast<unsigned int>(x));
   }
 
-  friend flags& operator&=(flags& x, flags y)
-  {
+  friend flags &operator&=(flags &x, flags y) {
     x = x & y;
     return x;
   }
 
-  friend flags& operator|=(flags& x, flags y)
-  {
+  friend flags &operator|=(flags &x, flags y) {
     x = x | y;
     return x;
   }
 
-  friend flags& operator^=(flags& x, flags y)
-  {
+  friend flags &operator^=(flags &x, flags y) {
     x = x ^ y;
     return x;
   }
@@ -116,9 +107,7 @@ public:
 
 protected:
   /// Protected destructor to prevent deletion through this type.
-  ~resolver_base()
-  {
-  }
+  ~resolver_base() {}
 };
 
 } // namespace ip

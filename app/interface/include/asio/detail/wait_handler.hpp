@@ -12,11 +12,11 @@
 #define ASIO_DETAIL_WAIT_HANDLER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
 #include "asio/detail/bind_handler.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/detail/fenced_block.hpp"
 #include "asio/detail/handler_alloc_helpers.hpp"
 #include "asio/detail/handler_work.hpp"
@@ -29,32 +29,26 @@ namespace asio {
 namespace detail {
 
 template <typename Handler, typename IoExecutor>
-class wait_handler : public wait_op
-{
+class wait_handler : public wait_op {
 public:
   ASIO_DEFINE_HANDLER_PTR(wait_handler);
 
-  wait_handler(Handler& h, const IoExecutor& io_ex)
-    : wait_op(&wait_handler::do_complete),
-      handler_(static_cast<Handler&&>(h)),
-      work_(handler_, io_ex)
-  {
-  }
+  wait_handler(Handler &h, const IoExecutor &io_ex)
+      : wait_op(&wait_handler::do_complete),
+        handler_(static_cast<Handler &&>(h)), work_(handler_, io_ex) {}
 
-  static void do_complete(void* owner, operation* base,
-      const asio::error_code& /*ec*/,
-      std::size_t /*bytes_transferred*/)
-  {
+  static void do_complete(void *owner, operation *base,
+                          const asio::error_code & /*ec*/,
+                          std::size_t /*bytes_transferred*/) {
     // Take ownership of the handler object.
-    wait_handler* h(static_cast<wait_handler*>(base));
-    ptr p = { asio::detail::addressof(h->handler_), h, h };
+    wait_handler *h(static_cast<wait_handler *>(base));
+    ptr p = {asio::detail::addressof(h->handler_), h, h};
 
     ASIO_HANDLER_COMPLETION((*h));
 
     // Take ownership of the operation's outstanding work.
     handler_work<Handler, IoExecutor> w(
-        static_cast<handler_work<Handler, IoExecutor>&&>(
-          h->work_));
+        static_cast<handler_work<Handler, IoExecutor> &&>(h->work_));
 
     // Make a copy of the handler so that the memory can be deallocated before
     // the upcall is made. Even if we're not about to make an upcall, a
@@ -62,14 +56,12 @@ public:
     // with the handler. Consequently, a local copy of the handler is required
     // to ensure that any owning sub-object remains valid until after we have
     // deallocated the memory here.
-    detail::binder1<Handler, asio::error_code>
-      handler(h->handler_, h->ec_);
+    detail::binder1<Handler, asio::error_code> handler(h->handler_, h->ec_);
     p.h = asio::detail::addressof(handler.handler_);
     p.reset();
 
     // Make the upcall if required.
-    if (owner)
-    {
+    if (owner) {
       fenced_block b(fenced_block::half);
       ASIO_HANDLER_INVOCATION_BEGIN((handler.arg1_));
       w.complete(handler, handler.handler_);

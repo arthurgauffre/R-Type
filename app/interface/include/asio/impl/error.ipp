@@ -12,12 +12,12 @@
 #define ASIO_IMPL_ERROR_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include <string>
 #include "asio/error.hpp"
+#include <string>
 
 #include "asio/detail/push_options.hpp"
 
@@ -28,16 +28,11 @@ namespace error {
 
 namespace detail {
 
-class netdb_category : public asio::error_category
-{
+class netdb_category : public asio::error_category {
 public:
-  const char* name() const noexcept
-  {
-    return "asio.netdb";
-  }
+  const char *name() const noexcept { return "asio.netdb"; }
 
-  std::string message(int value) const
-  {
+  std::string message(int value) const {
     if (value == error::host_not_found)
       return "Host not found (authoritative)";
     if (value == error::host_not_found_try_again)
@@ -52,24 +47,18 @@ public:
 
 } // namespace detail
 
-const asio::error_category& get_netdb_category()
-{
+const asio::error_category &get_netdb_category() {
   static detail::netdb_category instance;
   return instance;
 }
 
 namespace detail {
 
-class addrinfo_category : public asio::error_category
-{
+class addrinfo_category : public asio::error_category {
 public:
-  const char* name() const noexcept
-  {
-    return "asio.addrinfo";
-  }
+  const char *name() const noexcept { return "asio.addrinfo"; }
 
-  std::string message(int value) const
-  {
+  std::string message(int value) const {
     if (value == error::service_not_found)
       return "Service not found";
     if (value == error::socket_type_not_supported)
@@ -80,8 +69,7 @@ public:
 
 } // namespace detail
 
-const asio::error_category& get_addrinfo_category()
-{
+const asio::error_category &get_addrinfo_category() {
   static detail::addrinfo_category instance;
   return instance;
 }
@@ -90,16 +78,11 @@ const asio::error_category& get_addrinfo_category()
 
 namespace detail {
 
-class misc_category : public asio::error_category
-{
+class misc_category : public asio::error_category {
 public:
-  const char* name() const noexcept
-  {
-    return "asio.misc";
-  }
+  const char *name() const noexcept { return "asio.misc"; }
 
-  std::string message(int value) const
-  {
+  std::string message(int value) const {
     if (value == error::already_open)
       return "Already open";
     if (value == error::eof)
@@ -114,8 +97,7 @@ public:
 
 } // namespace detail
 
-const asio::error_category& get_misc_category()
-{
+const asio::error_category &get_misc_category() {
   static detail::misc_category instance;
   return instance;
 }
