@@ -50,8 +50,10 @@ public:
   // virtual std::vector<std::shared_ptr<ECS_system::ISystem>>
   // getSystems() const = 0;
   virtual std::shared_ptr<entity::EntityManager> getEntityManager() const = 0;
-  virtual std::shared_ptr<component::ComponentManager> getComponentManager() const = 0;
-  virtual std::shared_ptr<ECS_system::SystemManager> getSystemManager() const = 0;
+  virtual std::shared_ptr<component::ComponentManager>
+  getComponentManager() const = 0;
+  virtual std::shared_ptr<ECS_system::SystemManager>
+  getSystemManager() const = 0;
   // virtual void generateScore() = 0;
 
   // virtual void handleKeyEvent(rtype::KeyboardInput key) = 0;

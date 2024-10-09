@@ -67,43 +67,39 @@ namespace rtype
     std::shared_ptr<component::ComponentManager> getComponentManager() const;
     std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
-    // void handleKeyEvent(rtype::KeyboardInput key);
-    // void launchSelection();
-    // void addCharUsername(char c);
-    // void handleKeySelection(rtype::KeyboardInput key);
-    // void handleKeyRunning(rtype::KeyboardInput key);
+  // void handleKeyEvent(rtype::KeyboardInput key);
+  // void launchSelection();
+  // void addCharUsername(char c);
+  // void handleKeySelection(rtype::KeyboardInput key);
+  // void handleKeyRunning(rtype::KeyboardInput key);
 
-    // rtype::ICoreModule::MenuData getMenuData() const;
+  // rtype::ICoreModule::MenuData getMenuData() const;
 
-    // void setGameData(rtype::GameData gameData);
-    // rtype::GameData getGameData() const;
+  // void setGameData(rtype::GameData gameData);
+  // rtype::GameData getGameData() const;
 
-    // int coreLoop();
-    // void runningLoop();
-    // void updateRunning();
-    // void selectionLoop();
-    // void updateSelection();
+  // int coreLoop();
+  // void runningLoop();
+  // void updateRunning();
+  // void selectionLoop();
+  // void updateSelection();
 
-    // void updateTimers();
-    // void resetTimers(int index);
-    // std::vector<rtype::timer> getTimers() const;
-    // void setTimers(std::vector<rtype::timer> timers);
+  // void updateTimers();
+  // void resetTimers(int index);
+  // std::vector<rtype::timer> getTimers() const;
+  // void setTimers(std::vector<rtype::timer> timers);
 
-    template <typename T>
-    class DLLoader
-    {
-    public:
-      void *handle;
+  template <typename T> class DLLoader {
+  public:
+    void *handle;
 
-      DLLoader(const std::string &libPath)
-      {
-        handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
-        if (!handle)
-        {
-          std::cerr << dlerror() << std::endl;
-          exit(1);
-        }
+    DLLoader(const std::string &libPath) {
+      handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
+      if (!handle) {
+        std::cerr << dlerror() << std::endl;
+        exit(1);
       }
+    }
 
       ~DLLoader() {}
 

@@ -5,11 +5,11 @@
 ** main
 */
 
-#include <SFML/Graphics.hpp>
-#include <iostream>
 #include <CoreModule.hpp>
-#include <r-type/IEntity.hpp>
+#include <SFML/Graphics.hpp>
+#include <components/MusicComponent.hpp>
 #include <components/PositionComponent.hpp>
+#include <components/SoundComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
 #include <components/MusicComponent.hpp>
