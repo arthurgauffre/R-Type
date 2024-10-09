@@ -23,9 +23,7 @@ public:
    * @param window Reference to the SFML RenderWindow where the rendering will
    * take place.
    */
-  RenderSystem(component::ComponentManager &componentManager,
-               sf::RenderWindow &window)
-      : ASystem(componentManager, window) {}
+  RenderSystem(component::ComponentManager &componentManager);
 
   /**
    * @brief Destroy the RenderSystem object.
@@ -51,6 +49,9 @@ public:
    * actual implementation details should be provided in the function body.
    */
   void handleComponents() override{};
+
+  private:
+    sf::RenderWindow _window;
 
 };
 } // namespace ECS_system

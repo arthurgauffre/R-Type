@@ -14,6 +14,7 @@
 #include <managers/SystemManager.hpp>
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
+#include <SFML/Graphics.hpp>
 
 namespace rtype {
 class ICoreModule {

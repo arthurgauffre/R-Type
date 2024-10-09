@@ -14,66 +14,70 @@
 #include <components/TextureComponent.hpp>
 #include <components/MusicComponent.hpp>
 #include <components/SoundComponent.hpp>
-#include <systems/RenderSystem.hpp>
+#include <r-type/ISystem.hpp>
 #include <systems/AudioSystem.hpp>
+#include <systems/RenderSystem.hpp>
+#include <systems/RenderSystem.hpp>
+#include <unistd.h>
+#include <limits.h>
 
-int main(void) {
-  // unique  ptr to CoreModule
-  std::unique_ptr<rtype::CoreModule> coreModule =
-      std::make_unique<rtype::CoreModule>();
+int main(void)
+{
+    // unique  ptr to CoreModule
+    std::unique_ptr<rtype::CoreModule> coreModule =
+        std::make_unique<rtype::CoreModule>();
 
-//   std::shared_ptr<entity::IEntity> entity1 =
-//       coreModule->entityConstructor->getInstance("createEntity", 1);
-//   std::shared_ptr<entity::IEntity> entity2 =
-//       coreModule->entityConstructor->getInstance("createEntity", 2);
-  
-//   component::PositionComponent *component =
-//       coreModule->getComponentManager()->addComponent<component::PositionComponent>(
-//           0, 100.0f, 100.0f);
+    coreModule->getEntityManager()->createEntity(0);
+    coreModule->getEntityManager()->createEntity(1);
 
-//   component::SpriteComponent *spriteComponent =
-//       coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-//           0, 100.0f, 100.0f);
+    coreModule->getComponentManager()->addComponent<component::PositionComponent>(
+        0, 100.0f, 100.0f);
 
-//   component::TextureComponent *textureComponent =
-//       coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-//           0, "../assets/sprites/r-typesheet1.gif");
-    
-//   component::MusicComponent *musicComponent = 
-//       coreModule->getComponentManager()->addComponent<component::MusicComponent>(
-//           0, "../assets/musics/testSong.wav");
-  
-//   component::PositionComponent *component2 =
-//       coreModule->getComponentManager()->addComponent<component::PositionComponent>(
-//           1, 100.0f, 100.0f);
+    coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
+        0, 100.0f, 100.0f);
 
-//   component::SpriteComponent *spriteComponent2 =
-//       coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-//           1, 100.0f, 100.0f);
-  
-//   component::TextureComponent *textureComponent2 =
-//       coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-//           1, "../assets/sprites/r-typesheet1.gif");
+    coreModule->getComponentManager()->addComponent<component::TextureComponent>(
+        0, "app/assets/sprites/r-typesheet1.gif");
 
-//   component::SoundComponent *soundComponent = 
-//       coreModule->getComponentManager()->addComponent<component::SoundComponent>(
-//           1, "../assets/sounds/testSound.wav");
+    // coreModule->getComponentManager()->addComponent<component::MusicComponent>(
+    //     0, "app/assets/musics/testSong.wav");
 
-//   // create window
-//   sf::RenderWindow window(sf::VideoMode(800, 600), "R-Type");
-//   coreModule->getSystemManager()->addSystem<ECS_system::RenderSystem>(
-//       *coreModule->getComponentManager(), window);
-//   coreModule->getSystemManager()->addSystem<ECS_system::AudioSystem>(
-//       *coreModule->getComponentManager(), window);
+    coreModule->getComponentManager()->addComponent<component::PositionComponent>(
+        1, 100.0f, 100.0f);
 
-//   // main loop
-//   while (window.isOpen()) {
-//     sf::Event event;
-//     while (window.pollEvent(event)) {
-//       if (event.type == sf::Event::Closed)
-//         window.close();
-//     }
-//     coreModule->getSystemManager()->update(0.0f, coreModule->getEntityManager()->getEntities());
-//   }
-  return 0;
+    coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
+        1, 100.0f, 100.0f);
+
+    coreModule->getComponentManager()->addComponent<component::TextureComponent>(
+        1, "app/assets/sprites/r-typesheet1.gif");
+
+    // coreModule->getComponentManager()->addComponent<component::SoundComponent>(
+    //     1, "app/assets/sounds/testSound.wav");
+
+    // load audioSystem .so
+    std::shared_ptr<rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>> audioSystemLoader =
+        std::make_shared<rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
+            "lib/client_systems/r-type_audio_system.so");
+
+    // load renderSystem .so
+    std::shared_ptr<rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>> renderSystemLoader =
+        std::make_shared<rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
+            "lib/client_systems/r-type_render_system.so");
+
+    component::ComponentManager &componentManager = *coreModule->getComponentManager(); // Reference to ComponentManager
+
+    // // Assuming getInstance returns a shared pointer to a concrete type
+    // coreModule->getSystemManager()->addSystem(componentManager, window, "AudioSystem");
+
+    coreModule->getSystemManager()->addSystem(componentManager, "RenderSystem");
+
+    std::cout << "SystemManager size: " << coreModule->getSystemManager()->getSystems().size() << std::endl;
+    // main loop
+
+    while (1)
+    {
+        coreModule->getSystemManager()->hello();
+        coreModule->getSystemManager()->update(0.0f, coreModule->getEntityManager()->getEntities());
+    }
+    return 0;
 }

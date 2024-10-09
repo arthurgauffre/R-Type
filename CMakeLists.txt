@@ -87,28 +87,28 @@ set(LIB_SHARED_ENTITY_DESTINATION ${LIB_DESTINATION}/shared_entity)
 set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
 set(LIB_SERVER_SYSTEMS_DESTINATION ${LIB_DESTINATION}/server_systems)
 set(LIB_SHARED_SYSTEMS_DESTINATION ${LIB_DESTINATION}/shared_systems)
-set(LIB_CLIENT_MANAGERS_DESTINATION ${LIB_DESTINATION}/client_managers)
-set(LIB_SERVER_MANAGERS_DESTINATION ${LIB_DESTINATION}/server_managers)
-set(LIB_SHARED_MANAGERS_DESTINATION ${LIB_DESTINATION}/shared_managers)
+# set(LIB_CLIENT_MANAGERS_DESTINATION ${LIB_DESTINATION}/client_managers)
+# set(LIB_SERVER_MANAGERS_DESTINATION ${LIB_DESTINATION}/server_managers)
+# set(LIB_SHARED_MANAGERS_DESTINATION ${LIB_DESTINATION}/shared_managers)
 
 
-add_custom_command(
-  TARGET r-type_server
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_component_manager>
-          ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_component_manager.so)
+# add_custom_command(
+#   TARGET r-type_server
+#   POST_BUILD
+#   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_component_manager>
+#           ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_component_manager.so)
 
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity_manager>
-            ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_entity_manager.so)
+# add_custom_command(
+#     TARGET r-type_server
+#     POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity_manager>
+#             ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_entity_manager.so)
 
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_system_manager>
-            ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_system_manager.so)
+# add_custom_command(
+#     TARGET r-type_server
+#     POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_system_manager>
+#             ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_system_manager.so)
 
 add_custom_command(
     TARGET r-type_server

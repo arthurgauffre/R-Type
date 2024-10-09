@@ -18,8 +18,7 @@ namespace ECS_system
   class ISystem
   {
   public:
-    ISystem(component::ComponentManager &componentManager, sf::RenderWindow &window)
-        : _componentManager(componentManager), _window(window) {}
+    ISystem(component::ComponentManager &componentManager) : _componentManager(componentManager) {}
     /*
     ** @brief Initializes the system.
     */
@@ -56,7 +55,6 @@ namespace ECS_system
     virtual void handleComponents() = 0;
 
   protected:
-    sf::RenderWindow &_window;
     component::ComponentManager &_componentManager;
   };
 } // namespace ECS_system

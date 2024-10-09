@@ -9,9 +9,11 @@
 
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <r-type/ISystem.hpp>
 #include <vector>
+#include <managers/ComponentManager.hpp>
 
 namespace ECS_system {
 class SystemManager {
@@ -38,15 +40,14 @@ public:
    * @param args The arguments to be forwarded to the system's constructor.
    * @return T* A pointer to the newly created system.
    */
-  template <typename T, typename... Args> T *addSystem(Args &&...args) {
-    auto system = std::make_unique<T>(std::forward<Args>(args)...);
-    T *systemPtr = system.get();
-    _systems.push_back(std::move(system));
-    return systemPtr;
-  }
+  void addSystem(component::ComponentManager &componentManager, std::string systemName);
 
   void update(float deltaTime,
               std::vector<std::shared_ptr<entity::IEntity>> entities);
+
+  std::vector<std::shared_ptr<ISystem>> getSystems() const { return _systems; }
+
+  void hello() { std::cout << "Hello from SystemManager" << std::endl; }
 
 private:
   /**
@@ -55,6 +56,6 @@ private:
    * This vector manages the lifecycle of ISystem instances, ensuring that each
    * system is uniquely owned and properly destroyed when no longer needed.
    */
-  std::vector<std::unique_ptr<ISystem>> _systems;
+  std::vector<std::shared_ptr<ISystem>> _systems;
 };
 } // namespace ECS_system
