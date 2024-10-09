@@ -10,10 +10,10 @@
 #pragma once
 
 #include <iostream>
+#include <managers/ComponentManager.hpp>
 #include <memory>
 #include <r-type/ISystem.hpp>
 #include <vector>
-#include <managers/ComponentManager.hpp>
 
 namespace ECS_system {
 class SystemManager {
@@ -40,7 +40,8 @@ public:
    * @param args The arguments to be forwarded to the system's constructor.
    * @return T* A pointer to the newly created system.
    */
-  void addSystem(component::ComponentManager &componentManager, std::string systemName);
+  void addSystem(component::ComponentManager &componentManager,
+                 std::string systemName);
 
   void update(float deltaTime,
               std::vector<std::shared_ptr<entity::IEntity>> entities);

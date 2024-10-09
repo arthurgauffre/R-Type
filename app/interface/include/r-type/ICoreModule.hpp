@@ -8,13 +8,13 @@
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
+#include <SFML/Graphics.hpp>
 #include <dirent.h>
 #include <iostream>
 #include <managers/EntityManager.hpp>
 #include <managers/SystemManager.hpp>
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
-#include <SFML/Graphics.hpp>
 
 namespace rtype {
 class ICoreModule {

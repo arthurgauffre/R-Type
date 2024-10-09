@@ -13,16 +13,15 @@
 #include <r-type/IEntity.hpp>
 #include <vector>
 
-namespace ECS_system
-{
-  class ISystem
-  {
-  public:
-    ISystem(component::ComponentManager &componentManager) : _componentManager(componentManager) {}
-    /*
-    ** @brief Initializes the system.
-    */
-    virtual ~ISystem() = default;
+namespace ECS_system {
+class ISystem {
+public:
+  ISystem(component::ComponentManager &componentManager)
+      : _componentManager(componentManager) {}
+  /*
+  ** @brief Initializes the system.
+  */
+  virtual ~ISystem() = default;
 
   /**
    * @brief Pure virtual function to initialize the system.
@@ -54,7 +53,7 @@ namespace ECS_system
    */
   virtual void handleComponents() = 0;
 
-  protected:
-    component::ComponentManager &_componentManager;
-  };
+protected:
+  component::ComponentManager &_componentManager;
+};
 } // namespace ECS_system

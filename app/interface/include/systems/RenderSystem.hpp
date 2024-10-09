@@ -50,8 +50,7 @@ public:
    */
   void handleComponents() override{};
 
-  private:
-    sf::RenderWindow _window;
-
+private:
+  sf::RenderWindow _window;
 };
 } // namespace ECS_system
