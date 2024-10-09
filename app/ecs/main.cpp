@@ -40,8 +40,8 @@ int main() {
   component::SpriteComponent *spriteComponent =
       componentManager.addComponent<component::SpriteComponent>(0, 100.0f,
                                                                 100.0f);
-    componentManager.addComponent<component::TextureComponent>(
-        0, "../assets/sprites/r-typesheet1.gif");
+  componentManager.addComponent<component::TextureComponent>(
+      0, "../assets/sprites/r-typesheet1.gif");
   component::HitBoxComponent *hitboxComponent =
       componentManager.addComponent<component::HitBoxComponent>(0, 50.0f,
                                                                 50.0f);

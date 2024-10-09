@@ -22,7 +22,8 @@ public:
    * @param componentManager Reference to the ComponentManager that manages all
    * components.
    */
-  ASystem(component::ComponentManager &componentManager, sf::RenderWindow &window)
+  ASystem(component::ComponentManager &componentManager,
+          sf::RenderWindow &window)
       : ISystem(componentManager, window) {}
 
   /**

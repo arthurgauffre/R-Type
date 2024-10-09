@@ -51,6 +51,5 @@ public:
    * actual implementation details should be provided in the function body.
    */
   void handleComponents() override{};
-
 };
 } // namespace ECS_system

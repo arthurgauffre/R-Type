@@ -25,7 +25,8 @@ public:
    * @param componentManager A reference to the ComponentManager that manages
    * all components.
    */
-  AudioSystem(component::ComponentManager &componentManager, sf::RenderWindow &window)
+  AudioSystem(component::ComponentManager &componentManager,
+              sf::RenderWindow &window)
       : ASystem(componentManager, window) {}
 
   /**

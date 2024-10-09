@@ -87,6 +87,8 @@ void ECS_system::CollisionSystem::update(
 }
 
 extern "C" std::shared_ptr<ECS_system::ISystem>
-createCollisionSystem(component::ComponentManager &componentManager, sf::RenderWindow &window) {
-  return std::make_shared<ECS_system::CollisionSystem>(componentManager, window);
+createCollisionSystem(component::ComponentManager &componentManager,
+                      sf::RenderWindow &window) {
+  return std::make_shared<ECS_system::CollisionSystem>(componentManager,
+                                                       window);
 }

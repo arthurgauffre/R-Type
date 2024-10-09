@@ -20,8 +20,7 @@
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::CoreModule()
-{
+rtype::CoreModule::CoreModule() {
   this->_componentManager = std::make_shared<component::ComponentManager>();
   this->_systemManager = std::make_shared<ECS_system::SystemManager>();
   this->_entityManager = std::make_shared<entity::EntityManager>();
@@ -46,8 +45,7 @@ rtype::CoreModule::CoreModule()
  * @brief Destroy the rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::~CoreModule()
-{
+rtype::CoreModule::~CoreModule() {
   // if (this->_libList.size() > 0) {
   //   for (auto &loader : rtype::CoreModule::_libList) {
   //     loader.DLLunloader();
@@ -864,8 +862,10 @@ rtype::CoreModule::~CoreModule()
 //   DLLoader<component::ComponentManager> componentManagerLoader(
 //       "lib/shared_managers/r-type_component_manager.so");
 
-//   this->_systemManager = systemManagerLoader.getInstance("createSystemManager");
-//   this->_entityManager = entityManagerLoader.getInstance("createEntityManager");
+//   this->_systemManager =
+//   systemManagerLoader.getInstance("createSystemManager");
+//   this->_entityManager =
+//   entityManagerLoader.getInstance("createEntityManager");
 //   this->_componentManager =
 //       componentManagerLoader.getInstance("createComponentManager");
 // }
@@ -920,17 +920,17 @@ rtype::CoreModule::~CoreModule()
 //   return this->_systems;
 // }
 
-std::shared_ptr<entity::EntityManager> rtype::CoreModule::getEntityManager() const
-{
+std::shared_ptr<entity::EntityManager>
+rtype::CoreModule::getEntityManager() const {
   return this->_entityManager;
 }
 
-std::shared_ptr<component::ComponentManager> rtype::CoreModule::getComponentManager() const
-{
+std::shared_ptr<component::ComponentManager>
+rtype::CoreModule::getComponentManager() const {
   return this->_componentManager;
 }
 
-std::shared_ptr<ECS_system::SystemManager> rtype::CoreModule::getSystemManager() const
-{
+std::shared_ptr<ECS_system::SystemManager>
+rtype::CoreModule::getSystemManager() const {
   return this->_systemManager;
 }

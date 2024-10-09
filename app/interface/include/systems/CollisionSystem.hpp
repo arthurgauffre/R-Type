@@ -24,7 +24,8 @@ public:
    * @param componentManager Reference to the ComponentManager that manages the
    * components.
    */
-  CollisionSystem(component::ComponentManager &componentManager, sf::RenderWindow &window)
+  CollisionSystem(component::ComponentManager &componentManager,
+                  sf::RenderWindow &window)
       : ASystem(componentManager, window) {}
 
   /**
