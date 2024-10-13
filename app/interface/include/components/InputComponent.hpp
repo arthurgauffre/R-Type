@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <r-type/AComponent.hpp>
 #include <SFML/Graphics.hpp>
+#include <r-type/AComponent.hpp>
 #include <string>
 #include <unordered_map>
 
@@ -21,7 +21,7 @@ public:
    * @param entityID The unique identifier of the entity associated with this
    * component.
    */
-  InputComponent(uint32_t entityID): AComponent(entityID) {};
+  InputComponent(uint32_t entityID) : AComponent(entityID){};
 
   /**
    * @brief Destroy the InputComponent object.

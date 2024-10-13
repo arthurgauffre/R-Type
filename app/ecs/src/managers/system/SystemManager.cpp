@@ -87,7 +87,7 @@ void ECS_system::SystemManager::addSystem(
     // get the instance of the movement system
     std::shared_ptr<ECS_system::ISystem> movementSystem =
         movementSystemLoader->getInstance("createMovementSystem",
-                                           componentManager);
+                                          componentManager);
     // add the movement system to the system manager
     _systems.push_back(movementSystem);
   }

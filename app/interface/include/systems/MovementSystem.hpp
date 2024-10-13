@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <r-type/ASystem.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <components/VelocityComponent.hpp>
+#include <r-type/ASystem.hpp>
 
 #include <SFML/System/Time.hpp>
 

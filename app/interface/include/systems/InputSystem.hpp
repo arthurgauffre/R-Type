@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <r-type/ASystem.hpp>
 #include <components/InputComponent.hpp>
+#include <r-type/ASystem.hpp>
 
 #include <iostream>
 

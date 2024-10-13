@@ -5,8 +5,8 @@
 ** MovementSystem
 */
 
-#include <systems/MovementSystem.hpp>
 #include <iostream>
+#include <systems/MovementSystem.hpp>
 
 /**
  * @brief Updates the positions of entities based on their velocity and the

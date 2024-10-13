@@ -8,8 +8,8 @@
 #include <components/PositionComponent.hpp>
 
 component::PositionComponent::PositionComponent(uint32_t entityID, float x,
-                                                float y) : AComponent(entityID)
-{
-    _position.x = x;
-    _position.y = y;
+                                                float y)
+    : AComponent(entityID) {
+  _position.x = x;
+  _position.y = y;
 }

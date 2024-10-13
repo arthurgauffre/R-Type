@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <r-type/AComponent.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <r-type/AComponent.hpp>
 
 namespace component {
 class VelocityComponent : public AComponent {
