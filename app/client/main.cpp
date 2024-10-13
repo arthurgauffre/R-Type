@@ -51,9 +51,6 @@ int main(void)
     coreModule->getComponentManager()->addComponent<component::TransformComponent>(
         0, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(1.0f, 1.0f));
 
-    //   coreModule->getComponentManager()->addComponent<component::SoundComponent>(
-    //       1, "app/assets/sounds/testSound.wav");
-
     // load audioSystem .so
     std::shared_ptr<
         rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>

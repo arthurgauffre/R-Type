@@ -18,7 +18,8 @@
  */
 ECS_system::RenderSystem::RenderSystem(
     component::ComponentManager &componentManager)
-    : ASystem(componentManager), _window(sf::VideoMode(800, 600), "R-Type"), _event(sf::Event()) {}
+    : ASystem(componentManager), _window(sf::VideoMode(800, 600), "R-Type"),
+      _event(sf::Event()) {}
 
 /**
  * @brief Updates the render system by drawing all entities with
