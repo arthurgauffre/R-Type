@@ -5,17 +5,16 @@
 ** main
 */
 
-#include <iostream>
 #include <Server.hpp>
+#include <iostream>
 
-int main(void)
-{
-    rtype::network::Server server(60000);
-    server.Start();
+int main(void) {
+  rtype::network::Server server(60000);
+  server.Start();
 
-    while (1) {
-        server.Update(-1, true);
-    }
+  while (1) {
+    server.Update(-1, true);
+  }
 
-    return 0;
+  return 0;
 }
