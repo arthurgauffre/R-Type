@@ -7,20 +7,13 @@
 
 #include <CoreModule.hpp>
 // #include <Error.hpp>
-#include <cstring>
-#include <dirent.h>
-#include <fcntl.h>
-#include <fstream>
-#include <sstream>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
 /**
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::CoreModule() {
+rtype::CoreModule::CoreModule()
+{
   this->_componentManager = std::make_shared<component::ComponentManager>();
   this->_systemManager = std::make_shared<ECS_system::SystemManager>();
   this->_entityManager = std::make_shared<entity::EntityManager>();
@@ -45,7 +38,8 @@ rtype::CoreModule::CoreModule() {
  * @brief Destroy the rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::~CoreModule() {
+rtype::CoreModule::~CoreModule()
+{
   // if (this->_libList.size() > 0) {
   //   for (auto &loader : rtype::CoreModule::_libList) {
   //     loader.DLLunloader();
@@ -921,16 +915,102 @@ rtype::CoreModule::~CoreModule() {
 // }
 
 std::shared_ptr<entity::EntityManager>
-rtype::CoreModule::getEntityManager() const {
+rtype::CoreModule::getEntityManager() const
+{
   return this->_entityManager;
 }
 
 std::shared_ptr<component::ComponentManager>
-rtype::CoreModule::getComponentManager() const {
+rtype::CoreModule::getComponentManager() const
+{
   return this->_componentManager;
 }
 
 std::shared_ptr<ECS_system::SystemManager>
-rtype::CoreModule::getSystemManager() const {
+rtype::CoreModule::getSystemManager() const
+{
   return this->_systemManager;
+}
+
+void rtype::CoreModule::run()
+{
+  sf::Clock clock;
+  while (1)
+  {
+    float deltatime = clock.restart().asSeconds();
+    this->getSystemManager()->update(
+        deltatime, this->getEntityManager()->getEntities());
+  }
+}
+
+void rtype::CoreModule::init()
+{
+  this->getEntityManager()->createEntity(0);
+
+  this->getEntityManager()->createEntity(1);
+
+  this->getComponentManager()->addComponent<component::PositionComponent>(
+      0, 100.0f, 100.0f);
+
+  this->getComponentManager()->addComponent<component::SpriteComponent>(
+      0, 100.0f, 100.0f);
+
+  this->getComponentManager()->addComponent<component::TextureComponent>(
+      0, "app/assets/sprites/r-typesheet1.gif");
+
+  this->getComponentManager()->addComponent<component::MusicComponent>(
+      0, "app/assets/musics/testSong.wav");
+
+  this->getComponentManager()->addComponent<component::InputComponent>(0);
+
+  this->getComponentManager()->addComponent<component::VelocityComponent>(
+      0, sf::Vector2f(10.0f, 0.0f));
+
+  this->getComponentManager()
+      ->addComponent<component::TransformComponent>(
+          0, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(1.0f, 1.0f));
+
+  this->getComponentManager()->addComponent<component::PositionComponent>(
+      1, 0.0f, 0.0f);
+
+  this->getComponentManager()->addComponent<component::ScrollComponent>(
+      1, sf::Vector2f(100.0f, 0.0f));
+
+  this->getComponentManager()
+      ->addComponent<component::BackgroundComponent>(
+          1, "app/assets/images/city_background.png", sf::Vector2f(1920.0f, 1080.0f));
+
+  component::ComponentManager &componentManager =
+      *this->getComponentManager(); // Reference to ComponentManager
+
+  // // Assuming getInstance returns a shared pointer to a concrete type
+  this->getSystemManager()->addSystem(componentManager, "AudioSystem");
+
+  this->getSystemManager()->addSystem(componentManager, "RenderSystem");
+
+  this->getSystemManager()->addSystem(componentManager, "InputSystem");
+
+  this->getSystemManager()->addSystem(componentManager, "MovementSystem");
+
+  this->getSystemManager()->addSystem(componentManager,
+                                      "BackgroundSystem");
+
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("MoveLeft", sf::Keyboard::A);
+
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("MoveRight", sf::Keyboard::D);
+
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("MoveUp", sf::Keyboard::W);
+
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("MoveDown", sf::Keyboard::S);
+
+  std::cout << "SystemManager size: "
+            << this->getSystemManager()->getSystems().size() << std::endl;
 }

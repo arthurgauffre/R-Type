@@ -11,8 +11,27 @@
 #include <dlfcn.h>
 #include <iostream>
 #include <memory>
-#include <r-type/ICoreModule.hpp>
 #include <vector>
+#include <iostream>
+#include <limits.h>
+#include <unistd.h>
+#include <SFML/Graphics.hpp>
+#include <r-type/ICoreModule.hpp>
+#include <r-type/ISystem.hpp>
+
+#include <components/BackgroundComponent.hpp>
+#include <components/InputComponent.hpp>
+#include <components/MusicComponent.hpp>
+#include <components/PositionComponent.hpp>
+#include <components/ScrollComponent.hpp>
+#include <components/SoundComponent.hpp>
+#include <components/SpriteComponent.hpp>
+#include <components/TextureComponent.hpp>
+#include <components/TransformComponent.hpp>
+#include <components/VelocityComponent.hpp>
+
+#include <systems/AudioSystem.hpp>
+#include <systems/RenderSystem.hpp>
 
 namespace rtype {
 class CoreModule : virtual public ICoreModule {
@@ -56,6 +75,9 @@ public:
   // void updateRunning();
   // void selectionLoop();
   // void updateSelection();
+
+  void init();
+  void run();
 
   // void updateTimers();
   // void resetTimers(int index);
