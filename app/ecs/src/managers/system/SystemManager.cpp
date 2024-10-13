@@ -90,6 +90,19 @@ void ECS_system::SystemManager::addSystem(
                                           componentManager);
     // add the movement system to the system manager
     _systems.push_back(movementSystem);
+  } else if (systemName == "BackgroundSystem") {
+    // dlopen the background system lib .so
+    std::shared_ptr<
+        rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
+        backgroundSystemLoader = std::make_shared<
+            rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
+            "lib/client_systems/r-type_background_system.so");
+    // get the instance of the background system
+    std::shared_ptr<ECS_system::ISystem> backgroundSystem =
+        backgroundSystemLoader->getInstance("createBackgroundSystem",
+                                            componentManager);
+    // add the background system to the system manager
+    _systems.push_back(backgroundSystem);
   }
 }
 

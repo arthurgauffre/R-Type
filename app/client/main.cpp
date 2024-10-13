@@ -15,6 +15,8 @@
 #include <components/TextureComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <components/VelocityComponent.hpp>
+#include <components/ScrollComponent.hpp>
+#include <components/BackgroundComponent.hpp>
 #include <iostream>
 #include <limits.h>
 #include <r-type/ISystem.hpp>
@@ -22,82 +24,95 @@
 #include <systems/RenderSystem.hpp>
 #include <unistd.h>
 
-int main(void) {
-  // unique  ptr to CoreModule
-  std::unique_ptr<rtype::CoreModule> coreModule =
-      std::make_unique<rtype::CoreModule>();
+int main(void)
+{
+    // unique  ptr to CoreModule
+    std::unique_ptr<rtype::CoreModule> coreModule =
+        std::make_unique<rtype::CoreModule>();
 
-  coreModule->getEntityManager()->createEntity(0);
 
-  coreModule->getComponentManager()->addComponent<component::PositionComponent>(
-      0, 100.0f, 100.0f);
 
-  coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-      0, 100.0f, 100.0f);
+    coreModule->getEntityManager()->createEntity(0);
 
-  coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-      0, "app/assets/sprites/r-typesheet1.gif");
+    coreModule->getEntityManager()->createEntity(1);
 
-  coreModule->getComponentManager()->addComponent<component::MusicComponent>(
-      0, "app/assets/musics/testSong.wav");
+    coreModule->getComponentManager()->addComponent<component::PositionComponent>(
+        0, 100.0f, 100.0f);
 
-  coreModule->getComponentManager()->addComponent<component::InputComponent>(0);
+    coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
+        0, 100.0f, 100.0f);
 
-  coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
-      0, sf::Vector2f(10.0f, 0.0f));
+    coreModule->getComponentManager()->addComponent<component::TextureComponent>(
+        0, "app/assets/sprites/r-typesheet1.gif");
 
-  coreModule->getComponentManager()
-      ->addComponent<component::TransformComponent>(
-          0, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(1.0f, 1.0f));
+    coreModule->getComponentManager()->addComponent<component::MusicComponent>(
+        0, "app/assets/musics/testSong.wav");
 
-  // load audioSystem .so
-  std::shared_ptr<
-      rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
-      audioSystemLoader = std::make_shared<
-          rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-          "lib/client_systems/r-type_audio_system.so");
+    coreModule->getComponentManager()->addComponent<component::InputComponent>(0);
 
-  // load renderSystem .so
-  std::shared_ptr<
-      rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
-      renderSystemLoader = std::make_shared<
-          rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-          "lib/client_systems/r-type_render_system.so");
+    coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+        0, sf::Vector2f(10.0f, 0.0f));
 
-  component::ComponentManager &componentManager =
-      *coreModule->getComponentManager(); // Reference to ComponentManager
+    coreModule->getComponentManager()
+        ->addComponent<component::TransformComponent>(
+            0, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(1.0f, 1.0f));
 
-  // // Assuming getInstance returns a shared pointer to a concrete type
-  coreModule->getSystemManager()->addSystem(componentManager, "AudioSystem");
+    coreModule->getComponentManager()->addComponent<component::PositionComponent>(
+        1, 0.0f, 0.0f);
 
-  coreModule->getSystemManager()->addSystem(componentManager, "RenderSystem");
+    coreModule->getComponentManager()->addComponent<component::ScrollComponent>(
+        1, sf::Vector2f(100.0f, 0.0f));
 
-  coreModule->getSystemManager()->addSystem(componentManager, "InputSystem");
+    sf::Texture texture;
+    if (!texture.loadFromFile("app/assets/images/city_background.png"))
+    {
+        std::cerr << "Failed to load background texture" << std::endl;
+        return 1;
+    }
 
-  coreModule->getSystemManager()->addSystem(componentManager, "MovementSystem");
+    coreModule->getComponentManager()->addComponent<component::BackgroundComponent>(
+        1, texture, sf::Vector2f(1920.0f, 1080.0f));
 
-  coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveLeft", sf::Keyboard::A);
 
-  coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveRight", sf::Keyboard::D);
+    component::ComponentManager &componentManager =
+        *coreModule->getComponentManager(); // Reference to ComponentManager
 
-  coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveUp", sf::Keyboard::W);
+    // // Assuming getInstance returns a shared pointer to a concrete type
+    coreModule->getSystemManager()->addSystem(componentManager, "AudioSystem");
 
-  coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveDown", sf::Keyboard::S);
+    coreModule->getSystemManager()->addSystem(componentManager, "RenderSystem");
 
-  std::cout << "SystemManager size: "
-            << coreModule->getSystemManager()->getSystems().size() << std::endl;
+    // coreModule->getSystemManager()->addSystem(componentManager, "InputSystem");
 
-  while (1) {
-    coreModule->getSystemManager()->update(
-        0.0f, coreModule->getEntityManager()->getEntities());
-  }
-  return 0;
+    coreModule->getSystemManager()->addSystem(componentManager, "MovementSystem");
+
+    coreModule->getSystemManager()->addSystem(componentManager, "BackgroundSystem");
+
+    coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(0)
+        ->bindAction("MoveLeft", sf::Keyboard::A);
+
+    coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(0)
+        ->bindAction("MoveRight", sf::Keyboard::D);
+
+    coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(0)
+        ->bindAction("MoveUp", sf::Keyboard::W);
+
+    coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(0)
+        ->bindAction("MoveDown", sf::Keyboard::S);
+
+    std::cout << "SystemManager size: "
+              << coreModule->getSystemManager()->getSystems().size() << std::endl;
+
+    sf::Clock clock;
+    while (1)
+    {
+        float deltatime = clock.restart().asSeconds();
+        coreModule->getSystemManager()->update(
+            deltatime, coreModule->getEntityManager()->getEntities());
+    }
+    return 0;
 }

@@ -3,6 +3,8 @@ add_library(r-type_render_system SHARED
     ../../components/sprite/SpriteComponent.cpp
     ../../components/texture/TextureComponent.cpp
     ../../components/position/PositionComponent.cpp
+    ../../components/background/BackgroundComponent.cpp
+    ../../components/transform/TransformComponent.cpp
 )
 
 # Specify the SFML include directory
