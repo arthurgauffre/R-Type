@@ -8,16 +8,15 @@
 #ifndef COREMODULE_HPP_
 #define COREMODULE_HPP_
 
+#include <SFML/Graphics.hpp>
 #include <dlfcn.h>
 #include <iostream>
-#include <memory>
-#include <vector>
-#include <iostream>
 #include <limits.h>
-#include <unistd.h>
-#include <SFML/Graphics.hpp>
+#include <memory>
 #include <r-type/ICoreModule.hpp>
 #include <r-type/ISystem.hpp>
+#include <unistd.h>
+#include <vector>
 
 #include <components/BackgroundComponent.hpp>
 #include <components/InputComponent.hpp>
