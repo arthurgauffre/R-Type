@@ -24,11 +24,10 @@
 #include <systems/RenderSystem.hpp>
 #include <unistd.h>
 
-int main(void)
-{
-    // unique  ptr to CoreModule
-    std::unique_ptr<rtype::CoreModule> coreModule =
-        std::make_unique<rtype::CoreModule>();
+int main(void) {
+  // unique  ptr to CoreModule
+  std::unique_ptr<rtype::CoreModule> coreModule =
+      std::make_unique<rtype::CoreModule>();
 
     coreModule.get()->init();
 

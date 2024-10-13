@@ -37,7 +37,7 @@ private:
 
   /**
    * @brief Holds the texture data for the background component.
-   * 
+   *
    * This member variable stores the texture used for rendering the background
    * in the application. It is an instance of the sf::Texture class from the
    * SFML library, which provides functionalities for loading, manipulating,
