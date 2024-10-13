@@ -75,8 +75,11 @@ public:
   // void selectionLoop();
   // void updateSelection();
 
-  entity::IEntity *createBackground(uint32_t entityID, std::string texturePath, sf::Vector2f speed, sf::Vector2f size);
-  entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f scale);
+  entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
+                                    sf::Vector2f speed, sf::Vector2f size);
+  entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
+                                sf::Vector2f position, sf::Vector2f velocity,
+                                sf::Vector2f scale);
 
   void init();
   void run();

@@ -936,23 +936,27 @@ void rtype::CoreModule::run() {
   }
 }
 
-entity::IEntity *rtype::CoreModule::createBackground(uint32_t entityID, std::string texturePath, sf::Vector2f speed, sf::Vector2f size)
-{
+entity::IEntity *rtype::CoreModule::createBackground(uint32_t entityID,
+                                                     std::string texturePath,
+                                                     sf::Vector2f speed,
+                                                     sf::Vector2f size) {
   auto background = this->getEntityManager()->createEntity(entityID);
 
   this->getComponentManager()->addComponent<component::PositionComponent>(
       entityID, 0.0f, 0.0f);
   this->getComponentManager()->addComponent<component::ScrollComponent>(
       entityID, speed);
-  this->getComponentManager()
-      ->addComponent<component::BackgroundComponent>(
-          entityID, texturePath, size);
+  this->getComponentManager()->addComponent<component::BackgroundComponent>(
+      entityID, texturePath, size);
 
   return background;
 }
 
-entity::IEntity *rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f scale)
-{
+entity::IEntity *rtype::CoreModule::createPlayer(uint32_t entityID,
+                                                 std::string texturePath,
+                                                 sf::Vector2f position,
+                                                 sf::Vector2f velocity,
+                                                 sf::Vector2f scale) {
   auto player = this->getEntityManager()->createEntity(entityID);
 
   this->getComponentManager()->addComponent<component::PositionComponent>(
@@ -961,30 +965,31 @@ entity::IEntity *rtype::CoreModule::createPlayer(uint32_t entityID, std::string 
       entityID, position.x, position.y);
   this->getComponentManager()->addComponent<component::TextureComponent>(
       entityID, texturePath);
-  this->getComponentManager()->addComponent<component::InputComponent>(entityID);
+  this->getComponentManager()->addComponent<component::InputComponent>(
+      entityID);
   this->getComponentManager()->addComponent<component::VelocityComponent>(
       entityID, velocity);
-  this->getComponentManager()
-      ->addComponent<component::TransformComponent>(
-          entityID, position, scale);
+  this->getComponentManager()->addComponent<component::TransformComponent>(
+      entityID, position, scale);
 
   return player;
 }
 
-void rtype::CoreModule::init()
-{
-  this->createPlayer(0, "app/assets/sprites/r-typesheet1.gif", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10.0f, 0.0f), sf::Vector2f(1.0f, 1.0f));
-  this->createBackground(1, "app/assets/images/city_background.png", sf::Vector2f(100.0f, 0.0f), sf::Vector2f(1920.0f, 1080.0f));
+void rtype::CoreModule::init() {
+  this->createPlayer(0, "app/assets/sprites/r-typesheet1.gif",
+                     sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10.0f, 0.0f),
+                     sf::Vector2f(1.0f, 1.0f));
+  this->createBackground(1, "app/assets/images/city_background.png",
+                         sf::Vector2f(100.0f, 0.0f),
+                         sf::Vector2f(1920.0f, 1080.0f));
 
-  component::ComponentManager &componentManager =
-      *this->getComponentManager();
+  component::ComponentManager &componentManager = *this->getComponentManager();
 
   this->getSystemManager()->addSystem(componentManager, "AudioSystem");
   this->getSystemManager()->addSystem(componentManager, "RenderSystem");
   this->getSystemManager()->addSystem(componentManager, "InputSystem");
   this->getSystemManager()->addSystem(componentManager, "MovementSystem");
-  this->getSystemManager()->addSystem(componentManager,
-                                      "BackgroundSystem");
+  this->getSystemManager()->addSystem(componentManager, "BackgroundSystem");
 
   this->getComponentManager()
       ->getComponent<component::InputComponent>(0)
