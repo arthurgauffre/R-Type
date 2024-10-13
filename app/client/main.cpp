@@ -47,8 +47,8 @@ int main(void) {
   coreModule->getComponentManager()->addComponent<component::TextureComponent>(
       1, "app/assets/sprites/r-typesheet1.gif");
 
-//   coreModule->getComponentManager()->addComponent<component::SoundComponent>(
-//       1, "app/assets/sounds/testSound.wav");
+  //   coreModule->getComponentManager()->addComponent<component::SoundComponent>(
+  //       1, "app/assets/sounds/testSound.wav");
 
   // load audioSystem .so
   std::shared_ptr<
@@ -68,8 +68,7 @@ int main(void) {
       *coreModule->getComponentManager(); // Reference to ComponentManager
 
   // // Assuming getInstance returns a shared pointer to a concrete type
-  coreModule->getSystemManager()->addSystem(componentManager,
-  "AudioSystem");
+  coreModule->getSystemManager()->addSystem(componentManager, "AudioSystem");
 
   coreModule->getSystemManager()->addSystem(componentManager, "RenderSystem");
 
