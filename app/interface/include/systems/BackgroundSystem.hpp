@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <r-type/ASystem.hpp>
 #include <components/BackgroundComponent.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/ScrollComponent.hpp>
+#include <r-type/ASystem.hpp>
 
 namespace ECS_system {
 class BackgroundSystem : public ASystem {

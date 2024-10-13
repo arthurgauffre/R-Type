@@ -17,11 +17,10 @@
 component::BackgroundComponent::BackgroundComponent(uint32_t entityID,
                                                     const sf::Texture &texture,
                                                     const sf::Vector2f &size)
-    : AComponent(entityID), _size(size), _sprite(texture)
-{
-    _sprite.setScale(size.x / _sprite.getTexture()->getSize().x,
-                     size.y / _sprite.getTexture()->getSize().y);
-    _duplicateSprite = _sprite;
+    : AComponent(entityID), _size(size), _sprite(texture) {
+  _sprite.setScale(size.x / _sprite.getTexture()->getSize().x,
+                   size.y / _sprite.getTexture()->getSize().y);
+  _duplicateSprite = _sprite;
 }
 
 /**
@@ -43,7 +42,6 @@ const sf::Vector2f component::BackgroundComponent::getSize() { return _size; }
  *
  * @return sf::Sprite A duplicate sprite of the background component.
  */
-sf::Sprite component::BackgroundComponent::getDuplicateSprite()
-{
-    return _duplicateSprite;
+sf::Sprite component::BackgroundComponent::getDuplicateSprite() {
+  return _duplicateSprite;
 }

@@ -7,10 +7,10 @@
 
 #pragma once
 
+#include <components/BackgroundComponent.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
-#include <components/BackgroundComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <r-type/ASystem.hpp>
 

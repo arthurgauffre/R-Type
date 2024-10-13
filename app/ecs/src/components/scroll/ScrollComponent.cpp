@@ -11,12 +11,10 @@ component::ScrollComponent::ScrollComponent(uint32_t entityID,
                                             sf::Vector2f speed)
     : AComponent(entityID), _scrollSpeed(speed) {}
 
-const sf::Vector2f component::ScrollComponent::getScrollSpeed()
-{
-    return _scrollSpeed;
+const sf::Vector2f component::ScrollComponent::getScrollSpeed() {
+  return _scrollSpeed;
 }
 
-void component::ScrollComponent::setScrollSpeed(const sf::Vector2f &speed)
-{
-    _scrollSpeed = speed;
+void component::ScrollComponent::setScrollSpeed(const sf::Vector2f &speed) {
+  _scrollSpeed = speed;
 }

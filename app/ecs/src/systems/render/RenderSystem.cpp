@@ -35,15 +35,13 @@ ECS_system::RenderSystem::RenderSystem(
  * @param entities A vector of shared pointers to entities to be processed.
  */
 void ECS_system::RenderSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
   _window.clear();
 
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::BackgroundComponent, component::PositionComponent>(
-           entities))
-  {
+           entities)) {
     component::BackgroundComponent *backgroundComponent =
         _componentManager.getComponent<component::BackgroundComponent>(
             entity->getID());
@@ -66,8 +64,7 @@ void ECS_system::RenderSystem::update(
 
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
-                      component::TextureComponent>(entities))
-  {
+                      component::TextureComponent>(entities)) {
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(
             entity.get()->getID());
@@ -88,10 +85,8 @@ void ECS_system::RenderSystem::update(
   _window.display();
 
   // sf event
-  while (_window.pollEvent(_event))
-  {
-    if (_event.type == sf::Event::Closed)
-    {
+  while (_window.pollEvent(_event)) {
+    if (_event.type == sf::Event::Closed) {
       _window.close();
       // this->_gameClosed = true;
     }
@@ -99,7 +94,6 @@ void ECS_system::RenderSystem::update(
 }
 
 extern "C" std::shared_ptr<ECS_system::ISystem>
-createRenderSystem(component::ComponentManager &componentManager)
-{
+createRenderSystem(component::ComponentManager &componentManager) {
   return std::make_shared<ECS_system::RenderSystem>(componentManager);
 }
