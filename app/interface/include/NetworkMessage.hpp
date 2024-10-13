@@ -8,8 +8,8 @@
 #ifndef NETWORKMESSAGE_HPP_
 #define NETWORKMESSAGE_HPP_
 
-#include <iostream>
 #include <NetworkConnection.hpp>
+#include <iostream>
 
 namespace rtype {
 namespace network {
@@ -25,13 +25,15 @@ template <typename T> struct Message {
   size_t size() const { return body.size(); }
 
   friend std::ostream &operator<<(std::ostream &os, const Message<T> &message) {
-    os << "ID:" << static_cast<int>(message.header.id) << " Size:" << message.header.size;
+    os << "ID:" << static_cast<int>(message.header.id)
+       << " Size:" << message.header.size;
     return os;
   }
 
   template <typename DataType>
   friend Message<T> &operator<<(Message<T> &message, const DataType &data) {
-    static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
+    static_assert(std::is_standard_layout<DataType>::value,
+                  "Data is too complex to be pushed into vector");
 
     size_t i = message.body.size();
     message.body.resize(message.body.size() + sizeof(DataType));
@@ -42,7 +44,8 @@ template <typename T> struct Message {
 
   template <typename DataType>
   friend Message<T> &operator>>(Message<T> &message, DataType &data) {
-    static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
+    static_assert(std::is_standard_layout<DataType>::value,
+                  "Data is too complex to be pushed into vector");
 
     size_t i = message.body.size() - sizeof(DataType);
     std::memcpy(&data, message.body.data() + i, sizeof(DataType));

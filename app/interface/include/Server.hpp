@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include <r-type/AServer.hpp>
 #include <NetworkMessagesCommunication.hpp>
+#include <r-type/AServer.hpp>
 
 namespace rtype
 {
@@ -25,10 +25,9 @@ namespace rtype
       {
       }
 
-      ~Server() {};
+  ~Server(){};
 
-    protected:
-
+protected:
       virtual void OnMessageReceived(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client, rtype::network::Message<NetworkMessages> &message)
       {
         // std::cout << "Message received from client : " << client->GetId() << std::endl;

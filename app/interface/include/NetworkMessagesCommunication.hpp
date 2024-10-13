@@ -9,12 +9,11 @@
 
 #include <cstdint>
 
-enum class NetworkMessages: uint32_t
-{
-    ServerAcceptance,
-    ServerDenial,
-    ServerPing,
-    MessageAll,
-    ServerMessage,
-    ClientConnection
+enum class NetworkMessages : uint32_t {
+  ServerAcceptance,
+  ServerDenial,
+  ServerPing,
+  MessageAll,
+  ServerMessage,
+  ClientConnection
 };

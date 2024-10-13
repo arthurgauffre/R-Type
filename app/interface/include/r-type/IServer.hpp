@@ -10,23 +10,19 @@
 
 #pragma once
 
-#include <NetworkingCommon.hpp>
 #include <NetworkConnection.hpp>
 #include <NetworkMessage.hpp>
+#include <NetworkingCommon.hpp>
 
-namespace rtype
-{
-    namespace network
-    {
-        template <typename T>
-        class IServer
-        {
-        public:
-            IServer() {};
-            virtual ~IServer() {};
+namespace rtype {
+namespace network {
+template <typename T> class IServer {
+public:
+  IServer(){};
+  virtual ~IServer(){};
 
-            virtual bool Start() = 0;
-            virtual void Stop() = 0;
+  virtual bool Start() = 0;
+  virtual void Stop() = 0;
 
             virtual void WaitForMessage() = 0;
 
