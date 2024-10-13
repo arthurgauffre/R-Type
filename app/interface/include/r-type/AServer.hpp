@@ -71,7 +71,7 @@ namespace rtype
                                     incomingMessages);
                             if (OnClientConnection(newConnection)) {
                                 deqConnections.push_back(std::move(newConnection));
-                                deqConnections.back()->EstablishClientConnection(this, actualId++)
+                                deqConnections.back()->EstablishClientConnection(this, actualId++);
                                 std::cout << "[" << deqConnections.back()->GetId() << "] Connection approved" << std::endl;
                             } else {
                                 std::cout << "Connection denied" << std::endl;
@@ -80,10 +80,10 @@ namespace rtype
                             std::cout << "Error on connection" << ec.message() << std::endl;
                         }
                     }
-                )
+                );
             }
 
-            void SendMessageToClient(shared_ptr<NetworkConnection<T>> client, const Message<T> &message)
+            void SendMessageToClient(const Message<T> &message, std::shared_ptr<NetworkConnection<T>> client)
             {
                 if (client && client->IsConnected()) {
                     client->Send(message);
@@ -97,9 +97,9 @@ namespace rtype
                 }
             }
 
-            void SendMessageToAllClients(std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore = nullptr, const rtype::network::Message<T> &message)
+            void SendMessageToAllClients(const rtype::network::Message<T> &message, std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore = nullptr)
             {
-                invalidClientExists = false;
+                bool invalidClientExists = false;
 
                 for (auto &client : deqConnections) {
                     if (client && client->IsConnected()) {
@@ -148,7 +148,7 @@ namespace rtype
 
         protected:
             virtual void OnMessageReceived(std::shared_ptr<NetworkConnection<T>> client, Message<T> &message) {}
-            virtual void OnClientConnection(std::shared_ptr<rtype::network::NetworkConnection<T>> client) { return false; }
+            virtual bool OnClientConnection(std::shared_ptr<rtype::network::NetworkConnection<T>> client) { return false; }
             virtual void OnClientDisconnection(std::shared_ptr<rtype::network::NetworkConnection<T>> client) {}
 
             };

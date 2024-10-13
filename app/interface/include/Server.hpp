@@ -13,14 +13,13 @@
 #include <r-type/AServer.hpp>
 #include <NetworkMessagesCommunication.hpp>
 
-namespace rytpe
+namespace rtype
 {
   namespace network
   {
     class Server : virtual public rtype::network::AServer<NetworkMessages>
     {
     public:
-      Server() {};
       Server(uint16_t port) : rtype::network::IServer<NetworkMessages>(),
                               rtype::network::AServer<NetworkMessages>(port)
       {
@@ -41,7 +40,7 @@ namespace rytpe
             rtype::network::Message<NetworkMessages> message;
             message.header.id = NetworkMessages::ServerMessage;
             message << client->GetId();
-            SendMessageToAllClients(client, message);
+            SendMessageToAllClients(message, client);
           } break;
           case NetworkMessages::ServerPing: {
             std::cout << client->GetId() << " : Ping the server" << std::endl;
@@ -50,11 +49,12 @@ namespace rytpe
         }
       }
 
-      virtual void OnClientConnection(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
+      virtual bool OnClientConnection(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
       {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::ServerAcceptance;
         client->Send(message);
+        return true;
 
       }
 
@@ -63,7 +63,9 @@ namespace rytpe
         // std::cout << "Client disconnected : " << client->GetId() << std::endl;
       }
 
-
+      virtual void SendMessageToClient(const rtype::network::Message<NetworkMessages> &message, std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
+      {
+      }
 
     };
   } // namespace network

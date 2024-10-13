@@ -29,7 +29,7 @@ namespace rtype
             {
                 SERVER,
                 CLIENT
-            }
+            };
 
             NetworkConnection(actualOwner owner, asio::io_context &otherAsioContext,
                               asio::ip::udp::socket socket,
@@ -39,7 +39,7 @@ namespace rtype
                 endpoint(std::move(otherEndpoint)), asioContext(otherAsioContext),
                 queueOfIncomingMessages(incomingMessages)
             {
-                ownerType = owner
+                ownerType = owner;
 
                     if (ownerType == actualOwner::SERVER) {
                     // get the output of the handshake
@@ -56,7 +56,7 @@ namespace rtype
             const asio::ip::udp::endpoint &GetEndpoint() const { return endpoint; }
             const asio::ip::udp::socket &GetSocket() const { return asioSocket; }
 
-            void EstablishClientConnection(rtype::network::IServer<T> &server, uint32_t clientId = 0)
+            void EstablishClientConnection(rtype::network::IServer<T> *server, uint32_t clientId = 0)
             {
                 if (ownerType == actualOwner::SERVER) {
                     if (asioSocket.is_open()) {
@@ -85,7 +85,7 @@ namespace rtype
                 asio::post(asioContext, [this, message]() {
                     bool writingMessage = !queueOfIncomingMessages.empty();
                     queueOfIncomingMessages.pushBack(message);
-                    if (writingMessage) {
+                    if (!writingMessage) {
                         WriteHeader();
                     }
                 });
@@ -125,7 +125,7 @@ namespace rtype
                             asioSocket.close();
                         }
                     }
-                )
+                );
             }
 
             void WriteBody()
@@ -146,15 +146,15 @@ namespace rtype
                             asioSocket.close();
                         }
                     }
-                )
+                );
             }
 
             void AddMessageToIncomingQueue()
             {
                 if (ownerType == actualOwner::SERVER)
-                    queueOfIncomingMessages.pushBack({this->shared_from_this(), temporaryIncomingMessage})
+                    queueOfIncomingMessages.pushBack({this->shared_from_this(), temporaryIncomingMessage});
                 else
-                    queueOfIncomingMessages.pushBack({nullptr, temporaryIncomingMessage})
+                    queueOfIncomingMessages.pushBack({nullptr, temporaryIncomingMessage});
                 ReadHeader();
             }
 
@@ -175,7 +175,7 @@ namespace rtype
                             asioSocket.close();
                         }
                     }
-                )
+                );
             }
 
             void ReadBody()
@@ -190,15 +190,15 @@ namespace rtype
                             asioSocket.close();
                         }
                     }
-                )
+                );
             }
 
             //! Need to change the way I encrypt the message later
             uint64_t scramble(uint64_t n)
             {
                 uint64_t result = n ^ 0xDEADBEEFC0DECAFE;
-                output = (result & 0xF0F0F0F0DEADBEEF) << 4 | (result & 0xF0F0F0F00000000) >> 4;
-                return output ^ 0xC0DEFACE12345678;
+                result = (result & 0xF0F0F0F0DEADBEEF) << 4 | (result & 0xF0F0F0F00000000) >> 4;
+                return result ^ 0xC0DEFACE12345678;
             }
 
             void WriteValidation()
@@ -216,14 +216,14 @@ namespace rtype
                                 }
                             } else {
                                 handshakeOut = scramble(handshakeIn);
-                                writeValidation();
+                                WriteValidation();
                             }
                         } else {
                             std::cout << id << " : Write Validation failed" << ec << std::endl;
                             asioSocket.close();
                         }
                     }
-                )
+                );
             }
 
 
