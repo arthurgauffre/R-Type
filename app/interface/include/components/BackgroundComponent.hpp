@@ -13,7 +13,7 @@
 namespace component {
 class BackgroundComponent : virtual public AComponent {
 public:
-  BackgroundComponent(uint32_t entityID, const sf::Texture &texture,
+  BackgroundComponent(uint32_t entityID, std::string texturePath,
                       const sf::Vector2f &size);
   ~BackgroundComponent() = default;
 
@@ -34,6 +34,16 @@ private:
    * manipulate and display 2D images in the SFML framework.
    */
   sf::Sprite _sprite;
+
+  /**
+   * @brief Holds the texture data for the background component.
+   * 
+   * This member variable stores the texture used for rendering the background
+   * in the application. It is an instance of the sf::Texture class from the
+   * SFML library, which provides functionalities for loading, manipulating,
+   * and drawing textures.
+   */
+  sf::Texture _texture;
 
   /**
    * @brief A duplicate sprite used for rendering purposes.

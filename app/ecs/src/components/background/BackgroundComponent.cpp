@@ -7,17 +7,19 @@
 
 #include <components/BackgroundComponent.hpp>
 
-/**
- * @brief Constructs a new BackgroundComponent object.
- *
- * @param entityID The unique identifier for the entity.
- * @param texture The texture to be used for the background sprite.
- * @param size The size of the background component.
- */
+#include <iostream>
+
 component::BackgroundComponent::BackgroundComponent(uint32_t entityID,
-                                                    const sf::Texture &texture,
+                                                    std::string texturePath,
                                                     const sf::Vector2f &size)
-    : AComponent(entityID), _size(size), _sprite(texture) {
+    : AComponent(entityID), _size(size) {
+  if (!_texture.loadFromFile(texturePath)) {
+    throw std::runtime_error("Could not load texture from file: " + texturePath);
+  }
+  _sprite.setTexture(_texture);
+  _duplicateSprite.setTexture(_texture);
+  std::cout << "Texture loaded, size : " << _texture.getSize().x << " "
+            << _texture.getSize().y << std::endl;
   _sprite.setScale(size.x / _sprite.getTexture()->getSize().x,
                    size.y / _sprite.getTexture()->getSize().y);
   _duplicateSprite = _sprite;
