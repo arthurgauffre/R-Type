@@ -10,63 +10,59 @@
 
 #pragma once
 
-#include <r-type/AServer.hpp>
 #include <NetworkMessagesCommunication.hpp>
+#include <r-type/AServer.hpp>
 
-namespace rytpe
-{
-  namespace network
-  {
-    class Server : virtual public rtype::network::AServer<NetworkMessages>
-    {
-    public:
-      Server() {};
-      Server(uint16_t port) : rtype::network::IServer<NetworkMessages>(),
-                              rtype::network::AServer<NetworkMessages>(port)
-      {
-      }
+namespace rytpe {
+namespace network {
+class Server : virtual public rtype::network::AServer<NetworkMessages> {
+public:
+  Server(){};
+  Server(uint16_t port)
+      : rtype::network::IServer<NetworkMessages>(),
+        rtype::network::AServer<NetworkMessages>(port) {}
 
-      ~Server() {};
+  ~Server(){};
 
-    protected:
+protected:
+  virtual void OnMessageReceived(
+      std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
+          client,
+      rtype::network::Message<NetworkMessages> &message) {
+    // std::cout << "Message received from client : " << client->GetId() <<
+    // std::endl;
+    switch (message.header.id) {
+    case NetworkMessages::ClientConnection: {
+      std::cout << "Client connected : " << client->GetId() << std::endl;
+    } break;
+    case NetworkMessages::MessageAll: {
+      rtype::network::Message<NetworkMessages> message;
+      message.header.id = NetworkMessages::ServerMessage;
+      message << client->GetId();
+      SendMessageToAllClients(client, message);
+    } break;
+    case NetworkMessages::ServerPing: {
+      std::cout << client->GetId() << " : Ping the server" << std::endl;
+      client->Send(message);
+    } break;
+    }
+  }
 
-      virtual void OnMessageReceived(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client, rtype::network::Message<NetworkMessages> &message)
-      {
-        // std::cout << "Message received from client : " << client->GetId() << std::endl;
-        switch (message.header.id) {
-          case NetworkMessages::ClientConnection: {
-            std::cout << "Client connected : " << client->GetId() << std::endl;
-          } break;
-          case NetworkMessages::MessageAll: {
-            rtype::network::Message<NetworkMessages> message;
-            message.header.id = NetworkMessages::ServerMessage;
-            message << client->GetId();
-            SendMessageToAllClients(client, message);
-          } break;
-          case NetworkMessages::ServerPing: {
-            std::cout << client->GetId() << " : Ping the server" << std::endl;
-            client->Send(message);
-          } break;
-        }
-      }
+  virtual void OnClientConnection(
+      std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
+          client) {
+    rtype::network::Message<NetworkMessages> message;
+    message.header.id = NetworkMessages::ServerAcceptance;
+    client->Send(message);
+  }
 
-      virtual void OnClientConnection(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
-      {
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::ServerAcceptance;
-        client->Send(message);
-
-      }
-
-      virtual void OnClientDisconnection(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
-      {
-        // std::cout << "Client disconnected : " << client->GetId() << std::endl;
-      }
-
-
-
-    };
-  } // namespace network
+  virtual void OnClientDisconnection(
+      std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
+          client) {
+    // std::cout << "Client disconnected : " << client->GetId() << std::endl;
+  }
+};
+} // namespace network
 } // namespace rytpe
 
 #endif /* !SERVER_HPP_ */
