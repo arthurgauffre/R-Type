@@ -30,6 +30,8 @@ public:
    */
   ~RenderSystem() = default;
 
+  // bool getGameClosed() const { return _gameClosed; }
+
   void update(float deltaTime,
               std::vector<std::shared_ptr<entity::IEntity>> entities) override;
 
@@ -52,5 +54,7 @@ public:
 
 private:
   sf::RenderWindow _window;
+  sf::Event _event;
+  // bool _gameClosed = false;
 };
 } // namespace ECS_system

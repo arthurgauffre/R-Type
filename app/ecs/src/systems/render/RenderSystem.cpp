@@ -18,7 +18,7 @@
  */
 ECS_system::RenderSystem::RenderSystem(
     component::ComponentManager &componentManager)
-    : ASystem(componentManager), _window(sf::VideoMode(800, 600), "R-Type") {}
+    : ASystem(componentManager), _window(sf::VideoMode(800, 600), "R-Type"), _event(sf::Event()) {}
 
 /**
  * @brief Updates the render system by drawing all entities with
@@ -58,6 +58,14 @@ void ECS_system::RenderSystem::update(
     _window.draw(spriteComponent->getSprite());
   }
   _window.display();
+
+  // sf event
+  while (_window.pollEvent(_event)) {
+    if (_event.type == sf::Event::Closed) {
+      _window.close();
+      // this->_gameClosed = true;
+    }
+  }
 }
 
 extern "C" std::shared_ptr<ECS_system::ISystem>

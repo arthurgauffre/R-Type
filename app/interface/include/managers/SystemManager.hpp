@@ -48,8 +48,6 @@ public:
 
   std::vector<std::shared_ptr<ISystem>> getSystems() const { return _systems; }
 
-  void hello() { std::cout << "Hello from SystemManager" << std::endl; }
-
 private:
   /**
    * @brief A container holding unique pointers to ISystem objects.

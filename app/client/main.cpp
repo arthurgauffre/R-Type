@@ -35,8 +35,8 @@ int main(void) {
   coreModule->getComponentManager()->addComponent<component::TextureComponent>(
       0, "app/assets/sprites/r-typesheet1.gif");
 
-  // coreModule->getComponentManager()->addComponent<component::MusicComponent>(
-  //     0, "app/assets/musics/testSong.wav");
+  coreModule->getComponentManager()->addComponent<component::MusicComponent>(
+      0, "app/assets/musics/testSong.wav");
 
   coreModule->getComponentManager()->addComponent<component::PositionComponent>(
       1, 100.0f, 100.0f);
@@ -47,8 +47,8 @@ int main(void) {
   coreModule->getComponentManager()->addComponent<component::TextureComponent>(
       1, "app/assets/sprites/r-typesheet1.gif");
 
-  // coreModule->getComponentManager()->addComponent<component::SoundComponent>(
-  //     1, "app/assets/sounds/testSound.wav");
+//   coreModule->getComponentManager()->addComponent<component::SoundComponent>(
+//       1, "app/assets/sounds/testSound.wav");
 
   // load audioSystem .so
   std::shared_ptr<
@@ -68,8 +68,8 @@ int main(void) {
       *coreModule->getComponentManager(); // Reference to ComponentManager
 
   // // Assuming getInstance returns a shared pointer to a concrete type
-  // coreModule->getSystemManager()->addSystem(componentManager, window,
-  // "AudioSystem");
+  coreModule->getSystemManager()->addSystem(componentManager,
+  "AudioSystem");
 
   coreModule->getSystemManager()->addSystem(componentManager, "RenderSystem");
 
@@ -78,7 +78,6 @@ int main(void) {
   // main loop
 
   while (1) {
-    coreModule->getSystemManager()->hello();
     coreModule->getSystemManager()->update(
         0.0f, coreModule->getEntityManager()->getEntities());
   }
