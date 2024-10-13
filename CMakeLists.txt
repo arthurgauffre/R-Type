@@ -54,6 +54,9 @@ add_executable(r-type_client
     app/ecs/src/components/hitbox/HitBoxComponent.cpp
     app/ecs/src/components/music/MusicComponent.cpp
     app/ecs/src/components/sound/SoundComponent.cpp
+    app/ecs/src/components/input/InputComponent.cpp
+    app/ecs/src/components/velocity/VelocityComponent.cpp
+    app/ecs/src/components/transform/TransformComponent.cpp
     # app/ecs/src/systems/render/RenderSystem.cpp
     # app/ecs/src/systems/audio/AudioSystem.cpp
     # app/ecs/src/systems/collision/CollisionSystem.cpp
@@ -133,3 +136,15 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity>
             ${LIB_SHARED_ENTITY_DESTINATION}/r-type_shared_entity.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_input_system>
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_input_system.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_movement_system>
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_movement_system.so)

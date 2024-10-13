@@ -22,3 +22,5 @@
 add_subdirectory(audio)
 add_subdirectory(collision)
 add_subdirectory(render)
+add_subdirectory(movement)
+add_subdirectory(input)

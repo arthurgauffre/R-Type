@@ -16,12 +16,6 @@ function clean() {
 function fclean() {
     clean
     rm -rf $buildDirectory
-    rm -f $libDirectory/client_components/*.so
-    rm -f $libDirectory/shared_components/*.so
-    rm -f $libDirectory/server_components/*.so
-    rm -f $libDirectory/client_managers/*.so
-    rm -f $libDirectory/shared_managers/*.so
-    rm -f $libDirectory/server_managers/*.so
     rm -f $libDirectory/client_systems/*.so
     rm -f $libDirectory/shared_systems/*.so
     rm -f $libDirectory/server_systems/*.so

@@ -9,6 +9,7 @@
 
 #include <r-type/AComponent.hpp>
 
+#include <SFML/Graphics.hpp>
 namespace component {
 class PositionComponent : public AComponent {
 public:
@@ -23,21 +24,35 @@ public:
   /**
    * @brief Default destructor for the PositionComponent class.
    */
-  ~PositionComponent();
+  ~PositionComponent() = default;
 
   /**
    * @brief Get the X coordinate.
    *
    * @return The X coordinate as a float.
    */
-  float getX() const;
+  float getX() const { return _position.x; }
+
+  /**
+   * @brief Sets the x-coordinate of the position.
+   *
+   * @param x The new x-coordinate value to be set.
+   */
+  void setX(float x) { _position.x = x; }
 
   /**
    * @brief Get the Y coordinate of the position.
    *
    * @return The Y coordinate as a float.
    */
-  float getY() const;
+  float getY() const { return _position.y; }
+
+  /**
+   * @brief Sets the y-coordinate of the position.
+   *
+   * @param y The new y-coordinate value to be set.
+   */
+  void setY(float y) { _position.y = y; }
 
   /**
    * @brief Updates the position component.
@@ -47,17 +62,15 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  void update(float deltaTime) override;
+  void update(float deltaTime) override{};
 
 private:
   /**
-   * @brief Represents the x-coordinate of the position.
+   * @brief Represents a 2D vector for position.
+   *
+   * This component stores the position of an entity in a 2D space using
+   * the SFML library's sf::Vector2f class, which contains x and y coordinates.
    */
-  float _x;
-
-  /**
-   * @brief Represents the y-coordinate of the position.
-   */
-  float _y;
+  sf::Vector2f _position;
 };
 } // namespace component

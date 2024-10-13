@@ -35,7 +35,6 @@ ECS_system::RenderSystem::RenderSystem(
  */
 void ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
-  std::cout << "RenderSystem update" << std::endl;
   _window.clear();
 
   for (auto &entity :

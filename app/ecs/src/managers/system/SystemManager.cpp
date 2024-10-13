@@ -65,6 +65,31 @@ void ECS_system::SystemManager::addSystem(
         audioSystemLoader->getInstance("createAudioSystem", componentManager);
     // add the audio system to the system manager
     _systems.push_back(audioSystem);
+  } else if (systemName == "InputSystem") {
+    // dlopen the input system lib .so
+    std::shared_ptr<
+        rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
+        inputSystemLoader = std::make_shared<
+            rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
+            "lib/client_systems/r-type_input_system.so");
+    // get the instance of the input system
+    std::shared_ptr<ECS_system::ISystem> inputSystem =
+        inputSystemLoader->getInstance("createInputSystem", componentManager);
+    // add the input system to the system manager
+    _systems.push_back(inputSystem);
+  } else if (systemName == "MovementSystem") {
+    // dlopen the movement system lib .so
+    std::shared_ptr<
+        rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
+        movementSystemLoader = std::make_shared<
+            rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
+            "lib/client_systems/r-type_movement_system.so");
+    // get the instance of the movement system
+    std::shared_ptr<ECS_system::ISystem> movementSystem =
+        movementSystemLoader->getInstance("createMovementSystem",
+                                           componentManager);
+    // add the movement system to the system manager
+    _systems.push_back(movementSystem);
   }
 }
 
