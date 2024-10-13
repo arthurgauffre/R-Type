@@ -12,8 +12,7 @@
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::CoreModule()
-{
+rtype::CoreModule::CoreModule() {
   this->_componentManager = std::make_shared<component::ComponentManager>();
   this->_systemManager = std::make_shared<ECS_system::SystemManager>();
   this->_entityManager = std::make_shared<entity::EntityManager>();
@@ -38,8 +37,7 @@ rtype::CoreModule::CoreModule()
  * @brief Destroy the rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::~CoreModule()
-{
+rtype::CoreModule::~CoreModule() {
   // if (this->_libList.size() > 0) {
   //   for (auto &loader : rtype::CoreModule::_libList) {
   //     loader.DLLunloader();
@@ -915,31 +913,26 @@ rtype::CoreModule::~CoreModule()
 // }
 
 std::shared_ptr<entity::EntityManager>
-rtype::CoreModule::getEntityManager() const
-{
+rtype::CoreModule::getEntityManager() const {
   return this->_entityManager;
 }
 
 std::shared_ptr<component::ComponentManager>
-rtype::CoreModule::getComponentManager() const
-{
+rtype::CoreModule::getComponentManager() const {
   return this->_componentManager;
 }
 
 std::shared_ptr<ECS_system::SystemManager>
-rtype::CoreModule::getSystemManager() const
-{
+rtype::CoreModule::getSystemManager() const {
   return this->_systemManager;
 }
 
-void rtype::CoreModule::run()
-{
+void rtype::CoreModule::run() {
   sf::Clock clock;
-  while (1)
-  {
+  while (1) {
     float deltatime = clock.restart().asSeconds();
-    this->getSystemManager()->update(
-        deltatime, this->getEntityManager()->getEntities());
+    this->getSystemManager()->update(deltatime,
+                                     this->getEntityManager()->getEntities());
   }
 }
 
