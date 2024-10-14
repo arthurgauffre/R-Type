@@ -15,8 +15,8 @@
 namespace ECS_system {
 class InputSystem : public ASystem {
 public:
-  InputSystem(component::ComponentManager &componentManager)
-      : ASystem(componentManager) {}
+  InputSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+      : ASystem(componentManager, entityManager) {}
   ~InputSystem() = default;
 
   void update(float deltaTime,

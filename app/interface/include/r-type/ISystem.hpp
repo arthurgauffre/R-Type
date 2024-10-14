@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <managers/ComponentManager.hpp>
+#include <managers/EntityManager.hpp>
 #include <memory>
 #include <r-type/IEntity.hpp>
 #include <vector>
@@ -22,8 +23,8 @@
 namespace ECS_system {
 class ISystem {
 public:
-  ISystem(component::ComponentManager &componentManager)
-      : _componentManager(componentManager) {}
+  ISystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+      : _componentManager(componentManager), _entityManager(entityManager) {}
   /*
   ** @brief Initializes the system.
   */
@@ -61,5 +62,6 @@ public:
 
 protected:
   component::ComponentManager &_componentManager;
+  entity::EntityManager &_entityManager;
 };
 } // namespace ECS_system

@@ -27,7 +27,7 @@ namespace ECS_system {
 
 class WeaponSystem : virtual public ASystem {
 public:
-  WeaponSystem(component::ComponentManager &componentManager);
+  WeaponSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager);
   ~WeaponSystem();
 
   void update(float deltaTime,

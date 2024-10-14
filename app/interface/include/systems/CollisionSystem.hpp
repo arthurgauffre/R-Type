@@ -24,8 +24,8 @@ public:
    * @param componentManager Reference to the ComponentManager that manages the
    * components.
    */
-  CollisionSystem(component::ComponentManager &componentManager)
-      : ASystem(componentManager) {}
+  CollisionSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+      : ASystem(componentManager, entityManager) {}
 
   /**
    * @brief Destroys the CollisionSystem object.

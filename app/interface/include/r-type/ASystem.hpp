@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <managers/ComponentManager.hpp>
 #include <memory>
 #include <r-type/ISystem.hpp>
 #include <vector>
@@ -22,8 +21,8 @@ public:
    * @param componentManager Reference to the ComponentManager that manages all
    * components.
    */
-  ASystem(component::ComponentManager &componentManager)
-      : ISystem(componentManager) {}
+  ASystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+      : ISystem(componentManager, entityManager) {}
 
   /**
    * @brief Virtual destructor for the ASystem class.
