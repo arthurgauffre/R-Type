@@ -12,25 +12,24 @@
 #define ASIO_SSL_IMPL_HOST_NAME_VERIFICATION_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
+#include "asio/ip/address.hpp"
+#include "asio/ssl/detail/openssl_types.hpp"
+#include "asio/ssl/host_name_verification.hpp"
 #include <cctype>
 #include <cstring>
-#include "asio/ip/address.hpp"
-#include "asio/ssl/host_name_verification.hpp"
-#include "asio/ssl/detail/openssl_types.hpp"
 
 #include "asio/detail/push_options.hpp"
 
 namespace asio {
 namespace ssl {
 
-bool host_name_verification::operator()(
-    bool preverified, verify_context& ctx) const
-{
+bool host_name_verification::operator()(bool preverified,
+                                        verify_context &ctx) const {
   using namespace std; // For memcmp.
 
   // Don't bother looking at certificates that have failed pre-verification.
@@ -49,17 +48,14 @@ bool host_name_verification::operator()(
   const bool is_address = !ec;
   (void)address;
 
-  X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
+  X509 *cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
 
-  if (is_address)
-  {
+  if (is_address) {
     return X509_check_ip_asc(cert, host_.c_str(), 0) == 1;
-  }
-  else
-  {
-    char* peername = 0;
-    const int result = X509_check_host(cert,
-        host_.c_str(), host_.size(), 0, &peername);
+  } else {
+    char *peername = 0;
+    const int result =
+        X509_check_host(cert, host_.c_str(), host_.size(), 0, &peername);
     OPENSSL_free(peername);
     return result == 1;
   }

@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_IMPL_IO_URING_SERVICE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #if defined(ASIO_HAS_IO_URING)
@@ -24,51 +24,46 @@
 namespace asio {
 namespace detail {
 
-inline void io_uring_service::post_immediate_completion(
-    operation* op, bool is_continuation)
-{
+inline void io_uring_service::post_immediate_completion(operation *op,
+                                                        bool is_continuation) {
   scheduler_.post_immediate_completion(op, is_continuation);
 }
 
 template <typename Time_Traits>
-void io_uring_service::add_timer_queue(timer_queue<Time_Traits>& queue)
-{
+void io_uring_service::add_timer_queue(timer_queue<Time_Traits> &queue) {
   do_add_timer_queue(queue);
 }
 
 template <typename Time_Traits>
-void io_uring_service::remove_timer_queue(timer_queue<Time_Traits>& queue)
-{
+void io_uring_service::remove_timer_queue(timer_queue<Time_Traits> &queue) {
   do_remove_timer_queue(queue);
 }
 
 template <typename Time_Traits>
-void io_uring_service::schedule_timer(timer_queue<Time_Traits>& queue,
-    const typename Time_Traits::time_type& time,
-    typename timer_queue<Time_Traits>::per_timer_data& timer, wait_op* op)
-{
+void io_uring_service::schedule_timer(
+    timer_queue<Time_Traits> &queue,
+    const typename Time_Traits::time_type &time,
+    typename timer_queue<Time_Traits>::per_timer_data &timer, wait_op *op) {
   mutex::scoped_lock lock(mutex_);
 
-  if (shutdown_)
-  {
+  if (shutdown_) {
     scheduler_.post_immediate_completion(op, false);
     return;
   }
 
   bool earliest = queue.enqueue_timer(time, timer, op);
   scheduler_.work_started();
-  if (earliest)
-  {
+  if (earliest) {
     update_timeout();
     post_submit_sqes_op(lock);
   }
 }
 
 template <typename Time_Traits>
-std::size_t io_uring_service::cancel_timer(timer_queue<Time_Traits>& queue,
-    typename timer_queue<Time_Traits>::per_timer_data& timer,
-    std::size_t max_cancelled)
-{
+std::size_t io_uring_service::cancel_timer(
+    timer_queue<Time_Traits> &queue,
+    typename timer_queue<Time_Traits>::per_timer_data &timer,
+    std::size_t max_cancelled) {
   mutex::scoped_lock lock(mutex_);
   op_queue<operation> ops;
   std::size_t n = queue.cancel_timer(timer, ops, max_cancelled);
@@ -78,10 +73,10 @@ std::size_t io_uring_service::cancel_timer(timer_queue<Time_Traits>& queue,
 }
 
 template <typename Time_Traits>
-void io_uring_service::cancel_timer_by_key(timer_queue<Time_Traits>& queue,
-    typename timer_queue<Time_Traits>::per_timer_data* timer,
-    void* cancellation_key)
-{
+void io_uring_service::cancel_timer_by_key(
+    timer_queue<Time_Traits> &queue,
+    typename timer_queue<Time_Traits>::per_timer_data *timer,
+    void *cancellation_key) {
   mutex::scoped_lock lock(mutex_);
   op_queue<operation> ops;
   queue.cancel_timer_by_key(timer, ops, cancellation_key);
@@ -90,10 +85,10 @@ void io_uring_service::cancel_timer_by_key(timer_queue<Time_Traits>& queue,
 }
 
 template <typename Time_Traits>
-void io_uring_service::move_timer(timer_queue<Time_Traits>& queue,
-    typename timer_queue<Time_Traits>::per_timer_data& target,
-    typename timer_queue<Time_Traits>::per_timer_data& source)
-{
+void io_uring_service::move_timer(
+    timer_queue<Time_Traits> &queue,
+    typename timer_queue<Time_Traits>::per_timer_data &target,
+    typename timer_queue<Time_Traits>::per_timer_data &source) {
   mutex::scoped_lock lock(mutex_);
   op_queue<operation> ops;
   queue.cancel_timer(target, ops);

@@ -7,8 +7,7 @@
 
 #include "clientEx.cpp"
 
-int main(void)
-{
-    // simpleClient();
-    return 0;
+int main(void) {
+  // simpleClient();
+  return 0;
 }

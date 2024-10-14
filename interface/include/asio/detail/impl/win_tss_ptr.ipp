@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_IMPL_WIN_TSS_PTR_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -28,8 +28,7 @@
 namespace asio {
 namespace detail {
 
-DWORD win_tss_ptr_create()
-{
+DWORD win_tss_ptr_create() {
 #if defined(UNDER_CE)
   const DWORD out_of_indexes = 0xFFFFFFFF;
 #else
@@ -37,11 +36,9 @@ DWORD win_tss_ptr_create()
 #endif
 
   DWORD tss_key = ::TlsAlloc();
-  if (tss_key == out_of_indexes)
-  {
+  if (tss_key == out_of_indexes) {
     DWORD last_error = ::GetLastError();
-    asio::error_code ec(last_error,
-        asio::error::get_system_category());
+    asio::error_code ec(last_error, asio::error::get_system_category());
     asio::detail::throw_error(ec, "tss");
   }
   return tss_key;

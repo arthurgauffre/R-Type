@@ -13,7 +13,7 @@
 #define ASIO_DETAIL_IMPL_WIN_OBJECT_HANDLE_SERVICE_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -27,17 +27,12 @@
 namespace asio {
 namespace detail {
 
-win_object_handle_service::win_object_handle_service(execution_context& context)
-  : execution_context_service_base<win_object_handle_service>(context),
-    scheduler_(asio::use_service<scheduler_impl>(context)),
-    mutex_(),
-    impl_list_(0),
-    shutdown_(false)
-{
-}
+win_object_handle_service::win_object_handle_service(execution_context &context)
+    : execution_context_service_base<win_object_handle_service>(context),
+      scheduler_(asio::use_service<scheduler_impl>(context)), mutex_(),
+      impl_list_(0), shutdown_(false) {}
 
-void win_object_handle_service::shutdown()
-{
+void win_object_handle_service::shutdown() {
   mutex::scoped_lock lock(mutex_);
 
   // Setting this flag to true prevents new objects from being registered, and
@@ -46,7 +41,7 @@ void win_object_handle_service::shutdown()
   shutdown_ = true;
 
   op_queue<operation> ops;
-  for (implementation_type* impl = impl_list_; impl; impl = impl->next_)
+  for (implementation_type *impl = impl_list_; impl; impl = impl->next_)
     ops.push(impl->op_queue_);
 
   lock.unlock();
@@ -55,16 +50,14 @@ void win_object_handle_service::shutdown()
 }
 
 void win_object_handle_service::construct(
-    win_object_handle_service::implementation_type& impl)
-{
+    win_object_handle_service::implementation_type &impl) {
   impl.handle_ = INVALID_HANDLE_VALUE;
   impl.wait_handle_ = INVALID_HANDLE_VALUE;
   impl.owner_ = this;
 
   // Insert implementation into linked list of all implementations.
   mutex::scoped_lock lock(mutex_);
-  if (!shutdown_)
-  {
+  if (!shutdown_) {
     impl.next_ = impl_list_;
     impl.prev_ = 0;
     if (impl_list_)
@@ -74,14 +67,12 @@ void win_object_handle_service::construct(
 }
 
 void win_object_handle_service::move_construct(
-    win_object_handle_service::implementation_type& impl,
-    win_object_handle_service::implementation_type& other_impl)
-{
+    win_object_handle_service::implementation_type &impl,
+    win_object_handle_service::implementation_type &other_impl) {
   mutex::scoped_lock lock(mutex_);
 
   // Insert implementation into linked list of all implementations.
-  if (!shutdown_)
-  {
+  if (!shutdown_) {
     impl.next_ = impl_list_;
     impl.prev_ = 0;
     if (impl_list_)
@@ -109,24 +100,22 @@ void win_object_handle_service::move_construct(
 }
 
 void win_object_handle_service::move_assign(
-    win_object_handle_service::implementation_type& impl,
-    win_object_handle_service& other_service,
-    win_object_handle_service::implementation_type& other_impl)
-{
+    win_object_handle_service::implementation_type &impl,
+    win_object_handle_service &other_service,
+    win_object_handle_service::implementation_type &other_impl) {
   asio::error_code ignored_ec;
   close(impl, ignored_ec);
 
   mutex::scoped_lock lock(mutex_);
 
-  if (this != &other_service)
-  {
+  if (this != &other_service) {
     // Remove implementation from linked list of all implementations.
     if (impl_list_ == &impl)
       impl_list_ = impl.next_;
     if (impl.prev_)
       impl.prev_->next_ = impl.next_;
     if (impl.next_)
-      impl.next_->prev_= impl.prev_;
+      impl.next_->prev_ = impl.prev_;
     impl.next_ = 0;
     impl.prev_ = 0;
   }
@@ -138,8 +127,7 @@ void win_object_handle_service::move_assign(
   impl.op_queue_.push(other_impl.op_queue_);
   impl.owner_ = this;
 
-  if (this != &other_service)
-  {
+  if (this != &other_service) {
     // Insert implementation into linked list of all implementations.
     impl.next_ = other_service.impl_list_;
     impl.prev_ = 0;
@@ -161,8 +149,7 @@ void win_object_handle_service::move_assign(
 }
 
 void win_object_handle_service::destroy(
-    win_object_handle_service::implementation_type& impl)
-{
+    win_object_handle_service::implementation_type &impl) {
   mutex::scoped_lock lock(mutex_);
 
   // Remove implementation from linked list of all implementations.
@@ -171,21 +158,20 @@ void win_object_handle_service::destroy(
   if (impl.prev_)
     impl.prev_->next_ = impl.next_;
   if (impl.next_)
-    impl.next_->prev_= impl.prev_;
+    impl.next_->prev_ = impl.prev_;
   impl.next_ = 0;
   impl.prev_ = 0;
 
-  if (is_open(impl))
-  {
-    ASIO_HANDLER_OPERATION((scheduler_.context(), "object_handle",
-          &impl, reinterpret_cast<uintmax_t>(impl.wait_handle_), "close"));
+  if (is_open(impl)) {
+    ASIO_HANDLER_OPERATION((scheduler_.context(), "object_handle", &impl,
+                            reinterpret_cast<uintmax_t>(impl.wait_handle_),
+                            "close"));
 
     HANDLE wait_handle = impl.wait_handle_;
     impl.wait_handle_ = INVALID_HANDLE_VALUE;
 
     op_queue<operation> ops;
-    while (wait_op* op = impl.op_queue_.front())
-    {
+    while (wait_op *op = impl.op_queue_.front()) {
       op->ec_ = asio::error::operation_aborted;
       impl.op_queue_.pop();
       ops.push(op);
@@ -207,11 +193,9 @@ void win_object_handle_service::destroy(
 }
 
 asio::error_code win_object_handle_service::assign(
-    win_object_handle_service::implementation_type& impl,
-    const native_handle_type& handle, asio::error_code& ec)
-{
-  if (is_open(impl))
-  {
+    win_object_handle_service::implementation_type &impl,
+    const native_handle_type &handle, asio::error_code &ec) {
+  if (is_open(impl)) {
     ec = asio::error::already_open;
     ASIO_ERROR_LOCATION(ec);
     return ec;
@@ -223,13 +207,12 @@ asio::error_code win_object_handle_service::assign(
 }
 
 asio::error_code win_object_handle_service::close(
-    win_object_handle_service::implementation_type& impl,
-    asio::error_code& ec)
-{
-  if (is_open(impl))
-  {
-    ASIO_HANDLER_OPERATION((scheduler_.context(), "object_handle",
-          &impl, reinterpret_cast<uintmax_t>(impl.wait_handle_), "close"));
+    win_object_handle_service::implementation_type &impl,
+    asio::error_code &ec) {
+  if (is_open(impl)) {
+    ASIO_HANDLER_OPERATION((scheduler_.context(), "object_handle", &impl,
+                            reinterpret_cast<uintmax_t>(impl.wait_handle_),
+                            "close"));
 
     mutex::scoped_lock lock(mutex_);
 
@@ -237,8 +220,7 @@ asio::error_code win_object_handle_service::close(
     impl.wait_handle_ = INVALID_HANDLE_VALUE;
 
     op_queue<operation> completed_ops;
-    while (wait_op* op = impl.op_queue_.front())
-    {
+    while (wait_op *op = impl.op_queue_.front()) {
       impl.op_queue_.pop();
       op->ec_ = asio::error::operation_aborted;
       completed_ops.push(op);
@@ -252,22 +234,16 @@ asio::error_code win_object_handle_service::close(
     if (wait_handle != INVALID_HANDLE_VALUE)
       ::UnregisterWaitEx(wait_handle, INVALID_HANDLE_VALUE);
 
-    if (::CloseHandle(impl.handle_))
-    {
+    if (::CloseHandle(impl.handle_)) {
       impl.handle_ = INVALID_HANDLE_VALUE;
       ec = asio::error_code();
-    }
-    else
-    {
+    } else {
       DWORD last_error = ::GetLastError();
-      ec = asio::error_code(last_error,
-          asio::error::get_system_category());
+      ec = asio::error_code(last_error, asio::error::get_system_category());
     }
 
     scheduler_.post_deferred_completions(completed_ops);
-  }
-  else
-  {
+  } else {
     ec = asio::error_code();
   }
 
@@ -276,13 +252,12 @@ asio::error_code win_object_handle_service::close(
 }
 
 asio::error_code win_object_handle_service::cancel(
-    win_object_handle_service::implementation_type& impl,
-    asio::error_code& ec)
-{
-  if (is_open(impl))
-  {
-    ASIO_HANDLER_OPERATION((scheduler_.context(), "object_handle",
-          &impl, reinterpret_cast<uintmax_t>(impl.wait_handle_), "cancel"));
+    win_object_handle_service::implementation_type &impl,
+    asio::error_code &ec) {
+  if (is_open(impl)) {
+    ASIO_HANDLER_OPERATION((scheduler_.context(), "object_handle", &impl,
+                            reinterpret_cast<uintmax_t>(impl.wait_handle_),
+                            "cancel"));
 
     mutex::scoped_lock lock(mutex_);
 
@@ -290,8 +265,7 @@ asio::error_code win_object_handle_service::cancel(
     impl.wait_handle_ = INVALID_HANDLE_VALUE;
 
     op_queue<operation> completed_ops;
-    while (wait_op* op = impl.op_queue_.front())
-    {
+    while (wait_op *op = impl.op_queue_.front()) {
       op->ec_ = asio::error::operation_aborted;
       impl.op_queue_.pop();
       completed_ops.push(op);
@@ -308,9 +282,7 @@ asio::error_code win_object_handle_service::cancel(
     ec = asio::error_code();
 
     scheduler_.post_deferred_completions(completed_ops);
-  }
-  else
-  {
+  } else {
     ec = asio::error::bad_descriptor;
   }
 
@@ -319,19 +291,15 @@ asio::error_code win_object_handle_service::cancel(
 }
 
 void win_object_handle_service::wait(
-    win_object_handle_service::implementation_type& impl,
-    asio::error_code& ec)
-{
-  switch (::WaitForSingleObject(impl.handle_, INFINITE))
-  {
-  case WAIT_FAILED:
-    {
-      DWORD last_error = ::GetLastError();
-      ec = asio::error_code(last_error,
-          asio::error::get_system_category());
-      ASIO_ERROR_LOCATION(ec);
-      break;
-    }
+    win_object_handle_service::implementation_type &impl,
+    asio::error_code &ec) {
+  switch (::WaitForSingleObject(impl.handle_, INFINITE)) {
+  case WAIT_FAILED: {
+    DWORD last_error = ::GetLastError();
+    ec = asio::error_code(last_error, asio::error::get_system_category());
+    ASIO_ERROR_LOCATION(ec);
+    break;
+  }
   case WAIT_OBJECT_0:
   case WAIT_ABANDONED:
   default:
@@ -341,53 +309,42 @@ void win_object_handle_service::wait(
 }
 
 void win_object_handle_service::start_wait_op(
-    win_object_handle_service::implementation_type& impl, wait_op* op)
-{
+    win_object_handle_service::implementation_type &impl, wait_op *op) {
   scheduler_.work_started();
 
-  if (is_open(impl))
-  {
+  if (is_open(impl)) {
     mutex::scoped_lock lock(mutex_);
 
-    if (!shutdown_)
-    {
+    if (!shutdown_) {
       impl.op_queue_.push(op);
 
       // Only the first operation to be queued gets to register a wait callback.
       // Subsequent operations have to wait for the first to finish.
       if (impl.op_queue_.front() == op)
         register_wait_callback(impl, lock);
-    }
-    else
-    {
+    } else {
       lock.unlock();
       scheduler_.post_deferred_completion(op);
     }
-  }
-  else
-  {
+  } else {
     op->ec_ = asio::error::bad_descriptor;
     scheduler_.post_deferred_completion(op);
   }
 }
 
 void win_object_handle_service::register_wait_callback(
-    win_object_handle_service::implementation_type& impl,
-    mutex::scoped_lock& lock)
-{
+    win_object_handle_service::implementation_type &impl,
+    mutex::scoped_lock &lock) {
   lock.lock();
 
-  if (!RegisterWaitForSingleObject(&impl.wait_handle_,
-        impl.handle_, &win_object_handle_service::wait_callback,
-        &impl, INFINITE, WT_EXECUTEONLYONCE))
-  {
+  if (!RegisterWaitForSingleObject(&impl.wait_handle_, impl.handle_,
+                                   &win_object_handle_service::wait_callback,
+                                   &impl, INFINITE, WT_EXECUTEONLYONCE)) {
     DWORD last_error = ::GetLastError();
-    asio::error_code ec(last_error,
-        asio::error::get_system_category());
+    asio::error_code ec(last_error, asio::error::get_system_category());
 
     op_queue<operation> completed_ops;
-    while (wait_op* op = impl.op_queue_.front())
-    {
+    while (wait_op *op = impl.op_queue_.front()) {
       op->ec_ = ec;
       impl.op_queue_.pop();
       completed_ops.push(op);
@@ -398,37 +355,31 @@ void win_object_handle_service::register_wait_callback(
   }
 }
 
-void win_object_handle_service::wait_callback(PVOID param, BOOLEAN)
-{
-  implementation_type* impl = static_cast<implementation_type*>(param);
+void win_object_handle_service::wait_callback(PVOID param, BOOLEAN) {
+  implementation_type *impl = static_cast<implementation_type *>(param);
   mutex::scoped_lock lock(impl->owner_->mutex_);
 
-  if (impl->wait_handle_ != INVALID_HANDLE_VALUE)
-  {
+  if (impl->wait_handle_ != INVALID_HANDLE_VALUE) {
     ::UnregisterWaitEx(impl->wait_handle_, NULL);
     impl->wait_handle_ = INVALID_HANDLE_VALUE;
   }
 
-  if (wait_op* op = impl->op_queue_.front())
-  {
+  if (wait_op *op = impl->op_queue_.front()) {
     op_queue<operation> completed_ops;
 
     op->ec_ = asio::error_code();
     impl->op_queue_.pop();
     completed_ops.push(op);
 
-    if (!impl->op_queue_.empty())
-    {
-      if (!RegisterWaitForSingleObject(&impl->wait_handle_,
-            impl->handle_, &win_object_handle_service::wait_callback,
-            param, INFINITE, WT_EXECUTEONLYONCE))
-      {
+    if (!impl->op_queue_.empty()) {
+      if (!RegisterWaitForSingleObject(
+              &impl->wait_handle_, impl->handle_,
+              &win_object_handle_service::wait_callback, param, INFINITE,
+              WT_EXECUTEONLYONCE)) {
         DWORD last_error = ::GetLastError();
-        asio::error_code ec(last_error,
-            asio::error::get_system_category());
+        asio::error_code ec(last_error, asio::error::get_system_category());
 
-        while ((op = impl->op_queue_.front()) != 0)
-        {
+        while ((op = impl->op_queue_.front()) != 0) {
           op->ec_ = ec;
           impl->op_queue_.pop();
           completed_ops.push(op);
@@ -436,7 +387,7 @@ void win_object_handle_service::wait_callback(PVOID param, BOOLEAN)
       }
     }
 
-    scheduler_impl& sched = impl->owner_->scheduler_;
+    scheduler_impl &sched = impl->owner_->scheduler_;
     lock.unlock();
     sched.post_deferred_completions(completed_ops);
   }

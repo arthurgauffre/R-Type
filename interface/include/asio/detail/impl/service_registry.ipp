@@ -12,60 +12,49 @@
 #define ASIO_DETAIL_IMPL_SERVICE_REGISTRY_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include <vector>
 #include "asio/detail/service_registry.hpp"
 #include "asio/detail/throw_exception.hpp"
+#include <vector>
 
 #include "asio/detail/push_options.hpp"
 
 namespace asio {
 namespace detail {
 
-service_registry::service_registry(execution_context& owner)
-  : owner_(owner),
-    first_service_(0)
-{
-}
+service_registry::service_registry(execution_context &owner)
+    : owner_(owner), first_service_(0) {}
 
-service_registry::~service_registry()
-{
-}
+service_registry::~service_registry() {}
 
-void service_registry::shutdown_services()
-{
-  execution_context::service* service = first_service_;
-  while (service)
-  {
+void service_registry::shutdown_services() {
+  execution_context::service *service = first_service_;
+  while (service) {
     service->shutdown();
     service = service->next_;
   }
 }
 
-void service_registry::destroy_services()
-{
-  while (first_service_)
-  {
-    execution_context::service* next_service = first_service_->next_;
+void service_registry::destroy_services() {
+  while (first_service_) {
+    execution_context::service *next_service = first_service_->next_;
     destroy(first_service_);
     first_service_ = next_service;
   }
 }
 
-void service_registry::notify_fork(execution_context::fork_event fork_ev)
-{
+void service_registry::notify_fork(execution_context::fork_event fork_ev) {
   // Make a copy of all of the services while holding the lock. We don't want
   // to hold the lock while calling into each service, as it may try to call
   // back into this class.
-  std::vector<execution_context::service*> services;
+  std::vector<execution_context::service *> services;
   {
     asio::detail::mutex::scoped_lock lock(mutex_);
-    execution_context::service* service = first_service_;
-    while (service)
-    {
+    execution_context::service *service = first_service_;
+    while (service) {
       services.push_back(service);
       service = service->next_;
     }
@@ -84,17 +73,14 @@ void service_registry::notify_fork(execution_context::fork_event fork_ev)
       services[i - 1]->notify_fork(fork_ev);
 }
 
-void service_registry::init_key_from_id(execution_context::service::key& key,
-    const execution_context::id& id)
-{
+void service_registry::init_key_from_id(execution_context::service::key &key,
+                                        const execution_context::id &id) {
   key.type_info_ = 0;
   key.id_ = &id;
 }
 
-bool service_registry::keys_match(
-    const execution_context::service::key& key1,
-    const execution_context::service::key& key2)
-{
+bool service_registry::keys_match(const execution_context::service::key &key1,
+                                  const execution_context::service::key &key2) {
   if (key1.id_ && key2.id_)
     if (key1.id_ == key2.id_)
       return true;
@@ -104,21 +90,18 @@ bool service_registry::keys_match(
   return false;
 }
 
-void service_registry::destroy(execution_context::service* service)
-{
+void service_registry::destroy(execution_context::service *service) {
   delete service;
 }
 
-execution_context::service* service_registry::do_use_service(
-    const execution_context::service::key& key,
-    factory_type factory, void* owner)
-{
+execution_context::service *
+service_registry::do_use_service(const execution_context::service::key &key,
+                                 factory_type factory, void *owner) {
   asio::detail::mutex::scoped_lock lock(mutex_);
 
   // First see if there is an existing service object with the given key.
-  execution_context::service* service = first_service_;
-  while (service)
-  {
+  execution_context::service *service = first_service_;
+  while (service) {
     if (keys_match(service->key_, key))
       return service;
     service = service->next_;
@@ -128,15 +111,14 @@ execution_context::service* service_registry::do_use_service(
   // at this time to allow for nested calls into this function from the new
   // service's constructor.
   lock.unlock();
-  auto_service_ptr new_service = { factory(owner) };
+  auto_service_ptr new_service = {factory(owner)};
   new_service.ptr_->key_ = key;
   lock.lock();
 
   // Check that nobody else created another service object of the same type
   // while the lock was released.
   service = first_service_;
-  while (service)
-  {
+  while (service) {
     if (keys_match(service->key_, key))
       return service;
     service = service->next_;
@@ -150,18 +132,16 @@ execution_context::service* service_registry::do_use_service(
 }
 
 void service_registry::do_add_service(
-    const execution_context::service::key& key,
-    execution_context::service* new_service)
-{
+    const execution_context::service::key &key,
+    execution_context::service *new_service) {
   if (&owner_ != &new_service->context())
     asio::detail::throw_exception(invalid_service_owner());
 
   asio::detail::mutex::scoped_lock lock(mutex_);
 
   // Check if there is an existing service object with the given key.
-  execution_context::service* service = first_service_;
-  while (service)
-  {
+  execution_context::service *service = first_service_;
+  while (service) {
     if (keys_match(service->key_, key))
       asio::detail::throw_exception(service_already_exists());
     service = service->next_;
@@ -174,13 +154,11 @@ void service_registry::do_add_service(
 }
 
 bool service_registry::do_has_service(
-    const execution_context::service::key& key) const
-{
+    const execution_context::service::key &key) const {
   asio::detail::mutex::scoped_lock lock(mutex_);
 
-  execution_context::service* service = first_service_;
-  while (service)
-  {
+  execution_context::service *service = first_service_;
+  while (service) {
     if (keys_match(service->key_, key))
       return true;
     service = service->next_;

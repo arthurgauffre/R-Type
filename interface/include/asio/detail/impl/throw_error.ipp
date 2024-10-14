@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_IMPL_THROW_ERROR_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -24,19 +24,13 @@
 namespace asio {
 namespace detail {
 
-void do_throw_error(
-    const asio::error_code& err
-    ASIO_SOURCE_LOCATION_PARAM)
-{
+void do_throw_error(const asio::error_code &err ASIO_SOURCE_LOCATION_PARAM) {
   asio::system_error e(err);
   asio::detail::throw_exception(e ASIO_SOURCE_LOCATION_ARG);
 }
 
-void do_throw_error(
-    const asio::error_code& err,
-    const char* location
-    ASIO_SOURCE_LOCATION_PARAM)
-{
+void do_throw_error(const asio::error_code &err,
+                    const char *location ASIO_SOURCE_LOCATION_PARAM) {
   asio::system_error e(err, location);
   asio::detail::throw_exception(e ASIO_SOURCE_LOCATION_ARG);
 }

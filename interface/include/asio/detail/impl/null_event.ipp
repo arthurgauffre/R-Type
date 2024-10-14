@@ -12,23 +12,23 @@
 #define ASIO_DETAIL_IMPL_NULL_EVENT_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
 #if defined(ASIO_WINDOWS_RUNTIME)
-# include <thread>
+#include <thread>
 #elif defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-# include "asio/detail/socket_types.hpp"
+#include "asio/detail/socket_types.hpp"
 #else
-# include <unistd.h>
-# if defined(__hpux)
-#  include <sys/time.h>
-# endif
-# if !defined(__hpux) || defined(__SELECT)
-#  include <sys/select.h>
-# endif
+#include <unistd.h>
+#if defined(__hpux)
+#include <sys/time.h>
+#endif
+#if !defined(__hpux) || defined(__SELECT)
+#include <sys/select.h>
+#endif
 #endif
 
 #include "asio/detail/push_options.hpp"
@@ -36,8 +36,7 @@
 namespace asio {
 namespace detail {
 
-void null_event::do_wait()
-{
+void null_event::do_wait() {
 #if defined(ASIO_WINDOWS_RUNTIME)
   std::this_thread::sleep_until((std::chrono::steady_clock::time_point::max)());
 #elif defined(ASIO_WINDOWS) || defined(__CYGWIN__)
@@ -47,8 +46,7 @@ void null_event::do_wait()
 #endif
 }
 
-void null_event::do_wait_for_usec(long usec)
-{
+void null_event::do_wait_for_usec(long usec) {
 #if defined(ASIO_WINDOWS_RUNTIME)
   std::this_thread::sleep_for(std::chrono::microseconds(usec));
 #elif defined(ASIO_WINDOWS) || defined(__CYGWIN__)

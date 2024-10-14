@@ -12,18 +12,16 @@
 #define ASIO_DETAIL_IMPL_REACTIVE_DESCRIPTOR_SERVICE_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
-#if !defined(ASIO_WINDOWS) \
-  && !defined(ASIO_WINDOWS_RUNTIME) \
-  && !defined(__CYGWIN__) \
-  && !defined(ASIO_HAS_IO_URING_AS_DEFAULT)
+#if !defined(ASIO_WINDOWS) && !defined(ASIO_WINDOWS_RUNTIME) &&                \
+    !defined(__CYGWIN__) && !defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
-#include "asio/error.hpp"
 #include "asio/detail/reactive_descriptor_service.hpp"
+#include "asio/error.hpp"
 
 #include "asio/detail/push_options.hpp"
 
@@ -31,45 +29,38 @@ namespace asio {
 namespace detail {
 
 reactive_descriptor_service::reactive_descriptor_service(
-    execution_context& context)
-  : execution_context_service_base<reactive_descriptor_service>(context),
-    reactor_(asio::use_service<reactor>(context))
-{
+    execution_context &context)
+    : execution_context_service_base<reactive_descriptor_service>(context),
+      reactor_(asio::use_service<reactor>(context)) {
   reactor_.init_task();
 }
 
-void reactive_descriptor_service::shutdown()
-{
-}
+void reactive_descriptor_service::shutdown() {}
 
 void reactive_descriptor_service::construct(
-    reactive_descriptor_service::implementation_type& impl)
-{
+    reactive_descriptor_service::implementation_type &impl) {
   impl.descriptor_ = -1;
   impl.state_ = 0;
   impl.reactor_data_ = reactor::per_descriptor_data();
 }
 
 void reactive_descriptor_service::move_construct(
-    reactive_descriptor_service::implementation_type& impl,
-    reactive_descriptor_service::implementation_type& other_impl)
-  noexcept
-{
+    reactive_descriptor_service::implementation_type &impl,
+    reactive_descriptor_service::implementation_type &other_impl) noexcept {
   impl.descriptor_ = other_impl.descriptor_;
   other_impl.descriptor_ = -1;
 
   impl.state_ = other_impl.state_;
   other_impl.state_ = 0;
 
-  reactor_.move_descriptor(impl.descriptor_,
-      impl.reactor_data_, other_impl.reactor_data_);
+  reactor_.move_descriptor(impl.descriptor_, impl.reactor_data_,
+                           other_impl.reactor_data_);
 }
 
 void reactive_descriptor_service::move_assign(
-    reactive_descriptor_service::implementation_type& impl,
-    reactive_descriptor_service& other_service,
-    reactive_descriptor_service::implementation_type& other_impl)
-{
+    reactive_descriptor_service::implementation_type &impl,
+    reactive_descriptor_service &other_service,
+    reactive_descriptor_service::implementation_type &other_impl) {
   destroy(impl);
 
   impl.descriptor_ = other_impl.descriptor_;
@@ -78,19 +69,18 @@ void reactive_descriptor_service::move_assign(
   impl.state_ = other_impl.state_;
   other_impl.state_ = 0;
 
-  other_service.reactor_.move_descriptor(impl.descriptor_,
-      impl.reactor_data_, other_impl.reactor_data_);
+  other_service.reactor_.move_descriptor(impl.descriptor_, impl.reactor_data_,
+                                         other_impl.reactor_data_);
 }
 
 void reactive_descriptor_service::destroy(
-    reactive_descriptor_service::implementation_type& impl)
-{
-  if (is_open(impl))
-  {
-    ASIO_HANDLER_OPERATION((reactor_.context(),
-          "descriptor", &impl, impl.descriptor_, "close"));
+    reactive_descriptor_service::implementation_type &impl) {
+  if (is_open(impl)) {
+    ASIO_HANDLER_OPERATION(
+        (reactor_.context(), "descriptor", &impl, impl.descriptor_, "close"));
 
-    reactor_.deregister_descriptor(impl.descriptor_, impl.reactor_data_,
+    reactor_.deregister_descriptor(
+        impl.descriptor_, impl.reactor_data_,
         (impl.state_ & descriptor_ops::possible_dup) == 0);
 
     asio::error_code ignored_ec;
@@ -101,21 +91,17 @@ void reactive_descriptor_service::destroy(
 }
 
 asio::error_code reactive_descriptor_service::assign(
-    reactive_descriptor_service::implementation_type& impl,
-    const native_handle_type& native_descriptor, asio::error_code& ec)
-{
-  if (is_open(impl))
-  {
+    reactive_descriptor_service::implementation_type &impl,
+    const native_handle_type &native_descriptor, asio::error_code &ec) {
+  if (is_open(impl)) {
     ec = asio::error::already_open;
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
-  if (int err = reactor_.register_descriptor(
-        native_descriptor, impl.reactor_data_))
-  {
-    ec = asio::error_code(err,
-        asio::error::get_system_category());
+  if (int err =
+          reactor_.register_descriptor(native_descriptor, impl.reactor_data_)) {
+    ec = asio::error_code(err, asio::error::get_system_category());
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
@@ -127,23 +113,20 @@ asio::error_code reactive_descriptor_service::assign(
 }
 
 asio::error_code reactive_descriptor_service::close(
-    reactive_descriptor_service::implementation_type& impl,
-    asio::error_code& ec)
-{
-  if (is_open(impl))
-  {
-    ASIO_HANDLER_OPERATION((reactor_.context(),
-          "descriptor", &impl, impl.descriptor_, "close"));
+    reactive_descriptor_service::implementation_type &impl,
+    asio::error_code &ec) {
+  if (is_open(impl)) {
+    ASIO_HANDLER_OPERATION(
+        (reactor_.context(), "descriptor", &impl, impl.descriptor_, "close"));
 
-    reactor_.deregister_descriptor(impl.descriptor_, impl.reactor_data_,
+    reactor_.deregister_descriptor(
+        impl.descriptor_, impl.reactor_data_,
         (impl.state_ & descriptor_ops::possible_dup) == 0);
 
     descriptor_ops::close(impl.descriptor_, impl.state_, ec);
 
     reactor_.cleanup_descriptor_data(impl.reactor_data_);
-  }
-  else
-  {
+  } else {
     ec = asio::error_code();
   }
 
@@ -161,14 +144,12 @@ asio::error_code reactive_descriptor_service::close(
 
 reactive_descriptor_service::native_handle_type
 reactive_descriptor_service::release(
-    reactive_descriptor_service::implementation_type& impl)
-{
+    reactive_descriptor_service::implementation_type &impl) {
   native_handle_type descriptor = impl.descriptor_;
 
-  if (is_open(impl))
-  {
-    ASIO_HANDLER_OPERATION((reactor_.context(),
-          "descriptor", &impl, impl.descriptor_, "release"));
+  if (is_open(impl)) {
+    ASIO_HANDLER_OPERATION(
+        (reactor_.context(), "descriptor", &impl, impl.descriptor_, "release"));
 
     reactor_.deregister_descriptor(impl.descriptor_, impl.reactor_data_, false);
     reactor_.cleanup_descriptor_data(impl.reactor_data_);
@@ -179,37 +160,34 @@ reactive_descriptor_service::release(
 }
 
 asio::error_code reactive_descriptor_service::cancel(
-    reactive_descriptor_service::implementation_type& impl,
-    asio::error_code& ec)
-{
-  if (!is_open(impl))
-  {
+    reactive_descriptor_service::implementation_type &impl,
+    asio::error_code &ec) {
+  if (!is_open(impl)) {
     ec = asio::error::bad_descriptor;
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
-  ASIO_HANDLER_OPERATION((reactor_.context(),
-        "descriptor", &impl, impl.descriptor_, "cancel"));
+  ASIO_HANDLER_OPERATION(
+      (reactor_.context(), "descriptor", &impl, impl.descriptor_, "cancel"));
 
   reactor_.cancel_ops(impl.descriptor_, impl.reactor_data_);
   ec = asio::error_code();
   return ec;
 }
 
-void reactive_descriptor_service::do_start_op(implementation_type& impl,
-    int op_type, reactor_op* op, bool is_continuation, bool is_non_blocking,
-    bool noop, void (*on_immediate)(operation* op, bool, const void*),
-    const void* immediate_arg)
-{
-  if (!noop)
-  {
+void reactive_descriptor_service::do_start_op(
+    implementation_type &impl, int op_type, reactor_op *op,
+    bool is_continuation, bool is_non_blocking, bool noop,
+    void (*on_immediate)(operation *op, bool, const void *),
+    const void *immediate_arg) {
+  if (!noop) {
     if ((impl.state_ & descriptor_ops::non_blocking) ||
-        descriptor_ops::set_internal_non_blocking(
-          impl.descriptor_, impl.state_, true, op->ec_))
-    {
+        descriptor_ops::set_internal_non_blocking(impl.descriptor_, impl.state_,
+                                                  true, op->ec_)) {
       reactor_.start_op(op_type, impl.descriptor_, impl.reactor_data_, op,
-          is_continuation, is_non_blocking, on_immediate, immediate_arg);
+                        is_continuation, is_non_blocking, on_immediate,
+                        immediate_arg);
       return;
     }
   }

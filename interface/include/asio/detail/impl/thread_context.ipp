@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_IMPL_THREAD_CONTEXT_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -22,8 +22,7 @@
 namespace asio {
 namespace detail {
 
-thread_info_base* thread_context::top_of_thread_call_stack()
-{
+thread_info_base *thread_context::top_of_thread_call_stack() {
   return thread_call_stack::top();
 }
 

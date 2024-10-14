@@ -13,15 +13,15 @@
 #define ASIO_DETAIL_IMPL_WIN_IOCP_SERIAL_PORT_SERVICE_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
 
 #if defined(ASIO_HAS_IOCP) && defined(ASIO_HAS_SERIAL_PORT)
 
-#include <cstring>
 #include "asio/detail/win_iocp_serial_port_service.hpp"
+#include <cstring>
 
 #include "asio/detail/push_options.hpp"
 
@@ -29,22 +29,16 @@ namespace asio {
 namespace detail {
 
 win_iocp_serial_port_service::win_iocp_serial_port_service(
-    execution_context& context)
-  : execution_context_service_base<win_iocp_serial_port_service>(context),
-    handle_service_(context)
-{
-}
+    execution_context &context)
+    : execution_context_service_base<win_iocp_serial_port_service>(context),
+      handle_service_(context) {}
 
-void win_iocp_serial_port_service::shutdown()
-{
-}
+void win_iocp_serial_port_service::shutdown() {}
 
 asio::error_code win_iocp_serial_port_service::open(
-    win_iocp_serial_port_service::implementation_type& impl,
-    const std::string& device, asio::error_code& ec)
-{
-  if (is_open(impl))
-  {
+    win_iocp_serial_port_service::implementation_type &impl,
+    const std::string &device, asio::error_code &ec) {
+  if (is_open(impl)) {
     ec = asio::error::already_open;
     ASIO_ERROR_LOCATION(ec);
     return ec;
@@ -54,14 +48,11 @@ asio::error_code win_iocp_serial_port_service::open(
   std::string name = (device[0] == '\\') ? device : "\\\\.\\" + device;
 
   // Open a handle to the serial port.
-  ::HANDLE handle = ::CreateFileA(name.c_str(),
-      GENERIC_READ | GENERIC_WRITE, 0, 0,
-      OPEN_EXISTING, FILE_FLAG_OVERLAPPED, 0);
-  if (handle == INVALID_HANDLE_VALUE)
-  {
+  ::HANDLE handle = ::CreateFileA(name.c_str(), GENERIC_READ | GENERIC_WRITE, 0,
+                                  0, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, 0);
+  if (handle == INVALID_HANDLE_VALUE) {
     DWORD last_error = ::GetLastError();
-    ec = asio::error_code(last_error,
-        asio::error::get_system_category());
+    ec = asio::error_code(last_error, asio::error::get_system_category());
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
@@ -71,24 +62,22 @@ asio::error_code win_iocp_serial_port_service::open(
   ::DCB dcb;
   memset(&dcb, 0, sizeof(DCB));
   dcb.DCBlength = sizeof(DCB);
-  if (!::GetCommState(handle, &dcb))
-  {
+  if (!::GetCommState(handle, &dcb)) {
     DWORD last_error = ::GetLastError();
     ::CloseHandle(handle);
-    ec = asio::error_code(last_error,
-        asio::error::get_system_category());
+    ec = asio::error_code(last_error, asio::error::get_system_category());
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
   // Set some default serial port parameters. This implementation does not
   // support changing all of these, so they might as well be in a known state.
-  dcb.fBinary = TRUE; // Win32 only supports binary mode.
-  dcb.fNull = FALSE; // Do not ignore NULL characters.
+  dcb.fBinary = TRUE;        // Win32 only supports binary mode.
+  dcb.fNull = FALSE;         // Do not ignore NULL characters.
   dcb.fAbortOnError = FALSE; // Ignore serial framing errors.
-  dcb.BaudRate = CBR_9600; // 9600 baud by default
-  dcb.ByteSize = 8; // 8 bit bytes
-  dcb.fOutxCtsFlow = FALSE; // No flow control
+  dcb.BaudRate = CBR_9600;   // 9600 baud by default
+  dcb.ByteSize = 8;          // 8 bit bytes
+  dcb.fOutxCtsFlow = FALSE;  // No flow control
   dcb.fOutxDsrFlow = FALSE;
   dcb.fDtrControl = DTR_CONTROL_DISABLE;
   dcb.fDsrSensitivity = FALSE;
@@ -98,12 +87,10 @@ asio::error_code win_iocp_serial_port_service::open(
   dcb.fParity = FALSE; // No parity
   dcb.Parity = NOPARITY;
   dcb.StopBits = ONESTOPBIT; // One stop bit
-  if (!::SetCommState(handle, &dcb))
-  {
+  if (!::SetCommState(handle, &dcb)) {
     DWORD last_error = ::GetLastError();
     ::CloseHandle(handle);
-    ec = asio::error_code(last_error,
-        asio::error::get_system_category());
+    ec = asio::error_code(last_error, asio::error::get_system_category());
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
@@ -117,12 +104,10 @@ asio::error_code win_iocp_serial_port_service::open(
   timeouts.ReadTotalTimeoutConstant = 0;
   timeouts.WriteTotalTimeoutMultiplier = 0;
   timeouts.WriteTotalTimeoutConstant = 0;
-  if (!::SetCommTimeouts(handle, &timeouts))
-  {
+  if (!::SetCommTimeouts(handle, &timeouts)) {
     DWORD last_error = ::GetLastError();
     ::CloseHandle(handle);
-    ec = asio::error_code(last_error,
-        asio::error::get_system_category());
+    ec = asio::error_code(last_error, asio::error::get_system_category());
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
@@ -134,20 +119,17 @@ asio::error_code win_iocp_serial_port_service::open(
 }
 
 asio::error_code win_iocp_serial_port_service::do_set_option(
-    win_iocp_serial_port_service::implementation_type& impl,
-    win_iocp_serial_port_service::store_function_type store,
-    const void* option, asio::error_code& ec)
-{
+    win_iocp_serial_port_service::implementation_type &impl,
+    win_iocp_serial_port_service::store_function_type store, const void *option,
+    asio::error_code &ec) {
   using namespace std; // For memcpy.
 
   ::DCB dcb;
   memset(&dcb, 0, sizeof(DCB));
   dcb.DCBlength = sizeof(DCB);
-  if (!::GetCommState(handle_service_.native_handle(impl), &dcb))
-  {
+  if (!::GetCommState(handle_service_.native_handle(impl), &dcb)) {
     DWORD last_error = ::GetLastError();
-    ec = asio::error_code(last_error,
-        asio::error::get_system_category());
+    ec = asio::error_code(last_error, asio::error::get_system_category());
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
@@ -155,11 +137,9 @@ asio::error_code win_iocp_serial_port_service::do_set_option(
   if (store(option, dcb, ec))
     return ec;
 
-  if (!::SetCommState(handle_service_.native_handle(impl), &dcb))
-  {
+  if (!::SetCommState(handle_service_.native_handle(impl), &dcb)) {
     DWORD last_error = ::GetLastError();
-    ec = asio::error_code(last_error,
-        asio::error::get_system_category());
+    ec = asio::error_code(last_error, asio::error::get_system_category());
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }
@@ -169,20 +149,17 @@ asio::error_code win_iocp_serial_port_service::do_set_option(
 }
 
 asio::error_code win_iocp_serial_port_service::do_get_option(
-    const win_iocp_serial_port_service::implementation_type& impl,
-    win_iocp_serial_port_service::load_function_type load,
-    void* option, asio::error_code& ec) const
-{
+    const win_iocp_serial_port_service::implementation_type &impl,
+    win_iocp_serial_port_service::load_function_type load, void *option,
+    asio::error_code &ec) const {
   using namespace std; // For memset.
 
   ::DCB dcb;
   memset(&dcb, 0, sizeof(DCB));
   dcb.DCBlength = sizeof(DCB);
-  if (!::GetCommState(handle_service_.native_handle(impl), &dcb))
-  {
+  if (!::GetCommState(handle_service_.native_handle(impl), &dcb)) {
     DWORD last_error = ::GetLastError();
-    ec = asio::error_code(last_error,
-        asio::error::get_system_category());
+    ec = asio::error_code(last_error, asio::error::get_system_category());
     ASIO_ERROR_LOCATION(ec);
     return ec;
   }

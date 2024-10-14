@@ -12,7 +12,7 @@
 #define ASIO_EXPERIMENTAL_DETAIL_HAS_SIGNATURE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -24,26 +24,17 @@ namespace asio {
 namespace experimental {
 namespace detail {
 
-template <typename S, typename... Signatures>
-struct has_signature;
+template <typename S, typename... Signatures> struct has_signature;
+
+template <typename S, typename... Signatures> struct has_signature;
+
+template <typename S> struct has_signature<S> : false_type {};
 
 template <typename S, typename... Signatures>
-struct has_signature;
-
-template <typename S>
-struct has_signature<S> : false_type
-{
-};
-
-template <typename S, typename... Signatures>
-struct has_signature<S, S, Signatures...> : true_type
-{
-};
+struct has_signature<S, S, Signatures...> : true_type {};
 
 template <typename S, typename Head, typename... Tail>
-struct has_signature<S, Head, Tail...> : has_signature<S, Tail...>
-{
-};
+struct has_signature<S, Head, Tail...> : has_signature<S, Tail...> {};
 
 } // namespace detail
 } // namespace experimental

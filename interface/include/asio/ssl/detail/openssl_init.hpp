@@ -12,14 +12,14 @@
 #define ASIO_SSL_DETAIL_OPENSSL_INIT_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
-#include <cstring>
 #include "asio/detail/memory.hpp"
 #include "asio/detail/noncopyable.hpp"
 #include "asio/ssl/detail/openssl_types.hpp"
+#include <cstring>
 
 #include "asio/detail/push_options.hpp"
 
@@ -27,9 +27,7 @@ namespace asio {
 namespace ssl {
 namespace detail {
 
-class openssl_init_base
-  : private noncopyable
-{
+class openssl_init_base : private noncopyable {
 protected:
   // Class that performs the actual initialisation.
   class do_init;
@@ -41,37 +39,29 @@ protected:
   // initialised before any other global objects try to use it.
   ASIO_DECL static asio::detail::shared_ptr<do_init> instance();
 
-#if !defined(SSL_OP_NO_COMPRESSION) \
-  && (OPENSSL_VERSION_NUMBER >= 0x00908000L)
+#if !defined(SSL_OP_NO_COMPRESSION) && (OPENSSL_VERSION_NUMBER >= 0x00908000L)
   // Get an empty stack of compression methods, to be used when disabling
   // compression.
-  ASIO_DECL static STACK_OF(SSL_COMP)* get_null_compression_methods();
+  ASIO_DECL static STACK_OF(SSL_COMP) * get_null_compression_methods();
 #endif // !defined(SSL_OP_NO_COMPRESSION)
        // && (OPENSSL_VERSION_NUMBER >= 0x00908000L)
 };
 
-template <bool Do_Init = true>
-class openssl_init : private openssl_init_base
-{
+template <bool Do_Init = true> class openssl_init : private openssl_init_base {
 public:
   // Constructor.
-  openssl_init()
-    : ref_(instance())
-  {
+  openssl_init() : ref_(instance()) {
     using namespace std; // For memmove.
 
     // Ensure openssl_init::instance_ is linked in.
-    openssl_init* tmp = &instance_;
-    memmove(&tmp, &tmp, sizeof(openssl_init*));
+    openssl_init *tmp = &instance_;
+    memmove(&tmp, &tmp, sizeof(openssl_init *));
   }
 
   // Destructor.
-  ~openssl_init()
-  {
-  }
+  ~openssl_init() {}
 
-#if !defined(SSL_OP_NO_COMPRESSION) \
-  && (OPENSSL_VERSION_NUMBER >= 0x00908000L)
+#if !defined(SSL_OP_NO_COMPRESSION) && (OPENSSL_VERSION_NUMBER >= 0x00908000L)
   using openssl_init_base::get_null_compression_methods;
 #endif // !defined(SSL_OP_NO_COMPRESSION)
        // && (OPENSSL_VERSION_NUMBER >= 0x00908000L)
@@ -85,8 +75,7 @@ private:
   asio::detail::shared_ptr<do_init> ref_;
 };
 
-template <bool Do_Init>
-openssl_init<Do_Init> openssl_init<Do_Init>::instance_;
+template <bool Do_Init> openssl_init<Do_Init> openssl_init<Do_Init>::instance_;
 
 } // namespace detail
 } // namespace ssl
@@ -95,7 +84,7 @@ openssl_init<Do_Init> openssl_init<Do_Init>::instance_;
 #include "asio/detail/pop_options.hpp"
 
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/ssl/detail/impl/openssl_init.ipp"
+#include "asio/ssl/detail/impl/openssl_init.ipp"
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_SSL_DETAIL_OPENSSL_INIT_HPP

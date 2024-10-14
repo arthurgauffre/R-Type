@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_IMPL_WIN_MUTEX_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -28,45 +28,40 @@
 namespace asio {
 namespace detail {
 
-win_mutex::win_mutex()
-{
+win_mutex::win_mutex() {
   int error = do_init();
-  asio::error_code ec(error,
-      asio::error::get_system_category());
+  asio::error_code ec(error, asio::error::get_system_category());
   asio::detail::throw_error(ec, "mutex");
 }
 
-int win_mutex::do_init()
-{
+int win_mutex::do_init() {
 #if defined(__MINGW32__)
   // Not sure if MinGW supports structured exception handling, so for now
   // we'll just call the Windows API and hope.
-# if defined(UNDER_CE)
+#if defined(UNDER_CE)
   ::InitializeCriticalSection(&crit_section_);
-# elif defined(ASIO_WINDOWS_APP)
+#elif defined(ASIO_WINDOWS_APP)
   if (!::InitializeCriticalSectionEx(&crit_section_, 0, 0))
     return ::GetLastError();
-# else
+#else
   if (!::InitializeCriticalSectionAndSpinCount(&crit_section_, 0x80000000))
     return ::GetLastError();
-# endif
+#endif
   return 0;
 #else
-  __try
-  {
-# if defined(UNDER_CE)
+  __try {
+#if defined(UNDER_CE)
     ::InitializeCriticalSection(&crit_section_);
-# elif defined(ASIO_WINDOWS_APP)
+#elif defined(ASIO_WINDOWS_APP)
     if (!::InitializeCriticalSectionEx(&crit_section_, 0, 0))
       return ::GetLastError();
-# else
+#else
     if (!::InitializeCriticalSectionAndSpinCount(&crit_section_, 0x80000000))
       return ::GetLastError();
-# endif
-  }
-  __except(GetExceptionCode() == STATUS_NO_MEMORY
-      ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH)
-  {
+#endif
+  } __except (GetExceptionCode() == STATUS_NO_MEMORY
+                  ? EXCEPTION_EXECUTE_HANDLER
+                  : EXCEPTION_CONTINUE_SEARCH) {
     return ERROR_OUTOFMEMORY;
   }
 

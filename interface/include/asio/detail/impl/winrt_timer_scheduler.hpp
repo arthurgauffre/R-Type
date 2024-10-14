@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_IMPL_WINRT_TIMER_SCHEDULER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -25,27 +25,25 @@ namespace asio {
 namespace detail {
 
 template <typename Time_Traits>
-void winrt_timer_scheduler::add_timer_queue(timer_queue<Time_Traits>& queue)
-{
+void winrt_timer_scheduler::add_timer_queue(timer_queue<Time_Traits> &queue) {
   do_add_timer_queue(queue);
 }
 
 // Remove a timer queue from the reactor.
 template <typename Time_Traits>
-void winrt_timer_scheduler::remove_timer_queue(timer_queue<Time_Traits>& queue)
-{
+void winrt_timer_scheduler::remove_timer_queue(
+    timer_queue<Time_Traits> &queue) {
   do_remove_timer_queue(queue);
 }
 
 template <typename Time_Traits>
-void winrt_timer_scheduler::schedule_timer(timer_queue<Time_Traits>& queue,
-    const typename Time_Traits::time_type& time,
-    typename timer_queue<Time_Traits>::per_timer_data& timer, wait_op* op)
-{
+void winrt_timer_scheduler::schedule_timer(
+    timer_queue<Time_Traits> &queue,
+    const typename Time_Traits::time_type &time,
+    typename timer_queue<Time_Traits>::per_timer_data &timer, wait_op *op) {
   asio::detail::mutex::scoped_lock lock(mutex_);
 
-  if (shutdown_)
-  {
+  if (shutdown_) {
     scheduler_.post_immediate_completion(op, false);
     return;
   }
@@ -57,10 +55,10 @@ void winrt_timer_scheduler::schedule_timer(timer_queue<Time_Traits>& queue,
 }
 
 template <typename Time_Traits>
-std::size_t winrt_timer_scheduler::cancel_timer(timer_queue<Time_Traits>& queue,
-    typename timer_queue<Time_Traits>::per_timer_data& timer,
-    std::size_t max_cancelled)
-{
+std::size_t winrt_timer_scheduler::cancel_timer(
+    timer_queue<Time_Traits> &queue,
+    typename timer_queue<Time_Traits>::per_timer_data &timer,
+    std::size_t max_cancelled) {
   asio::detail::mutex::scoped_lock lock(mutex_);
   op_queue<operation> ops;
   std::size_t n = queue.cancel_timer(timer, ops, max_cancelled);
@@ -70,10 +68,10 @@ std::size_t winrt_timer_scheduler::cancel_timer(timer_queue<Time_Traits>& queue,
 }
 
 template <typename Time_Traits>
-void winrt_timer_scheduler::move_timer(timer_queue<Time_Traits>& queue,
-    typename timer_queue<Time_Traits>::per_timer_data& to,
-    typename timer_queue<Time_Traits>::per_timer_data& from)
-{
+void winrt_timer_scheduler::move_timer(
+    timer_queue<Time_Traits> &queue,
+    typename timer_queue<Time_Traits>::per_timer_data &to,
+    typename timer_queue<Time_Traits>::per_timer_data &from) {
   asio::detail::mutex::scoped_lock lock(mutex_);
   op_queue<operation> ops;
   queue.cancel_timer(to, ops);

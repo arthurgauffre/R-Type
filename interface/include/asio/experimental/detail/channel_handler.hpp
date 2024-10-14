@@ -12,11 +12,11 @@
 #define ASIO_EXPERIMENTAL_DETAIL_CHANNEL_HANDLER_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
 #include "asio/associator.hpp"
+#include "asio/detail/config.hpp"
 #include "asio/experimental/detail/channel_payload.hpp"
 
 #include "asio/detail/push_options.hpp"
@@ -25,22 +25,15 @@ namespace asio {
 namespace experimental {
 namespace detail {
 
-template <typename Payload, typename Handler>
-class channel_handler
-{
+template <typename Payload, typename Handler> class channel_handler {
 public:
-  channel_handler(Payload&& p, Handler& h)
-    : payload_(static_cast<Payload&&>(p)),
-      handler_(static_cast<Handler&&>(h))
-  {
-  }
+  channel_handler(Payload &&p, Handler &h)
+      : payload_(static_cast<Payload &&>(p)),
+        handler_(static_cast<Handler &&>(h)) {}
 
-  void operator()()
-  {
-    payload_.receive(handler_);
-  }
+  void operator()() { payload_.receive(handler_); }
 
-//private:
+  // private:
   Payload payload_;
   Handler handler_;
 };
@@ -48,24 +41,21 @@ public:
 } // namespace detail
 } // namespace experimental
 
-template <template <typename, typename> class Associator,
-    typename Payload, typename Handler, typename DefaultCandidate>
+template <template <typename, typename> class Associator, typename Payload,
+          typename Handler, typename DefaultCandidate>
 struct associator<Associator,
-    experimental::detail::channel_handler<Payload, Handler>,
-    DefaultCandidate>
-  : Associator<Handler, DefaultCandidate>
-{
-  static typename Associator<Handler, DefaultCandidate>::type get(
-      const experimental::detail::channel_handler<Payload, Handler>& h) noexcept
-  {
+                  experimental::detail::channel_handler<Payload, Handler>,
+                  DefaultCandidate> : Associator<Handler, DefaultCandidate> {
+  static typename Associator<Handler, DefaultCandidate>::type
+  get(const experimental::detail::channel_handler<Payload, Handler>
+          &h) noexcept {
     return Associator<Handler, DefaultCandidate>::get(h.handler_);
   }
 
-  static auto get(
-      const experimental::detail::channel_handler<Payload, Handler>& h,
-      const DefaultCandidate& c) noexcept
-    -> decltype(Associator<Handler, DefaultCandidate>::get(h.handler_, c))
-  {
+  static auto
+  get(const experimental::detail::channel_handler<Payload, Handler> &h,
+      const DefaultCandidate &c) noexcept
+      -> decltype(Associator<Handler, DefaultCandidate>::get(h.handler_, c)) {
     return Associator<Handler, DefaultCandidate>::get(h.handler_, c);
   }
 };

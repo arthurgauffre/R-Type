@@ -12,7 +12,7 @@
 #define ASIO_DETAIL_IMPL_POSIX_TSS_PTR_IPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "asio/detail/config.hpp"
@@ -28,11 +28,9 @@
 namespace asio {
 namespace detail {
 
-void posix_tss_ptr_create(pthread_key_t& key)
-{
+void posix_tss_ptr_create(pthread_key_t &key) {
   int error = ::pthread_key_create(&key, 0);
-  asio::error_code ec(error,
-      asio::error::get_system_category());
+  asio::error_code ec(error, asio::error::get_system_category());
   asio::detail::throw_error(ec, "tss");
 }
 

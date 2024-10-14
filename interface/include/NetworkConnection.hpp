@@ -35,7 +35,8 @@ public:
 
     if (ownerType == actualOwner::SERVER) {
       // get the output of the handshake
-      handshakeOut = uint64_t(std::chrono::system_clock::now().time_since_epoch().count());
+      handshakeOut =
+          uint64_t(std::chrono::system_clock::now().time_since_epoch().count());
       // assign the handsake check to the cryption method of the output
       handshakeCheck = scramble(handshakeOut);
     } else {
@@ -63,8 +64,8 @@ public:
     }
   }
 
-  void EstablishServerConnection(const asio::ip::udp::resolver::results_type
-                                     &endpointsResults) {
+  void EstablishServerConnection(
+      const asio::ip::udp::resolver::results_type &endpointsResults) {
     if (ownerType == actualOwner::CLIENT) {
       asio::async_connect(
           asioSocket, endpointsResults,
