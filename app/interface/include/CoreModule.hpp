@@ -107,8 +107,7 @@ public:
         exit(1); // Exit if symbol resolution fails
       }
 
-      ~DLLoader()
-      {
+      ~DLLoader() {
 #ifdef _WIN32
         // if (handle)
         // {
@@ -122,9 +121,10 @@ public:
 #endif
       }
       template <typename... Args>
-      ECS_system::ISystem *getInstance(const std::string &funcName, Args &&...args)
-      {
-        using FuncPtr = ECS_system::ISystem *(*)(Args...); // Function pointer type
+      ECS_system::ISystem *getInstance(const std::string &funcName,
+                                       Args &&...args) {
+        using FuncPtr =
+            ECS_system::ISystem *(*)(Args...); // Function pointer type
         void *sym;
 
 #ifdef _WIN32
@@ -133,18 +133,21 @@ public:
         sym = dlsym(handle, funcName.c_str());
 #endif
 
-        if (!sym)
-        {
+        if (!sym) {
 #ifdef _WIN32
-          std::cerr << "Error getting symbol: " << funcName << " Error: " << GetLastError() << std::endl;
+          std::cerr << "Error getting symbol: " << funcName
+                    << " Error: " << GetLastError() << std::endl;
 #else
-          std::cerr << dlerror() << std::endl; // Print the dynamic loader error message
+          std::cerr << dlerror()
+                    << std::endl; // Print the dynamic loader error message
 #endif
           exit(1); // Exit if symbol resolution fails
         }
 
-        FuncPtr createFunc = reinterpret_cast<FuncPtr>(sym); // Cast to correct function pointer type
-        return createFunc(std::forward<Args>(args)...);      // Call function and return the pointer
+        FuncPtr createFunc = reinterpret_cast<FuncPtr>(
+            sym); // Cast to correct function pointer type
+        return createFunc(std::forward<Args>(
+            args)...); // Call function and return the pointer
       }
     };
   };
