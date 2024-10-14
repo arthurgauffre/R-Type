@@ -8,8 +8,6 @@
 #ifndef COREMODULE_HPP_
 #define COREMODULE_HPP_
 
-#include <SFML/Graphics.hpp>
-#include <dlfcn.h>
 #include <iostream>
 #include <limits.h>
 #include <memory>

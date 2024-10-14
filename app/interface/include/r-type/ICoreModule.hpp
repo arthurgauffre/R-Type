@@ -8,6 +8,12 @@
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
+#ifdef _WIN32
+    #include <windows.h>  // For Windows dynamic linking
+#else
+    #include <dlfcn.h>    // For POSIX dynamic linking
+#endif
+
 #include <SFML/Graphics.hpp>
 #include <dirent.h>
 #include <iostream>
