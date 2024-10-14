@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <server/NetworkMessagesCommunication.hpp>
+#include <NetworkMessagesCommunication.hpp>
 #include <r-type/AServer.hpp>
 
 namespace rtype {

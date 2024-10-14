@@ -48,7 +48,7 @@ add_executable(r-type_client
 )
 
 # Add the interface to the project
-add_subdirectory(app/interface)
+add_subdirectory(interface)
 add_subdirectory(app/ecs)
 
 # Link the interface to the executables

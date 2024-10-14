@@ -8,16 +8,29 @@
 #ifndef NETWORKMESSAGE_HPP_
 #define NETWORKMESSAGE_HPP_
 
-#include <server/NetworkConnection.hpp>
+#include <NetworkConnection.hpp>
 #include <iostream>
 
 namespace rtype {
 namespace network {
+/**
+ * @brief A template structure representing the header of a network message.
+ *
+ * @tparam T The type of the message identifier.
+ */
 template <typename T> struct MessageHeader {
   T id{};
   uint32_t size = 0;
 };
 
+/**
+ * @brief A templated structure representing a network message.
+ *
+ * This structure encapsulates a message header and a body, providing
+ * functionalities to manipulate the message content and size.
+ *
+ * @tparam T The type of the message header.
+ */
 template <typename T> struct Message {
   MessageHeader<T> header{};
   std::vector<uint8_t> body;

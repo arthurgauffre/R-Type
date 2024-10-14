@@ -5,7 +5,7 @@
 ** main
 */
 
-#include <server/Server.hpp>
+#include <Server.hpp>
 #include <iostream>
 
 int main(void) {

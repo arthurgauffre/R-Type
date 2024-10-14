@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include <server/NetworkQueue.hpp>
-#include <server/OwnedMessage.hpp>
+#include <NetworkQueue.hpp>
+#include <OwnedMessage.hpp>
 #include <r-type/IServer.hpp>
 
 namespace rtype {
@@ -35,9 +35,13 @@ public:
 
     if (ownerType == actualOwner::SERVER) {
       // get the output of the handshake
+      handshakeOut = uint64_t(std::chrono::system_clock::now().time_since_epoch().count());
       // assign the handsake check to the cryption method of the output
+      handshakeCheck = scramble(handshakeOut);
     } else {
       // set the handshale output and input to 0
+      handshakeOut = 0;
+      handshakeIn = 0;
     }
   }
 
@@ -59,9 +63,22 @@ public:
     }
   }
 
-  // void EstablishServerConnection()
-  // {
-  // }
+  void EstablishServerConnection(const asio::ip::udp::resolver::results_type
+                                     &endpointsResults) {
+    if (ownerType == actualOwner::CLIENT) {
+      asio::async_connect(
+          asioSocket, endpointsResults,
+          [this](std::error_code ec, asio::ip::udp::endpoint endpoint) {
+            if (!ec) {
+              std::cout << "Connected to server" << std::endl;
+              ReadHeader();
+              rtype::network::Message<NetworkMessages> message;
+              message.header.id = NetworkMessages::ServerAcceptance;
+              Send(message);
+            }
+          });
+    }
+  }
 
   bool IsConnected() const { return asioSocket.is_open(); }
   void Disconnect() {
@@ -71,6 +88,7 @@ public:
   }
 
   void Send(const rtype::network::Message<T> &message) {
+    std::cout << "BOLO" << std::endl;
     asio::post(asioContext, [this, message]() {
       bool writingMessage = !queueOfOutgoingMessages.empty();
       queueOfOutgoingMessages.pushBack(message);

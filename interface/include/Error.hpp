@@ -29,6 +29,7 @@ private:
 };
 
 NEW_EXCEPTION(ServerException)
+NEW_EXCEPTION(ClientConnectionException)
 } // namespace rtype
 
 #endif /* !ERROR_HPP_ */

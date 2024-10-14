@@ -8,15 +8,15 @@
 #ifndef OWNEDMESSAGE_HPP_
 #define OWNEDMESSAGE_HPP_
 
-#include <server/NetworkMessage.hpp>
-#include <server/NetworkingCommon.hpp>
+#include <NetworkMessage.hpp>
+#include <NetworkingCommon.hpp>
 
 namespace rtype {
 namespace network {
 template <typename T> class NetworkConnection;
 template <typename T> struct OwnedMessage {
-  std::shared_ptr<NetworkConnection<T>> remoteConnection;
-  Message<T> message;
+  std::shared_ptr<NetworkConnection<T>> remoteConnection = nullptr;
+  rtype::network::Message<T> message;
 
   friend std::ostream &operator<<(std::ostream &os,
                                   const OwnedMessage<T> &message) {
