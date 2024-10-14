@@ -19,6 +19,6 @@ public:
   uint32_t getParentID();
 
 private:
-  uint32_t _parentID;
+  uint32_t _parentEntityID;
 };
 } // namespace component

@@ -16,20 +16,27 @@
 #include <vector>
 
 namespace ECS_system {
-typedef struct WeaponSystemData {
+
+/* typedef struct WeaponSystemData {
   int damage;
   float velocity;
   sf::Vector2f position;
   std::string texturePath;
   sf::Vector2f spriteSize;
-} WeaponSystemData;
+} WeaponSystemData; */
 
 class WeaponSystem : virtual public ASystem {
 public:
   WeaponSystem(component::ComponentManager &componentManager);
   ~WeaponSystem();
 
+    void update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) override;
+    void initialize() override {}
+    void handleComponents() override {}
+
+    void addWeapon(uint32_t entityID, int damage, float velocity, sf::Vector2f position, std::string texturePath, sf::Vector2f spriteSize);
+    void removeWeapon(uint32_t entityID);
+
 private:
-  std::unordered_map<uint32_t, std::vector<WeaponSystemData>> _weaponData;
 };
 } // namespace ECS_system

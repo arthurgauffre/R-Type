@@ -12,3 +12,8 @@ ECS_system::WeaponSystem::WeaponSystem(
     : ASystem(componentManager) {}
 
 ECS_system::WeaponSystem::~WeaponSystem() {}
+
+
+void ECS_system::WeaponSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
+{
+}

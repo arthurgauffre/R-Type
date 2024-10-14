@@ -14,7 +14,7 @@
  */
 component::ParentComponent::ParentComponent(uint32_t entityID,
                                             uint32_t parentID)
-    : AComponent(entityID), _parentID(parentID) {}
+    : AComponent(entityID), _parentEntityID(parentID) {}
 
 /**
  * @brief Destructor for the ParentComponent class.
@@ -29,12 +29,12 @@ component::ParentComponent::~ParentComponent() {}
  * @brief Sets the parent ID for the component.
  *
  * This function assigns the given parent ID to the component's internal
- * _parentID member variable.
+ * _parentEntityID member variable.
  *
  * @param parentID The ID of the parent to be set.
  */
 void component::ParentComponent::setParentID(uint32_t parentID) {
-  this->_parentID = parentID;
+  this->_parentEntityID = parentID;
 }
 
 /**
@@ -45,4 +45,4 @@ void component::ParentComponent::setParentID(uint32_t parentID) {
  *
  * @return uint32_t The ID of the parent component.
  */
-uint32_t component::ParentComponent::getParentID() { return this->_parentID; }
+uint32_t component::ParentComponent::getParentID() { return this->_parentEntityID; }
