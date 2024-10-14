@@ -14,6 +14,8 @@ set(CMAKE_BUILD_TYPE Debug) # set build type to Debug
 if (WIN32)
     # Windows-specific settings
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    execute_process(COMMAND vcpkg integrate install)
+    execute_process(COMMAND vcpkg install sfml)
 else()
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
@@ -59,9 +61,6 @@ add_executable(r-type_client
     app/ecs/src/components/transform/TransformComponent.cpp
     app/ecs/src/components/background/BackgroundComponent.cpp
     app/ecs/src/components/scroll/ScrollComponent.cpp
-    # app/ecs/src/systems/render/RenderSystem.cpp
-    # app/ecs/src/systems/audio/AudioSystem.cpp
-    # app/ecs/src/systems/collision/CollisionSystem.cpp
     app/ecs/src/entity/Entity.cpp
 )
 
@@ -88,32 +87,9 @@ add_custom_command(
 
 # Move .so files out of the build folder into the lib one
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
-set(LIB_SHARED_ENTITY_DESTINATION ${LIB_DESTINATION}/shared_entity)
 set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
 set(LIB_SERVER_SYSTEMS_DESTINATION ${LIB_DESTINATION}/server_systems)
 set(LIB_SHARED_SYSTEMS_DESTINATION ${LIB_DESTINATION}/shared_systems)
-# set(LIB_CLIENT_MANAGERS_DESTINATION ${LIB_DESTINATION}/client_managers)
-# set(LIB_SERVER_MANAGERS_DESTINATION ${LIB_DESTINATION}/server_managers)
-# set(LIB_SHARED_MANAGERS_DESTINATION ${LIB_DESTINATION}/shared_managers)
-
-
-# add_custom_command(
-#   TARGET r-type_server
-#   POST_BUILD
-#   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_component_manager>
-#           ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_component_manager.so)
-
-# add_custom_command(
-#     TARGET r-type_server
-#     POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity_manager>
-#             ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_entity_manager.so)
-
-# add_custom_command(
-#     TARGET r-type_server
-#     POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_system_manager>
-#             ${LIB_SHARED_MANAGERS_DESTINATION}/r-type_system_manager.so)
 
 add_custom_command(
     TARGET r-type_server
@@ -132,12 +108,6 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
             ${LIB_SERVER_SYSTEMS_DESTINATION}/r-type_collision_system.so)
-
-# add_custom_command(
-#     TARGET r-type_server
-#     POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity>
-#             ${LIB_SHARED_ENTITY_DESTINATION}/r-type_shared_entity.so)
 
 add_custom_command(
     TARGET r-type_server
