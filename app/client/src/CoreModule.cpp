@@ -185,7 +185,7 @@ rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
 void rtype::CoreModule::init() {
   auto player = this->createPlayer(
       0, "app/assets/sprites/plane.png", sf::Vector2f(100.0f, 100.0f),
-      sf::Vector2f(10.0f, 0.0f), sf::Vector2f(1.0f, 1.0f), 1);
+      sf::Vector2f(0.0f, 0.0f), sf::Vector2f(0.5f, 0.5f), 1);
   this->createBackground(1, "app/assets/images/city_background.png",
                          sf::Vector2f(100.0f, 0.0f),
                          sf::Vector2f(1920.0f, 1080.0f));

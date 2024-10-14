@@ -5,6 +5,7 @@
 ** InputSystem
 */
 
+#include <components/VelocityComponent.hpp>
 #include <systems/InputSystem.hpp>
 
 void ECS_system::InputSystem::update(
@@ -15,14 +16,19 @@ void ECS_system::InputSystem::update(
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(
             entity.get()->getID());
+    auto velocity =
+        _componentManager.getComponent<component::VelocityComponent>(
+            entity.get()->getID());
+    sf::Vector2f newVelocity = {0, 0};
     if (inputComponent->isActionActive("MoveUp"))
-      std::cout << "UP" << std::endl;
-    else if (inputComponent->isActionActive("MoveDown"))
-      std::cout << "DOWN" << std::endl;
-    else if (inputComponent->isActionActive("MoveLeft"))
-      std::cout << "LEFT" << std::endl;
-    else if (inputComponent->isActionActive("MoveRight"))
-      std::cout << "RIGHT" << std::endl;
+      newVelocity.y = -100;
+    if (inputComponent->isActionActive("MoveDown"))
+      newVelocity.y = 100;
+    if (inputComponent->isActionActive("MoveLeft"))
+      newVelocity.x = -100;
+    if (inputComponent->isActionActive("MoveRight"))
+      newVelocity.x = 100;
+    velocity->setVelocity(newVelocity);
   }
 }
 
