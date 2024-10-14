@@ -102,7 +102,7 @@ public:
           std::forward<Args>(args)...); // Call function and return the pointer
     }
 
-    DLunloader() {
+    void DLunloader() {
 #ifdef _WIN32
       if (handle) {
         FreeLibrary(static_cast<HMODULE>(handle));
