@@ -1,3 +1,6 @@
+# Include the SFML package
+find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
+
 add_library(r-type_render_system SHARED
     RenderSystem.cpp
     ../../components/sprite/SpriteComponent.cpp

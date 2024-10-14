@@ -13,7 +13,6 @@
 #include <memory>
 #include <r-type/ICoreModule.hpp>
 #include <r-type/ISystem.hpp>
-#include <unistd.h>
 #include <vector>
 
 #include <components/BackgroundComponent.hpp>
