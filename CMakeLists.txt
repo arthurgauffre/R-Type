@@ -38,100 +38,20 @@ else()
 endif()
 
 # Add the executables for the project
-add_executable(r-type_server
-    app/server/main.cpp
-)
 
-add_executable(r-type_client
-    app/client/main.cpp
-    app/client/src/CoreModule.cpp
-    app/ecs/src/managers/system/SystemManager.cpp
-    app/ecs/src/managers/component/ComponentManager.cpp
-    app/ecs/src/managers/entity/EntityManager.cpp
-    app/ecs/src/components/sprite/SpriteComponent.cpp
-    app/ecs/src/components/texture/TextureComponent.cpp
-    app/ecs/src/components/position/PositionComponent.cpp
-    app/ecs/src/components/hitbox/HitBoxComponent.cpp
-    app/ecs/src/components/music/MusicComponent.cpp
-    app/ecs/src/components/sound/SoundComponent.cpp
-    app/ecs/src/components/input/InputComponent.cpp
-    app/ecs/src/components/velocity/VelocityComponent.cpp
-    app/ecs/src/components/transform/TransformComponent.cpp
-    app/ecs/src/components/background/BackgroundComponent.cpp
-    app/ecs/src/components/scroll/ScrollComponent.cpp
-    app/ecs/src/components/health/HealthComponent.cpp
-    app/ecs/src/components/damage/DamageComponent.cpp
-    app/ecs/src/components/parent/ParentComponent.cpp
-    app/ecs/src/entity/Entity.cpp
-)
 
-target_include_directories(r-type_client PRIVATE ${SFML_INCLUDE_DIR})
+
+
 
 # Add the interface to the project
-add_subdirectory(app/interface)
+add_subdirectory(interface)
 add_subdirectory(app/ecs)
+add_subdirectory(app/server)
+add_subdirectory(app/client)
 
-# Link the interface to the executables and SFML libraries
-target_link_libraries(r-type_server r-type_interfaces)
-target_link_libraries(r-type_client r-type_interfaces sfml-graphics sfml-audio)
+# Link the interface to the executables
+# target_link_libraries(r-type_client r-type_interfaces)
 
 # Move the executables to root of the project
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_server> ${CMAKE_SOURCE_DIR}
-)
 
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ${CMAKE_SOURCE_DIR}
-)
 
-# Move .so files out of the build folder into the lib one
-set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
-set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
-set(LIB_SERVER_SYSTEMS_DESTINATION ${LIB_DESTINATION}/server_systems)
-set(LIB_SHARED_SYSTEMS_DESTINATION ${LIB_DESTINATION}/shared_systems)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_audio_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_audio_system.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_render_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_render_system.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
-            ${LIB_SERVER_SYSTEMS_DESTINATION}/r-type_collision_system.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_input_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_input_system.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_movement_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_movement_system.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_background_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_background_system.so)
-
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_health_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_health_system.so)
