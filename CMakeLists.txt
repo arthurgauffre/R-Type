@@ -13,32 +13,32 @@ set(CMAKE_BUILD_TYPE Debug) # set build type to Debug
 
 if (WIN32)
     # Windows-specific settings
-  execute_process(COMMAND vcpkg integrate install)
-  execute_process(COMMAND vcpkg install sfml)
+    # Set the vcpkg toolchain file first
+    set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+    execute_process(COMMAND vcpkg integrate install)
+    execute_process(COMMAND vcpkg install sfml)
 else()
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
-    # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lsfml-graphics -lsfml-audio")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
 endif()
 
-# Add the debug flag
+# Add the debug flag for GCC
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
 endif()
 
-# find_package(SFML 2.5 COMPONENTS audio graphics REQUIRED)
+# Find SFML using vcpkg
+find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
-# Set SFML include directories
-# set(SFML_INCLUDE_DIR ${SFML_DIR}/include)
-
-# if(SFML_FOUND)
-#     message(STATUS "SFML found: ${SFML_DIR}")
-# else()
-#     message(FATAL_ERROR "SFML not found")
-# endif()
+if(SFML_FOUND)
+    message(STATUS "SFML found: ${SFML_DIR}")
+else()
+    message(FATAL_ERROR "SFML not found")
+endif()
 
 # Add the executables for the project
+
 
 
 
@@ -53,6 +53,5 @@ add_subdirectory(app/client)
 # target_link_libraries(r-type_client r-type_interfaces)
 
 # Move the executables to root of the project
-
 
 

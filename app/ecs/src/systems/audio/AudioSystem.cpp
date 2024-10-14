@@ -39,3 +39,8 @@ void ECS_system::AudioSystem::update(
     }
   }
 }
+
+EXPORT_API ECS_system::ISystem *
+createSystem(component::ComponentManager &componentManager) {
+  return new ECS_system::AudioSystem(componentManager);
+}

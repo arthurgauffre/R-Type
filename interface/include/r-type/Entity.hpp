@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <memory>
 #include <r-type/IEntity.hpp>
 
 namespace entity {
@@ -18,19 +19,19 @@ public:
    *
    * @param id The unique identifier for the entity.
    */
-  Entity(uint32_t id) : id(id), isActive(true) {}
+  Entity(uint32_t id);
 
   /**
    * @brief Destroy the Entity object.
    */
-  virtual ~Entity() = default;
+  virtual ~Entity();
 
   /**
    * @brief Retrieves the unique identifier of the entity.
    *
    * @return uint32_t The unique identifier of the entity.
    */
-  uint32_t getID() const override { return id; }
+  uint32_t getID() const override;
 
   /**
    * @brief Sets the active state of the entity.
@@ -43,14 +44,14 @@ public:
    *               - true: The entity is active.
    *               - false: The entity is inactive.
    */
-  void setActive(bool active) override { isActive = active; }
+  void setActive(bool active) override;
 
   /**
    * @brief Retrieves the active status of the entity.
    *
    * @return true if the entity is active, false otherwise.
    */
-  bool getActive() const override { return isActive; }
+  bool getActive() const override;
 
 protected:
   /**

@@ -5,13 +5,25 @@
 ** Isystem
 */
 
+#pragma once
+
+#include <SFML/Graphics.hpp>
+#include <managers/ComponentManager.hpp>
 #include <memory>
 #include <r-type/IEntity.hpp>
 #include <vector>
 
+#ifdef _WIN32
+#define EXPORT_API extern "C" __declspec(dllexport)
+#else
+#define EXPORT_API extern "C"
+#endif
+
 namespace ECS_system {
 class ISystem {
 public:
+  ISystem(component::ComponentManager &componentManager)
+      : _componentManager(componentManager) {}
   /*
   ** @brief Initializes the system.
   */
@@ -46,5 +58,8 @@ public:
    * specific behavior for handling components within the system.
    */
   virtual void handleComponents() = 0;
+
+protected:
+  component::ComponentManager &_componentManager;
 };
 } // namespace ECS_system

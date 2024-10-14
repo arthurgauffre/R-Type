@@ -7,6 +7,8 @@
 
 #include <managers/ComponentManager.hpp>
 
+component::ComponentManager::ComponentManager() {}
+
 /**
  * @brief Updates all active components for each entity.
  *

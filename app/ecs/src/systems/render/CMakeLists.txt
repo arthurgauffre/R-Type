@@ -1,5 +1,13 @@
+# Include the SFML package
+find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
+
 add_library(r-type_render_system SHARED
     RenderSystem.cpp
+    ../../components/sprite/SpriteComponent.cpp
+    ../../components/texture/TextureComponent.cpp
+    ../../components/position/PositionComponent.cpp
+    ../../components/background/BackgroundComponent.cpp
+    ../../components/transform/TransformComponent.cpp
 )
 
 # Specify the SFML include directory

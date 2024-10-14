@@ -7,14 +7,15 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <components/BackgroundComponent.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
+#include <components/TransformComponent.hpp>
 #include <r-type/ASystem.hpp>
 
 namespace ECS_system {
-class RenderSystem : public ASystem {
+class RenderSystem : virtual public ASystem {
 public:
   /**
    * @brief Construct a new RenderSystem object.
@@ -24,14 +25,14 @@ public:
    * @param window Reference to the SFML RenderWindow where the rendering will
    * take place.
    */
-  RenderSystem(component::ComponentManager &componentManager,
-               sf::RenderWindow &window)
-      : ASystem(componentManager), _window(window){};
+  RenderSystem(component::ComponentManager &componentManager);
 
   /**
    * @brief Destroy the RenderSystem object.
    */
   ~RenderSystem() = default;
+
+  // bool getGameClosed() const { return _gameClosed; }
 
   void update(float deltaTime,
               std::vector<std::shared_ptr<entity::IEntity>> entities) override;
@@ -54,13 +55,8 @@ public:
   void handleComponents() override{};
 
 private:
-  /**
-   * @brief Reference to the SFML RenderWindow used for rendering.
-   *
-   * This member variable holds a reference to the SFML RenderWindow object
-   * that is used by the RenderSystem to draw and display graphical content.
-   * It is expected to be initialized and managed outside of this class.
-   */
-  sf::RenderWindow &_window;
+  sf::RenderWindow _window;
+  sf::Event _event;
+  // bool _gameClosed = false;
 };
 } // namespace ECS_system

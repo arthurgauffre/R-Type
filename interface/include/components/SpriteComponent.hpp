@@ -11,7 +11,7 @@
 #include <r-type/AComponent.hpp>
 
 namespace component {
-class SpriteComponent : public AComponent {
+class SpriteComponent : virtual public AComponent {
 public:
   /**
    * @brief Constructs a new SpriteComponent object.

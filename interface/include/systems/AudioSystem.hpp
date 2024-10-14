@@ -12,7 +12,7 @@
 #include <r-type/ASystem.hpp>
 
 namespace ECS_system {
-class AudioSystem : public ASystem {
+class AudioSystem : virtual public ASystem {
 public:
   /**
    * @class AudioSystem

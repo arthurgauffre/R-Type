@@ -23,7 +23,7 @@ public:
    * components.
    */
   ASystem(component::ComponentManager &componentManager)
-      : _componentManager(componentManager) {}
+      : ISystem(componentManager) {}
 
   /**
    * @brief Virtual destructor for the ASystem class.
@@ -68,6 +68,5 @@ protected:
    * Component System). It provides functionalities to add, remove, and access
    * components associated with entities.
    */
-  component::ComponentManager &_componentManager;
 };
 } // namespace ECS_system

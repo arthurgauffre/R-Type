@@ -8,12 +8,29 @@
 #ifndef COREMODULE_HPP_
 #define COREMODULE_HPP_
 
-#include <dlfcn.h>
+#pragma once
 #include <iostream>
+#include <limits.h>
 #include <memory>
 #include <r-type/ICoreModule.hpp>
-#include <r-type/IModuleEngine.hpp>
+#include <r-type/ISystem.hpp>
 #include <vector>
+
+#include <components/BackgroundComponent.hpp>
+#include <components/HealthComponent.hpp>
+#include <components/InputComponent.hpp>
+#include <components/MusicComponent.hpp>
+#include <components/PositionComponent.hpp>
+#include <components/ScrollComponent.hpp>
+#include <components/SoundComponent.hpp>
+#include <components/SpriteComponent.hpp>
+#include <components/TextureComponent.hpp>
+#include <components/TransformComponent.hpp>
+#include <components/VelocityComponent.hpp>
+
+#include <systems/AudioSystem.hpp>
+#include <systems/HealthSystem.hpp>
+#include <systems/RenderSystem.hpp>
 
 namespace rtype {
 class CoreModule : virtual public ICoreModule {
@@ -21,87 +38,83 @@ public:
   CoreModule();
   ~CoreModule();
 
-  // void setCoreStatus(CoreStatus status);
-  // CoreStatus getCoreStatus() const;
+  entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
+                                    sf::Vector2f speed, sf::Vector2f size);
+  entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
+                                sf::Vector2f position, sf::Vector2f velocity,
+                                sf::Vector2f scale, int health);
 
-  // rtype::IDisplayModule *getGraphicModule();
-  // rtype::IGameModule *getGameModule();
+  void init();
+  void run();
 
-  // void setGraphicModule(std::unique_ptr<rtype::IDisplayModule> module);
-  // void setGameModule(std::unique_ptr<rtype::IGameModule> module);
-
-  // void getLib(std::string pathLib);
-  // void loadLib(std::string pathLib);
-  // void addLibList(std::string pathLib);
-
-  void loadEntityConstructor();
-  void loadSystems();
-  void loadComponents();
-  void loadManagers();
-  // void generateScore();
-
-  // void handleKeyEvent(rtype::KeyboardInput key);
-  // void launchSelection();
-  // void addCharUsername(char c);
-  // void handleKeySelection(rtype::KeyboardInput key);
-  // void handleKeyRunning(rtype::KeyboardInput key);
-
-  // rtype::ICoreModule::MenuData getMenuData() const;
-
-  // void setGameData(rtype::GameData gameData);
-  // rtype::GameData getGameData() const;
-
-  // int coreLoop();
-  // void runningLoop();
-  // void updateRunning();
-  // void selectionLoop();
-  // void updateSelection();
-
-  // void updateTimers();
-  // void resetTimers(int index);
-  // std::vector<rtype::timer> getTimers() const;
-  // void setTimers(std::vector<rtype::timer> timers);
+  std::shared_ptr<entity::EntityManager> getEntityManager() const;
+  std::shared_ptr<component::ComponentManager> getComponentManager() const;
+  std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
   template <typename T> class DLLoader {
   public:
     void *handle;
 
-    // template <typename T>
     DLLoader(const std::string &libPath) {
+#ifdef _WIN32
+      handle = LoadLibrary(libPath.c_str());
+      if (!handle) {
+        std::cerr << "Error loading library: " << libPath
+                  << " Error: " << GetLastError() << std::endl;
+        exit(1);
+      }
+#else
       handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
       if (!handle) {
         std::cerr << dlerror() << std::endl;
         exit(1);
       }
-    };
+#endif
+    }
 
-    ~DLLoader(){};
+    ~DLLoader() {}
+    template <typename... Args>
+    ECS_system::ISystem *getInstance(const std::string &funcName,
+                                     Args &&...args) {
+      using FuncPtr =
+          ECS_system::ISystem *(*)(Args...); // Function pointer type
+      void *sym;
 
-    T getInstance(const std::string &funcName) {
-      void *sym = dlsym(handle, funcName.c_str());
+#ifdef _WIN32
+      sym = GetProcAddress(static_cast<HMODULE>(handle), funcName.c_str());
+#else
+      sym = dlsym(handle, funcName.c_str());
+#endif
+
       if (!sym) {
-        std::cerr << dlerror() << std::endl;
-        exit(1);
+#ifdef _WIN32
+        std::cerr << "Error getting symbol: " << funcName
+                  << " Error: " << GetLastError() << std::endl;
+#else
+        std::cerr << dlerror()
+                  << std::endl; // Print the dynamic loader error message
+#endif
+        exit(1); // Exit if symbol resolution fails
       }
-      return reinterpret_cast<T (*)()>(sym)();
-    };
 
-    void DLLunloader() {
+      FuncPtr createFunc = reinterpret_cast<FuncPtr>(
+          sym); // Cast to correct function pointer type
+      return createFunc(
+          std::forward<Args>(args)...); // Call function and return the pointer
+    }
+
+    void DLunloader() {
+#ifdef _WIN32
+      if (handle) {
+        FreeLibrary(static_cast<HMODULE>(handle));
+      }
+#else
       if (handle) {
         dlclose(handle);
       }
-    };
+#endif
+    }
   };
-  std::vector<DLLoader<std::string>> _nameLoader;
-  std::vector<DLLoader<rtype::ModuleType>> _libList;
-  std::vector<DLLoader<std::shared_ptr<IModuleEngine>>> _interfaceList;
-  // entity constructor
-  std::shared_ptr<DLLoader<IEntity>> entityConstructor;
-
-  // systems, managers and components loaders
-  std::vector<DLLoader<std::shared_ptr<ISystem>>> _systems;
-  std::vector<DLLoader<std::shared_ptr<IComponent>>> _components;
-  std::vector<DLLoader<std::shared_ptr<IManager>>> _managers;
 };
 }; // namespace rtype
 

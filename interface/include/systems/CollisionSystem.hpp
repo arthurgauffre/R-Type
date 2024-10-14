@@ -16,7 +16,7 @@
 #include <vector>
 
 namespace ECS_system {
-class CollisionSystem : public ASystem {
+class CollisionSystem : virtual public ASystem {
 public:
   /**
    * @brief Constructs a new CollisionSystem object.

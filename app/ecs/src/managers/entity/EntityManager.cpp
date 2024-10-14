@@ -9,6 +9,11 @@
 #include <r-type/Entity.hpp>
 
 /**
+ * @brief Constructs an EntityManager object.
+ */
+entity::EntityManager::EntityManager() {}
+
+/**
  * @brief Retrieves an entity by its unique identifier.
  *
  * This function iterates through the list of entities and returns the entity

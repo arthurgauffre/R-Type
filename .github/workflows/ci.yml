@@ -79,7 +79,7 @@ jobs:
 
   check_windows_program_compilation:
     runs-on: windows-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: auto_format
     # container: epitechcontent/epitest-docker:latest
     steps:
@@ -114,7 +114,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Compile using CMake
-        run: cmake -S . -B build
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build project
         run: cmake --build build

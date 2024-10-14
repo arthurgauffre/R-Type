@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
 
 namespace component {
@@ -19,8 +20,7 @@ public:
    * @param x The x-coordinate of the position.
    * @param y The y-coordinate of the position.
    */
-  PositionComponent(uint32_t entityID, float x, float y)
-      : AComponent(entityID), _x(x), _y(y){};
+  PositionComponent(uint32_t entityID, float x, float y);
   /**
    * @brief Default destructor for the PositionComponent class.
    */
@@ -31,14 +31,28 @@ public:
    *
    * @return The X coordinate as a float.
    */
-  float getX() const { return _x; }
+  float getX() const { return _position.x; }
+
+  /**
+   * @brief Sets the x-coordinate of the position.
+   *
+   * @param x The new x-coordinate value to be set.
+   */
+  void setX(float x) { _position.x = x; }
 
   /**
    * @brief Get the Y coordinate of the position.
    *
    * @return The Y coordinate as a float.
    */
-  float getY() const { return _y; }
+  float getY() const { return _position.y; }
+
+  /**
+   * @brief Sets the y-coordinate of the position.
+   *
+   * @param y The new y-coordinate value to be set.
+   */
+  void setY(float y) { _position.y = y; }
 
   /**
    * @brief Updates the position component.
@@ -52,13 +66,11 @@ public:
 
 private:
   /**
-   * @brief Represents the x-coordinate of the position.
+   * @brief Represents a 2D vector for position.
+   *
+   * This component stores the position of an entity in a 2D space using
+   * the SFML library's sf::Vector2f class, which contains x and y coordinates.
    */
-  float _x;
-
-  /**
-   * @brief Represents the y-coordinate of the position.
-   */
-  float _y;
+  sf::Vector2f _position;
 };
 } // namespace component
