@@ -83,7 +83,7 @@ public:
       ReadHeader();
       rtype::network::Message<NetworkMessages> message;
       message.header.id = NetworkMessages::ServerAcceptance;
-      Send(message);  
+      Send(message);
     }
   }
 

@@ -25,15 +25,14 @@ public:
 
   bool Connect(const std::string &host, const uint16_t port) {
     try {
-      asio::ip::udp::endpoint remoteEndpoint = asio::ip::udp::endpoint(
-        asio::ip::address::from_string(host), port
-      );
-      asio::ip::udp::socket socket(asioContext, asio::ip::udp::endpoint(
-        asio::ip::udp::v4(), 0
-      ));
+      asio::ip::udp::endpoint remoteEndpoint =
+          asio::ip::udp::endpoint(asio::ip::address::from_string(host), port);
+      asio::ip::udp::socket socket(
+          asioContext, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0));
       connection = std::make_unique<NetworkConnection<T>>(
-        NetworkConnection<T>::actualOwner::CLIENT, asioContext, std::move(socket), std::move(remoteEndpoint), queueOfincomingMessages
-      );
+          NetworkConnection<T>::actualOwner::CLIENT, asioContext,
+          std::move(socket), std::move(remoteEndpoint),
+          queueOfincomingMessages);
       connection->EstablishServerConnection();
       // std::cout << "Connection : " << *(connection.get()) << std::endl;
       contextThread = std::thread([this]() { asioContext.run(); });
