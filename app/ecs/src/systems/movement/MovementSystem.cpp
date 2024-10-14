@@ -45,7 +45,7 @@ void ECS_system::MovementSystem::update(
   }
 }
 
-extern "C" std::shared_ptr<ECS_system::ISystem>
+EXPORT_API ECS_system::ISystem*
 createMovementSystem(component::ComponentManager &componentManager) {
-  return std::make_shared<ECS_system::MovementSystem>(componentManager);
+  return new ECS_system::MovementSystem(componentManager);
 }

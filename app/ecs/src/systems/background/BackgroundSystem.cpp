@@ -44,7 +44,7 @@ void ECS_system::BackgroundSystem::update(
   }
 }
 
-extern "C" std::shared_ptr<ECS_system::ISystem>
+EXPORT_API ECS_system::ISystem*
 createBackgroundSystem(component::ComponentManager &componentManager) {
-  return std::make_shared<ECS_system::BackgroundSystem>(componentManager);
+  return new ECS_system::BackgroundSystem(componentManager);
 }
