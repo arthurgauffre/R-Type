@@ -54,3 +54,6 @@ For its ease of use and built-in 2D rendering.
 ## Conclusion
 
 Based on this comparative analysis, **C++** was chosen for its rich feature set, modern memory management, and object-oriented support, which are crucial for creating a scalable and modular game engine. **SFML** was selected as the graphics library for its simplicity and ease of use, making it ideal for 2D game development with minimal setup and code overhead. This combination ensures both flexibility and performance while maintaining an intuitive development process.
+
+#
+Go to the main documentation : [Main documentation](Readme.md)
