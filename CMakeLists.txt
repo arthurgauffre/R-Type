@@ -133,11 +133,11 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
             ${LIB_SERVER_SYSTEMS_DESTINATION}/r-type_collision_system.so)
 
-add_custom_command(
-    TARGET r-type_server
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity>
-            ${LIB_SHARED_ENTITY_DESTINATION}/r-type_shared_entity.so)
+# add_custom_command(
+#     TARGET r-type_server
+#     POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_entity>
+#             ${LIB_SHARED_ENTITY_DESTINATION}/r-type_shared_entity.so)
 
 add_custom_command(
     TARGET r-type_server

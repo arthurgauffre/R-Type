@@ -119,7 +119,3 @@ void ECS_system::SystemManager::addSystem(
     _systems.push_back(backgroundSystem);
   }
 }
-
-extern "C" std::shared_ptr<ECS_system::SystemManager> createSystemManager() {
-  return std::make_shared<ECS_system::SystemManager>();
-}
