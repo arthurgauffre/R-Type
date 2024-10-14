@@ -36,7 +36,6 @@ public:
   getSystemManager() const = 0;
 
 protected:
-
   std::shared_ptr<entity::EntityManager> _entityManager;
   std::shared_ptr<component::ComponentManager> _componentManager;
   std::shared_ptr<ECS_system::SystemManager> _systemManager;
