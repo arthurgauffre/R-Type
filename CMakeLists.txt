@@ -62,6 +62,8 @@ add_executable(r-type_client
     app/ecs/src/entity/Entity.cpp
 )
 
+target_include_directories(r-type_client PRIVATE ${SFML_INCLUDE_DIR})
+
 # Add the interface to the project
 add_subdirectory(app/interface)
 add_subdirectory(app/ecs)
