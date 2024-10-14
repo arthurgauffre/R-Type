@@ -26,12 +26,13 @@ rtype::CoreModule::~CoreModule() {}
 
 /**
  * @brief Retrieves the entity manager.
- * 
+ *
  * This function returns a shared pointer to the EntityManager associated with
  * the CoreModule. The EntityManager is responsible for managing the entities
  * within the application.
- * 
- * @return std::shared_ptr<entity::EntityManager> A shared pointer to the EntityManager.
+ *
+ * @return std::shared_ptr<entity::EntityManager> A shared pointer to the
+ * EntityManager.
  */
 std::shared_ptr<entity::EntityManager>
 rtype::CoreModule::getEntityManager() const {
@@ -40,12 +41,13 @@ rtype::CoreModule::getEntityManager() const {
 
 /**
  * @brief Retrieves the component manager.
- * 
+ *
  * This function returns a shared pointer to the component manager associated
  * with the CoreModule. The component manager is responsible for managing
  * various components within the module.
- * 
- * @return std::shared_ptr<component::ComponentManager> Shared pointer to the component manager.
+ *
+ * @return std::shared_ptr<component::ComponentManager> Shared pointer to the
+ * component manager.
  */
 std::shared_ptr<component::ComponentManager>
 rtype::CoreModule::getComponentManager() const {
@@ -54,12 +56,13 @@ rtype::CoreModule::getComponentManager() const {
 
 /**
  * @brief Retrieves the SystemManager instance.
- * 
+ *
  * This function returns a shared pointer to the SystemManager instance
  * associated with the CoreModule. The SystemManager is responsible for
  * managing the various systems within the ECS (Entity Component System).
- * 
- * @return std::shared_ptr<ECS_system::SystemManager> A shared pointer to the SystemManager instance.
+ *
+ * @return std::shared_ptr<ECS_system::SystemManager> A shared pointer to the
+ * SystemManager instance.
  */
 std::shared_ptr<ECS_system::SystemManager>
 rtype::CoreModule::getSystemManager() const {
@@ -85,12 +88,14 @@ void rtype::CoreModule::run() {
 /**
  * @brief Creates a background entity with the specified parameters.
  *
- * This function creates a background entity with the given entity ID, texture path,
- * scrolling speed, and size. It adds the necessary components to the entity, including
- * PositionComponent, ScrollComponent, and BackgroundComponent.
+ * This function creates a background entity with the given entity ID, texture
+ * path, scrolling speed, and size. It adds the necessary components to the
+ * entity, including PositionComponent, ScrollComponent, and
+ * BackgroundComponent.
  *
  * @param entityID The unique identifier for the entity.
- * @param texturePath The file path to the texture to be used for the background.
+ * @param texturePath The file path to the texture to be used for the
+ * background.
  * @param speed The scrolling speed of the background.
  * @param size The size of the background.
  * @return A pointer to the created background entity.
@@ -113,11 +118,11 @@ entity::IEntity *rtype::CoreModule::createBackground(uint32_t entityID,
 
 /**
  * @brief Creates a player entity with the specified components.
- * 
- * This function creates a player entity with the given entity ID and initializes
- * it with various components including position, sprite, texture, input, velocity,
- * and transform components.
- * 
+ *
+ * This function creates a player entity with the given entity ID and
+ * initializes it with various components including position, sprite, texture,
+ * input, velocity, and transform components.
+ *
  * @param entityID The unique identifier for the entity.
  * @param texturePath The file path to the texture to be used for the entity.
  * @param position The initial position of the entity.
@@ -150,24 +155,26 @@ entity::IEntity *rtype::CoreModule::createPlayer(uint32_t entityID,
 
 /**
  * @brief Initializes the core module of the R-Type game.
- * 
- * This function sets up the initial state of the game by creating the player 
- * and background entities, adding necessary systems to the system manager, 
+ *
+ * This function sets up the initial state of the game by creating the player
+ * and background entities, adding necessary systems to the system manager,
  * and binding input actions to specific keys.
- * 
+ *
  * The following entities are created:
- * - Player with ID 0, sprite located at "app/assets/sprites/r-typesheet1.gif", 
- *   initial position (100.0f, 100.0f), velocity (10.0f, 0.0f), and scale (1.0f, 1.0f).
- * - Background with ID 1, image located at "app/assets/images/city_background.png", 
- *   initial position (100.0f, 0.0f), and size (1920.0f, 1080.0f).
- * 
+ * - Player with ID 0, sprite located at "app/assets/sprites/r-typesheet1.gif",
+ *   initial position (100.0f, 100.0f), velocity (10.0f, 0.0f), and scale
+ * (1.0f, 1.0f).
+ * - Background with ID 1, image located at
+ * "app/assets/images/city_background.png", initial position (100.0f, 0.0f), and
+ * size (1920.0f, 1080.0f).
+ *
  * The following systems are added to the system manager:
  * - Audio system
  * - Render system
  * - Input system
  * - Movement system
  * - Background system
- * 
+ *
  * The following input actions are bound to keys for the player with ID 0:
  * - "MoveLeft" to the 'A' key
  * - "MoveRight" to the 'D' key
