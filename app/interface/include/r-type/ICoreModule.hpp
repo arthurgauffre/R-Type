@@ -14,6 +14,7 @@
 #else
 #include <dirent.h>
 #include <dlfcn.h> // For POSIX dynamic linking
+#include <unistd.h>
 #endif
 
 #include <SFML/Graphics.hpp>
