@@ -17,9 +17,10 @@
  * take place.
  */
 ECS_system::RenderSystem::RenderSystem(
-    component::ComponentManager &componentManager, entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager), _window(sf::VideoMode(1920, 1080), "R-Type"),
-      _event(sf::Event()) {}
+    component::ComponentManager &componentManager,
+    entity::EntityManager &entityManager)
+    : ASystem(componentManager, entityManager),
+      _window(sf::VideoMode(1920, 1080), "R-Type"), _event(sf::Event()) {}
 
 /**
  * @brief Updates the render system by drawing all entities with
@@ -97,6 +98,7 @@ void ECS_system::RenderSystem::update(
 }
 
 EXPORT_API ECS_system::ISystem *
-createSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager) {
+createSystem(component::ComponentManager &componentManager,
+             entity::EntityManager &entityManager) {
   return new ECS_system::RenderSystem(componentManager, entityManager);
 }

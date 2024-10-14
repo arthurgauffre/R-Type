@@ -26,7 +26,8 @@ public:
    * @param componentManager A reference to the ComponentManager that manages
    *                         all components in the ECS.
    */
-  MovementSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+  MovementSystem(component::ComponentManager &componentManager,
+                 entity::EntityManager &entityManager)
       : ASystem(componentManager, entityManager) {}
 
   /**

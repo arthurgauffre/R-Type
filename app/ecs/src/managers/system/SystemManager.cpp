@@ -41,8 +41,8 @@ void ECS_system::SystemManager::update(
  * @return T* A pointer to the newly created system.
  */
 void ECS_system::SystemManager::addSystem(
-    component::ComponentManager &componentManager, entity::EntityManager &entityManager,
-     std::string systemName) {
+    component::ComponentManager &componentManager,
+    entity::EntityManager &entityManager, std::string systemName) {
   std::shared_ptr<
       rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
       systemLoader = std::make_shared<
@@ -57,8 +57,8 @@ void ECS_system::SystemManager::addSystem(
 
   // Wrap the returned raw pointer in a shared_ptr
   std::shared_ptr<ECS_system::ISystem> system =
-      std::shared_ptr<ECS_system::ISystem>(
-          systemLoader->getInstance("createSystem", componentManager, entityManager));
+      std::shared_ptr<ECS_system::ISystem>(systemLoader->getInstance(
+          "createSystem", componentManager, entityManager));
 
   // check if the system is not null
   if (!system) {

@@ -14,7 +14,8 @@
 namespace ECS_system {
 class HealthSystem : virtual public ASystem {
 public:
-  HealthSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager);
+  HealthSystem(component::ComponentManager &componentManager,
+               entity::EntityManager &entityManager);
   ~HealthSystem();
 
   void update(float deltaTime,

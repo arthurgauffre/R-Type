@@ -25,7 +25,8 @@ public:
    * @param componentManager A reference to the ComponentManager that manages
    * all components.
    */
-  AudioSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+  AudioSystem(component::ComponentManager &componentManager,
+              entity::EntityManager &entityManager)
       : ASystem(componentManager, entityManager) {}
 
   /**

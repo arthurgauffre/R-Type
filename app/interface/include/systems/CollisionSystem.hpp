@@ -24,7 +24,8 @@ public:
    * @param componentManager Reference to the ComponentManager that manages the
    * components.
    */
-  CollisionSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+  CollisionSystem(component::ComponentManager &componentManager,
+                  entity::EntityManager &entityManager)
       : ASystem(componentManager, entityManager) {}
 
   /**

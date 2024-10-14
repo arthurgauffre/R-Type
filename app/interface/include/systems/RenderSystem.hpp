@@ -25,7 +25,8 @@ public:
    * @param window Reference to the SFML RenderWindow where the rendering will
    * take place.
    */
-  RenderSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager);
+  RenderSystem(component::ComponentManager &componentManager,
+               entity::EntityManager &entityManager);
 
   /**
    * @brief Destroy the RenderSystem object.

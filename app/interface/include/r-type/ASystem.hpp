@@ -21,7 +21,8 @@ public:
    * @param componentManager Reference to the ComponentManager that manages all
    * components.
    */
-  ASystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+  ASystem(component::ComponentManager &componentManager,
+          entity::EntityManager &entityManager)
       : ISystem(componentManager, entityManager) {}
 
   /**

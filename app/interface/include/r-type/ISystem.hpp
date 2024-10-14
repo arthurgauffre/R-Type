@@ -23,7 +23,8 @@
 namespace ECS_system {
 class ISystem {
 public:
-  ISystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+  ISystem(component::ComponentManager &componentManager,
+          entity::EntityManager &entityManager)
       : _componentManager(componentManager), _entityManager(entityManager) {}
   /*
   ** @brief Initializes the system.

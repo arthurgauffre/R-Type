@@ -17,7 +17,8 @@
  * the components associated with this system.
  */
 ECS_system::HealthSystem::HealthSystem(
-    component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+    component::ComponentManager &componentManager,
+    entity::EntityManager &entityManager)
     : ASystem(componentManager, entityManager) {}
 
 /**
@@ -58,6 +59,7 @@ void ECS_system::HealthSystem::update(
 }
 
 EXPORT_API ECS_system::ISystem *
-createSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager) {
+createSystem(component::ComponentManager &componentManager,
+             entity::EntityManager &entityManager) {
   return new ECS_system::HealthSystem(componentManager, entityManager);
 }

@@ -15,7 +15,8 @@
 namespace ECS_system {
 class BackgroundSystem : public ASystem {
 public:
-  BackgroundSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager)
+  BackgroundSystem(component::ComponentManager &componentManager,
+                   entity::EntityManager &entityManager)
       : ASystem(componentManager, entityManager) {}
   ~BackgroundSystem() = default;
 

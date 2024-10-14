@@ -38,7 +38,8 @@ public:
    * @param args The arguments to be forwarded to the system's constructor.
    * @return T* A pointer to the newly created system.
    */
-  void addSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager, std::string systemName);
+  void addSystem(component::ComponentManager &componentManager,
+                 entity::EntityManager &entityManager, std::string systemName);
 
   void update(float deltaTime,
               std::vector<std::shared_ptr<entity::IEntity>> entities);

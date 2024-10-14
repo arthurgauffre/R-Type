@@ -41,6 +41,7 @@ void ECS_system::AudioSystem::update(
 }
 
 EXPORT_API ECS_system::ISystem *
-createSystem(component::ComponentManager &componentManager, entity::EntityManager &entityManager) {
+createSystem(component::ComponentManager &componentManager,
+             entity::EntityManager &entityManager) {
   return new ECS_system::AudioSystem(componentManager, entityManager);
 }
