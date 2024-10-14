@@ -72,8 +72,8 @@ public:
 
   void Send(const rtype::network::Message<T> &message) {
     asio::post(asioContext, [this, message]() {
-      bool writingMessage = !queueOfIncomingMessages.empty();
-      queueOfIncomingMessages.pushBack(message);
+      bool writingMessage = !queueOfOutgoingMessages.empty();
+      queueOfOutgoingMessages.pushBack(message);
       if (!writingMessage) {
         WriteHeader();
       }
@@ -87,6 +87,8 @@ protected:
   actualOwner ownerType = actualOwner::SERVER;
   rtype::network::ServerQueue<rtype::network::OwnedMessage<T>>
       &queueOfIncomingMessages;
+
+  rtype::network::ServerQueue<rtype::network::Message<T>> queueOfOutgoingMessages;
   rtype::network::Message<T> temporaryIncomingMessage;
 
   uint32_t id = 0;
@@ -98,15 +100,15 @@ private:
   void WriteHeader() {
     std::cout << "Sending to endpoint : " << endpoint << std::endl;
     asioSocket.async_send_to(
-        asio::buffer(&queueOfIncomingMessages.front().header,
+        asio::buffer(&queueOfOutgoingMessages.front().header,
                      sizeof(rtype::network::MessageHeader<T>)),
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
-            if (queueOfIncomingMessages.front().body.size() > 0) {
+            if (queueOfOutgoingMessages.front().body.size() > 0) {
               WriteBody();
             } else {
-              queueOfIncomingMessages.popFront();
-              if (!queueOfIncomingMessages.empty()) {
+              queueOfOutgoingMessages.popFront();
+              if (!queueOfOutgoingMessages.empty()) {
                 WriteHeader();
               }
             }
@@ -121,12 +123,12 @@ private:
     std::cout << "Sending to endpoint : " << endpoint << std::endl;
 
     asioSocket.async_send_to(
-        asio::buffer(queueOfIncomingMessages.front().body.data(),
-                     queueOfIncomingMessages.front().body.size()),
+        asio::buffer(queueOfOutgoingMessages.front().body.data(),
+                     queueOfOutgoingMessages.front().body.size()),
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
-            queueOfIncomingMessages.popFront();
-            if (!queueOfIncomingMessages.empty()) {
+            queueOfOutgoingMessages.popFront();
+            if (!queueOfOutgoingMessages.empty()) {
               WriteHeader();
             }
           } else {
