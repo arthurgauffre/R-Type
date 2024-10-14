@@ -21,10 +21,8 @@ ECS_system::SystemManager::SystemManager() {}
  * systems.
  */
 void ECS_system::SystemManager::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
-  for (auto &system : _systems)
-  {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+  for (auto &system : _systems) {
     system->update(deltaTime, entities); // Each system updates itself because
                                          // each system has its own logic
   }
@@ -43,8 +41,7 @@ void ECS_system::SystemManager::update(
  * @return T* A pointer to the newly created system.
  */
 void ECS_system::SystemManager::addSystem(
-    component::ComponentManager &componentManager, std::string systemName)
-{
+    component::ComponentManager &componentManager, std::string systemName) {
   std::shared_ptr<
       rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
       systemLoader = std::make_shared<
@@ -52,20 +49,18 @@ void ECS_system::SystemManager::addSystem(
           "lib/client_systems/r-type_" + systemName + "_system.so");
 
   // check if the systemLoader is not null
-  if (!systemLoader)
-  {
+  if (!systemLoader) {
     std::cerr << "Error: systemLoader is null" << std::endl;
     exit(84);
   }
 
   // Wrap the returned raw pointer in a shared_ptr
   std::shared_ptr<ECS_system::ISystem> system =
-      std::shared_ptr<ECS_system::ISystem>(systemLoader->getInstance(
-          "createSystem", componentManager));
+      std::shared_ptr<ECS_system::ISystem>(
+          systemLoader->getInstance("createSystem", componentManager));
 
   // check if the system is not null
-  if (!system)
-  {
+  if (!system) {
     std::cerr << "Error: system is null" << std::endl;
     exit(84);
   }
