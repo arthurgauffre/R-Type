@@ -130,10 +130,10 @@ public:
 
     // Remove the extra qualification "DLLoader<T>::"
     template <typename... Args>
-    ECS_system::ISystem*
-    getInstance(const std::string &funcName, Args &&...args) {
-      using FuncPtr = ECS_system::ISystem* (*)(
-          Args...); // Function pointer type
+    ECS_system::ISystem *getInstance(const std::string &funcName,
+                                     Args &&...args) {
+      using FuncPtr =
+          ECS_system::ISystem *(*)(Args...); // Function pointer type
       void *sym = dlsym(handle, funcName.c_str());
 
       if (!sym) {

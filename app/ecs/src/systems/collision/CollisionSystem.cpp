@@ -86,7 +86,7 @@ void ECS_system::CollisionSystem::update(
   }
 }
 
-EXPORT_API ECS_system::ISystem*
+EXPORT_API ECS_system::ISystem *
 createCollisionSystem(component::ComponentManager &componentManager) {
   return new ECS_system::CollisionSystem(componentManager);
 }

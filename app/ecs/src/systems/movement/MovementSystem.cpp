@@ -45,7 +45,7 @@ void ECS_system::MovementSystem::update(
   }
 }
 
-EXPORT_API ECS_system::ISystem*
+EXPORT_API ECS_system::ISystem *
 createMovementSystem(component::ComponentManager &componentManager) {
   return new ECS_system::MovementSystem(componentManager);
 }
