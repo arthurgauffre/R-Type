@@ -9,14 +9,22 @@ project(R-Type
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_BUILD_TYPE Debug) # set build type to Debug
+# Ensure Debug build type
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the build type" FORCE)
+endif()
 
 if (WIN32)
     # Windows-specific settings
     # Set the vcpkg toolchain file first
     set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
-    execute_process(COMMAND vcpkg integrate install)
-    execute_process(COMMAND vcpkg install sfml)
+
+    # Ensure SFML is installed through vcpkg if not found
+    find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
+    if (NOT SFML_FOUND)
+        message(FATAL_ERROR "SFML not found! Make sure SFML is installed via vcpkg.")
+    endif()
+
 else()
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
@@ -28,16 +36,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
 endif()
 
-# Find SFML using vcpkg
+# Find SFML via vcpkg
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
-if(SFML_FOUND)
-    message(STATUS "SFML found: ${SFML_DIR}")
-else()
-    message(FATAL_ERROR "SFML not found")
-endif()
-
-# Add the executables for the project
+# Set the executable
 add_executable(r-type_server
     app/server/main.cpp
 )
@@ -68,7 +70,7 @@ target_include_directories(r-type_client PRIVATE ${SFML_INCLUDE_DIR})
 add_subdirectory(app/interface)
 add_subdirectory(app/ecs)
 
-# Link the interface to the executables and SFML libraries
+# Link SFML and other libraries to the executables
 target_link_libraries(r-type_server r-type_interfaces)
 target_link_libraries(r-type_client r-type_interfaces sfml-graphics sfml-audio)
 
@@ -85,12 +87,13 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ${CMAKE_SOURCE_DIR}
 )
 
-# Move .so files out of the build folder into the lib one
+# Move .so/.dll files to the designated lib folder
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
 set(LIB_SERVER_SYSTEMS_DESTINATION ${LIB_DESTINATION}/server_systems)
 set(LIB_SHARED_SYSTEMS_DESTINATION ${LIB_DESTINATION}/shared_systems)
 
+# Additional custom commands to move shared system libraries
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
