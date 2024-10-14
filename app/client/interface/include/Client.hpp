@@ -21,19 +21,19 @@ public:
   void PingServer() {
     rtype::network::Message<NetworkMessages> message;
     message.header.id = NetworkMessages::ServerPing;
-    // std::chrono::system_clock::time_point timeNow =
-    //     std::chrono::system_clock::now();
+    std::chrono::system_clock::time_point timeNow =
+        std::chrono::system_clock::now();
 
-    // message << timeNow;
+    message << timeNow;
 
-    // Send(message);
+    Send(message);
   }
 
   void SendMessageToAllClients() {
     rtype::network::Message<NetworkMessages> message;
     message.header.id = NetworkMessages::MessageAll;
 
-    // Send(message);
+    Send(message);
   }
 
   virtual void Disconnect() {}

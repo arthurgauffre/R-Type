@@ -2,7 +2,7 @@ add_executable(r-type_client
     main.cpp
 )
 
-target_link_libraries(r-type_client r-type_interfaces r-type_client_interfaces)
+target_link_libraries(r-type_client r-type_interfaces r-type_client_interfaces sfml-graphics sfml-window sfml-system)
 
 add_custom_command(
     TARGET r-type_client
