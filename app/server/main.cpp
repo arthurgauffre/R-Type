@@ -7,6 +7,7 @@
 
 #include <Server.hpp>
 #include <iostream>
+#include <server/Server.hpp>
 
 int main(void) {
   rtype::network::Server server(60000);
