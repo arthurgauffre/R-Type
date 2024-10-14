@@ -78,20 +78,12 @@ public:
     }
   }
 
-  void EstablishServerConnection(
-      const asio::ip::udp::resolver::results_type &endpointsResults) {
+  void EstablishServerConnection() {
     if (ownerType == actualOwner::CLIENT) {
-      asio::async_connect(
-          asioSocket, endpointsResults,
-          [this](std::error_code ec, asio::ip::udp::endpoint endpoint) {
-            if (!ec) {
-              std::cout << "Connected to server" << std::endl;
-              ReadHeader();
-              rtype::network::Message<NetworkMessages> message;
-              message.header.id = NetworkMessages::ServerAcceptance;
-              Send(message);
-            }
-          });
+      ReadHeader();
+      rtype::network::Message<NetworkMessages> message;
+      message.header.id = NetworkMessages::ServerAcceptance;
+      Send(message);  
     }
   }
 

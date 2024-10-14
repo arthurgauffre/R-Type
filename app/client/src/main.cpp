@@ -14,10 +14,10 @@ int main(void) {
   std::unique_ptr<rtype::CoreModule> coreModule =
       std::make_unique<rtype::CoreModule>();
 
-  coreModule.get()->init();
-
   simpleClient();
-  coreModule.get()->run();
+  // coreModule.get()->init();
+
+  // coreModule.get()->run();
 
   return 0;
 }

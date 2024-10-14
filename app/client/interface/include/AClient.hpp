@@ -25,16 +25,19 @@ public:
 
   bool Connect(const std::string &host, const uint16_t port) {
     try {
-      asio::ip::udp::resolver resolver(asioContext);
-      asio::ip::udp::resolver::results_type endpointsResults =
-          resolver.resolve(host, std::to_string(port));
-      asio::ip::udp::endpoint endpoint = *endpointsResults.begin();
+      asio::ip::udp::endpoint remoteEndpoint = asio::ip::udp::endpoint(
+        asio::ip::address::from_string(host), port
+      );
+      asio::ip::udp::socket socket(asioContext, asio::ip::udp::endpoint(
+        asio::ip::udp::v4(), 0
+      ));
       connection = std::make_unique<NetworkConnection<T>>(
-          NetworkConnection<T>::actualOwner::CLIENT, asioContext,
-          asio::ip::udp::socket(asioContext), endpoint,
-          queueOfincomingMessages);
-      connection->EstablishServerConnection(endpointsResults);
+        NetworkConnection<T>::actualOwner::CLIENT, asioContext, std::move(socket), std::move(remoteEndpoint), queueOfincomingMessages
+      );
+      connection->EstablishServerConnection();
+      // std::cout << "Connection : " << *(connection.get()) << std::endl;
       contextThread = std::thread([this]() { asioContext.run(); });
+
     } catch (rtype::ClientConnectionException &e) {
       std::cerr << "Client connection failed : " << e.what() << std::endl;
       return false;
