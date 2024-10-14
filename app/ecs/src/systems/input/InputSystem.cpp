@@ -28,7 +28,7 @@ void ECS_system::InputSystem::update(
   }
 }
 
-extern "C" std::shared_ptr<ECS_system::ISystem>
-createInputSystem(component::ComponentManager &componentManager) {
-  return std::make_shared<ECS_system::InputSystem>(componentManager);
+EXPORT_API ECS_system::ISystem *
+createSystem(component::ComponentManager &componentManager) {
+  return new ECS_system::InputSystem(componentManager);
 }

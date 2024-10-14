@@ -6,23 +6,7 @@
 */
 
 #include <CoreModule.hpp>
-#include <SFML/Graphics.hpp>
-#include <components/BackgroundComponent.hpp>
-#include <components/InputComponent.hpp>
-#include <components/MusicComponent.hpp>
-#include <components/PositionComponent.hpp>
-#include <components/ScrollComponent.hpp>
-#include <components/SoundComponent.hpp>
-#include <components/SpriteComponent.hpp>
-#include <components/TextureComponent.hpp>
-#include <components/TransformComponent.hpp>
-#include <components/VelocityComponent.hpp>
-#include <iostream>
-#include <limits.h>
-#include <r-type/ISystem.hpp>
-#include <systems/AudioSystem.hpp>
-#include <systems/RenderSystem.hpp>
-#include <unistd.h>
+#include <memory>
 
 int main(void) {
   // unique  ptr to CoreModule

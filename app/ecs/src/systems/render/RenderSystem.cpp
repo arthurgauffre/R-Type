@@ -93,7 +93,7 @@ void ECS_system::RenderSystem::update(
   }
 }
 
-extern "C" std::shared_ptr<ECS_system::ISystem>
-createRenderSystem(component::ComponentManager &componentManager) {
-  return std::make_shared<ECS_system::RenderSystem>(componentManager);
+EXPORT_API ECS_system::ISystem *
+createSystem(component::ComponentManager &componentManager) {
+  return new ECS_system::RenderSystem(componentManager);
 }

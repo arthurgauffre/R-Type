@@ -73,7 +73,3 @@ std::vector<std::shared_ptr<entity::IEntity>> &
 entity::EntityManager::getEntities() {
   return _entities;
 }
-
-extern "C" std::shared_ptr<entity::EntityManager> createEntityManager() {
-  return std::make_shared<entity::EntityManager>();
-}

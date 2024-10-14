@@ -27,8 +27,3 @@ void component::ComponentManager::update(float deltaTime) {
     }
   }
 }
-
-extern "C" std::shared_ptr<component::ComponentManager>
-createComponentManager() {
-  return std::make_shared<component::ComponentManager>();
-}

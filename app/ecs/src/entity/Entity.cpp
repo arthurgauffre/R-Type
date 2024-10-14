@@ -17,9 +17,4 @@ uint32_t entity::Entity::getID() const { return id; }
 void entity::Entity::setActive(bool active) { isActive = active; }
 
 bool entity::Entity::getActive() const { return isActive; }
-
-// entry point for the entity
-extern "C" std::shared_ptr<entity::IEntity> createEntity(uint32_t id) {
-  return std::make_shared<entity::Entity>(id);
-}
 } // namespace entity

@@ -13,6 +13,12 @@
 #include <r-type/IEntity.hpp>
 #include <vector>
 
+#ifdef _WIN32
+#define EXPORT_API extern "C" __declspec(dllexport)
+#else
+#define EXPORT_API extern "C"
+#endif
+
 namespace ECS_system {
 class ISystem {
 public:

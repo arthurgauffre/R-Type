@@ -43,7 +43,7 @@ jobs:
 
       - name: Cache CMake build
         id: cache-cmake
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-cmake-build
         with:
@@ -79,7 +79,7 @@ jobs:
 
   check_windows_program_compilation:
     runs-on: windows-latest
-    timeout-minutes: 3
+    timeout-minutes: 10
     needs: auto_format
     # container: epitechcontent/epitest-docker:latest
     steps:
@@ -88,9 +88,20 @@ jobs:
         with:
           repository: ""
 
+      - name: Cache vcpkg Install
+        id: cache-vcpkg
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-vcpkg-install
+        with:
+          path: C:/vcpkg
+          key: ${{ runner.os }}-vcpkg-install-${{ env.cache-name }}-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-install-${{ env.cache-name }}-
+
       - name: Cache CMake build
         id: cache-cmake
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-cmake-build
         with:
@@ -102,13 +113,8 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Download SFML
-        run: |
-          Invoke-WebRequest -Uri https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip -OutFile sfml.zip
-          Expand-Archive -Path sfml.zip -DestinationPath C:\SFML
-
-      - name: Configure CMake with SFML
-        run: cmake -S . -B build -DSFML_DIR=C:/SFML/SFML-2.5.1/lib/cmake/SFML
+      - name: Compile using CMake
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build project
         run: cmake --build build

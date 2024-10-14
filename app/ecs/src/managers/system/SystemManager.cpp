@@ -42,70 +42,28 @@ void ECS_system::SystemManager::update(
  */
 void ECS_system::SystemManager::addSystem(
     component::ComponentManager &componentManager, std::string systemName) {
-  if (systemName == "RenderSystem") {
-    // dlopen the render system lib .so
-    std::shared_ptr<
-        rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
-        renderSystemLoader = std::make_shared<
-            rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-            "lib/client_systems/r-type_render_system.so");
-    std::shared_ptr<ECS_system::ISystem> renderSystem =
-        renderSystemLoader->getInstance("createRenderSystem", componentManager);
-    // add the render system to the system manager
-    _systems.push_back(renderSystem);
-  } else if (systemName == "AudioSystem") {
-    // dlopen the audio system lib .so
-    std::shared_ptr<
-        rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
-        audioSystemLoader = std::make_shared<
-            rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-            "lib/client_systems/r-type_audio_system.so");
-    // get the instance of the audio system
-    std::shared_ptr<ECS_system::ISystem> audioSystem =
-        audioSystemLoader->getInstance("createAudioSystem", componentManager);
-    // add the audio system to the system manager
-    _systems.push_back(audioSystem);
-  } else if (systemName == "InputSystem") {
-    // dlopen the input system lib .so
-    std::shared_ptr<
-        rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
-        inputSystemLoader = std::make_shared<
-            rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-            "lib/client_systems/r-type_input_system.so");
-    // get the instance of the input system
-    std::shared_ptr<ECS_system::ISystem> inputSystem =
-        inputSystemLoader->getInstance("createInputSystem", componentManager);
-    // add the input system to the system manager
-    _systems.push_back(inputSystem);
-  } else if (systemName == "MovementSystem") {
-    // dlopen the movement system lib .so
-    std::shared_ptr<
-        rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
-        movementSystemLoader = std::make_shared<
-            rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-            "lib/client_systems/r-type_movement_system.so");
-    // get the instance of the movement system
-    std::shared_ptr<ECS_system::ISystem> movementSystem =
-        movementSystemLoader->getInstance("createMovementSystem",
-                                          componentManager);
-    // add the movement system to the system manager
-    _systems.push_back(movementSystem);
-  } else if (systemName == "BackgroundSystem") {
-    // dlopen the background system lib .so
-    std::shared_ptr<
-        rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
-        backgroundSystemLoader = std::make_shared<
-            rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-            "lib/client_systems/r-type_background_system.so");
-    // get the instance of the background system
-    std::shared_ptr<ECS_system::ISystem> backgroundSystem =
-        backgroundSystemLoader->getInstance("createBackgroundSystem",
-                                            componentManager);
-    // add the background system to the system manager
-    _systems.push_back(backgroundSystem);
-  }
-}
+  std::shared_ptr<
+      rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
+      systemLoader = std::make_shared<
+          rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
+          "lib/client_systems/r-type_" + systemName + "_system.so");
 
-extern "C" std::shared_ptr<ECS_system::SystemManager> createSystemManager() {
-  return std::make_shared<ECS_system::SystemManager>();
+  // check if the systemLoader is not null
+  if (!systemLoader) {
+    std::cerr << "Error: systemLoader is null" << std::endl;
+    exit(84);
+  }
+
+  // Wrap the returned raw pointer in a shared_ptr
+  std::shared_ptr<ECS_system::ISystem> system =
+      std::shared_ptr<ECS_system::ISystem>(
+          systemLoader->getInstance("createSystem", componentManager));
+
+  // check if the system is not null
+  if (!system) {
+    std::cerr << "Error: system is null" << std::endl;
+    exit(84);
+  }
+  // Add to the systems manager
+  _systems.push_back(system);
 }
