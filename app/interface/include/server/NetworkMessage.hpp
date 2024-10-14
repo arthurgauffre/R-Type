@@ -8,7 +8,7 @@
 #ifndef NETWORKMESSAGE_HPP_
 #define NETWORKMESSAGE_HPP_
 
-#include <NetworkConnection.hpp>
+#include <server/NetworkConnection.hpp>
 #include <iostream>
 
 namespace rtype {

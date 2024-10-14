@@ -13,8 +13,8 @@
 #include <Error.hpp>
 #include <r-type/IServer.hpp>
 // #include <NetworkingCommon.hpp>
-#include <NetworkQueue.hpp>
-#include <OwnedMessage.hpp>
+#include <server/NetworkQueue.hpp>
+#include <server/OwnedMessage.hpp>
 
 namespace rtype {
 namespace network {

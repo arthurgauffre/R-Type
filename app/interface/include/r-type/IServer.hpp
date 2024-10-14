@@ -10,9 +10,9 @@
 
 #pragma once
 
-#include <NetworkConnection.hpp>
-#include <NetworkMessage.hpp>
-#include <NetworkingCommon.hpp>
+#include <server/NetworkConnection.hpp>
+#include <server/NetworkMessage.hpp>
+#include <server/NetworkingCommon.hpp>
 
 namespace rtype {
 namespace network {

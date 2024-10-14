@@ -8,8 +8,8 @@
 #ifndef OWNEDMESSAGE_HPP_
 #define OWNEDMESSAGE_HPP_
 
-#include <NetworkMessage.hpp>
-#include <NetworkingCommon.hpp>
+#include <server/NetworkMessage.hpp>
+#include <server/NetworkingCommon.hpp>
 
 namespace rtype {
 namespace network {

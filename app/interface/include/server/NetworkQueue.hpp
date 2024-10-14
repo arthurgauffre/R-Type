@@ -8,7 +8,7 @@
 #ifndef NETWORKQUEUE_HPP_
 #define NETWORKQUEUE_HPP_
 
-#include <NetworkingCommon.hpp>
+#include <server/NetworkingCommon.hpp>
 
 namespace rtype {
 namespace network {
