@@ -45,4 +45,6 @@ void component::ParentComponent::setParentID(uint32_t parentID) {
  *
  * @return uint32_t The ID of the parent component.
  */
-uint32_t component::ParentComponent::getParentID() { return this->_parentEntityID; }
+uint32_t component::ParentComponent::getParentID() {
+  return this->_parentEntityID;
+}

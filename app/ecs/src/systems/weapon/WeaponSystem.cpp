@@ -13,7 +13,5 @@ ECS_system::WeaponSystem::WeaponSystem(
 
 ECS_system::WeaponSystem::~WeaponSystem() {}
 
-
-void ECS_system::WeaponSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
-}
+void ECS_system::WeaponSystem::update(
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {}

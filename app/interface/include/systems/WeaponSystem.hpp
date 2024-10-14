@@ -30,12 +30,15 @@ public:
   WeaponSystem(component::ComponentManager &componentManager);
   ~WeaponSystem();
 
-    void update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) override;
-    void initialize() override {}
-    void handleComponents() override {}
+  void update(float deltaTime,
+              std::vector<std::shared_ptr<entity::IEntity>> entities) override;
+  void initialize() override {}
+  void handleComponents() override {}
 
-    void addWeapon(uint32_t entityID, int damage, float velocity, sf::Vector2f position, std::string texturePath, sf::Vector2f spriteSize);
-    void removeWeapon(uint32_t entityID);
+  void addWeapon(uint32_t entityID, int damage, float velocity,
+                 sf::Vector2f position, std::string texturePath,
+                 sf::Vector2f spriteSize);
+  void removeWeapon(uint32_t entityID);
 
 private:
 };
