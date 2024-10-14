@@ -45,6 +45,6 @@ void ECS_system::BackgroundSystem::update(
 }
 
 EXPORT_API ECS_system::ISystem *
-createBackgroundSystem(component::ComponentManager &componentManager) {
+createSystem(component::ComponentManager &componentManager) {
   return new ECS_system::BackgroundSystem(componentManager);
 }

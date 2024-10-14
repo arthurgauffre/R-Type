@@ -94,6 +94,6 @@ void ECS_system::RenderSystem::update(
 }
 
 EXPORT_API ECS_system::ISystem *
-createRenderSystem(component::ComponentManager &componentManager) {
+createSystem(component::ComponentManager &componentManager) {
   return new ECS_system::RenderSystem(componentManager);
 }

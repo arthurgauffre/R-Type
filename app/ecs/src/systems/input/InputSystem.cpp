@@ -29,6 +29,6 @@ void ECS_system::InputSystem::update(
 }
 
 EXPORT_API ECS_system::ISystem *
-createInputSystem(component::ComponentManager &componentManager) {
+createSystem(component::ComponentManager &componentManager) {
   return new ECS_system::InputSystem(componentManager);
 }

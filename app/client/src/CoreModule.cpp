@@ -985,11 +985,11 @@ void rtype::CoreModule::init() {
 
   component::ComponentManager &componentManager = *this->getComponentManager();
 
-  this->getSystemManager()->addSystem(componentManager, "AudioSystem");
-  this->getSystemManager()->addSystem(componentManager, "RenderSystem");
-  this->getSystemManager()->addSystem(componentManager, "InputSystem");
-  this->getSystemManager()->addSystem(componentManager, "MovementSystem");
-  this->getSystemManager()->addSystem(componentManager, "BackgroundSystem");
+  this->getSystemManager()->addSystem(componentManager, "audio");
+  this->getSystemManager()->addSystem(componentManager, "render");
+  this->getSystemManager()->addSystem(componentManager, "input");
+  this->getSystemManager()->addSystem(componentManager, "movement");
+  this->getSystemManager()->addSystem(componentManager, "background");
 
   this->getComponentManager()
       ->getComponent<component::InputComponent>(0)
