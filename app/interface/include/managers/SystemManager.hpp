@@ -9,9 +9,6 @@
 
 #pragma once
 
-#undef min
-#undef max
-
 #include <iostream>
 #include <managers/ComponentManager.hpp>
 #include <memory>
