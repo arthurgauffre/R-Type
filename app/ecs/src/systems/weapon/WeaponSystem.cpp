@@ -7,10 +7,8 @@
 
 #include <systems/WeaponSystem.hpp>
 
-ECS_system::WeaponSystem::WeaponSystem(component::ComponentManager &componentManager) : ASystem(componentManager)
-{
-}
+ECS_system::WeaponSystem::WeaponSystem(
+    component::ComponentManager &componentManager)
+    : ASystem(componentManager) {}
 
-ECS_system::WeaponSystem::~WeaponSystem()
-{
-}
+ECS_system::WeaponSystem::~WeaponSystem() {}

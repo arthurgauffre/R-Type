@@ -5,21 +5,20 @@
 ** InputSystem
 */
 
-#include <systems/InputSystem.hpp>
 #include <components/VelocityComponent.hpp>
+#include <systems/InputSystem.hpp>
 
 void ECS_system::InputSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
-           entities))
-  {
+           entities)) {
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(
             entity.get()->getID());
-    auto velocity = _componentManager.getComponent<component::VelocityComponent>(
-        entity.get()->getID());
+    auto velocity =
+        _componentManager.getComponent<component::VelocityComponent>(
+            entity.get()->getID());
     sf::Vector2f newVelocity = {0, 0};
     if (inputComponent->isActionActive("MoveUp"))
       newVelocity.y = -100;
@@ -34,7 +33,6 @@ void ECS_system::InputSystem::update(
 }
 
 EXPORT_API ECS_system::ISystem *
-createSystem(component::ComponentManager &componentManager)
-{
+createSystem(component::ComponentManager &componentManager) {
   return new ECS_system::InputSystem(componentManager);
 }
