@@ -80,10 +80,10 @@ namespace rtype
       ~DLLoader()
       {
 #ifdef _WIN32
-        if (handle)
-        {
-          FreeLibrary(static_cast<HMODULE>(handle));
-        }
+        // if (handle)
+        // {
+        //   FreeLibrary(static_cast<HMODULE>(handle));
+        // }
 #else
         // if (handle)
         // {
