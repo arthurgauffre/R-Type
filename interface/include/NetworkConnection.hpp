@@ -10,9 +10,9 @@
 
 #pragma once
 
+#include <NetworkMessagesCommunication.hpp>
 #include <NetworkQueue.hpp>
 #include <OwnedMessage.hpp>
-#include <NetworkMessagesCommunication.hpp>
 #include <r-type/IServer.hpp>
 
 std::ostream &operator<<(std::ostream &os,
