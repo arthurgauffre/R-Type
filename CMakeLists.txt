@@ -9,22 +9,14 @@ project(R-Type
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Ensure Debug build type
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the build type" FORCE)
-endif()
+set(CMAKE_BUILD_TYPE Debug) # set build type to Debug
 
 if (WIN32)
     # Windows-specific settings
     # Set the vcpkg toolchain file first
     set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
-
-    # Ensure SFML is installed through vcpkg if not found
-    find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
-    if (NOT SFML_FOUND)
-        message(FATAL_ERROR "SFML not found! Make sure SFML is installed via vcpkg.")
-    endif()
-
+    execute_process(COMMAND vcpkg integrate install)
+    execute_process(COMMAND vcpkg install sfml)
 else()
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
@@ -36,10 +28,16 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
 endif()
 
-# Find SFML via vcpkg
+# Find SFML using vcpkg
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
-# Set the executable
+if(SFML_FOUND)
+    message(STATUS "SFML found: ${SFML_DIR}")
+else()
+    message(FATAL_ERROR "SFML not found")
+endif()
+
+# Add the executables for the project
 add_executable(r-type_server
     app/server/main.cpp
 )
@@ -63,14 +61,14 @@ add_executable(r-type_client
     app/ecs/src/components/scroll/ScrollComponent.cpp
     app/ecs/src/entity/Entity.cpp
 )
-
+°±
 target_include_directories(r-type_client PRIVATE ${SFML_INCLUDE_DIR})
 
 # Add the interface to the project
 add_subdirectory(app/interface)
 add_subdirectory(app/ecs)
 
-# Link SFML and other libraries to the executables
+# Link the interface to the executables and SFML libraries
 target_link_libraries(r-type_server r-type_interfaces)
 target_link_libraries(r-type_client r-type_interfaces sfml-graphics sfml-audio)
 
@@ -87,13 +85,12 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ${CMAKE_SOURCE_DIR}
 )
 
-# Move .so/.dll files to the designated lib folder
+# Move .so files out of the build folder into the lib one
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
 set(LIB_SERVER_SYSTEMS_DESTINATION ${LIB_DESTINATION}/server_systems)
 set(LIB_SHARED_SYSTEMS_DESTINATION ${LIB_DESTINATION}/shared_systems)
 
-# Additional custom commands to move shared system libraries
 add_custom_command(
     TARGET r-type_server
     POST_BUILD
