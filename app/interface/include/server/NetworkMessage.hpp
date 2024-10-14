@@ -8,8 +8,8 @@
 #ifndef NETWORKMESSAGE_HPP_
 #define NETWORKMESSAGE_HPP_
 
-#include <server/NetworkConnection.hpp>
 #include <iostream>
+#include <server/NetworkConnection.hpp>
 
 namespace rtype {
 namespace network {
