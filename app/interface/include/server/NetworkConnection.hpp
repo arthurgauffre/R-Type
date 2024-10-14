@@ -10,9 +10,9 @@
 
 #pragma once
 
+#include <r-type/IServer.hpp>
 #include <server/NetworkQueue.hpp>
 #include <server/OwnedMessage.hpp>
-#include <r-type/IServer.hpp>
 
 namespace rtype {
 namespace network {
