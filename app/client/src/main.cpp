@@ -8,6 +8,6 @@
 #include "clientEx.cpp"
 
 int main(void) {
-  // simpleClient();
+  simpleClient();
   return 0;
 }

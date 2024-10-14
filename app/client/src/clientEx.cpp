@@ -7,7 +7,7 @@
 
 // #include <SFML/Graphics.hpp>
 // #include <iostream>
-// #include <client/Client.hpp>
+#include <Client.hpp>
 
 void simpleClient() {
   // rtype::network::Client c;

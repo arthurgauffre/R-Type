@@ -11,7 +11,7 @@
 #pragma once
 
 #include <NetworkMessagesCommunication.hpp>
-#include <r-type/AServer.hpp>
+#include <AServer.hpp>
 
 namespace rtype {
 namespace network {

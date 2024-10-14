@@ -14,6 +14,18 @@
 #include <OwnedMessage.hpp>
 #include <r-type/IServer.hpp>
 
+std::ostream &operator<<(std::ostream &os, const asio::ip::udp::socket &socket)
+{
+    os << socket.local_endpoint().address().to_string() << ":" << socket.local_endpoint().port();
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const asio::ip::udp::endpoint &endpoint)
+{
+    os << endpoint.address().to_string() << ":" << endpoint.port();
+    return os;
+}
+
 namespace rtype {
 namespace network {
 template <typename T> class IServer;
