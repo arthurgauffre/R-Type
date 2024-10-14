@@ -31,13 +31,13 @@ endif()
 find_package(SFML 2.5 COMPONENTS audio graphics REQUIRED)
 
 # Set SFML include directories
-set(SFML_INCLUDE_DIR ${SFML_DIR}/include)
+# set(SFML_INCLUDE_DIR ${SFML_DIR}/include)
 
-if(SFML_FOUND)
-    message(STATUS "SFML found: ${SFML_DIR}")
-else()
-    message(FATAL_ERROR "SFML not found")
-endif()
+# if(SFML_FOUND)
+#     message(STATUS "SFML found: ${SFML_DIR}")
+# else()
+#     message(FATAL_ERROR "SFML not found")
+# endif()
 
 # Add the executables for the project
 add_executable(r-type_server
