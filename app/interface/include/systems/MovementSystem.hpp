@@ -13,7 +13,6 @@
 #include <components/VelocityComponent.hpp>
 #include <r-type/ASystem.hpp>
 
-
 namespace ECS_system {
 class MovementSystem : public ASystem {
 public:
