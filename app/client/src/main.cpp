@@ -5,8 +5,8 @@
 ** main
 */
 
-#include <CoreModule.hpp>
 #include "clientEx.cpp"
+#include <CoreModule.hpp>
 #include <memory>
 
 int main(void) {
@@ -21,4 +21,3 @@ int main(void) {
 
   return 0;
 }
-
