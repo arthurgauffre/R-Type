@@ -62,7 +62,7 @@ add_executable(r-type_client
     app/ecs/src/components/health/HealthComponent.cpp
     app/ecs/src/entity/Entity.cpp
 )
-°±
+
 target_include_directories(r-type_client PRIVATE ${SFML_INCLUDE_DIR})
 
 # Add the interface to the project
