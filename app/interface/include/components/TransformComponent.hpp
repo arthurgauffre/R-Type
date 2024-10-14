@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
 
-#include <SFML/Graphics.hpp>
 
 namespace component {
 class TransformComponent : public AComponent {

@@ -8,6 +8,8 @@
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
+#include <SFML/Graphics.hpp>
+
 #ifdef _WIN32
 #include <tchar.h>
 #define NOMINMAX
@@ -18,7 +20,6 @@
 #include <unistd.h>
 #endif
 
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <managers/EntityManager.hpp>
 #include <managers/SystemManager.hpp>

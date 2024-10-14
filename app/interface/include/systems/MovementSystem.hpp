@@ -7,12 +7,12 @@
 
 #pragma once
 
+#include <SFML/System/Time.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <components/VelocityComponent.hpp>
 #include <r-type/ASystem.hpp>
 
-#include <SFML/System/Time.hpp>
 
 namespace ECS_system {
 class MovementSystem : public ASystem {
