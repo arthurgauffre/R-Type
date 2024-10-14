@@ -88,7 +88,8 @@ protected:
   rtype::network::ServerQueue<rtype::network::OwnedMessage<T>>
       &queueOfIncomingMessages;
 
-  rtype::network::ServerQueue<rtype::network::Message<T>> queueOfOutgoingMessages;
+  rtype::network::ServerQueue<rtype::network::Message<T>>
+      queueOfOutgoingMessages;
   rtype::network::Message<T> temporaryIncomingMessage;
 
   uint32_t id = 0;
