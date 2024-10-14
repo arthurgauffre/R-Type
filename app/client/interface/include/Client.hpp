@@ -10,38 +10,35 @@
 
 #pragma once
 
+#include <AClient.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkMessagesCommunication.hpp>
-#include <AClient.hpp>
 
-namespace rtype{
-  namespace network {
-    class Client : virtual public rtype::network::AClient<NetworkMessages>
-    {
-    public:
-      void PingServer()
-      {
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::ServerPing;
-        // std::chrono::system_clock::time_point timeNow =
-        //     std::chrono::system_clock::now();
+namespace rtype {
+namespace network {
+class Client : virtual public rtype::network::AClient<NetworkMessages> {
+public:
+  void PingServer() {
+    rtype::network::Message<NetworkMessages> message;
+    message.header.id = NetworkMessages::ServerPing;
+    // std::chrono::system_clock::time_point timeNow =
+    //     std::chrono::system_clock::now();
 
-        // message << timeNow;
+    // message << timeNow;
 
-        // Send(message);
-      }
+    // Send(message);
+  }
 
-      void SendMessageToAllClients()
-      {
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::MessageAll;
+  void SendMessageToAllClients() {
+    rtype::network::Message<NetworkMessages> message;
+    message.header.id = NetworkMessages::MessageAll;
 
-        // Send(message);
-      }
+    // Send(message);
+  }
 
-      virtual void Disconnect() {}
-    };
-  } // namespace network
+  virtual void Disconnect() {}
+};
+} // namespace network
 } // namespace rtype
 
 #endif /* !CLIENT_HPP_ */
