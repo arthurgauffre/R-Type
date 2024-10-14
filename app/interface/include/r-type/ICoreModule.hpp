@@ -5,7 +5,6 @@
 ** ICoreModule
 */
 
-
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
