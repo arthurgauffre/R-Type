@@ -73,9 +73,9 @@ public:
 
     ~DLLoader() {
 #ifdef _WIN32
-      if (handle) {
-        FreeLibrary(static_cast<HMODULE>(handle));
-      }
+      // if (handle) {
+      //   FreeLibrary(static_cast<HMODULE>(handle));
+      // }
 #else
       // if (handle)
       // {
@@ -107,46 +107,11 @@ public:
         exit(1); // Exit if symbol resolution fails
       }
 
-      ~DLLoader()
-      {
-#ifdef _WIN32
-        // if (handle)
-        // {
-        //   FreeLibrary(static_cast<HMODULE>(handle));
-        // }
-#else
-        // if (handle)
-        // {
-        //   dlclose(handle);
-        // }
-#endif
-      }
-      template <typename... Args>
-      ECS_system::ISystem *getInstance(const std::string &funcName, Args &&...args)
-      {
-        using FuncPtr = ECS_system::ISystem *(*)(Args...); // Function pointer type
-        void *sym;
-
-#ifdef _WIN32
-        sym = GetProcAddress(static_cast<HMODULE>(handle), funcName.c_str());
-#else
-        sym = dlsym(handle, funcName.c_str());
-#endif
-
-        if (!sym)
-        {
-#ifdef _WIN32
-          std::cerr << "Error getting symbol: " << funcName << " Error: " << GetLastError() << std::endl;
-#else
-          std::cerr << dlerror() << std::endl; // Print the dynamic loader error message
-#endif
-          exit(1); // Exit if symbol resolution fails
-        }
-
-        FuncPtr createFunc = reinterpret_cast<FuncPtr>(sym); // Cast to correct function pointer type
-        return createFunc(std::forward<Args>(args)...);      // Call function and return the pointer
-      }
-    };
+      FuncPtr createFunc = reinterpret_cast<FuncPtr>(
+          sym); // Cast to correct function pointer type
+      return createFunc(
+          std::forward<Args>(args)...); // Call function and return the pointer
+    }
   };
 };
 }; // namespace rtype
