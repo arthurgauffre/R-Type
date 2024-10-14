@@ -60,6 +60,8 @@ add_executable(r-type_client
     app/ecs/src/components/background/BackgroundComponent.cpp
     app/ecs/src/components/scroll/ScrollComponent.cpp
     app/ecs/src/components/health/HealthComponent.cpp
+    app/ecs/src/components/damage/DamageComponent.cpp
+    app/ecs/src/components/parent/ParentComponent.cpp
     app/ecs/src/entity/Entity.cpp
 )
 
