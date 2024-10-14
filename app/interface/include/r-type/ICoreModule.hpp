@@ -5,9 +5,11 @@
 ** ICoreModule
 */
 
+
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
+#pragma once
 #include <SFML/Graphics.hpp>
 
 #ifdef _WIN32

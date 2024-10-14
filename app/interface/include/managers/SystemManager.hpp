@@ -6,9 +6,6 @@
 */
 
 #pragma once
-
-#pragma once
-
 #include <iostream>
 #include <managers/ComponentManager.hpp>
 #include <memory>

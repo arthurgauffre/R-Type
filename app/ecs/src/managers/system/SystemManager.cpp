@@ -66,5 +66,4 @@ void ECS_system::SystemManager::addSystem(
   }
   // Add to the systems manager
   _systems.push_back(system);
-  // systemLoader->DLunloader();
 }
