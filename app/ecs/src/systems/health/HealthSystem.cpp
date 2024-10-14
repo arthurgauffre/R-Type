@@ -16,9 +16,9 @@
  * @param componentManager Reference to the ComponentManager that manages
  * the components associated with this system.
  */
-ECS_system::HealthSystem::HealthSystem(component::ComponentManager &componentManager) : ASystem(componentManager)
-{
-}
+ECS_system::HealthSystem::HealthSystem(
+    component::ComponentManager &componentManager)
+    : ASystem(componentManager) {}
 
 /**
  * @brief Destructor for the HealthSystem class.
@@ -27,34 +27,37 @@ ECS_system::HealthSystem::HealthSystem(component::ComponentManager &componentMan
  * or performing any necessary finalization tasks when an instance
  * of the HealthSystem class is destroyed.
  */
-ECS_system::HealthSystem::~HealthSystem()
-{
-}
+ECS_system::HealthSystem::~HealthSystem() {}
 
 #include <iostream>
 
 /**
- * @brief Updates the health status of entities and deactivates those with zero or negative health.
+ * @brief Updates the health status of entities and deactivates those with zero
+ * or negative health.
  *
- * This function iterates through a list of entities, checks their health status, and deactivates any entity whose health is less than or equal to zero.
+ * This function iterates through a list of entities, checks their health
+ * status, and deactivates any entity whose health is less than or equal to
+ * zero.
  *
  * @param deltaTime The time elapsed since the last update.
- * @param entities A vector of shared pointers to entities that need to be updated.
+ * @param entities A vector of shared pointers to entities that need to be
+ * updated.
  */
-void ECS_system::HealthSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
-    for (auto &entity : _componentManager.getEntitiesWithComponents<component::HealthComponent>(entities))
-    {
-        component::HealthComponent *healthComponent = _componentManager.getComponent<component::HealthComponent>(entity->getID());
-        if (healthComponent->getHealth() <= 0)
-        {
-            entity.get()->setActive(false);
-        }
+void ECS_system::HealthSystem::update(
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+  for (auto &entity :
+       _componentManager.getEntitiesWithComponents<component::HealthComponent>(
+           entities)) {
+    component::HealthComponent *healthComponent =
+        _componentManager.getComponent<component::HealthComponent>(
+            entity->getID());
+    if (healthComponent->getHealth() <= 0) {
+      entity.get()->setActive(false);
     }
+  }
 }
 
 EXPORT_API ECS_system::ISystem *
-createSystem(component::ComponentManager &componentManager)
-{
-    return new ECS_system::HealthSystem(componentManager);
+createSystem(component::ComponentManager &componentManager) {
+  return new ECS_system::HealthSystem(componentManager);
 }

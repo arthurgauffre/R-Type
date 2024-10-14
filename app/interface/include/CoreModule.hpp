@@ -17,6 +17,7 @@
 #include <vector>
 
 #include <components/BackgroundComponent.hpp>
+#include <components/HealthComponent.hpp>
 #include <components/InputComponent.hpp>
 #include <components/MusicComponent.hpp>
 #include <components/PositionComponent.hpp>
@@ -26,11 +27,10 @@
 #include <components/TextureComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <components/VelocityComponent.hpp>
-#include <components/HealthComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
-#include <systems/RenderSystem.hpp>
 #include <systems/HealthSystem.hpp>
+#include <systems/RenderSystem.hpp>
 
 namespace rtype {
 class CoreModule : virtual public ICoreModule {
