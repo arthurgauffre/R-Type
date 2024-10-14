@@ -114,7 +114,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Compile using CMake
-        run: cmake -S . -B build
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build project
         run: cmake --build build

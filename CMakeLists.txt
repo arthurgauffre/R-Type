@@ -16,6 +16,7 @@ if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     execute_process(COMMAND vcpkg integrate install)
     execute_process(COMMAND vcpkg install sfml)
+    set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 else()
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
@@ -31,13 +32,13 @@ endif()
 find_package(SFML 2.5 COMPONENTS audio graphics REQUIRED)
 
 # Set SFML include directories
-# set(SFML_INCLUDE_DIR ${SFML_DIR}/include)
+set(SFML_INCLUDE_DIR ${SFML_DIR}/include)
 
-# if(SFML_FOUND)
-#     message(STATUS "SFML found: ${SFML_DIR}")
-# else()
-#     message(FATAL_ERROR "SFML not found")
-# endif()
+if(SFML_FOUND)
+    message(STATUS "SFML found: ${SFML_DIR}")
+else()
+    message(FATAL_ERROR "SFML not found")
+endif()
 
 # Add the executables for the project
 add_executable(r-type_server
