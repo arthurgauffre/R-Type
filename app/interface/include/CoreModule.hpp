@@ -26,9 +26,11 @@
 #include <components/TextureComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <components/VelocityComponent.hpp>
+#include <components/HealthComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/RenderSystem.hpp>
+#include <systems/HealthSystem.hpp>
 
 namespace rtype {
 class CoreModule : virtual public ICoreModule {
@@ -40,7 +42,7 @@ public:
                                     sf::Vector2f speed, sf::Vector2f size);
   entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
                                 sf::Vector2f position, sf::Vector2f velocity,
-                                sf::Vector2f scale);
+                                sf::Vector2f scale, int health);
 
   void init();
   void run();

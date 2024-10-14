@@ -23,8 +23,6 @@ void ECS_system::InputSystem::update(
       std::cout << "LEFT" << std::endl;
     else if (inputComponent->isActionActive("MoveRight"))
       std::cout << "RIGHT" << std::endl;
-    else
-      std::cout << "IDLE" << std::endl;
   }
 }
 

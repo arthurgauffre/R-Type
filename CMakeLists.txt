@@ -62,6 +62,7 @@ add_executable(r-type_client
     app/ecs/src/components/transform/TransformComponent.cpp
     app/ecs/src/components/background/BackgroundComponent.cpp
     app/ecs/src/components/scroll/ScrollComponent.cpp
+    app/ecs/src/components/health/HealthComponent.cpp
     app/ecs/src/entity/Entity.cpp
 )
 
@@ -127,3 +128,9 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_background_system>
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_background_system.so)
+
+add_custom_command(
+    TARGET r-type_server
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_health_system>
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_health_system.so)

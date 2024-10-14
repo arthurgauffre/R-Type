@@ -65,6 +65,9 @@ void ECS_system::RenderSystem::update(
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
                       component::TextureComponent>(entities)) {
+
+    if (entity.get()->getActive() == false)
+      continue;
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(
             entity.get()->getID());
