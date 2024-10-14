@@ -8,6 +8,9 @@
 #ifndef ICOREMODULE_HPP_
 #define ICOREMODULE_HPP_
 
+#undef min
+#undef max
+
 #ifdef _WIN32
 #include <tchar.h>
 #include <windows.h>
