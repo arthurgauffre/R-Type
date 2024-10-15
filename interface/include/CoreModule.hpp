@@ -35,9 +35,9 @@
 #include <components/WeaponComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
+#include <systems/GameSystem.hpp>
 #include <systems/HealthSystem.hpp>
 #include <systems/RenderSystem.hpp>
-#include <systems/GameSystem.hpp>
 
 namespace rtype {
 class CoreModule : virtual public ICoreModule {
