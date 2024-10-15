@@ -9,7 +9,8 @@
 #include <systems/InputSystem.hpp>
 
 void ECS_system::InputSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
+    std::vector<std::string> msgToSend) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
            entities)) {

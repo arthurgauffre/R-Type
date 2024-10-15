@@ -42,7 +42,8 @@ public:
                  entity::EntityManager &entityManager, std::string systemName);
 
   void update(float deltaTime,
-              std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend);
+              std::vector<std::shared_ptr<entity::IEntity>> entities,
+              std::vector<std::string> msgToSend);
 
   std::vector<std::shared_ptr<ISystem>> getSystems() const { return _systems; }
 
