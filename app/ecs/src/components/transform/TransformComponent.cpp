@@ -10,5 +10,6 @@
 namespace component {
 TransformComponent::TransformComponent(uint32_t entityID, sf::Vector2f position,
                                        sf::Vector2f scale, float rotation)
-    : AComponent(entityID), _position(position), _scale(scale), _rotation(rotation) {}
+    : AComponent(entityID), _position(position), _scale(scale),
+      _rotation(rotation) {}
 } // namespace component
