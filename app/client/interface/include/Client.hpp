@@ -19,24 +19,21 @@ namespace rtype {
 namespace network {
 class Client : virtual public rtype::network::AClient<NetworkMessages> {
 public:
-  Client() : AClient() {}
+  Client()
+      : AClient(){}
 
   // void init() {
   //   component::ComponentManager &componentManager =
   //       *_coreModule->getComponentManager();
   //   entity::EntityManager &entityManager = *_coreModule->getEntityManager();
 
-  //   _coreModule->getSystemManager()->addSystem(componentManager,
-  //   entityManager,
+  //   _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
   //                                              "render");
-  //   _coreModule->getSystemManager()->addSystem(componentManager,
-  //   entityManager,
+  //   _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
   //                                              "audio");
-  //   _coreModule->getSystemManager()->addSystem(componentManager,
-  //   entityManager,
+  //   _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
   //                                              "background");
-  //   _coreModule->getSystemManager()->addSystem(componentManager,
-  //   entityManager,
+  //   _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
   //                                              "input");
   // }
 
@@ -58,21 +55,25 @@ public:
     std::cout << "Message sent : " << message << std::endl;
   }
 
-  void CreateEntity() {
+  void CreateEntity()
+  {
     rtype::network::Message<NetworkMessages> message;
     message.header.id = NetworkMessages::createEntity;
     // Serialize the entityID into bytes
-    EntityId id = {1};
-    std::cout << id.id << std::endl;
-    // std::vector<uint8_t> entityIDBytes(reinterpret_cast<uint8_t *>(&id),
-    // reinterpret_cast<uint8_t *>(&id) + sizeof(EntityId));
+    EntityId id = {static_cast<size_t>(entityID)};
+    // std::vector<uint8_t> entityIDBytes(reinterpret_cast<uint8_t *>(&id), reinterpret_cast<uint8_t *>(&id) + sizeof(EntityId));
     std::vector<uint8_t> entityIDBytes(reinterpret_cast<uint8_t *>(&id),
                                        reinterpret_cast<uint8_t *>(&id) +
                                            sizeof(EntityId));
-    std::cout << entityIDBytes.size() << std::endl;
+    std::cout << "size of the vector " << entityIDBytes.size() << std::endl;
+    std::cout << entityIDBytes.data() << std::endl;
 
-    message.body.insert(message.body.end(), entityIDBytes.begin(),
-                        entityIDBytes.end());
+    message.body.insert(message.body.end(), entityIDBytes.begin(), entityIDBytes.end());
+    std::cout << "Message body size : " << message.body.size() << std::endl;
+    std::chrono::system_clock::time_point timeNow =
+        std::chrono::system_clock::now();
+
+    message << timeNow;
     Send(message);
     std::cout << "Message sent : " << message << std::endl;
   }
@@ -100,7 +101,7 @@ public:
 
 private:
   std::shared_ptr<CoreModule> _coreModule;
-  size_t entityID = 0;
+  uint8_t entityID = 0;
 };
 } // namespace network
 } // namespace rtype

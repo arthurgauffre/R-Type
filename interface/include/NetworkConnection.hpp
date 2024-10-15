@@ -201,8 +201,15 @@ private:
       // std::cout << "PositionComponent x: " << pos.x << std::endl;
       // std::cout << "PositionComponent y: " << pos.y << std::endl;
 
-      std::cout << "data : " << temporaryIncomingMessage.body.data()
-                << std::endl;
+      // Deserialize EntityId from bytes and print the values
+      EntityId id;
+      std::memcpy(&id, temporaryIncomingMessage.body.data(),
+                  sizeof(EntityId));
+      std::cout << "EntityId id: " << id.id << std::endl;
+
+
+      // std::cout << "data : " << temporaryIncomingMessage.body.data()
+      //           << std::endl;
     }
 
     ReadHeader();
