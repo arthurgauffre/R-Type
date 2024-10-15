@@ -10,8 +10,8 @@
 #include <SFML/System/Time.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/TransformComponent.hpp>
-#include <components/VelocityComponent.hpp>
 #include <components/TypeComponent.hpp>
+#include <components/VelocityComponent.hpp>
 #include <r-type/ASystem.hpp>
 
 namespace ECS_system {
