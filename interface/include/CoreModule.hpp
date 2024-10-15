@@ -17,11 +17,13 @@
 #include <vector>
 
 #include <components/BackgroundComponent.hpp>
+#include <components/CooldownComponent.hpp>
 #include <components/DamageComponent.hpp>
 #include <components/HealthComponent.hpp>
 #include <components/HitBoxComponent.hpp>
 #include <components/InputComponent.hpp>
 #include <components/MusicComponent.hpp>
+#include <components/ParentComponent.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/ScrollComponent.hpp>
 #include <components/SoundComponent.hpp>
@@ -31,8 +33,6 @@
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
 #include <components/WeaponComponent.hpp>
-#include <components/CooldownComponent.hpp>
-#include <components/ParentComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/HealthSystem.hpp>
@@ -44,15 +44,16 @@ public:
   CoreModule();
   ~CoreModule();
 
-            entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
-                                              sf::Vector2f speed, sf::Vector2f size);
-            entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
-                                          sf::Vector2f position, sf::Vector2f velocity,
-                                          sf::Vector2f scale, int health);
-            entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
-                                         sf::Vector2f position, sf::Vector2f velocity,
-                                         sf::Vector2f scale, int health, int damage);
-            entity::IEntity *createWeapon(uint32_t entityID, uint32_t parentID, std::string type, int damage, float cooldown);
+  entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
+                                    sf::Vector2f speed, sf::Vector2f size);
+  entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
+                                sf::Vector2f position, sf::Vector2f velocity,
+                                sf::Vector2f scale, int health);
+  entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
+                               sf::Vector2f position, sf::Vector2f velocity,
+                               sf::Vector2f scale, int health, int damage);
+  entity::IEntity *createWeapon(uint32_t entityID, uint32_t parentID,
+                                std::string type, int damage, float cooldown);
 
   void init();
   void run();

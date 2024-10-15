@@ -9,10 +9,10 @@
 
 #include <r-type/ASystem.hpp>
 
+#include <components/CooldownComponent.hpp>
 #include <components/DamageComponent.hpp>
 #include <components/ParentComponent.hpp>
 #include <components/WeaponComponent.hpp>
-#include <components/CooldownComponent.hpp>
 
 #include <unordered_map>
 #include <vector>

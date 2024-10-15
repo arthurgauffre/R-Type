@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include <components/CooldownComponent.hpp>
 #include <components/InputComponent.hpp>
 #include <components/WeaponComponent.hpp>
-#include <components/CooldownComponent.hpp>
 #include <r-type/ASystem.hpp>
 
 #include <iostream>

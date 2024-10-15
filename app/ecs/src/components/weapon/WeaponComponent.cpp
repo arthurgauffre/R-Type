@@ -7,32 +7,22 @@
 
 #include <components/WeaponComponent.hpp>
 
-component::WeaponComponent::WeaponComponent(uint32_t entityID, uint32_t weaponEntityID)
-    : AComponent(entityID), _weaponEntityID(weaponEntityID), _isFiring(false)
-{
+component::WeaponComponent::WeaponComponent(uint32_t entityID,
+                                            uint32_t weaponEntityID)
+    : AComponent(entityID), _weaponEntityID(weaponEntityID), _isFiring(false) {}
+
+component::WeaponComponent::~WeaponComponent() {}
+
+uint32_t component::WeaponComponent::getWeaponEntityID() {
+  return _weaponEntityID;
 }
 
-component::WeaponComponent::~WeaponComponent()
-{
+void component::WeaponComponent::setWeaponEntityID(uint32_t weaponEntityID) {
+  _weaponEntityID = weaponEntityID;
 }
 
-uint32_t component::WeaponComponent::getWeaponEntityID()
-{
-    return _weaponEntityID;
+void component::WeaponComponent::setIsFiring(bool isFiring) {
+  _isFiring = isFiring;
 }
 
-void component::WeaponComponent::setWeaponEntityID(uint32_t weaponEntityID)
-{
-    _weaponEntityID = weaponEntityID;
-}
-
-void component::WeaponComponent::setIsFiring(bool isFiring)
-{
-    _isFiring = isFiring;
-}
-
-bool component::WeaponComponent::getIsFiring()
-{
-    return _isFiring;
-}
-
+bool component::WeaponComponent::getIsFiring() { return _isFiring; }

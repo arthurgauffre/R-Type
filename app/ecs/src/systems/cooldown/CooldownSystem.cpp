@@ -17,19 +17,21 @@ ECS_system::CooldownSystem::CooldownSystem(
 ECS_system::CooldownSystem::~CooldownSystem() {}
 
 void ECS_system::CooldownSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
-    for (auto &entity : _componentManager.getEntitiesWithComponents<component::CooldownComponent>(entities))
-    {
-        component::CooldownComponent *cooldownComponent = _componentManager.getComponent<component::CooldownComponent>(entity.get()->getID());
-        if (cooldownComponent->getTimeRemaining() > 0)
-            cooldownComponent->setTimeRemaining(cooldownComponent->getTimeRemaining() - deltaTime);
-    }
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+  for (auto &entity :
+       _componentManager
+           .getEntitiesWithComponents<component::CooldownComponent>(entities)) {
+    component::CooldownComponent *cooldownComponent =
+        _componentManager.getComponent<component::CooldownComponent>(
+            entity.get()->getID());
+    if (cooldownComponent->getTimeRemaining() > 0)
+      cooldownComponent->setTimeRemaining(
+          cooldownComponent->getTimeRemaining() - deltaTime);
+  }
 }
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
-{
-    return new ECS_system::CooldownSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager) {
+  return new ECS_system::CooldownSystem(componentManager, entityManager);
 }
