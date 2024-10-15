@@ -40,7 +40,6 @@ public:
   getSystemManager() const = 0;
   virtual void run() = 0;
 
-
 protected:
   std::shared_ptr<entity::EntityManager> _entityManager;
   std::shared_ptr<component::ComponentManager> _componentManager;
