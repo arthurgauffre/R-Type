@@ -38,11 +38,12 @@ public:
   CoreModule();
   ~CoreModule();
 
-  entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
-                                    sf::Vector2f speed, sf::Vector2f size);
-  entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
-                                sf::Vector2f position, sf::Vector2f velocity,
-                                sf::Vector2f scale, int health);
+  //   entity::IEntity *createBackground(uint32_t entityID, std::string
+  //   texturePath,
+  //                                     sf::Vector2f speed, sf::Vector2f size);
+  //   entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
+  //                                 sf::Vector2f position, sf::Vector2f
+  //                                 velocity, sf::Vector2f scale, int health);
 
   void init();
   void run();

@@ -6,18 +6,18 @@
 */
 
 #include "clientEx.cpp"
-#include <CoreModule.hpp>
+// #include <CoreModule.hpp>
 #include <memory>
 
 int main(void) {
   // unique  ptr to CoreModule
-  std::unique_ptr<rtype::CoreModule> coreModule =
-      std::make_unique<rtype::CoreModule>();
+  // std::unique_ptr<rtype::CoreModule> coreModule =
+  //     std::make_unique<rtype::CoreModule>();
 
-  coreModule.get()->init();
+  // coreModule.get()->init();
 
   simpleClient();
-  coreModule.get()->run();
+  // coreModule.get()->run();
 
   return 0;
 }

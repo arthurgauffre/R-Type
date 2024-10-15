@@ -45,7 +45,8 @@ ECS_system::HealthSystem::~HealthSystem() {}
  * updated.
  */
 void ECS_system::HealthSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
+    std::vector<std::string> msgToSend) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::HealthComponent>(
            entities)) {

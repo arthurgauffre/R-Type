@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <CoreModule.hpp>
 #include <NetworkConnection.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkingCommon.hpp>

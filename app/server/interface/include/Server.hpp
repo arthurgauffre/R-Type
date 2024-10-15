@@ -11,25 +11,56 @@
 #pragma once
 
 #include <AServer.hpp>
+#include <CoreModule.hpp>
 #include <NetworkMessagesCommunication.hpp>
 
 namespace rtype {
 namespace network {
 class Server : virtual public rtype::network::AServer<NetworkMessages> {
 public:
-  Server(uint16_t port)
+  Server(uint16_t port, std::shared_ptr<CoreModule> coreModule)
       : rtype::network::IServer<NetworkMessages>(),
-        rtype::network::AServer<NetworkMessages>(port) {}
+        rtype::network::AServer<NetworkMessages>(port),
+        _coreModule(coreModule) {}
 
   ~Server(){};
+
+  virtual void init() {
+    component::ComponentManager &componentManager =
+        *_coreModule->getComponentManager();
+    entity::EntityManager &entityManager = *_coreModule->getEntityManager();
+
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "movement");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "collision");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "movement");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "health");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "movement");
+  }
+
+  virtual void run() {
+    std::vector<std::string> msgToSend;
+    sf::Clock clock;
+    while (1) {
+      float deltatime = clock.restart().asSeconds();
+      this->Update(deltatime, false);
+      _coreModule.get()->getSystemManager()->update(
+          deltatime, _coreModule.get()->getEntityManager()->getEntities(),
+          msgToSend);
+    }
+  }
 
 protected:
   virtual void OnMessageReceived(
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
           client,
       rtype::network::Message<NetworkMessages> &message) {
-    // std::cout << "Message received from client : " << client->GetId() <<
-    // std::endl;
+    std::cout << "Message received from client : " << client->GetId()
+              << std::endl;
     switch (message.header.id) {
     case NetworkMessages::ClientConnection: {
       std::cout << "Client connected : " << client->GetId() << std::endl;
@@ -44,15 +75,20 @@ protected:
       std::cout << client->GetId() << " : Ping the server" << std::endl;
       client->Send(message);
     } break;
+    case NetworkMessages::createEntity: {
+      std::cout << "creation of the entity" << std::endl;
+    } break;
     }
   }
 
   virtual bool OnClientConnection(
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
           client) {
+    std::cout << "Client is attempting to connect" << std::endl;
     rtype::network::Message<NetworkMessages> message;
     message.header.id = NetworkMessages::ServerAcceptance;
     client->Send(message);
+
     return true;
   }
 
@@ -66,6 +102,9 @@ protected:
       const rtype::network::Message<NetworkMessages> &message,
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
           client) {}
+
+private:
+  std::shared_ptr<CoreModule> _coreModule;
 };
 } // namespace network
 } // namespace rtype

@@ -78,20 +78,12 @@ public:
     }
   }
 
-  void EstablishServerConnection(
-      const asio::ip::udp::resolver::results_type &endpointsResults) {
+  void EstablishServerConnection() {
     if (ownerType == actualOwner::CLIENT) {
-      asio::async_connect(
-          asioSocket, endpointsResults,
-          [this](std::error_code ec, asio::ip::udp::endpoint endpoint) {
-            if (!ec) {
-              std::cout << "Connected to server" << std::endl;
-              ReadHeader();
-              rtype::network::Message<NetworkMessages> message;
-              message.header.id = NetworkMessages::ServerAcceptance;
-              Send(message);
-            }
-          });
+      ReadHeader();
+      rtype::network::Message<NetworkMessages> message;
+      message.header.id = NetworkMessages::ServerAcceptance;
+      Send(message);
     }
   }
 
@@ -103,7 +95,6 @@ public:
   }
 
   void Send(const rtype::network::Message<T> &message) {
-    std::cout << "BOLO" << std::endl;
     asio::post(asioContext, [this, message]() {
       bool writingMessage = !queueOfOutgoingMessages.empty();
       queueOfOutgoingMessages.pushBack(message);
@@ -132,19 +123,32 @@ protected:
 
 private:
   void WriteHeader() {
-    std::cout << "Sending to endpoint : " << endpoint << std::endl;
+    std::cout << "Sending to endpoint in the WriteHeader: " << endpoint
+              << std::endl;
     asioSocket.async_send_to(
         asio::buffer(&queueOfOutgoingMessages.front().header,
                      sizeof(rtype::network::MessageHeader<T>)),
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
+            // std::cout << "Header size in the WriteHeader" <<
+            // queueOfOutgoingMessages.front().header.size() << std::endl;
+            std::cout << "Body size in the WriteHeader : "
+                      << queueOfOutgoingMessages.front().body.size()
+                      << std::endl;
             if (queueOfOutgoingMessages.front().body.size() > 0) {
               WriteBody();
             } else {
               queueOfOutgoingMessages.popFront();
+              std::cout << "Is the outgoing queue empty in the WriteHeader : "
+                        << (queueOfOutgoingMessages.empty() ? "true" : "false")
+                        << std::endl;
               if (!queueOfOutgoingMessages.empty()) {
+                std::cout << "Goes back on the same method" << std::endl;
                 WriteHeader();
               }
+              // if (IsConnected()) {
+              //   std::cout << "Connection is still open" << std::endl;
+              // }
             }
           } else {
             std::cout << id << " : Write Header failed" << ec << std::endl;
@@ -154,7 +158,8 @@ private:
   }
 
   void WriteBody() {
-    std::cout << "Sending to endpoint : " << endpoint << std::endl;
+    std::cout << "Sending to endpoint in the WriteBody: " << endpoint
+              << std::endl;
 
     asioSocket.async_send_to(
         asio::buffer(queueOfOutgoingMessages.front().body.data(),
@@ -162,8 +167,12 @@ private:
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
             queueOfOutgoingMessages.popFront();
+            std::cout << "Is the outgoing queue empty in the WriteBody : "
+                      << (queueOfOutgoingMessages.empty() ? "true" : "false")
+                      << std::endl;
             if (!queueOfOutgoingMessages.empty()) {
               WriteHeader();
+              std::cout << "Goes to the WriteHeader method" << std::endl;
             }
           } else {
             std::cout << id << " : Write Body failed" << ec << std::endl;
@@ -173,20 +182,50 @@ private:
   }
 
   void AddMessageToIncomingQueue() {
+    // std::cout << "Message data : " << temporaryIncomingMessage.header.id <<
+    // std::endl; std::cout << "Message data : " <<
+    // temporaryIncomingMessage.body.data() << std::endl;
     if (ownerType == actualOwner::SERVER)
       queueOfIncomingMessages.pushBack(
           {this->shared_from_this(), temporaryIncomingMessage});
     else
       queueOfIncomingMessages.pushBack({nullptr, temporaryIncomingMessage});
+
+    if (temporaryIncomingMessage.body.size() > 0) {
+
+      std::cout << "Incoming message is : " << temporaryIncomingMessage
+                << std::endl;
+      std::cout << queueOfIncomingMessages.front().message << std::endl;
+      // Deserialize PositionComponent from bytes and print the values
+      // PositionComponent pos;
+
+      // std::memcpy(&pos, temporaryIncomingMessage.body.data(),
+      //             sizeof(PositionComponent));
+      // std::cout << "PositionComponent x: " << pos.x << std::endl;
+      // std::cout << "PositionComponent y: " << pos.y << std::endl;
+
+      // Deserialize EntityId from bytes and print the values
+      // EntityId id;
+      // std::memcpy(&id, temporaryIncomingMessage.body.data(),
+      // sizeof(EntityId)); std::cout << "EntityId id: " << id.id << std::endl;
+
+      // std::cout << "data : " << temporaryIncomingMessage.body.data()
+      //           << std::endl;
+    }
+
     ReadHeader();
   }
 
   void ReadHeader() {
+    std::cout
+        << "Reading the Header of the message at the start of the method...."
+        << std::endl;
     asioSocket.async_receive_from(
         asio::buffer(&temporaryIncomingMessage.header,
                      sizeof(rtype::network::MessageHeader<T>)),
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
+            std::cout << "Reading the Header of the message...." << std::endl;
             if (temporaryIncomingMessage.header.size > 0) {
               temporaryIncomingMessage.body.resize(
                   temporaryIncomingMessage.header.size);
@@ -202,6 +241,7 @@ private:
   }
 
   void ReadBody() {
+    std::cout << "Reading the Body of the message...." << std::endl;
     asioSocket.async_receive_from(
         asio::buffer(temporaryIncomingMessage.body.data(),
                      temporaryIncomingMessage.body.size()),

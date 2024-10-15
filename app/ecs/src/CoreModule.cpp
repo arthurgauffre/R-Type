@@ -77,11 +77,12 @@ rtype::CoreModule::getSystemManager() const {
  * the entity manager.
  */
 void rtype::CoreModule::run() {
+  std::vector<std::string> msgToSend;
   sf::Clock clock;
   while (1) {
     float deltatime = clock.restart().asSeconds();
-    this->getSystemManager()->update(deltatime,
-                                     this->getEntityManager()->getEntities());
+    this->getSystemManager()->update(
+        deltatime, this->getEntityManager()->getEntities(), msgToSend);
   }
 }
 
@@ -100,21 +101,21 @@ void rtype::CoreModule::run() {
  * @param size The size of the background.
  * @return A pointer to the created background entity.
  */
-entity::IEntity *rtype::CoreModule::createBackground(uint32_t entityID,
-                                                     std::string texturePath,
-                                                     sf::Vector2f speed,
-                                                     sf::Vector2f size) {
-  auto background = this->getEntityManager()->createEntity(entityID);
+// entity::IEntity *rtype::CoreModule::createBackground(uint32_t entityID,
+//                                                      std::string texturePath,
+//                                                      sf::Vector2f speed,
+//                                                      sf::Vector2f size) {
+//   auto background = this->getEntityManager()->createEntity(entityID);
 
-  this->getComponentManager()->addComponent<component::PositionComponent>(
-      entityID, 0.0f, 0.0f);
-  this->getComponentManager()->addComponent<component::ScrollComponent>(
-      entityID, speed);
-  this->getComponentManager()->addComponent<component::BackgroundComponent>(
-      entityID, texturePath, size);
+//   this->getComponentManager()->addComponent<component::PositionComponent>(
+//       entityID, 0.0f, 0.0f);
+//   this->getComponentManager()->addComponent<component::ScrollComponent>(
+//       entityID, speed);
+//   this->getComponentManager()->addComponent<component::BackgroundComponent>(
+//       entityID, texturePath, size);
 
-  return background;
-}
+//   return background;
+// }
 
 /**
  * @brief Creates a player entity with the specified components.
@@ -130,29 +131,29 @@ entity::IEntity *rtype::CoreModule::createBackground(uint32_t entityID,
  * @param scale The scale of the entity.
  * @return A pointer to the created player entity.
  */
-entity::IEntity *
-rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
-                                sf::Vector2f position, sf::Vector2f velocity,
-                                sf::Vector2f scale, int health) {
-  auto player = this->getEntityManager()->createEntity(entityID);
+// entity::IEntity *
+// rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
+//                                 sf::Vector2f position, sf::Vector2f velocity,
+//                                 sf::Vector2f scale, int health) {
+//   auto player = this->getEntityManager()->createEntity(entityID);
 
-  this->getComponentManager()->addComponent<component::PositionComponent>(
-      entityID, position.x, position.y);
-  this->getComponentManager()->addComponent<component::SpriteComponent>(
-      entityID, position.x, position.y);
-  this->getComponentManager()->addComponent<component::TextureComponent>(
-      entityID, texturePath);
-  this->getComponentManager()->addComponent<component::InputComponent>(
-      entityID);
-  this->getComponentManager()->addComponent<component::VelocityComponent>(
-      entityID, velocity);
-  this->getComponentManager()->addComponent<component::TransformComponent>(
-      entityID, position, scale);
-  this->getComponentManager()->addComponent<component::HealthComponent>(
-      entityID, health);
+//   this->getComponentManager()->addComponent<component::PositionComponent>(
+//       entityID, position.x, position.y);
+//   this->getComponentManager()->addComponent<component::SpriteComponent>(
+//       entityID, position.x, position.y);
+//   this->getComponentManager()->addComponent<component::TextureComponent>(
+//       entityID, texturePath);
+//   this->getComponentManager()->addComponent<component::InputComponent>(
+//       entityID);
+//   this->getComponentManager()->addComponent<component::VelocityComponent>(
+//       entityID, velocity);
+//   this->getComponentManager()->addComponent<component::TransformComponent>(
+//       entityID, position, scale);
+//   this->getComponentManager()->addComponent<component::HealthComponent>(
+//       entityID, health);
 
-  return player;
-}
+//   return player;
+// }
 
 /**
  * @brief Initializes the core module of the R-Type game.
@@ -183,37 +184,13 @@ rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
  * - "MoveDown" to the 'S' key
  */
 void rtype::CoreModule::init() {
-  auto player = this->createPlayer(
-      0, "app/assets/sprites/plane.png", sf::Vector2f(100.0f, 100.0f),
-      sf::Vector2f(0.0f, 0.0f), sf::Vector2f(0.5f, 0.5f), 1);
-  this->createBackground(1, "app/assets/images/city_background.png",
-                         sf::Vector2f(100.0f, 0.0f),
-                         sf::Vector2f(1920.0f, 1080.0f));
-
   component::ComponentManager &componentManager = *this->getComponentManager();
   entity::EntityManager &entityManager = *this->getEntityManager();
 
-  this->getSystemManager()->addSystem(componentManager, entityManager, "audio");
-  this->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "render");
-  this->getSystemManager()->addSystem(componentManager, entityManager, "input");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "movement");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "background");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "health");
-
-  this->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveLeft", sf::Keyboard::A);
-  this->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveRight", sf::Keyboard::D);
-  this->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveUp", sf::Keyboard::W);
-  this->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveDown", sf::Keyboard::S);
 }

@@ -13,6 +13,7 @@
 #include <Error.hpp>
 #include <r-type/IServer.hpp>
 // #include <NetworkingCommon.hpp>
+#include <NetworkMessageFactory.hpp>
 #include <NetworkQueue.hpp>
 #include <OwnedMessage.hpp>
 
@@ -23,8 +24,9 @@ public:
   AServer(uint16_t port)
       : rtype::network::IServer<T>(),
         asioSocket(asioContext,
-                   asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
-        clientEndpoint(asio::ip::udp::endpoint(asio::ip::udp::v4(), port)) {}
+                   asio::ip::udp::endpoint(asio::ip::udp::v4(), port)) {
+    // clientEndpoint(asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
+  }
 
   ~AServer() { Stop(); }
 
@@ -54,25 +56,42 @@ public:
         asio::buffer(bufferOfIncomingMessages.data(),
                      bufferOfIncomingMessages.size()),
         clientEndpoint, [this](std::error_code ec, std::size_t bytesReceived) {
+          if (clientEndpoint.protocol() != asio::ip::udp::v4())
+            return WaitForMessage();
           if (!ec) {
             std::cout << "New connection from: " << clientEndpoint << std::endl;
+
+            for (std::shared_ptr<NetworkConnection<T>> &connection :
+                 deqConnections) {
+              if (connection->GetEndpoint() == clientEndpoint) {
+                std::cout << "Connection already exists" << std::endl;
+                return;
+              }
+            }
+
+            asio::ip::udp::socket newSocket(
+                asioContext, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0));
 
             std::shared_ptr<NetworkConnection<T>> newConnection =
                 std::make_shared<NetworkConnection<T>>(
                     NetworkConnection<T>::actualOwner::SERVER, asioContext,
-                    std::move(asioSocket), clientEndpoint, incomingMessages);
+                    std::move(newSocket), clientEndpoint, incomingMessages);
             if (OnClientConnection(newConnection)) {
               deqConnections.push_back(std::move(newConnection));
               deqConnections.back()->EstablishClientConnection(this,
                                                                actualId++);
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
+              SendMessageToAllClients(networkMessageFactory.createEntityMsg(
+                  deqConnections.back()->GetId()));
+
             } else {
               std::cout << "Connection denied" << std::endl;
             }
           } else {
             std::cout << "Error on connection" << ec.message() << std::endl;
           }
+          WaitForMessage();
         });
   }
 
@@ -113,7 +132,7 @@ public:
   }
 
   void Update(size_t maxMessages = -1, bool needToWait = false) {
-    if (needToWait)
+    if (needToWait == true)
       incomingMessages.wait();
     size_t messageCount = 0;
     while (messageCount < maxMessages && !incomingMessages.empty()) {
@@ -135,6 +154,7 @@ public:
   asio::ip::udp::socket asioSocket;
   asio::ip::udp::endpoint clientEndpoint;
 
+  NetworkMessageFactory networkMessageFactory;
   std::array<char, 1024> bufferOfIncomingMessages;
   uint32_t actualId = 0;
 
