@@ -185,6 +185,8 @@ jobs:
       - name: Deploy Doxygen documentation
         if: steps.cache-doxygen.outputs.cache-hit != 'true'
         run: |
+          run: |
+          set -euxo pipefail
           if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
             git config --global user.name "GitHub Actions"
             git config --global user.email "actions@github.com"
