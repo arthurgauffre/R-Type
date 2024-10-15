@@ -12,6 +12,7 @@
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
 #include <components/TransformComponent.hpp>
+#include <components/HitBoxComponent.hpp>
 #include <r-type/ASystem.hpp>
 
 namespace ECS_system {

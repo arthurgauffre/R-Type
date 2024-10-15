@@ -8,6 +8,7 @@ add_library(r-type_render_system SHARED
     ../../components/position/PositionComponent.cpp
     ../../components/background/BackgroundComponent.cpp
     ../../components/transform/TransformComponent.cpp
+    ../../components/hitbox/HitBoxComponent.cpp
 )
 
 # Specify the SFML include directory

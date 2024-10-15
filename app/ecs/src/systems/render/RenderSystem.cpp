@@ -36,13 +36,15 @@ ECS_system::RenderSystem::RenderSystem(
  * @param entities A vector of shared pointers to entities to be processed.
  */
 void ECS_system::RenderSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
+{
   _window.clear();
 
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::BackgroundComponent, component::PositionComponent>(
-           entities)) {
+           entities))
+  {
     component::BackgroundComponent *backgroundComponent =
         _componentManager.getComponent<component::BackgroundComponent>(
             entity->getID());
@@ -65,7 +67,8 @@ void ECS_system::RenderSystem::update(
 
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
-                      component::TextureComponent>(entities)) {
+                      component::TextureComponent>(entities))
+  {
 
     if (entity.get()->getActive() == false)
       continue;
@@ -84,13 +87,27 @@ void ECS_system::RenderSystem::update(
     spriteComponent->getSprite().setRotation(transformComponent->getRotation());
     spriteComponent->getSprite().setScale(transformComponent->getScale());
 
+    // Draw hitbox
+    component::HitBoxComponent *hitBoxComponent =
+        _componentManager.getComponent<component::HitBoxComponent>(
+            entity.get()->getID());
+    sf::RectangleShape hitbox(sf::Vector2f(hitBoxComponent->getWidth(),
+                                           hitBoxComponent->getHeight()));
+    hitbox.setPosition(transformComponent->getPosition());
+    hitbox.setFillColor(sf::Color::Transparent);
+    hitbox.setOutlineColor(sf::Color::Red);
+    hitbox.setOutlineThickness(1);
+    _window.draw(hitbox);
+
     _window.draw(spriteComponent->getSprite());
   }
   _window.display();
 
   // sf event
-  while (_window.pollEvent(_event)) {
-    if (_event.type == sf::Event::Closed) {
+  while (_window.pollEvent(_event))
+  {
+    if (_event.type == sf::Event::Closed)
+    {
       _window.close();
       // this->_gameClosed = true;
     }
@@ -99,6 +116,7 @@ void ECS_system::RenderSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
+             entity::EntityManager &entityManager)
+{
   return new ECS_system::RenderSystem(componentManager, entityManager);
 }
