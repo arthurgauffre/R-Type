@@ -194,11 +194,14 @@ private:
                 << std::endl;
       std::cout << queueOfIncomingMessages.front().message << std::endl;
       // Deserialize PositionComponent from bytes and print the values
-      PositionComponent pos;
-      std::memcpy(&pos, temporaryIncomingMessage.body.data(),
-                  sizeof(PositionComponent));
-      std::cout << "PositionComponent x: " << pos.x << std::endl;
-      std::cout << "PositionComponent y: " << pos.y << std::endl;
+      // PositionComponent pos;
+
+      // std::memcpy(&pos, temporaryIncomingMessage.body.data(),
+      //             sizeof(PositionComponent));
+      // std::cout << "PositionComponent x: " << pos.x << std::endl;
+      // std::cout << "PositionComponent y: " << pos.y << std::endl;
+
+      std::cout << "data : " << temporaryIncomingMessage.body.data() << std::endl;
     }
 
     ReadHeader();

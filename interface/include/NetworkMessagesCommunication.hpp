@@ -33,18 +33,22 @@ enum class NetworkComponents : uint32_t {
   Velocity,
   Health,
   Damage,
-  hitbox,
-  music,
-  sound,
-  sprite,
-  transform,
-  background,
-  scroll,
-  parent,
+  Hitbox,
+  Music,
+  Sound,
+  Sprite,
+  Transform,
+  Background,
+  Scroll,
+  Parent,
 };
 
 struct TextureComponent {
   std::string texturePath;
+};
+
+struct EntityId {
+  size_t id;
 };
 
 struct PositionComponent {

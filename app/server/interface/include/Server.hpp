@@ -75,8 +75,11 @@ protected:
       std::cout << client->GetId() << " : Ping the server" << std::endl;
       client->Send(message);
     } break;
-    }
+    case NetworkMessages::createEntity: {
+      std::cout << "creation of the entity" << std::endl;
+    } break;
   }
+}
 
   virtual bool OnClientConnection(
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
@@ -84,9 +87,6 @@ protected:
     rtype::network::Message<NetworkMessages> message;
     message.header.id = NetworkMessages::ServerAcceptance;
     client->Send(message);
-    message.header.id = NetworkMessages::createEntity;
-    message.body.push_back(
-        static_cast<u_int8_t>(NetworkMessages::createEntity));
     return true;
   }
 
