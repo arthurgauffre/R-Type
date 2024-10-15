@@ -125,4 +125,3 @@ struct BackgroundComponent {
   float x;
   float y;
 };
-
