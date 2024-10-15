@@ -40,5 +40,7 @@ private:
    * management and to allow shared ownership of the entities.
    */
   std::vector<std::shared_ptr<IEntity>> _entities;
+
+  uint32_t _entityCounter;
 };
 } // namespace entity
