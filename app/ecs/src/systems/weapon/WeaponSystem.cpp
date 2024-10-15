@@ -23,15 +23,24 @@ void ECS_system::WeaponSystem::createProjectile(uint32_t parentID,
   uint32_t projectileID = _entityManager.generateEntityID();
   entity::IEntity *projectile = _entityManager.createEntity(projectileID);
 
-    if (_componentManager.getComponent<component::TypeComponent>(parentID)->getType() == "player")
-        _componentManager.addComponent<component::TypeComponent>(projectileID, "playerProjectile");
-    else
-        _componentManager.addComponent<component::TypeComponent>(projectileID, "enemyProjectile");
-    _componentManager.addComponent<component::DamageComponent>(projectileID, damage);
-    _componentManager.addComponent<component::ParentComponent>(projectileID, parentID);
-    _componentManager.addComponent<component::VelocityComponent>(projectileID, velocity);
-    auto texture = _componentManager.addComponent<component::TextureComponent>(projectileID, texturePath);
-    _componentManager.addComponent<component::HitBoxComponent>(projectileID, texture->getTexture().getSize().x, texture->getTexture().getSize().y);
+  if (_componentManager.getComponent<component::TypeComponent>(parentID)
+          ->getType() == "player")
+    _componentManager.addComponent<component::TypeComponent>(
+        projectileID, "playerProjectile");
+  else
+    _componentManager.addComponent<component::TypeComponent>(projectileID,
+                                                             "enemyProjectile");
+  _componentManager.addComponent<component::DamageComponent>(projectileID,
+                                                             damage);
+  _componentManager.addComponent<component::ParentComponent>(projectileID,
+                                                             parentID);
+  _componentManager.addComponent<component::VelocityComponent>(projectileID,
+                                                               velocity);
+  auto texture = _componentManager.addComponent<component::TextureComponent>(
+      projectileID, texturePath);
+  _componentManager.addComponent<component::HitBoxComponent>(
+      projectileID, texture->getTexture().getSize().x,
+      texture->getTexture().getSize().y);
 
   component::TransformComponent *transformPlayer =
       _componentManager.getComponent<component::TransformComponent>(parentID);
@@ -95,16 +104,17 @@ void ECS_system::WeaponSystem::update(
 
       cooldownComponent->setTimeRemaining(cooldownComponent->getCooldown());
 
-            if (entityType == "player")
-                weaponComponent->setIsFiring(false);
-        }
-        cooldownComponent->setTimeRemaining(cooldownComponent->getTimeRemaining() - deltaTime);
+      if (entityType == "player")
+        weaponComponent->setIsFiring(false);
     }
     cooldownComponent->setTimeRemaining(cooldownComponent->getTimeRemaining() -
                                         deltaTime);
-    std::cout << "is firing: " << weaponComponent->getIsFiring() << " "
-              << entityType << std::endl;
   }
+  cooldownComponent->setTimeRemaining(cooldownComponent->getTimeRemaining() -
+                                      deltaTime);
+  std::cout << "is firing: " << weaponComponent->getIsFiring() << " "
+            << entityType << std::endl;
+}
 }
 
 EXPORT_API ECS_system::ISystem *

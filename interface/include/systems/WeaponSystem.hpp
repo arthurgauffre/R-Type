@@ -11,6 +11,7 @@
 
 #include <components/CooldownComponent.hpp>
 #include <components/DamageComponent.hpp>
+#include <components/HitBoxComponent.hpp>
 #include <components/ParentComponent.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/SpriteComponent.hpp>
@@ -19,7 +20,6 @@
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
 #include <components/WeaponComponent.hpp>
-#include <components/HitBoxComponent.hpp>
 
 #include <unordered_map>
 #include <vector>
