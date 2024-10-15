@@ -40,45 +40,44 @@ void simpleClient() {
       }
     }
     if (c.IsConnected()) {
-        if (!c.GetIncomingMessages().empty()) {
-          std::cout << "Incoming" << std::endl;
-          auto msg = c.GetIncomingMessages().popFront().message;
-          switch (msg.header.id) {
-          case NetworkMessages::ServerAcceptance: {
-            std::cout << "Server Accepted Connection" << std::endl;
-          } break;
+      if (!c.GetIncomingMessages().empty()) {
+        std::cout << "Incoming" << std::endl;
+        auto msg = c.GetIncomingMessages().popFront().message;
+        switch (msg.header.id) {
+        case NetworkMessages::ServerAcceptance: {
+          std::cout << "Server Accepted Connection" << std::endl;
+        } break;
 
-          case NetworkMessages::ServerPing: {
-            std::chrono::system_clock::time_point timeNow =
-                std::chrono::system_clock::now();
-            std::chrono::system_clock::time_point timeThen;
-            msg >> timeThen;
-            std::cout
-                << "Ping: "
-                << std::chrono::duration<double>(timeNow - timeThen).count()
-                << std::endl;
-          } break;
+        case NetworkMessages::ServerPing: {
+          std::chrono::system_clock::time_point timeNow =
+              std::chrono::system_clock::now();
+          std::chrono::system_clock::time_point timeThen;
+          msg >> timeThen;
+          std::cout << "Ping: "
+                    << std::chrono::duration<double>(timeNow - timeThen).count()
+                    << std::endl;
+        } break;
 
-          case NetworkMessages::ServerMessage: {
-            uint32_t clientID;
-            msg >> clientID;
-            std::cout << "Hello from [" << clientID << "]" << std::endl;
-          } break;
-          case NetworkMessages::ServerDenial: {
+        case NetworkMessages::ServerMessage: {
+          uint32_t clientID;
+          msg >> clientID;
+          std::cout << "Hello from [" << clientID << "]" << std::endl;
+        } break;
+        case NetworkMessages::ServerDenial: {
 
-          } break;
-          case NetworkMessages::MessageAll: {
+        } break;
+        case NetworkMessages::MessageAll: {
 
-          } break;
-          case NetworkMessages::ClientConnection: {
-          } break;
-          }
+        } break;
+        case NetworkMessages::ClientConnection: {
+        } break;
         }
-      } else {
-        std::cout << "Server Down" << std::endl;
-        window.close();
-        break;
       }
+    } else {
+      std::cout << "Server Down" << std::endl;
+      window.close();
+      break;
+    }
 
     window.clear();
     window.display();
