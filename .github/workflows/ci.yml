@@ -190,7 +190,10 @@ jobs:
           git config --global user.email "actions@github.com"
           git fetch origin
           git switch --orphan gh-pages
-          git rm -rf .
+          # Only attempt to remove files if there are any in the current directory
+          if [ "$(ls -A)" ]; then
+            git rm -rf .
+          fi
           # Copy the files only if docs/html exists and is not empty
           if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
             cp -r docs/html/* .
