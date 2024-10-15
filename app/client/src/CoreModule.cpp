@@ -174,8 +174,8 @@ rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
   this->getComponentManager()->addComponent<component::HealthComponent>(
       entityID, health);
   this->getComponentManager()->addComponent<component::HitBoxComponent>(
-      entityID, texture->getTexture().getSize().x,
-      texture->getTexture().getSize().y);
+      entityID, texture->getTexture().getSize().x * scale.x,
+      texture->getTexture().getSize().y * scale.y);
 
   return player;
 }
@@ -204,8 +204,8 @@ rtype::CoreModule::createEnemy(uint32_t entityID, std::string texturePath,
   this->getComponentManager()->addComponent<component::DamageComponent>(
       entityID, damage);
   this->getComponentManager()->addComponent<component::HitBoxComponent>(
-      entityID, texture->getTexture().getSize().x,
-      texture->getTexture().getSize().y);
+      entityID, texture->getTexture().getSize().x * scale.x,
+      texture->getTexture().getSize().y * scale.y);
 
   return enemy;
 }
