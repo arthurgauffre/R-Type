@@ -152,9 +152,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-doxygen-
 
-      - name: Install Doxygen
+      - name: Install Doxygen and Graphviz
         if: steps.cache-doxygen.outputs.cache-hit != 'true'
-        run: sudo apt-get install doxygen -y
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz
 
       - name: Configure and generate Doxygen documentation
         if: steps.cache-doxygen.outputs.cache-hit != 'true'
@@ -164,30 +166,30 @@ jobs:
           sed -i 's/OUTPUT_DIRECTORY       =/OUTPUT_DIRECTORY = docs/' Doxyfile
           doxygen Doxyfile
 
-          - name: Deploy Doxygen documentation
-          if: steps.cache-doxygen.outputs.cache-hit != 'true'
-          env:
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          run: |
-            set -euxo pipefail
-            git config --global user.name "GitHub Actions"
-            git config --global user.email "actions@github.com"
-            git fetch origin
-            git switch --orphan gh-pages || git checkout gh-pages
-            # Only attempt to remove files if there are any in the current directory
-            if [ "$(ls -A)" ]; then
-              ls -A
-            fi
-            # Copy the files only if docs/html exists and is not empty
-            if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
-              cp -r docs/html/* .
-              touch .nojekyll  # Disable Jekyll to enable support for files and directories starting with underscore
-              git add --all
-              git commit -m "Deploy Doxygen documentation to GitHub Pages"
-              git push https://x-access-token:${GITHUB_TOKEN}@github.com/JsuisSayker/R-Type.git gh-pages --force
-            else
-              echo "No documentation generated. Skipping deployment."
-            fi
+      - name: Deploy Doxygen documentation
+        if: steps.cache-doxygen.outputs.cache-hit != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          set -euxo pipefail
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git fetch origin
+          git switch --orphan gh-pages || git checkout gh-pages
+          # Only attempt to remove files if there are any in the current directory
+          if [ "$(ls -A)" ]; then
+            ls -A
+          fi
+          # Copy the files only if docs/html exists and is not empty
+          if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
+            cp -r docs/html/* .
+            touch .nojekyll  # Disable Jekyll to enable support for files and directories starting with underscore
+            git add --all
+            git commit -m "Deploy Doxygen documentation to GitHub Pages"
+            git push https://x-access-token:${GITHUB_TOKEN}@github.com/JsuisSayker/R-Type.git gh-pages --force
+          else
+            echo "No documentation generated. Skipping deployment."
+          fi
 
 
   push_to_mirror:
