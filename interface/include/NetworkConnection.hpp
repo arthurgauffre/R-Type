@@ -124,19 +124,25 @@ protected:
 
 private:
   void WriteHeader() {
-    std::cout << "Sending to endpoint in the WriteHeader: " << endpoint << std::endl;
+    std::cout << "Sending to endpoint in the WriteHeader: " << endpoint
+              << std::endl;
     asioSocket.async_send_to(
         asio::buffer(&queueOfOutgoingMessages.front().header,
                      sizeof(rtype::network::MessageHeader<T>)),
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
-            // std::cout << "Header size in the WriteHeader" << queueOfOutgoingMessages.front().header.size() << std::endl;
-            std::cout << "Body size in the WriteHeader : " << queueOfOutgoingMessages.front().body.size() << std::endl;
+            // std::cout << "Header size in the WriteHeader" <<
+            // queueOfOutgoingMessages.front().header.size() << std::endl;
+            std::cout << "Body size in the WriteHeader : "
+                      << queueOfOutgoingMessages.front().body.size()
+                      << std::endl;
             if (queueOfOutgoingMessages.front().body.size() > 0) {
               WriteBody();
             } else {
               queueOfOutgoingMessages.popFront();
-              std::cout << "Is the outgoing queue empty : " << (queueOfOutgoingMessages.empty() ? "true" : "false") << std::endl;
+              std::cout << "Is the outgoing queue empty : "
+                        << (queueOfOutgoingMessages.empty() ? "true" : "false")
+                        << std::endl;
               if (!queueOfOutgoingMessages.empty()) {
                 WriteHeader();
                 std::cout << "Goes to the WriteHeader method" << std::endl;
@@ -150,7 +156,8 @@ private:
   }
 
   void WriteBody() {
-    std::cout << "Sending to endpoint in the WriteBody: " << endpoint << std::endl;
+    std::cout << "Sending to endpoint in the WriteBody: " << endpoint
+              << std::endl;
 
     asioSocket.async_send_to(
         asio::buffer(queueOfOutgoingMessages.front().body.data(),
@@ -158,7 +165,9 @@ private:
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
             queueOfOutgoingMessages.popFront();
-            std::cout << "Is the outgoing queue empty : " << (queueOfOutgoingMessages.empty() ? "true" : "false") << std::endl;
+            std::cout << "Is the outgoing queue empty : "
+                      << (queueOfOutgoingMessages.empty() ? "true" : "false")
+                      << std::endl;
             if (!queueOfOutgoingMessages.empty()) {
               WriteHeader();
               std::cout << "Goes to the WriteHeader method" << std::endl;
@@ -171,8 +180,9 @@ private:
   }
 
   void AddMessageToIncomingQueue() {
-    // std::cout << "Message data : " << temporaryIncomingMessage.header.id << std::endl;
-    // std::cout << "Message data : " << temporaryIncomingMessage.body.data() << std::endl;
+    // std::cout << "Message data : " << temporaryIncomingMessage.header.id <<
+    // std::endl; std::cout << "Message data : " <<
+    // temporaryIncomingMessage.body.data() << std::endl;
     if (ownerType == actualOwner::SERVER)
       queueOfIncomingMessages.pushBack(
           {this->shared_from_this(), temporaryIncomingMessage});
@@ -181,11 +191,13 @@ private:
 
     if (temporaryIncomingMessage.body.size() > 0) {
 
-      std::cout << "Incoming message is : " << temporaryIncomingMessage << std::endl;
+      std::cout << "Incoming message is : " << temporaryIncomingMessage
+                << std::endl;
       std::cout << queueOfIncomingMessages.front().message << std::endl;
       // Deserialize PositionComponent from bytes and print the values
       PositionComponent pos;
-      std::memcpy(&pos, temporaryIncomingMessage.body.data(), sizeof(PositionComponent));
+      std::memcpy(&pos, temporaryIncomingMessage.body.data(),
+                  sizeof(PositionComponent));
       std::cout << "PositionComponent x: " << pos.x << std::endl;
       std::cout << "PositionComponent y: " << pos.y << std::endl;
     }
@@ -194,7 +206,9 @@ private:
   }
 
   void ReadHeader() {
-    std::cout << "Reading the Header of the message at the start of the method...." << std::endl;
+    std::cout
+        << "Reading the Header of the message at the start of the method...."
+        << std::endl;
     asioSocket.async_receive_from(
         asio::buffer(&temporaryIncomingMessage.header,
                      sizeof(rtype::network::MessageHeader<T>)),

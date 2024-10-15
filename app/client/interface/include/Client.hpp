@@ -23,7 +23,9 @@ public:
     message.header.id = NetworkMessages::ServerPing;
     PositionComponent pos = {1.0f, 5.0f};
     // Serialize PositionComponent into bytes
-    std::vector<uint8_t> posBytes(reinterpret_cast<uint8_t*>(&pos), reinterpret_cast<uint8_t*>(&pos) + sizeof(PositionComponent));
+    std::vector<uint8_t> posBytes(reinterpret_cast<uint8_t *>(&pos),
+                                  reinterpret_cast<uint8_t *>(&pos) +
+                                      sizeof(PositionComponent));
     message.body.insert(message.body.end(), posBytes.begin(), posBytes.end());
     std::chrono::system_clock::time_point timeNow =
         std::chrono::system_clock::now();
