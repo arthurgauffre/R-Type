@@ -203,10 +203,8 @@ private:
 
       // Deserialize EntityId from bytes and print the values
       EntityId id;
-      std::memcpy(&id, temporaryIncomingMessage.body.data(),
-                  sizeof(EntityId));
+      std::memcpy(&id, temporaryIncomingMessage.body.data(), sizeof(EntityId));
       std::cout << "EntityId id: " << id.id << std::endl;
-
 
       // std::cout << "data : " << temporaryIncomingMessage.body.data()
       //           << std::endl;
