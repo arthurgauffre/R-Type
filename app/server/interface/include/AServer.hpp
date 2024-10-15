@@ -23,8 +23,10 @@ public:
   AServer(uint16_t port)
       : rtype::network::IServer<T>(),
         asioSocket(asioContext,
-                   asio::ip::udp::endpoint(asio::ip::udp::v4(), port)),
-        clientEndpoint(asio::ip::udp::endpoint(asio::ip::udp::v4(), port)) {}
+                   asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
+                   {
+                    // clientEndpoint(asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
+                   }
 
   ~AServer() { Stop(); }
 
@@ -54,13 +56,24 @@ public:
         asio::buffer(bufferOfIncomingMessages.data(),
                      bufferOfIncomingMessages.size()),
         clientEndpoint, [this](std::error_code ec, std::size_t bytesReceived) {
+          if (clientEndpoint.protocol() != asio::ip::udp::v4())
+            return WaitForMessage();
           if (!ec) {
             std::cout << "New connection from: " << clientEndpoint << std::endl;
+
+            for (std::shared_ptr<NetworkConnection<T>> &connection : deqConnections) {
+              if (connection->GetEndpoint() == clientEndpoint) {
+                std::cout << "Connection already exists" << std::endl;
+                return;
+              }
+            }
+
+            asio::ip::udp::socket newSocket(asioContext, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0));
 
             std::shared_ptr<NetworkConnection<T>> newConnection =
                 std::make_shared<NetworkConnection<T>>(
                     NetworkConnection<T>::actualOwner::SERVER, asioContext,
-                    std::move(asioSocket), clientEndpoint, incomingMessages);
+                    std::move(newSocket), clientEndpoint, incomingMessages);
             if (OnClientConnection(newConnection)) {
               deqConnections.push_back(std::move(newConnection));
               deqConnections.back()->EstablishClientConnection(this,
@@ -73,6 +86,7 @@ public:
           } else {
             std::cout << "Error on connection" << ec.message() << std::endl;
           }
+          WaitForMessage();
         });
   }
 
