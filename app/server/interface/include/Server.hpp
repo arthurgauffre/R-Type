@@ -78,8 +78,8 @@ protected:
     case NetworkMessages::createEntity: {
       std::cout << "creation of the entity" << std::endl;
     } break;
+    }
   }
-}
 
   virtual bool OnClientConnection(
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>

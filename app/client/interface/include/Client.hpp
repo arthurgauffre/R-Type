@@ -19,21 +19,24 @@ namespace rtype {
 namespace network {
 class Client : virtual public rtype::network::AClient<NetworkMessages> {
 public:
-  Client()
-      : AClient(){}
+  Client() : AClient() {}
 
   // void init() {
   //   component::ComponentManager &componentManager =
   //       *_coreModule->getComponentManager();
   //   entity::EntityManager &entityManager = *_coreModule->getEntityManager();
 
-  //   _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+  //   _coreModule->getSystemManager()->addSystem(componentManager,
+  //   entityManager,
   //                                              "render");
-  //   _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+  //   _coreModule->getSystemManager()->addSystem(componentManager,
+  //   entityManager,
   //                                              "audio");
-  //   _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+  //   _coreModule->getSystemManager()->addSystem(componentManager,
+  //   entityManager,
   //                                              "background");
-  //   _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+  //   _coreModule->getSystemManager()->addSystem(componentManager,
+  //   entityManager,
   //                                              "input");
   // }
 
@@ -55,18 +58,21 @@ public:
     std::cout << "Message sent : " << message << std::endl;
   }
 
-  void CreateEntity()
-  {
+  void CreateEntity() {
     rtype::network::Message<NetworkMessages> message;
     message.header.id = NetworkMessages::createEntity;
     // Serialize the entityID into bytes
     EntityId id = {1};
     std::cout << id.id << std::endl;
-    // std::vector<uint8_t> entityIDBytes(reinterpret_cast<uint8_t *>(&id), reinterpret_cast<uint8_t *>(&id) + sizeof(EntityId));
-    std::vector<uint8_t> entityIDBytes(reinterpret_cast<uint8_t *>(&id), reinterpret_cast<uint8_t *>(&id) + sizeof(EntityId));
+    // std::vector<uint8_t> entityIDBytes(reinterpret_cast<uint8_t *>(&id),
+    // reinterpret_cast<uint8_t *>(&id) + sizeof(EntityId));
+    std::vector<uint8_t> entityIDBytes(reinterpret_cast<uint8_t *>(&id),
+                                       reinterpret_cast<uint8_t *>(&id) +
+                                           sizeof(EntityId));
     std::cout << entityIDBytes.size() << std::endl;
 
-    message.body.insert(message.body.end(), entityIDBytes.begin(), entityIDBytes.end());
+    message.body.insert(message.body.end(), entityIDBytes.begin(),
+                        entityIDBytes.end());
     Send(message);
     std::cout << "Message sent : " << message << std::endl;
   }

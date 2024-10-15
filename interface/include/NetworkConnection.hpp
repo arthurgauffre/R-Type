@@ -201,7 +201,8 @@ private:
       // std::cout << "PositionComponent x: " << pos.x << std::endl;
       // std::cout << "PositionComponent y: " << pos.y << std::endl;
 
-      std::cout << "data : " << temporaryIncomingMessage.body.data() << std::endl;
+      std::cout << "data : " << temporaryIncomingMessage.body.data()
+                << std::endl;
     }
 
     ReadHeader();

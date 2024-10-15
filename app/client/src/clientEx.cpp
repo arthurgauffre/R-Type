@@ -9,8 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-void simpleClient()
-{
+void simpleClient() {
   rtype::network::Client c;
   c.Connect("127.0.0.1", 60000);
   std::cout << "Socket: " << c.GetConnection()->GetSocket() << std::endl;
