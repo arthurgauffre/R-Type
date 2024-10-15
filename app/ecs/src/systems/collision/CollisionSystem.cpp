@@ -19,8 +19,7 @@
  * @return true if the hitboxes are colliding, false otherwise.
  */
 bool ECS_system::CollisionSystem::isColliding(
-    component::HitBoxComponent *hitbox1, component::HitBoxComponent *hitbox2)
-{
+    component::HitBoxComponent *hitbox1, component::HitBoxComponent *hitbox2) {
   component::PositionComponent *pos1 =
       _componentManager.getComponent<component::PositionComponent>(
           hitbox1->getEntityID());
@@ -47,8 +46,7 @@ bool ECS_system::CollisionSystem::isColliding(
  * @param hitbox2 A shared pointer to the second entity's HitBoxComponent.
  */
 void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
-                                                  entity::IEntity *entity2)
-{
+                                                  entity::IEntity *entity2) {
   std::cout << "Collision detected between entities " << entity1->getID()
             << " and " << entity2->getID() << std::endl;
 }
@@ -66,18 +64,15 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
  * collisions.
  */
 void ECS_system::CollisionSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
-  for (auto &entity : entities)
-  {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+  for (auto &entity : entities) {
     component::HitBoxComponent *hitbox1 =
         _componentManager.getComponent<component::HitBoxComponent>(
             entity->getID());
 
     if (hitbox1 == nullptr)
       continue;
-    for (auto &entity2 : entities)
-    {
+    for (auto &entity2 : entities) {
       component::HitBoxComponent *hitbox2 =
           _componentManager.getComponent<component::HitBoxComponent>(
               entity2->getID());
@@ -94,7 +89,6 @@ void ECS_system::CollisionSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
-{
+             entity::EntityManager &entityManager) {
   return new ECS_system::CollisionSystem(componentManager, entityManager);
 }

@@ -5,8 +5,8 @@
 ** WeaponSystem
 */
 
-#include <systems/WeaponSystem.hpp>
 #include <iostream>
+#include <systems/WeaponSystem.hpp>
 
 ECS_system::WeaponSystem::WeaponSystem(
     component::ComponentManager &componentManager,
@@ -36,7 +36,9 @@ void ECS_system::WeaponSystem::update(
     }
 }
 
-void ECS_system::WeaponSystem::createProjectile(uint32_t entityID, std::string texturePath, sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f scale, int damage)
+void ECS_system::WeaponSystem::createProjectile(
+    uint32_t entityID, std::string texturePath, sf::Vector2f position,
+    sf::Vector2f velocity, sf::Vector2f scale, int damage)
 {
     // auto weapon = this->_entityManager.createEntity(entityID);
 }

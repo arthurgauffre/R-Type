@@ -19,7 +19,7 @@ namespace component
         WeaponComponent(uint32_t entityID, uint32_t weaponEntityID);
         ~WeaponComponent();
 
-        void update(float deltaTime) override {}
+  void update(float deltaTime) override {}
 
         uint32_t getWeaponEntityID();
         void setWeaponEntityID(uint32_t weaponEntityID);

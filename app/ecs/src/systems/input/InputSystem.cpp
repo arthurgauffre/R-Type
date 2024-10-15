@@ -9,8 +9,7 @@
 #include <systems/InputSystem.hpp>
 
 void ECS_system::InputSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
            entities))
@@ -43,7 +42,6 @@ void ECS_system::InputSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
-{
+             entity::EntityManager &entityManager) {
   return new ECS_system::InputSystem(componentManager, entityManager);
 }

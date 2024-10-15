@@ -12,11 +12,10 @@
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::CoreModule()
-{
-    this->_componentManager = std::make_shared<component::ComponentManager>();
-    this->_systemManager = std::make_shared<ECS_system::SystemManager>();
-    this->_entityManager = std::make_shared<entity::EntityManager>();
+rtype::CoreModule::CoreModule() {
+  this->_componentManager = std::make_shared<component::ComponentManager>();
+  this->_systemManager = std::make_shared<ECS_system::SystemManager>();
+  this->_entityManager = std::make_shared<entity::EntityManager>();
 }
 
 /**
@@ -36,9 +35,8 @@ rtype::CoreModule::~CoreModule() {}
  * EntityManager.
  */
 std::shared_ptr<entity::EntityManager>
-rtype::CoreModule::getEntityManager() const
-{
-    return this->_entityManager;
+rtype::CoreModule::getEntityManager() const {
+  return this->_entityManager;
 }
 
 /**
@@ -52,9 +50,8 @@ rtype::CoreModule::getEntityManager() const
  * component manager.
  */
 std::shared_ptr<component::ComponentManager>
-rtype::CoreModule::getComponentManager() const
-{
-    return this->_componentManager;
+rtype::CoreModule::getComponentManager() const {
+  return this->_componentManager;
 }
 
 /**
@@ -68,9 +65,8 @@ rtype::CoreModule::getComponentManager() const
  * SystemManager instance.
  */
 std::shared_ptr<ECS_system::SystemManager>
-rtype::CoreModule::getSystemManager() const
-{
-    return this->_systemManager;
+rtype::CoreModule::getSystemManager() const {
+  return this->_systemManager;
 }
 
 /**
@@ -80,15 +76,13 @@ rtype::CoreModule::getSystemManager() const
  * with the elapsed time since the last update and the current entities from
  * the entity manager.
  */
-void rtype::CoreModule::run()
-{
-    sf::Clock clock;
-    while (1)
-    {
-        float deltatime = clock.restart().asSeconds();
-        this->getSystemManager()->update(deltatime,
-                                         this->getEntityManager()->getEntities());
-    }
+void rtype::CoreModule::run() {
+  sf::Clock clock;
+  while (1) {
+    float deltatime = clock.restart().asSeconds();
+    this->getSystemManager()->update(deltatime,
+                                     this->getEntityManager()->getEntities());
+  }
 }
 
 entity::IEntity *rtype::CoreModule::createWeapon(uint32_t entityID, uint32_t parentID, std::string type, int damage, float cooldown)
@@ -102,7 +96,7 @@ entity::IEntity *rtype::CoreModule::createWeapon(uint32_t entityID, uint32_t par
     this->getComponentManager()->addComponent<component::CooldownComponent>(
         entityID, cooldown);
 
-    return weapon;
+  return weapon;
 }
 
 /**
@@ -123,18 +117,17 @@ entity::IEntity *rtype::CoreModule::createWeapon(uint32_t entityID, uint32_t par
 entity::IEntity *rtype::CoreModule::createBackground(uint32_t entityID,
                                                      std::string texturePath,
                                                      sf::Vector2f speed,
-                                                     sf::Vector2f size)
-{
-    auto background = this->getEntityManager()->createEntity(entityID);
+                                                     sf::Vector2f size) {
+  auto background = this->getEntityManager()->createEntity(entityID);
 
-    this->getComponentManager()->addComponent<component::PositionComponent>(
-        entityID, 0.0f, 0.0f);
-    this->getComponentManager()->addComponent<component::ScrollComponent>(
-        entityID, speed);
-    this->getComponentManager()->addComponent<component::BackgroundComponent>(
-        entityID, texturePath, size);
+  this->getComponentManager()->addComponent<component::PositionComponent>(
+      entityID, 0.0f, 0.0f);
+  this->getComponentManager()->addComponent<component::ScrollComponent>(
+      entityID, speed);
+  this->getComponentManager()->addComponent<component::BackgroundComponent>(
+      entityID, texturePath, size);
 
-    return background;
+  return background;
 }
 
 /**
@@ -154,9 +147,8 @@ entity::IEntity *rtype::CoreModule::createBackground(uint32_t entityID,
 entity::IEntity *
 rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
                                 sf::Vector2f position, sf::Vector2f velocity,
-                                sf::Vector2f scale, int health)
-{
-    auto player = this->getEntityManager()->createEntity(entityID);
+                                sf::Vector2f scale, int health) {
+  auto player = this->getEntityManager()->createEntity(entityID);
 
     auto weapon = this->createWeapon(this->getEntityManager()->generateEntityID(), entityID, "bullet", 15, 0.5f);
 
@@ -179,36 +171,35 @@ rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
     this->getComponentManager()->addComponent<component::HitBoxComponent>(
         entityID, texture->getTexture().getSize().x, texture->getTexture().getSize().y);
 
-    return player;
+  return player;
 }
 
-entity::IEntity *rtype::CoreModule::createEnemy(uint32_t entityID,
-                                                std::string texturePath,
-                                                sf::Vector2f position,
-                                                sf::Vector2f velocity,
-                                                sf::Vector2f scale, int health,
-                                                int damage)
-{
-    auto enemy = this->getEntityManager()->createEntity(entityID);
+entity::IEntity *
+rtype::CoreModule::createEnemy(uint32_t entityID, std::string texturePath,
+                               sf::Vector2f position, sf::Vector2f velocity,
+                               sf::Vector2f scale, int health, int damage) {
+  auto enemy = this->getEntityManager()->createEntity(entityID);
 
-    this->getComponentManager()->addComponent<component::PositionComponent>(
-        entityID, position.x, position.y);
-    this->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.x, position.y);
-    auto texture = this->getComponentManager()->addComponent<component::TextureComponent>(
-        entityID, texturePath);
-    this->getComponentManager()->addComponent<component::VelocityComponent>(
-        entityID, velocity);
-    this->getComponentManager()->addComponent<component::TransformComponent>(
-        entityID, position, scale);
-    this->getComponentManager()->addComponent<component::HealthComponent>(
-        entityID, health);
-    this->getComponentManager()->addComponent<component::DamageComponent>(
-        entityID, damage);
-    this->getComponentManager()->addComponent<component::HitBoxComponent>(
-        entityID, texture->getTexture().getSize().x, texture->getTexture().getSize().y);
+  this->getComponentManager()->addComponent<component::PositionComponent>(
+      entityID, position.x, position.y);
+  this->getComponentManager()->addComponent<component::SpriteComponent>(
+      entityID, position.x, position.y);
+  auto texture =
+      this->getComponentManager()->addComponent<component::TextureComponent>(
+          entityID, texturePath);
+  this->getComponentManager()->addComponent<component::VelocityComponent>(
+      entityID, velocity);
+  this->getComponentManager()->addComponent<component::TransformComponent>(
+      entityID, position, scale);
+  this->getComponentManager()->addComponent<component::HealthComponent>(
+      entityID, health);
+  this->getComponentManager()->addComponent<component::DamageComponent>(
+      entityID, damage);
+  this->getComponentManager()->addComponent<component::HitBoxComponent>(
+      entityID, texture->getTexture().getSize().x,
+      texture->getTexture().getSize().y);
 
-    return enemy;
+  return enemy;
 }
 
 /**
@@ -239,19 +230,23 @@ entity::IEntity *rtype::CoreModule::createEnemy(uint32_t entityID,
  * - "MoveUp" to the 'W' key
  * - "MoveDown" to the 'S' key
  */
-void rtype::CoreModule::init()
-{
-    auto player = this->createPlayer(this->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), sf::Vector2f(0.5f, 0.5f), 1);
-    this->createBackground(this->getEntityManager()->generateEntityID(), "app/assets/images/city_background.png",
-                           sf::Vector2f(100.0f, 0.0f),
-                           sf::Vector2f(4448.0f, 1200.0f));
-    this->createEnemy(this->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
-                      sf::Vector2f(900.0f, 500.0f), sf::Vector2f(0.0f, 0.0f),
-                      sf::Vector2f(0.5f, 0.5f), 1, 100);
+void rtype::CoreModule::init() {
+  auto player = this->createPlayer(
+      this->getEntityManager()->generateEntityID(),
+      "app/assets/sprites/plane.png", sf::Vector2f(100.0f, 100.0f),
+      sf::Vector2f(100.0f, 100.0f), sf::Vector2f(0.5f, 0.5f), 1);
+  this->createBackground(this->getEntityManager()->generateEntityID(),
+                         "app/assets/images/city_background.png",
+                         sf::Vector2f(100.0f, 0.0f),
+                         sf::Vector2f(4448.0f, 1200.0f));
+  this->createEnemy(this->getEntityManager()->generateEntityID(),
+                    "app/assets/sprites/plane.png",
+                    sf::Vector2f(900.0f, 500.0f), sf::Vector2f(0.0f, 0.0f),
+                    sf::Vector2f(0.5f, 0.5f), 1, 100);
 
-    component::ComponentManager &componentManager = *this->getComponentManager();
+  component::ComponentManager &componentManager = *this->getComponentManager();
 
-    entity::EntityManager &entityManager = *this->getEntityManager();
+  entity::EntityManager &entityManager = *this->getEntityManager();
 
     this->getSystemManager()->addSystem(componentManager, entityManager, "audio");
     this->getSystemManager()->addSystem(componentManager, entityManager, "render");
@@ -263,19 +258,19 @@ void rtype::CoreModule::init()
     this->getSystemManager()->addSystem(componentManager, entityManager, "weapon");
     this->getSystemManager()->addSystem(componentManager, entityManager, "cooldown");
 
-    this->getComponentManager()
-        ->getComponent<component::InputComponent>(0)
-        ->bindAction("MoveLeft", sf::Keyboard::A);
-    this->getComponentManager()
-        ->getComponent<component::InputComponent>(0)
-        ->bindAction("MoveRight", sf::Keyboard::D);
-    this->getComponentManager()
-        ->getComponent<component::InputComponent>(0)
-        ->bindAction("MoveUp", sf::Keyboard::W);
-    this->getComponentManager()
-        ->getComponent<component::InputComponent>(0)
-        ->bindAction("MoveDown", sf::Keyboard::S);
-    this->getComponentManager()
-        ->getComponent<component::InputComponent>(0)
-        ->bindAction("Shoot", sf::Keyboard::Space);
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("MoveLeft", sf::Keyboard::A);
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("MoveRight", sf::Keyboard::D);
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("MoveUp", sf::Keyboard::W);
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("MoveDown", sf::Keyboard::S);
+  this->getComponentManager()
+      ->getComponent<component::InputComponent>(0)
+      ->bindAction("Shoot", sf::Keyboard::Space);
 }

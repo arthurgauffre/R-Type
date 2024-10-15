@@ -11,20 +11,18 @@
 
 #include <iostream>
 
-namespace component
-{
-    class TypeComponent : public AComponent
-    {
-    public:
-        TypeComponent(uint32_t entityID, std::string type);
-        ~TypeComponent();
+namespace component {
+class TypeComponent : public AComponent {
+public:
+  TypeComponent(uint32_t entityID, std::string type);
+  ~TypeComponent();
 
-        std::string getType();
-        void setType(std::string type);
+  std::string getType();
+  void setType(std::string type);
 
-        void update(float deltaTime) override {}
+  void update(float deltaTime) override {}
 
-    private:
-        std::string _type;
-    };
-}
+private:
+  std::string _type;
+};
+} // namespace component
