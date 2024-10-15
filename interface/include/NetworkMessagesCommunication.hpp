@@ -19,28 +19,45 @@ enum class NetworkMessages : uint32_t {
   createEntity,
   destroyEntity,
   updateEntity,
-};
-
-enum class NetworkStatusComponent : uint32_t {
-  creation,
-  updated,
-  deleted,
-};
-
-enum class NetworkComponents : uint32_t {
-  Texture,
-  Position,
-  Velocity,
-  Health,
-  Damage,
-  Hitbox,
-  Music,
-  Sound,
-  Sprite,
-  Transform,
-  Background,
-  Scroll,
-  Parent,
+  createTexture,
+  createPosition,
+  createVelocity,
+  createHealth,
+  createDamage,
+  createHitbox,
+  createMusic,
+  createSound,
+  createSprite,
+  createTransform,
+  createBackground,
+  createScroll,
+  createParent,
+  updateTexture,
+  updatePosition,
+  updateVelocity,
+  updateHealth,
+  updateDamage,
+  updateHitbox,
+  updateMusic,
+  updateSound,
+  updateSprite,
+  updateTransform,
+  updateBackground,
+  updateScroll,
+  updateParent,
+  deleteTexture,
+  deletePosition,
+  deleteVelocity,
+  deleteHealth,
+  deleteDamage,
+  deleteHitbox,
+  deleteMusic,
+  deleteSound,
+  deleteSprite,
+  deleteTransform,
+  deleteBackground,
+  deleteScroll,
+  deleteParent,
 };
 
 struct TextureComponent {
@@ -108,3 +125,4 @@ struct BackgroundComponent {
   float x;
   float y;
 };
+
