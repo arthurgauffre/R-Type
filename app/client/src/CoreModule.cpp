@@ -91,24 +91,16 @@ void rtype::CoreModule::run()
     }
 }
 
-entity::IEntity *rtype::CoreModule::createWeapon(uint32_t entityID, uint32_t parentID, std::string type, float fireRate, int damage, float cooldown)
+entity::IEntity *rtype::CoreModule::createWeapon(uint32_t entityID, uint32_t parentID, std::string type, int damage, float cooldown)
 {
     auto weapon = this->getEntityManager()->createEntity(entityID);
 
-    // this->getComponentManager()->addComponent<component::PositionComponent>(
-    //     entityID, position.x, position.y);
-    // this->getComponentManager()->addComponent<component::SpriteComponent>(
-    //     entityID, position.x, position.y);
-    // auto texture = this->getComponentManager()->addComponent<component::TextureComponent>(
-    //     entityID, texturePath);
-    // this->getComponentManager()->addComponent<component::VelocityComponent>(
-    //     entityID, velocity);
-    // this->getComponentManager()->addComponent<component::TransformComponent>(
-    //     entityID, position, scale);
-    // this->getComponentManager()->addComponent<component::DamageComponent>(
-    //     entityID, damage);
-    // this->getComponentManager()->addComponent<component::HitBoxComponent>(
-    //     entityID, texture->getTexture().getSize().x, texture->getTexture().getSize().y);
+    this->getComponentManager()->addComponent<component::TypeComponent>(
+        entityID, "weapon");
+    this->getComponentManager()->addComponent<component::ParentComponent>(
+        entityID, parentID);
+    this->getComponentManager()->addComponent<component::CooldownComponent>(
+        entityID, cooldown);
 
     return weapon;
 }
@@ -166,6 +158,9 @@ rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
 {
     auto player = this->getEntityManager()->createEntity(entityID);
 
+    auto weapon = this->createWeapon(this->getEntityManager()->generateEntityID(), entityID, "bullet", 15, 0.5f);
+
+    this->getComponentManager()->addComponent<component::WeaponComponent>(entityID, weapon->getID());
     this->getComponentManager()->addComponent<component::TypeComponent>(entityID, "player");
     this->getComponentManager()->addComponent<component::PositionComponent>(
         entityID, position.x, position.y);
@@ -183,8 +178,6 @@ rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
         entityID, health);
     this->getComponentManager()->addComponent<component::HitBoxComponent>(
         entityID, texture->getTexture().getSize().x, texture->getTexture().getSize().y);
-    this->getComponentManager()->addComponent<component::WeaponComponent>(
-        entityID, "bullet", 0.5f, 10);
 
     return player;
 }
@@ -268,6 +261,7 @@ void rtype::CoreModule::init()
     this->getSystemManager()->addSystem(componentManager, entityManager, "health");
     this->getSystemManager()->addSystem(componentManager, entityManager, "collision");
     this->getSystemManager()->addSystem(componentManager, entityManager, "weapon");
+    this->getSystemManager()->addSystem(componentManager, entityManager, "cooldown");
 
     this->getComponentManager()
         ->getComponent<component::InputComponent>(0)

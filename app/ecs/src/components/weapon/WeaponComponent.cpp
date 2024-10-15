@@ -7,8 +7,8 @@
 
 #include <components/WeaponComponent.hpp>
 
-component::WeaponComponent::WeaponComponent(uint32_t entityID, std::string type, float cooldown, int damage)
-    : AComponent(entityID), _type(type), _cooldown(cooldown), _damage(damage), _lastFireTime(0), _isFiring(false)
+component::WeaponComponent::WeaponComponent(uint32_t entityID, uint32_t weaponEntityID)
+    : AComponent(entityID), _weaponEntityID(weaponEntityID), _isFiring(false)
 {
 }
 
@@ -16,34 +16,14 @@ component::WeaponComponent::~WeaponComponent()
 {
 }
 
-void component::WeaponComponent::setCooldown(float cooldown)
+uint32_t component::WeaponComponent::getWeaponEntityID()
 {
-    _cooldown = cooldown;
+    return _weaponEntityID;
 }
 
-float component::WeaponComponent::getCooldown()
+void component::WeaponComponent::setWeaponEntityID(uint32_t weaponEntityID)
 {
-    return _cooldown;
-}
-
-void component::WeaponComponent::setLastFireTime(float lastFireTime)
-{
-    _lastFireTime = lastFireTime;
-}
-
-float component::WeaponComponent::getLastFireTime()
-{
-    return _lastFireTime;
-}
-
-void component::WeaponComponent::setType(std::string type)
-{
-    _type = type;
-}
-
-std::string component::WeaponComponent::getType()
-{
-    return _type;
+    _weaponEntityID = weaponEntityID;
 }
 
 void component::WeaponComponent::setIsFiring(bool isFiring)
@@ -56,12 +36,3 @@ bool component::WeaponComponent::getIsFiring()
     return _isFiring;
 }
 
-void component::WeaponComponent::setDamage(int damage)
-{
-    _damage = damage;
-}
-
-int component::WeaponComponent::getDamage()
-{
-    return _damage;
-}

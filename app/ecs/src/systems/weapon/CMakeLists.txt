@@ -3,6 +3,7 @@ add_library(r-type_weapon_system SHARED
     ../../components/damage/DamageComponent.cpp
     ../../components/parent/ParentComponent.cpp
     ../../components/weapon/WeaponComponent.cpp
+    ../../components/cooldown/CooldownComponent.cpp
 )
 
 # Specify the SFML include directory

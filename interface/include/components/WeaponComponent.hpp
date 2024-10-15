@@ -16,31 +16,18 @@ namespace component
     class WeaponComponent : public AComponent
     {
     public:
-        WeaponComponent(uint32_t entityID, std::string type, float cooldown, int damage);
+        WeaponComponent(uint32_t entityID, uint32_t weaponEntityID);
         ~WeaponComponent();
 
         void update(float deltaTime) override {}
 
-        void setCooldown(float cooldown);
-        float getCooldown();
-
-        void setLastFireTime(float lastFireTime);
-        float getLastFireTime();
-
-        void setType(std::string type);
-        std::string getType();
+        uint32_t getWeaponEntityID();
+        void setWeaponEntityID(uint32_t weaponEntityID);
 
         void setIsFiring(bool isFiring);
         bool getIsFiring();
-
-        void setDamage(int damage);
-        int getDamage();
-
     private:
-        std::string _type;
-        float _cooldown;
-        float _lastFireTime;
-        int _damage;
+        uint32_t _weaponEntityID;
         bool _isFiring;
     };
 }

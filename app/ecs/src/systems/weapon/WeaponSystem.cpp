@@ -21,14 +21,16 @@ void ECS_system::WeaponSystem::update(
     for (auto &entity : _componentManager.getEntitiesWithComponents<component::WeaponComponent>(entities))
     {
         component::WeaponComponent *weaponComponent = _componentManager.getComponent<component::WeaponComponent>(entity.get()->getID());
-        if (weaponComponent->getLastFireTime() >= weaponComponent->getCooldown())
+        component::CooldownComponent *cooldownComponent = _componentManager.getComponent<component::CooldownComponent>(weaponComponent->getWeaponEntityID());
+
+        if (weaponComponent->getIsFiring() == true && cooldownComponent->getTimeRemaining() > 0)
             weaponComponent->setIsFiring(false);
+
         if (weaponComponent->getIsFiring() == true)
         {
-            weaponComponent->setLastFireTime(0);
-
             std::cout << "Firing" << std::endl;
 
+            cooldownComponent->setTimeRemaining(cooldownComponent->getCooldown());
             weaponComponent->setIsFiring(false);
         }
     }

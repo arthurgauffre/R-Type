@@ -31,6 +31,8 @@
 #include <components/HitBoxComponent.hpp>
 #include <components/TypeComponent.hpp>
 #include <components/WeaponComponent.hpp>
+#include <components/CooldownComponent.hpp>
+#include <components/ParentComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/HealthSystem.hpp>
@@ -52,7 +54,7 @@ namespace rtype
             entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
                                          sf::Vector2f position, sf::Vector2f velocity,
                                          sf::Vector2f scale, int health, int damage);
-            entity::IEntity *createWeapon(uint32_t entityID, uint32_t parentID, std::string type, float fireRate, int damage, float cooldown);
+            entity::IEntity *createWeapon(uint32_t entityID, uint32_t parentID, std::string type, int damage, float cooldown);
 
             void init();
             void run();

@@ -30,6 +30,8 @@ add_executable(r-type_client
     ../../ecs/src/components/damage/DamageComponent.cpp
     ../../ecs/src/components/type/TypeComponent.cpp
     ../../ecs/src/components/weapon/WeaponComponent.cpp
+    ../../ecs/src/components/cooldown/CooldownComponent.cpp
+    ../../ecs/src/components/parent/ParentComponent.cpp
     ../../ecs/src/entity/Entity.cpp
 )
 
@@ -161,3 +163,9 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_weapon_system>
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_weapon_system.so)
+
+add_custom_command(
+    TARGET r-type_client
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_cooldown_system>
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_cooldown_system.so)
