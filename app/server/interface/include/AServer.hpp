@@ -13,10 +13,9 @@
 #include <Error.hpp>
 #include <r-type/IServer.hpp>
 // #include <NetworkingCommon.hpp>
+#include <NetworkMessageFactory.hpp>
 #include <NetworkQueue.hpp>
 #include <OwnedMessage.hpp>
-#include <NetworkMessageFactory.hpp>
-
 
 namespace rtype {
 namespace network {
@@ -83,8 +82,8 @@ public:
                                                                actualId++);
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
-              SendMessageToAllClients(
-                  networkMessageFactory.createEntityMsg(deqConnections.back()->GetId()));
+              SendMessageToAllClients(networkMessageFactory.createEntityMsg(
+                  deqConnections.back()->GetId()));
 
             } else {
               std::cout << "Connection denied" << std::endl;

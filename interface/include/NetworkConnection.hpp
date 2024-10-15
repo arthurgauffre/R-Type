@@ -149,7 +149,6 @@ private:
               // if (IsConnected()) {
               //   std::cout << "Connection is still open" << std::endl;
               // }
-
             }
           } else {
             std::cout << id << " : Write Header failed" << ec << std::endl;
