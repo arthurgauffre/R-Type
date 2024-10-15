@@ -28,8 +28,8 @@ protected:
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
           client,
       rtype::network::Message<NetworkMessages> &message) {
-    std::cout << "Message received from client : " << client->GetId() <<
-    std::endl;
+    std::cout << "Message received from client : " << client->GetId()
+              << std::endl;
     switch (message.header.id) {
     case NetworkMessages::ClientConnection: {
       std::cout << "Client connected : " << client->GetId() << std::endl;
