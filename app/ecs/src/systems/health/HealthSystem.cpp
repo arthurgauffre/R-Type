@@ -56,7 +56,7 @@ void ECS_system::HealthSystem::update(
                                healthComponent->getDamageIncoming());
     healthComponent->setDamageIncoming(0);
     if (healthComponent->getHealth() <= 0) {
-      entity.get()->setActive(false);
+      _entityManager.destroyEntity(entity->getID());
     }
   }
 }

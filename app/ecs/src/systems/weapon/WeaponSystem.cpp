@@ -24,11 +24,15 @@ void ECS_system::WeaponSystem::createProjectile(uint32_t parentID,
     uint32_t projectileID = _entityManager.generateEntityID();
     entity::IEntity *projectile = _entityManager.createEntity(projectileID);
 
-    _componentManager.addComponent<component::TypeComponent>(projectileID, "projectile");
+    if (_componentManager.getComponent<component::TypeComponent>(parentID)->getType() == "player")
+        _componentManager.addComponent<component::TypeComponent>(projectileID, "playerProjectile");
+    else
+        _componentManager.addComponent<component::TypeComponent>(projectileID, "enemyProjectile");
     _componentManager.addComponent<component::DamageComponent>(projectileID, damage);
     _componentManager.addComponent<component::ParentComponent>(projectileID, parentID);
     _componentManager.addComponent<component::VelocityComponent>(projectileID, velocity);
-    _componentManager.addComponent<component::TextureComponent>(projectileID, texturePath);
+    auto texture = _componentManager.addComponent<component::TextureComponent>(projectileID, texturePath);
+    _componentManager.addComponent<component::HitBoxComponent>(projectileID, texture->getTexture().getSize().x, texture->getTexture().getSize().y);
 
     component::TransformComponent *transformPlayer = _componentManager.getComponent<component::TransformComponent>(parentID);
     component::SpriteComponent *spritePlayer = _componentManager.getComponent<component::SpriteComponent>(parentID);
@@ -76,8 +80,6 @@ void ECS_system::WeaponSystem::update(float deltaTime, std::vector<std::shared_p
                 weaponComponent->setIsFiring(false);
         }
         cooldownComponent->setTimeRemaining(cooldownComponent->getTimeRemaining() - deltaTime);
-        std::cout << "is firing: " << weaponComponent->getIsFiring() << " "
-                  << entityType << std::endl;
     }
 }
 

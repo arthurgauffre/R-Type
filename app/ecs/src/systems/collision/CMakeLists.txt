@@ -9,6 +9,7 @@ add_library(r-type_collision_system SHARED
     CollisionSystem.cpp
     ../../components/hitbox/HitBoxComponent.cpp
     ../../components/health/HealthComponent.cpp
+    ../../components/type/TypeComponent.cpp
 )
 
 # Set the include directories for SFML

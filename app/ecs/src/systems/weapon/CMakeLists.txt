@@ -9,6 +9,7 @@ add_library(r-type_weapon_system SHARED
     ../../components/texture/TextureComponent.cpp
     ../../components/type/TypeComponent.cpp
     ../../components/transform/TransformComponent.cpp
+    ../../components/hitbox/HitBoxComponent.cpp
     ../../managers/entity/EntityManager.cpp
     ../../entity/Entity.cpp
 )
