@@ -8,6 +8,7 @@ find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 add_library(r-type_collision_system SHARED
     CollisionSystem.cpp
     ../../components/hitbox/HitBoxComponent.cpp
+    ../../components/health/HealthComponent.cpp
 )
 
 # Set the include directories for SFML

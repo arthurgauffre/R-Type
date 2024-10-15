@@ -36,6 +36,7 @@ void ECS_system::MovementSystem::update(
             entity->getID());
 
     // go to the right of the screen
+
     float newX = position->getX() + velocity->getVelocity().x * deltaTime;
     float newY = position->getY() + velocity->getVelocity().y * deltaTime;
 

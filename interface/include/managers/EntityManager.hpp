@@ -27,6 +27,8 @@ public:
 
   IEntity *getEntityByID(uint32_t id) const;
 
+  uint32_t generateEntityID();
+
   std::vector<std::shared_ptr<IEntity>> &getEntities();
 
 private:

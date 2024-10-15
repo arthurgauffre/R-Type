@@ -11,6 +11,7 @@
 
 #include <components/DamageComponent.hpp>
 #include <components/ParentComponent.hpp>
+#include <components/WeaponComponent.hpp>
 
 #include <unordered_map>
 #include <vector>
@@ -36,10 +37,9 @@ public:
   void initialize() override {}
   void handleComponents() override {}
 
-  void addWeapon(uint32_t entityID, int damage, float velocity,
-                 sf::Vector2f position, std::string texturePath,
-                 sf::Vector2f spriteSize);
-  void removeWeapon(uint32_t entityID);
+  void createProjectile(uint32_t entityID, std::string texturePath,
+                    sf::Vector2f position, sf::Vector2f velocity,
+                    sf::Vector2f scale, int damage);
 
 private:
 };

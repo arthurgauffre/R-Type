@@ -9,6 +9,7 @@
 
 #include <components/HitBoxComponent.hpp>
 #include <components/PositionComponent.hpp>
+#include <components/HealthComponent.hpp>
 #include <r-type/ASystem.hpp>
 
 #include <iostream>
@@ -77,8 +78,7 @@ private:
    * @param hitbox2 Pointer to the second hitbox component involved in the
    * collision.
    */
-  void handleCollision(component::HitBoxComponent *hitbox1,
-                       component::HitBoxComponent *hitbox2);
+  void handleCollision(entity::IEntity *entity1, entity::IEntity *entity2);
 
   /**
    * @brief Checks if two hitboxes are colliding.
