@@ -38,8 +38,8 @@ public:
   void handleComponents() override {}
 
   void createProjectile(uint32_t entityID, std::string texturePath,
-                    sf::Vector2f position, sf::Vector2f velocity,
-                    sf::Vector2f scale, int damage);
+                        sf::Vector2f position, sf::Vector2f velocity,
+                        sf::Vector2f scale, int damage);
 
 private:
 };

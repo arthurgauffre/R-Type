@@ -35,9 +35,10 @@ private:
 
   /**
    * @brief Represents the amount of incoming damage to the entity.
-   * 
-   * This variable holds the value of damage that the entity is about to receive.
-   * It is used to calculate the reduction of the entity's health when damage is applied.
+   *
+   * This variable holds the value of damage that the entity is about to
+   * receive. It is used to calculate the reduction of the entity's health when
+   * damage is applied.
    */
   int _damageIncoming;
 };

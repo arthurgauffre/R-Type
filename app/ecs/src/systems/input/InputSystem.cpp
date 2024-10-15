@@ -9,12 +9,10 @@
 #include <systems/InputSystem.hpp>
 
 void ECS_system::InputSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
-           entities))
-  {
+           entities)) {
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(
             entity.get()->getID());
@@ -30,15 +28,12 @@ void ECS_system::InputSystem::update(
       newVelocity.x = -200;
     if (inputComponent->isActionActive("MoveRight"))
       newVelocity.x = 200;
-    if (inputComponent->isActionActive("Shoot"))
-    {
+    if (inputComponent->isActionActive("Shoot")) {
       if (auto weaponComponent =
               _componentManager.getComponent<component::WeaponComponent>(
                   entity.get()->getID());
-          weaponComponent != nullptr)
-      {
-        if (weaponComponent->getIsFiring() == false)
-        {
+          weaponComponent != nullptr) {
+        if (weaponComponent->getIsFiring() == false) {
           weaponComponent->setIsFiring(true);
           weaponComponent->setLastFireTime(0);
         }
@@ -50,7 +45,6 @@ void ECS_system::InputSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
-{
+             entity::EntityManager &entityManager) {
   return new ECS_system::InputSystem(componentManager, entityManager);
 }
