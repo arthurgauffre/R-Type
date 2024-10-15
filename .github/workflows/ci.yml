@@ -192,7 +192,7 @@ jobs:
           git switch --orphan gh-pages
           # Only attempt to remove files if there are any in the current directory
           if [ "$(ls -A)" ]; then
-            git rm -rf .
+            ls -A
           fi
           # Copy the files only if docs/html exists and is not empty
           if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
