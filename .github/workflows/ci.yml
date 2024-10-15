@@ -167,13 +167,30 @@ jobs:
         id: docs-check
         run: echo "docs_generated=$(if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then echo "true"; else echo "false"; fi)" >> $GITHUB_OUTPUT
 
-      - name: Push documentation to gh-pages
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Ensure gh-pages branch exists
         if: steps.docs-check.outputs.docs_generated == 'true'
-        with:
-          commit_message: "Deploy Doxygen documentation to GitHub Pages"
-          branch: gh-pages  # The target branch for GitHub Pages
-          file_pattern: docs/html/**
+        run: |
+          git fetch origin
+          if ! git show-ref --verify --quiet refs/heads/gh-pages; then
+            git switch --orphan gh-pages
+            git reset --hard
+            git commit --allow-empty -m "Initialize gh-pages branch"
+            git push origin gh-pages
+          else
+            git switch gh-pages
+          fi
+
+      - name: Push documentation to gh-pages
+        if: steps.docs-check.outputs.docs_generated == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Deploy Doxygen documentation to GitHub Pages"
+          git push https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} gh-pages --force
+
 
   push_to_mirror:
     runs-on: ubuntu-latest
