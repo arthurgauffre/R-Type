@@ -18,7 +18,28 @@ void simpleClient() {
   sf::Event event;
   while (window.isOpen()) {
     while (window.pollEvent(event)) {
-      if (c.IsConnected()) {
+      if (event.type == sf::Event::Closed)
+        window.close();
+      if (event.type == sf::Event::KeyPressed) {
+        switch (event.key.code) {
+        case sf::Keyboard::Space: {
+          std::cout << "space" << std::endl;
+          c.PingServer();
+        } break;
+        case sf::Keyboard::Q: {
+          std::cout << "Q" << std::endl;
+          window.close();
+        } break;
+        case sf::Keyboard::V: {
+          std::cout << "V" << std::endl;
+          c.SendMessageToAllClients();
+        } break;
+        default:
+          break;
+        }
+      }
+    }
+    if (c.IsConnected()) {
         if (!c.GetIncomingMessages().empty()) {
           std::cout << "Incoming" << std::endl;
           auto msg = c.GetIncomingMessages().popFront().message;
@@ -58,28 +79,6 @@ void simpleClient() {
         window.close();
         break;
       }
-
-      if (event.type == sf::Event::Closed)
-        window.close();
-      if (event.type == sf::Event::KeyPressed) {
-        switch (event.key.code) {
-        case sf::Keyboard::Space: {
-          std::cout << "space" << std::endl;
-          c.PingServer();
-        } break;
-        case sf::Keyboard::Q: {
-          std::cout << "Q" << std::endl;
-          window.close();
-        } break;
-        case sf::Keyboard::V: {
-          std::cout << "V" << std::endl;
-          c.SendMessageToAllClients();
-        } break;
-        default:
-          break;
-        }
-      }
-    }
 
     window.clear();
     window.display();
