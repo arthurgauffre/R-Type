@@ -22,7 +22,7 @@ public:
    * {1.0f, 1.0f}.
    */
   TransformComponent(uint32_t entityID, sf::Vector2f position,
-                     sf::Vector2f scale = {1.0f, 1.0f});
+                     sf::Vector2f scale = {1.0f, 1.0f}, float rotation = 0.0f);
 
   /**
    * @brief Default destructor for the TransformComponent class.

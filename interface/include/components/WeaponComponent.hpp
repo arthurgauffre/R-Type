@@ -14,7 +14,7 @@
 namespace component {
 class WeaponComponent : public AComponent {
 public:
-  WeaponComponent(uint32_t entityID, uint32_t weaponEntityID);
+  WeaponComponent(uint32_t entityID, uint32_t weaponEntityID, bool isAlwaysFiring = false);
   ~WeaponComponent();
 
   void update(float deltaTime) override {}
