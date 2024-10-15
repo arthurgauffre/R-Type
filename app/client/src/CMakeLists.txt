@@ -169,3 +169,9 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_cooldown_system>
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_cooldown_system.so)
+
+add_custom_command(
+    TARGET r-type_client
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_game_system>
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_game_system.so)

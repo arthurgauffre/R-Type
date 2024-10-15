@@ -16,7 +16,7 @@ int main(void) {
 
   coreModule.get()->init();
 
-  simpleClient();
+  // simpleClient();
   coreModule.get()->run();
 
   return 0;

@@ -37,6 +37,7 @@
 #include <systems/AudioSystem.hpp>
 #include <systems/HealthSystem.hpp>
 #include <systems/RenderSystem.hpp>
+#include <systems/GameSystem.hpp>
 
 namespace rtype {
 class CoreModule : virtual public ICoreModule {
@@ -61,6 +62,9 @@ public:
   std::shared_ptr<entity::EntityManager> getEntityManager() const;
   std::shared_ptr<component::ComponentManager> getComponentManager() const;
   std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
+
+  bool getGameFinished() const;
+  void setGameFinished(bool gameFinished);
 
   template <typename T> class DLLoader {
   public:
