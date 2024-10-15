@@ -5,16 +5,17 @@
 ** main
 */
 
+#include <CoreModule.hpp>
 #include <Server.hpp>
 #include <iostream>
 
 int main(void) {
-  rtype::network::Server server(60000);
+  std::shared_ptr<rtype::CoreModule> coreModule =
+      std::make_unique<rtype::CoreModule>();
+  rtype::network::Server server(60000, coreModule);
+
   server.Start();
 
-  while (1) {
-    server.Update(-1, true);
-  }
-
+  server.run();
   return 0;
 }

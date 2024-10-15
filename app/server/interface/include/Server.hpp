@@ -17,12 +17,22 @@ namespace rtype {
 namespace network {
 class Server : virtual public rtype::network::AServer<NetworkMessages> {
 public:
-  Server(uint16_t port)
-      : rtype::network::IServer<NetworkMessages>(),
-        rtype::network::AServer<NetworkMessages>(port) {}
+  Server(uint16_t port, std::shared_ptr<CoreModule> coreModule) : 
+        rtype::network::IServer<NetworkMessages>(),
+        rtype::network::AServer<NetworkMessages>(port), _coreModule(coreModule) {
+          coreModule->init();
+        }
 
   ~Server(){};
 
+  virtual void run () {
+    sf::Clock clock;
+    while (1) {
+      float deltatime = clock.restart().asSeconds();
+      this->Update(deltatime, false);
+      _coreModule.get()->getSystemManager()->update(deltatime, _coreModule.get()->getEntityManager()->getEntities());
+    }
+  }
 protected:
   virtual void OnMessageReceived(
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
@@ -66,6 +76,9 @@ protected:
       const rtype::network::Message<NetworkMessages> &message,
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
           client) {}
+    
+  private:
+    std::shared_ptr<CoreModule> _coreModule;
 };
 } // namespace network
 } // namespace rtype

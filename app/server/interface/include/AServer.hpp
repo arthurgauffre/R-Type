@@ -128,7 +128,7 @@ public:
   }
 
   void Update(size_t maxMessages = -1, bool needToWait = false) {
-    if (needToWait)
+    if (needToWait == true)
       incomingMessages.wait();
     size_t messageCount = 0;
     while (messageCount < maxMessages && !incomingMessages.empty()) {
