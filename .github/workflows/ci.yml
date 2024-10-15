@@ -157,36 +157,23 @@ jobs:
         run: sudo apt-get install doxygen -y
 
       - name: Configure and generate Doxygen documentation
-        if: steps.cache-doxygen.outputs.cache-hit != 'true'
         run: |
           doxygen -g  # Generates a default Doxyfile if not already present
           sed -i 's/PROJECT_NAME           = "R-Type"/PROJECT_NAME = "R-Type"/' Doxyfile
           sed -i 's/OUTPUT_DIRECTORY       =/OUTPUT_DIRECTORY = docs/' Doxyfile
           doxygen Doxyfile
 
+      - name: Check if documentation generated
+        id: docs-check
+        run: echo "docs_generated=$(if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then echo "true"; else echo "false"; fi)" >> $GITHUB_OUTPUT
 
-      - name: Deploy Doxygen documentation
-        if : steps.cache-doxygen.outputs.cache-hit != 'true'
-        run: |
-          set -euxo pipefail
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git fetch origin
-          git switch --orphan gh-pages
-          # Only attempt to remove files if there are any in the current directory
-          if [ "$(ls -A)" ]; then
-            ls -A
-          fi
-          # Copy the files only if docs/html exists and is not empty
-          if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
-            cp -r docs/html/* .
-            touch .nojekyll  # Disable Jekyll to enable support for files and directories starting with underscore
-            git add --all
-            git commit -m "Deploy Doxygen documentation to GitHub Pages"
-            git push origin gh-pages --force
-          else
-            echo "No documentation generated. Skipping deployment."
-          fi
+      - name: Push documentation to gh-pages
+        uses: stefanzweifel/git-auto-commit-action@v5
+        if: steps.docs-check.outputs.docs_generated == 'true'
+        with:
+          commit_message: "Deploy Doxygen documentation to GitHub Pages"
+          branch: gh-pages  # The target branch for GitHub Pages
+          file_pattern: docs/html/**
 
 
   push_to_mirror:
