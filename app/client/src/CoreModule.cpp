@@ -242,15 +242,15 @@ void rtype::CoreModule::init() {
   auto player = this->createPlayer(
       this->getEntityManager()->generateEntityID(),
       "app/assets/sprites/plane.png", sf::Vector2f(100.0f, 100.0f),
-      sf::Vector2f(100.0f, 100.0f), sf::Vector2f(1, 1), 1);
+      sf::Vector2f(100.0f, 100.0f), sf::Vector2f(0.25f, 0.25f), 1);
   this->createBackground(this->getEntityManager()->generateEntityID(),
                          "app/assets/images/city_background.png",
                          sf::Vector2f(100.0f, 0.0f),
                          sf::Vector2f(4448.0f, 1200.0f));
   this->createEnemy(this->getEntityManager()->generateEntityID(),
-                    "app/assets/sprites/plane.png",
+                    "app/assets/sprites/enemy.png",
                     sf::Vector2f(900.0f, 500.0f), sf::Vector2f(0.0f, 0.0f),
-                    sf::Vector2f(0.5f, 0.5f), 1, 100);
+                    sf::Vector2f(0.2f, 0.2f), 1, 100);
 
   component::ComponentManager &componentManager = *this->getComponentManager();
 
