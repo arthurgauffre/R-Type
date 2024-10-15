@@ -1,6 +1,6 @@
 add_executable(r-type_server
     main.cpp
-    CoreModule.cpp
+    ../../ecs/src/CoreModule.cpp
     ../../ecs/src/managers/system/SystemManager.cpp
     # app/ecs/src/managers/system/SystemManager.cpp
     ../../ecs/src/managers/component/ComponentManager.cpp

@@ -19,7 +19,7 @@ public:
   ~HealthSystem();
 
   void update(float deltaTime,
-              std::vector<std::shared_ptr<entity::IEntity>> entities) override;
+              std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend) override;
 
   void initialize() override{};
 

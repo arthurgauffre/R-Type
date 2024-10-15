@@ -39,6 +39,7 @@ public:
   virtual std::shared_ptr<ECS_system::SystemManager>
   getSystemManager() const = 0;
   virtual void run() = 0;
+  virtual void init() = 0;
 
 protected:
   std::shared_ptr<entity::EntityManager> _entityManager;

@@ -11,41 +11,77 @@
 #pragma once
 
 #include <AClient.hpp>
+#include <CoreModule.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkMessagesCommunication.hpp>
 
-namespace rtype {
-namespace network {
-class Client : virtual public rtype::network::AClient<NetworkMessages> {
-public:
-  void PingServer() {
-    rtype::network::Message<NetworkMessages> message;
-    message.header.id = NetworkMessages::ServerPing;
-    PositionComponent pos = {1.0f, 5.0f};
-    // Serialize PositionComponent into bytes
-    std::vector<uint8_t> posBytes(reinterpret_cast<uint8_t *>(&pos),
-                                  reinterpret_cast<uint8_t *>(&pos) +
-                                      sizeof(PositionComponent));
-    message.body.insert(message.body.end(), posBytes.begin(), posBytes.end());
-    std::chrono::system_clock::time_point timeNow =
-        std::chrono::system_clock::now();
+namespace rtype
+{
+  namespace network
+  {
+    class Client : virtual public rtype::network::AClient<NetworkMessages>
+    {
+    public:
+      Client(std::shared_ptr<CoreModule> coreModule) : AClient(), _coreModule(coreModule) {}
 
-    message << timeNow;
+      void init()
+      {
+        component::ComponentManager &componentManager = *_coreModule->getComponentManager();
+        entity::EntityManager &entityManager = *_coreModule->getEntityManager();
 
-    Send(message);
-    std::cout << "Message sent : " << message << std::endl;
-  }
+        _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                                   "render");
+        _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                                   "audio");
+        _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                                   "background");
+        _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                                   "input");
+      }
 
-  void SendMessageToAllClients() {
-    rtype::network::Message<NetworkMessages> message;
-    message.header.id = NetworkMessages::MessageAll;
+      void PingServer()
+      {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::ServerPing;
+        PositionComponent pos = {1.0f, 5.0f};
+        // Serialize PositionComponent into bytes
+        std::vector<uint8_t> posBytes(reinterpret_cast<uint8_t *>(&pos), reinterpret_cast<uint8_t *>(&pos) + sizeof(PositionComponent));
+        message.body.insert(message.body.end(), posBytes.begin(), posBytes.end());
+        std::chrono::system_clock:: time_point timeNow =
+            std::chrono::system_clock::now();
 
-    Send(message);
-  }
+        message << timeNow;
 
-  virtual void Disconnect() {}
-};
-} // namespace network
+        Send(message);
+        std::cout << "Message sent : " << message << std::endl;
+      }
+
+      void SendMessageToAllClients()
+      {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::MessageAll;
+
+        Send(message);
+      }
+
+      void run()
+      {
+        std::vector<std::string> msgToSend;
+        sf::Clock clock;
+        while (1)
+        {
+          float deltaTime = clock.restart().asSeconds();
+          _coreModule.get()->getSystemManager()->update(deltaTime, _coreModule.get()->getEntityManager()->getEntities(), msgToSend);
+        }
+        std::cout << "Client running" << std::endl;
+      };
+
+      virtual void Disconnect() {}
+
+    private:
+      std::shared_ptr<CoreModule> _coreModule;
+    };
+  } // namespace network
 } // namespace rtype
 
 #endif /* !CLIENT_HPP_ */

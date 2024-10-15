@@ -95,7 +95,6 @@ public:
   }
 
   void Send(const rtype::network::Message<T> &message) {
-    std::cout << "BOLO" << std::endl;
     asio::post(asioContext, [this, message]() {
       bool writingMessage = !queueOfOutgoingMessages.empty();
       queueOfOutgoingMessages.pushBack(message);

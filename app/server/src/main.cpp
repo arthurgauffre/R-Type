@@ -11,7 +11,7 @@
 
 int main(void) {
   std::shared_ptr<rtype::CoreModule> coreModule =
-      std::make_unique<rtype::CoreModule>();
+      std::make_shared<rtype::CoreModule>();
   rtype::network::Server server(60000, coreModule);
 
   server.Start();

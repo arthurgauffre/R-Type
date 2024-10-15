@@ -63,7 +63,7 @@ void ECS_system::CollisionSystem::handleCollision(
  * collisions.
  */
 void ECS_system::CollisionSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend) {
   for (auto &entity : entities) {
     component::HitBoxComponent *hitbox1 =
         _componentManager.getComponent<component::HitBoxComponent>(
