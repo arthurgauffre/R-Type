@@ -31,6 +31,8 @@ public:
 
   std::vector<std::shared_ptr<IEntity>> &getEntities();
 
+  void removeEntity(uint32_t id);
+
 private:
   /**
    * @brief A container that holds shared pointers to IEntity objects.
