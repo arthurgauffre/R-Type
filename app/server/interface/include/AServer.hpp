@@ -15,6 +15,8 @@
 // #include <NetworkingCommon.hpp>
 #include <NetworkQueue.hpp>
 #include <OwnedMessage.hpp>
+#include <NetworkMessageFactory.hpp>
+
 
 namespace rtype {
 namespace network {
@@ -81,6 +83,9 @@ public:
                                                                actualId++);
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
+              SendMessageToAllClients(
+                  networkMessageFactory.createEntityMsg(deqConnections.back()->GetId()));
+
             } else {
               std::cout << "Connection denied" << std::endl;
             }
@@ -150,6 +155,7 @@ public:
   asio::ip::udp::socket asioSocket;
   asio::ip::udp::endpoint clientEndpoint;
 
+  NetworkMessageFactory networkMessageFactory;
   std::array<char, 1024> bufferOfIncomingMessages;
   uint32_t actualId = 0;
 

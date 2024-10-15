@@ -77,6 +77,9 @@ void simpleClient() {
         } break;
         case NetworkMessages::createEntity: {
           std::cout << "Entity created" << std::endl;
+          EntityId entity;
+          std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
+          std::cout << "Entity id: " << entity.id << std::endl;
         } break;
         }
       }

@@ -139,13 +139,17 @@ private:
               WriteBody();
             } else {
               queueOfOutgoingMessages.popFront();
-              std::cout << "Is the outgoing queue empty : "
+              std::cout << "Is the outgoing queue empty in the WriteHeader : "
                         << (queueOfOutgoingMessages.empty() ? "true" : "false")
                         << std::endl;
               if (!queueOfOutgoingMessages.empty()) {
+                std::cout << "Goes back on the same method" << std::endl;
                 WriteHeader();
-                std::cout << "Goes to the WriteHeader method" << std::endl;
               }
+              // if (IsConnected()) {
+              //   std::cout << "Connection is still open" << std::endl;
+              // }
+
             }
           } else {
             std::cout << id << " : Write Header failed" << ec << std::endl;
@@ -164,7 +168,7 @@ private:
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
             queueOfOutgoingMessages.popFront();
-            std::cout << "Is the outgoing queue empty : "
+            std::cout << "Is the outgoing queue empty in the WriteBody : "
                       << (queueOfOutgoingMessages.empty() ? "true" : "false")
                       << std::endl;
             if (!queueOfOutgoingMessages.empty()) {

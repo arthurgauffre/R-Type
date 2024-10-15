@@ -84,9 +84,11 @@ protected:
   virtual bool OnClientConnection(
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
           client) {
+    std::cout << "Client is attempting to connect" << std::endl;
     rtype::network::Message<NetworkMessages> message;
     message.header.id = NetworkMessages::ServerAcceptance;
     client->Send(message);
+
     return true;
   }
 
