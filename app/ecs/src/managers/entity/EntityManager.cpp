@@ -11,9 +11,7 @@
 /**
  * @brief Constructs an EntityManager object.
  */
-entity::EntityManager::EntityManager() {
-  _entityCounter = 0;
-}
+entity::EntityManager::EntityManager() { _entityCounter = 0; }
 
 /**
  * @brief Retrieves an entity by its unique identifier.

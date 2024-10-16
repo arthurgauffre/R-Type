@@ -139,8 +139,10 @@ private:
               WriteBody();
             } else {
               queueOfOutgoingMessages.popFront();
-              // std::cout << "Is the outgoing queue empty in the WriteHeader : "
-              //           << (queueOfOutgoingMessages.empty() ? "true" : "false")
+              // std::cout << "Is the outgoing queue empty in the WriteHeader :
+              // "
+              //           << (queueOfOutgoingMessages.empty() ? "true" :
+              //           "false")
               //           << std::endl;
               if (!queueOfOutgoingMessages.empty()) {
                 std::cout << "Goes back on the same method" << std::endl;
@@ -194,7 +196,7 @@ private:
     if (temporaryIncomingMessage.body.size() > 0) {
 
       // std::cout << "Incoming message is : " << temporaryIncomingMessage
-                // << std::endl;
+      // << std::endl;
       // std::cout << queueOfIncomingMessages.front().message << std::endl;
       // Deserialize PositionComponent from bytes and print the values
       // PositionComponent pos;
