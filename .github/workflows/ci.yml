@@ -190,8 +190,8 @@ jobs:
           git fetch origin
           git switch --orphan gh-pages || git checkout gh-pages
           rm -rf *
-          if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
-            cp -r docs/html/* .
+          if [ -d "docs/" ] && [ "$(ls -A docs/)" ]; then
+            cp -r docs/* .
             touch .nojekyll  # Disable Jekyll to enable support for files and directories starting with underscore
             git add --all
             git commit -m "Deploy Doxygen documentation to GitHub Pages"
