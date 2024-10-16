@@ -185,8 +185,6 @@ jobs:
           else
             echo "No documentation generated. Skipping deployment."
           fi
-            echo "No documentation generated. Skipping deployment."
-          fi
 
 
 
