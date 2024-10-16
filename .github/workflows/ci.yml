@@ -160,12 +160,25 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y doxygen graphviz
 
-      - name: Configure and generate Doxygen documentation
+      - name: Configure Doxygen
         if: steps.cache-doxygen.outputs.cache-hit != 'true'
         run: |
-          doxygen -g  # Generates a default Doxyfile if not already present
-          sed -i 's/PROJECT_NAME           = "R-Type"/PROJECT_NAME = "R-Type"/' Doxyfile
+          # Generate a default Doxyfile if it doesn't exist
+          if [ ! -f Doxyfile ]; then
+            doxygen -g
+          fi
+          # Update Doxyfile settings
+          sed -i 's/PROJECT_NAME           = "My Project"/PROJECT_NAME = "R-Type"/' Doxyfile
           sed -i 's/OUTPUT_DIRECTORY       =/OUTPUT_DIRECTORY = docs/' Doxyfile
+          sed -i 's/GENERATE_LATEX         = YES/GENERATE_LATEX = NO/' Doxyfile
+          sed -i 's/RECURSIVE              = NO/RECURSIVE = YES/' Doxyfile
+          sed -i 's/OPTIMIZE_OUTPUT_FOR_C  = NO/OPTIMIZE_OUTPUT_FOR_C = YES/' Doxyfile
+
+      - name: Generate Doxygen documentation
+        if: steps.cache-doxygen.outputs.cache-hit != 'true'
+        run: |
+          doxygen Doxyfile
+
       - name: Deploy Doxygen documentation
         if: steps.cache-doxygen.outputs.cache-hit != 'true'
         env:
@@ -176,6 +189,7 @@ jobs:
           git config --global user.email "actions@github.com"
           git fetch origin
           git switch --orphan gh-pages || git checkout gh-pages
+          rm -rf *
           if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
             cp -r docs/html/* .
             touch .nojekyll  # Disable Jekyll to enable support for files and directories starting with underscore
@@ -185,6 +199,7 @@ jobs:
           else
             echo "No documentation generated. Skipping deployment."
           fi
+
 
 
 
