@@ -20,14 +20,15 @@ ECS_system::SystemManager::SystemManager() {}
  * @param deltaTime The time elapsed since the last update, used to update the
  * systems.
  */
-void ECS_system::SystemManager::update(
+std::vector<std::string> ECS_system::SystemManager::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::string> msgToSend) {
   for (auto &system : _systems) {
-    system->update(deltaTime, entities,
+    msgToSend = system->update(deltaTime, entities,
                    msgToSend); // Each system updates itself because
                                // each system has its own logic
   }
+  return msgToSend;
 }
 
 /**

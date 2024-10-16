@@ -13,6 +13,7 @@ component::BackgroundComponent::BackgroundComponent(uint32_t entityID,
                                                     std::string texturePath,
                                                     const sf::Vector2f &size)
     : AComponent(entityID), _size(size) {
+  this->_texturePath = texturePath;
   if (!_texture.loadFromFile(texturePath)) {
     throw std::runtime_error("Could not load texture from file: " +
                              texturePath);
@@ -22,7 +23,6 @@ component::BackgroundComponent::BackgroundComponent(uint32_t entityID,
   _sprite.setScale(size.x / _sprite.getTexture()->getSize().x,
                    size.y / _sprite.getTexture()->getSize().y);
   _duplicateSprite = _sprite;
-  texturePath = texturePath;
 }
 
 /**

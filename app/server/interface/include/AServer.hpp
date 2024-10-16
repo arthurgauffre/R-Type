@@ -16,6 +16,7 @@
 #include <NetworkMessageFactory.hpp>
 #include <NetworkQueue.hpp>
 #include <OwnedMessage.hpp>
+#include <mutex>
 
 namespace rtype
 {
@@ -25,6 +26,7 @@ namespace rtype
     class AServer : virtual public IServer<T>
     {
     public:
+      std::mutex coreModuleMutex;
       AServer(uint16_t port)
           : rtype::network::IServer<T>(),
             asioSocket(asioContext,
@@ -47,8 +49,8 @@ namespace rtype
                                                   //  "collision");
         // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
         //                                            "movement");
-        // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-        //                                            "health");
+        _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                                   "health");
 
         uint32_t backgroundEntityID = _coreModule->getEntityManager()->generateEntityID();
         _coreModule->getEntityManager()->createEntity(backgroundEntityID);
@@ -115,13 +117,14 @@ namespace rtype
                     NetworkConnection<T>::actualOwner::SERVER, asioContext,
                     std::move(newSocket), clientEndpoint, incomingMessages);
             if (OnClientConnection(newConnection)) {
+              std::lock_guard<std::mutex> lock(coreModuleMutex);
               deqConnections.push_back(std::move(newConnection));
               deqConnections.back()->EstablishClientConnection(this,
                                                                actualId++);
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
               // add to a function
-              // sendAllEntitiesToClient(deqConnections.back());
+              sendAllEntitiesToClient(deqConnections.back());
               size_t id = _coreModule.get()->getEntityManager()->generateEntityID();
               _coreModule.get()->getEntityManager()->createEntity(
                   id);
@@ -151,8 +154,10 @@ namespace rtype
       void SendMessageToClient(const Message<T> &message,
                                std::shared_ptr<NetworkConnection<T>> client)
       {
+        std::cout << "checking message to client" << std::endl;
         if (client && client->IsConnected())
         {
+          std::cout << "Sending message to client" << std::endl;
           client->Send(message);
         }
         else
@@ -163,6 +168,7 @@ namespace rtype
               std::remove(deqConnections.begin(), deqConnections.end(), client),
               deqConnections.end());
         }
+        std::cout << "Message sent to client" << std::endl;
       }
 
       void SendMessageToAllClients(
@@ -214,15 +220,19 @@ namespace rtype
       std::string GetTexturePath(TexturePath texture)
       {
         switch (texture)
-        {
-        case TexturePath::Player:
-          return "app/assets/sprites/plane.png";
-          // case TexturePath::Enemy:
-          // return "assets/enemy.png";
-        case TexturePath::Background:
-          return "app/assets/images/city_background.png";
-        }
-        return "";
+            {
+            case TexturePath::Background: {
+                return "app/assets/images/city_background.png";
+            }
+            break;
+            case TexturePath::Player: {
+                return "app/assets/sprites/plane.png";
+            }
+            break;
+            // case TexturePath::Enemy:
+            // return "assets/enemy.png";
+            }
+            return "";
       }
 
       TexturePath GetEnumTexturePath(std::string texture)
@@ -238,10 +248,14 @@ namespace rtype
 
       void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client)
       {
+        if (client->IsConnected() == false) {
+          std::cout << "Client is not connected" << std::endl;
+        } else {
+          std::cout << "Client is connected" << std::endl;
+        }
         _coreModule.get()->getEntityManager()->getEntities();
         for (auto &entity : _coreModule.get()->getEntityManager()->getEntities())
         {
-          std::cout << "Entity id: " << entity->getID() << std::endl;
           SendMessageToClient(networkMessageFactory.createEntityMsg(entity->getID()), client);
           if (_coreModule.get()->getComponentManager()->getComponent<component::PositionComponent>(entity->getID())) {
             component::PositionComponent *component = _coreModule.get()->getComponentManager()->getComponent<component::PositionComponent>(entity->getID());

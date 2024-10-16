@@ -49,7 +49,7 @@ public:
    * @param entities A vector of shared pointers to the entities to be
    * processed.
    */
-  virtual void update(float deltaTime,
+  virtual std::vector<std::string> update(float deltaTime,
                       std::vector<std::shared_ptr<entity::IEntity>> entities,
                       std::vector<std::string> msgToSend) = 0;
 

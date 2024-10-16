@@ -44,7 +44,7 @@ ECS_system::HealthSystem::~HealthSystem() {}
  * @param entities A vector of shared pointers to entities that need to be
  * updated.
  */
-void ECS_system::HealthSystem::update(
+std::vector<std::string> ECS_system::HealthSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::string> msgToSend) {
   for (auto &entity :
@@ -57,6 +57,7 @@ void ECS_system::HealthSystem::update(
       entity.get()->setActive(false);
     }
   }
+  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

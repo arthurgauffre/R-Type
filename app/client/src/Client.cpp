@@ -17,6 +17,7 @@ namespace rtype
             sf::Clock clock;
             while (true)
             {
+                std::cout << "nb msg to send: " << msgToSend.size() << std::endl;
                 if (IsConnected())
                 {
                     if (!GetIncomingMessages().empty())
@@ -32,7 +33,7 @@ namespace rtype
                     break;
                 }
                 float deltaTime = clock.restart().asSeconds();
-                _coreModule.get()->getSystemManager()->update(
+                msgToSend = _coreModule.get()->getSystemManager()->update(
                     deltaTime, _coreModule.get()->getEntityManager()->getEntities(),
                     msgToSend);
             }
@@ -43,14 +44,33 @@ namespace rtype
         {
             switch (texture)
             {
-            case TexturePath::Player:
-                return "app/assets/sprites/plane.png";
-            // case TexturePath::Enemy:
-            // return "assets/enemy.png";
-            case TexturePath::Background:
+            case TexturePath::Background: {
                 return "app/assets/images/city_background.png";
             }
+            break;
+            case TexturePath::Player: {
+                return "app/assets/sprites/plane.png";
+            }
+            break;
+            // case TexturePath::Enemy:
+            // return "assets/enemy.png";
+            }
             return "";
+        }
+
+        KeyAction Client::getAction(std::string action)
+        {
+            if (action == "moveUp")
+                return KeyAction::moveUp;
+            if (action == "moveDown")
+                return KeyAction::moveDown;
+            if (action == "moveLeft")
+                return KeyAction::moveLeft;
+            if (action == "moveRight")
+                return KeyAction::moveRight;
+            if (action == "shoot")
+                return KeyAction::shoot;
+            return KeyAction::moveUp;
         }
 
         void Client::handdleMessage(rtype::network::Message<NetworkMessages> &msg)
@@ -163,6 +183,7 @@ namespace rtype
                 std::memcpy(&id, msg.body.data(), sizeof(EntityId));
                 std::memcpy(&background, msg.body.data() + sizeof(EntityId), sizeof(BackgroundComponent));
                 std::cout << "Background: " << background.x << " " << background.y << std::endl;
+                std::cout << "Texture: " << GetTexturePath(background.texturePath) << std::endl;
                 _coreModule.get()->getComponentManager()->addComponent<component::BackgroundComponent>(id.id, GetTexturePath(background.texturePath), sf::Vector2f(background.x, background.y));
             }
             break;

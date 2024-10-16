@@ -37,6 +37,7 @@ namespace rtype
         {
           float deltatime = clock.restart().asSeconds();
           this->Update(deltatime, false);
+          std::lock_guard<std::mutex> lock(coreModuleMutex);
           _coreModule.get()->getSystemManager()->update(
               deltatime, _coreModule.get()->getEntityManager()->getEntities(),
               msgToSend);
@@ -98,11 +99,6 @@ namespace rtype
       {
         // std::cout << "Client disconnected : " << client->GetId() << std::endl;
       }
-
-      virtual void SendMessageToClient(
-          const rtype::network::Message<NetworkMessages> &message,
-          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
-              client) {}
 
     private:
     };

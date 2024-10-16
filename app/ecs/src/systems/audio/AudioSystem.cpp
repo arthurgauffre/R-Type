@@ -19,7 +19,7 @@
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be processed.
  */
-void ECS_system::AudioSystem::update(
+std::vector<std::string> ECS_system::AudioSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::string> msgToSend) {
   for (auto &entity : entities) {
@@ -39,6 +39,7 @@ void ECS_system::AudioSystem::update(
         musicComponent->play();
     }
   }
+  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

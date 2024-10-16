@@ -67,6 +67,14 @@ enum class TexturePath : uint32_t {
   Background,
 };
 
+enum class KeyAction : uint32_t {
+  moveUp,
+  moveDown,
+  moveLeft,
+  moveRight,
+  shoot,
+};
+
 struct TextureComponent {
   TexturePath texturePath;
 };

@@ -20,7 +20,7 @@ public:
       : ASystem(componentManager, entityManager) {}
   ~BackgroundSystem() = default;
 
-  void update(float deltaTime,
+  std::vector<std::string> update(float deltaTime,
               std::vector<std::shared_ptr<entity::IEntity>> entities,
               std::vector<std::string> msgToSend) override;
 

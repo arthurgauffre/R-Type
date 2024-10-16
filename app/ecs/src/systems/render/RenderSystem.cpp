@@ -35,7 +35,7 @@ ECS_system::RenderSystem::RenderSystem(
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be processed.
  */
-void ECS_system::RenderSystem::update(
+std::vector<std::string> ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::string> msgToSend) {
   _window.clear();
@@ -96,6 +96,7 @@ void ECS_system::RenderSystem::update(
       // this->_gameClosed = true;
     }
   }
+  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

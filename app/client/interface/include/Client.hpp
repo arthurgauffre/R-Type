@@ -82,6 +82,8 @@ namespace rtype
 
       std::string GetTexturePath(TexturePath texture);
 
+      KeyAction getAction(std::string action);
+
       virtual void Disconnect() {}
 
     private:
