@@ -18,20 +18,19 @@ void ECS_system::InputSystem::update(
             entity->getID());
     if (!inputComponent)
       return;
-
-    sf::Vector2f newVelocity = {0, 0};
-    if (inputComponent->isActionActive("MoveUp"))
-      newVelocity.y = -200;
-    if (inputComponent->isActionActive("MoveDown"))
-      newVelocity.y = 200;
-    if (inputComponent->isActionActive("MoveLeft"))
-      newVelocity.x = -200;
-    if (inputComponent->isActionActive("MoveRight"))
-      newVelocity.x = 200;
-    component::VelocityComponent *velocity =
+    component::VelocityComponent *velocityComponent =
         _componentManager.getComponent<component::VelocityComponent>(
             entity->getID());
-    velocity->setVelocity(newVelocity);
+    velocityComponent->setActualVelocityX(0);
+    velocityComponent->setActualVelocityY(0);
+    if (inputComponent->isActionActive("MoveUp"))
+      velocityComponent->setActualVelocityY(-velocityComponent->getVelocity().y);
+    if (inputComponent->isActionActive("MoveDown"))
+      velocityComponent->setActualVelocityY(velocityComponent->getVelocity().y);
+    if (inputComponent->isActionActive("MoveLeft"))
+      velocityComponent->setActualVelocityX(-velocityComponent->getVelocity().x);
+    if (inputComponent->isActionActive("MoveRight"))
+      velocityComponent->setActualVelocityX(velocityComponent->getVelocity().x);
     if (!inputComponent->isActionActive("Shoot"))
       return;
 

@@ -15,7 +15,7 @@ namespace component {
 class WeaponComponent : public AComponent {
 public:
   WeaponComponent(uint32_t entityID, uint32_t weaponEntityID,
-                  bool isAlwaysFiring = false);
+                  bool isAlwaysFiring = false, float velocity = 0);
   ~WeaponComponent();
 
   void update(float deltaTime) override {}
@@ -26,8 +26,12 @@ public:
   void setIsFiring(bool isFiring);
   bool getIsFiring();
 
+  void setVelocity(float velocity) { _velocity = velocity; }
+  float getVelocity() { return _velocity; }
+
 private:
   uint32_t _weaponEntityID;
   bool _isFiring;
+  float _velocity;
 };
 } // namespace component

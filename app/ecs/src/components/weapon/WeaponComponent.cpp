@@ -9,8 +9,8 @@
 
 component::WeaponComponent::WeaponComponent(uint32_t entityID,
                                             uint32_t weaponEntityID,
-                                            bool isAlwaysFiring)
-    : AComponent(entityID), _weaponEntityID(weaponEntityID) {
+                                            bool isAlwaysFiring, float velocity)
+    : AComponent(entityID), _weaponEntityID(weaponEntityID), _velocity(velocity) {
   _isFiring = isAlwaysFiring;
 }
 

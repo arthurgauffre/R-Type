@@ -38,8 +38,8 @@ void ECS_system::MovementSystem::update(
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
 
-    float newX = position->getX() + velocity->getVelocity().x * deltaTime;
-    float newY = position->getY() + velocity->getVelocity().y * deltaTime;
+    float newX = position->getX() + velocity->getActualVelocity().x * deltaTime;
+    float newY = position->getY() + velocity->getActualVelocity().y * deltaTime;
 
     if (type->getType() == "player") {
       if (newX < 0)

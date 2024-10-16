@@ -164,7 +164,7 @@ rtype::CoreModule::createPlayer(uint32_t entityID, std::string texturePath,
   auto weapon = this->createWeapon(entityID, "weapon", 15, 1);
 
   this->getComponentManager()->addComponent<component::WeaponComponent>(
-      entityID, weapon->getID(), true);
+      entityID, weapon->getID(), true, 500);
   this->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                       "player");
   this->getComponentManager()->addComponent<component::PositionComponent>(
@@ -198,7 +198,7 @@ rtype::CoreModule::createEnemy(uint32_t entityID, std::string texturePath,
   auto weapon = this->createWeapon(entityID, "enemyWeapon", 15, 2);
 
   this->getComponentManager()->addComponent<component::WeaponComponent>(
-      entityID, weapon->getID(), true);
+      entityID, weapon->getID(), true, 500);
   this->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                       "enemy");
   this->getComponentManager()->addComponent<component::PositionComponent>(
@@ -255,7 +255,7 @@ void rtype::CoreModule::init() {
   auto player = this->createPlayer(
       this->getEntityManager()->generateEntityID(),
       "app/assets/sprites/plane.png", sf::Vector2f(100.0f, 100.0f),
-      sf::Vector2f(100.0f, 100.0f), sf::Vector2f(0.25f, 0.25f), 1);
+      sf::Vector2f(500.0f, 500.0f), sf::Vector2f(0.25f, 0.25f), 1);
   this->createBackground(this->getEntityManager()->generateEntityID(),
                          "app/assets/images/city_background.png",
                          sf::Vector2f(100.0f, 0.0f),
