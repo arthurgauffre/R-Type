@@ -198,7 +198,7 @@ rtype::CoreModule::createEnemy(uint32_t entityID, std::string texturePath,
   auto weapon = this->createWeapon(entityID, "enemyWeapon", 15, 2);
 
   this->getComponentManager()->addComponent<component::WeaponComponent>(
-      entityID, weapon->getID(), true, 500);
+      entityID, weapon->getID(), true, -500);
   this->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                       "enemy");
   this->getComponentManager()->addComponent<component::PositionComponent>(

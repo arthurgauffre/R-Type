@@ -96,9 +96,7 @@ void ECS_system::WeaponSystem::update(
 
     float weaponVelocity = weaponComponent->getVelocity();
     if (weaponComponent->getIsFiring()) {
-      sf::Vector2f projectileVelocity = (entityType == "player")
-                                            ? sf::Vector2f(weaponVelocity, 0)
-                                            : sf::Vector2f(-weaponVelocity, 0);
+      sf::Vector2f projectileVelocity = sf::Vector2f(weaponVelocity, 0);
       this->createProjectile(weaponComponent->getEntityID(),
                              "app/assets/sprites/projectile.gif",
                              projectileVelocity, sf::Vector2f(1, 1), 10);
