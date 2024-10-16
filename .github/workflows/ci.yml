@@ -168,16 +168,16 @@ jobs:
             doxygen -g
           fi
           # Update Doxyfile settings
-          sed -i 's/PROJECT_NAME           = "My Project"/PROJECT_NAME = "R-Type"/' Doxyfile
-          sed -i 's/OUTPUT_DIRECTORY       =/OUTPUT_DIRECTORY = docs/' Doxyfile
-          sed -i 's/GENERATE_LATEX         = YES/GENERATE_LATEX = NO/' Doxyfile
-          sed -i 's/RECURSIVE              = NO/RECURSIVE = YES/' Doxyfile
-          sed -i 's/OPTIMIZE_OUTPUT_FOR_C  = NO/OPTIMIZE_OUTPUT_FOR_C = YES/' Doxyfile
+          sed -i 's/^PROJECT_NAME.*/PROJECT_NAME = "R-Type"/' Doxyfile
+          sed -i 's/^OUTPUT_DIRECTORY.*/OUTPUT_DIRECTORY = docs/' Doxyfile
+          sed -i 's/^GENERATE_LATEX.*/GENERATE_LATEX = NO/' Doxyfile
+          sed -i 's/^RECURSIVE.*/RECURSIVE = YES/' Doxyfile
+          sed -i 's/^GENERATE_HTML.*/GENERATE_HTML = YES/' Doxyfile
 
       - name: Generate Doxygen documentation
         if: steps.cache-doxygen.outputs.cache-hit != 'true'
         run: |
-          doxygen Doxyfile
+          doxygen Doxyfile | tee doxygen_output.log
 
       - name: Deploy Doxygen documentation
         if: steps.cache-doxygen.outputs.cache-hit != 'true'
