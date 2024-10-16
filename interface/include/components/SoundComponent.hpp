@@ -50,6 +50,9 @@ public:
    * @param deltaTime The time elapsed since the last frame, in seconds.
    */
   void update(float deltaTime) override {}
+  
+  void setShouldPlay(bool shouldPlay) { _shouldPlay = shouldPlay; }
+  bool getShouldPlay() { return _shouldPlay; }
 
 private:
   /**
@@ -71,5 +74,7 @@ private:
    * @see sf::Sound
    */
   sf::Sound _sound;
+
+  bool _shouldPlay;
 };
 } // namespace component

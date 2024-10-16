@@ -20,6 +20,7 @@
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
 #include <components/WeaponComponent.hpp>
+#include <components/SoundComponent.hpp>
 
 #include <unordered_map>
 #include <vector>

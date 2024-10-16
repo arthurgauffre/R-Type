@@ -10,6 +10,7 @@ add_library(r-type_weapon_system SHARED
     ../../components/type/TypeComponent.cpp
     ../../components/transform/TransformComponent.cpp
     ../../components/hitbox/HitBoxComponent.cpp
+    ../../components/sound/SoundComponent.cpp
     ../../managers/entity/EntityManager.cpp
     ../../entity/Entity.cpp
 )
