@@ -7,10 +7,6 @@
 
 #include "AIComponent.hpp"
 
-AIComponent::AIComponent()
-{
-}
+AIComponent::AIComponent() {}
 
-AIComponent::~AIComponent()
-{
-}
+AIComponent::~AIComponent() {}

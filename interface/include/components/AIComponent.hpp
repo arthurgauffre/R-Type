@@ -8,10 +8,10 @@
 #pragma once
 
 class AIComponent {
-    public:
-        AIComponent();
-        ~AIComponent();
+public:
+  AIComponent();
+  ~AIComponent();
 
-    protected:
-    private:
+protected:
+private:
 };
