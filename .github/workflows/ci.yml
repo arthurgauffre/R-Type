@@ -179,10 +179,6 @@ jobs:
         run: |
           doxygen Doxyfile | tee doxygen_output.log
 
-      - name: Print Doxygen Output Log
-        run: |
-          cat doxygen_output.log
-
       - name: Deploy Doxygen documentation
         if: steps.cache-doxygen.outputs.cache-hit != 'true'
         env:
