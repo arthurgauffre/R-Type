@@ -27,6 +27,9 @@
 #include <components/TextureComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <components/VelocityComponent.hpp>
+#include <components/HitBoxComponent.hpp>
+#include <components/ParentComponent.hpp>
+#include <components/DamageComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/HealthSystem.hpp>

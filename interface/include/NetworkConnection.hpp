@@ -123,8 +123,8 @@ protected:
 
 private:
   void WriteHeader() {
-    std::cout << "Sending to endpoint in the WriteHeader: " << endpoint
-              << std::endl;
+    // std::cout << "Sending to endpoint in the WriteHeader: " << endpoint
+    //           << std::endl;
     asioSocket.async_send_to(
         asio::buffer(&queueOfOutgoingMessages.front().header,
                      sizeof(rtype::network::MessageHeader<T>)),
@@ -132,16 +132,16 @@ private:
           if (!ec) {
             // std::cout << "Header size in the WriteHeader" <<
             // queueOfOutgoingMessages.front().header.size() << std::endl;
-            std::cout << "Body size in the WriteHeader : "
-                      << queueOfOutgoingMessages.front().body.size()
-                      << std::endl;
+            // std::cout << "Body size in the WriteHeader : "
+            //           << queueOfOutgoingMessages.front().body.size()
+            //           << std::endl;
             if (queueOfOutgoingMessages.front().body.size() > 0) {
               WriteBody();
             } else {
               queueOfOutgoingMessages.popFront();
-              std::cout << "Is the outgoing queue empty in the WriteHeader : "
-                        << (queueOfOutgoingMessages.empty() ? "true" : "false")
-                        << std::endl;
+              // std::cout << "Is the outgoing queue empty in the WriteHeader : "
+              //           << (queueOfOutgoingMessages.empty() ? "true" : "false")
+              //           << std::endl;
               if (!queueOfOutgoingMessages.empty()) {
                 std::cout << "Goes back on the same method" << std::endl;
                 WriteHeader();
@@ -158,8 +158,8 @@ private:
   }
 
   void WriteBody() {
-    std::cout << "Sending to endpoint in the WriteBody: " << endpoint
-              << std::endl;
+    // std::cout << "Sending to endpoint in the WriteBody: " << endpoint
+    //           << std::endl;
 
     asioSocket.async_send_to(
         asio::buffer(queueOfOutgoingMessages.front().body.data(),
@@ -167,12 +167,12 @@ private:
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
             queueOfOutgoingMessages.popFront();
-            std::cout << "Is the outgoing queue empty in the WriteBody : "
-                      << (queueOfOutgoingMessages.empty() ? "true" : "false")
-                      << std::endl;
+            // std::cout << "Is the outgoing queue empty in the WriteBody : "
+            //           << (queueOfOutgoingMessages.empty() ? "true" : "false")
+            //           << std::endl;
             if (!queueOfOutgoingMessages.empty()) {
               WriteHeader();
-              std::cout << "Goes to the WriteHeader method" << std::endl;
+              // std::cout << "Goes to the WriteHeader method" << std::endl;
             }
           } else {
             std::cout << id << " : Write Body failed" << ec << std::endl;
@@ -193,9 +193,9 @@ private:
 
     if (temporaryIncomingMessage.body.size() > 0) {
 
-      std::cout << "Incoming message is : " << temporaryIncomingMessage
-                << std::endl;
-      std::cout << queueOfIncomingMessages.front().message << std::endl;
+      // std::cout << "Incoming message is : " << temporaryIncomingMessage
+                // << std::endl;
+      // std::cout << queueOfIncomingMessages.front().message << std::endl;
       // Deserialize PositionComponent from bytes and print the values
       // PositionComponent pos;
 

@@ -31,6 +31,8 @@ add_executable(r-type_server
     ../../ecs/src/components/scroll/ScrollComponent.cpp
     # app/ecs/src/components/health/HealthComponent.cpp
     ../../ecs/src/components/health/HealthComponent.cpp
+    ../../ecs/src/components/damage/DamageComponent.cpp
+    ../../ecs/src/components/parent/ParentComponent.cpp
     # app/ecs/src/entity/Entity.cpp
     ../../ecs/src/entity/Entity.cpp
 )

@@ -5,19 +5,14 @@
 ** main
 */
 
-#include "clientEx.cpp"
-// #include <CoreModule.hpp>
+#include <Client.hpp>
+#include "Client.cpp"
 #include <memory>
 
-int main(void) {
-  // unique  ptr to CoreModule
-  // std::unique_ptr<rtype::CoreModule> coreModule =
-  //     std::make_unique<rtype::CoreModule>();
-
-  // coreModule.get()->init();
-
-  simpleClient();
-  // coreModule.get()->run();
-
+int main(void)
+{
+  rtype::network::Client c;
+  c.Connect("127.0.0.1", 60000);
+  c.run();
   return 0;
 }

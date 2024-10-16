@@ -15,6 +15,7 @@ class TextureComponent : public AComponent {
 public:
   TextureComponent(uint32_t entityID, const std::string &path)
       : AComponent(entityID) {
+    _path = path;
     _texture.loadFromFile(path);
   }
 
@@ -29,6 +30,13 @@ public:
    * @return Reference to the sf::Texture object.
    */
   sf::Texture &getTexture() { return _texture; }
+
+  /**
+   * @brief Retrieves the path to the texture file.
+   *
+   * @return The path to the texture file.
+   */
+  std::string getPath() { return _path; }
 
   /**
    * @brief Updates the texture component.
@@ -51,5 +59,6 @@ private:
    * @see sf::Texture
    */
   sf::Texture _texture;
+  std::string _path;
 };
 } // namespace component

@@ -18,6 +18,8 @@ public:
   void setDamage(int damage);
   int getDamage();
 
+  void update(float deltaTime) override{};
+
 private:
   int _damage;
 };

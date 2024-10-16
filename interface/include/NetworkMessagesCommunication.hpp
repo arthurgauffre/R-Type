@@ -60,8 +60,15 @@ enum class NetworkMessages : uint32_t {
   deleteParent,
 };
 
+enum class TexturePath : uint32_t {
+  Player,
+  Enemy,
+  Bullet,
+  Background,
+};
+
 struct TextureComponent {
-  std::string texturePath;
+  TexturePath texturePath;
 };
 
 struct EntityId {
@@ -121,7 +128,7 @@ struct TransformComponent {
 };
 
 struct BackgroundComponent {
-  std::string texturePath;
+  TexturePath texturePath;
   float x;
   float y;
 };

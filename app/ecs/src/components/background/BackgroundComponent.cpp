@@ -22,6 +22,7 @@ component::BackgroundComponent::BackgroundComponent(uint32_t entityID,
   _sprite.setScale(size.x / _sprite.getTexture()->getSize().x,
                    size.y / _sprite.getTexture()->getSize().y);
   _duplicateSprite = _sprite;
+  texturePath = texturePath;
 }
 
 /**
