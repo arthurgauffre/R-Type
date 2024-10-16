@@ -17,7 +17,6 @@ namespace rtype
             sf::Clock clock;
             while (true)
             {
-                std::cout << "nb msg to send: " << msgToSend.size() << std::endl;
                 if (IsConnected())
                 {
                     if (!GetIncomingMessages().empty())
@@ -44,16 +43,18 @@ namespace rtype
         {
             switch (texture)
             {
-            case TexturePath::Background: {
+            case TexturePath::Background:
+            {
                 return "app/assets/images/city_background.png";
             }
             break;
-            case TexturePath::Player: {
+            case TexturePath::Player:
+            {
                 return "app/assets/sprites/plane.png";
             }
             break;
-            // case TexturePath::Enemy:
-            // return "assets/enemy.png";
+                // case TexturePath::Enemy:
+                // return "assets/enemy.png";
             }
             return "";
         }
@@ -252,17 +253,17 @@ namespace rtype
                 std::cout << "Hitbox: " << hitbox.x << " " << hitbox.y << std::endl;
                 _coreModule.get()->getComponentManager()->addComponent<component::HitBoxComponent>(id.id, hitbox.x, hitbox.y);
             }
-            // case NetworkMessages::createMusic:
-            // {
-            //     std::cout << "Music component created" << std::endl;
-            //     MusicComponent music;
-            //     EntityId id;
-            //     std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-            //     std::memcpy(&music, msg.body.data() + sizeof(EntityId), sizeof(MusicComponent));
-            //     std::cout << "Music: " << music.musicPath << std::endl;
-            //     _coreModule.get()->getComponentManager()->addComponent<component::MusicComponent>(id.id, music.musicPath);
-            // }
-            // break;
+                // case NetworkMessages::createMusic:
+                // {
+                //     std::cout << "Music component created" << std::endl;
+                //     MusicComponent music;
+                //     EntityId id;
+                //     std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+                //     std::memcpy(&music, msg.body.data() + sizeof(EntityId), sizeof(MusicComponent));
+                //     std::cout << "Music: " << music.musicPath << std::endl;
+                //     _coreModule.get()->getComponentManager()->addComponent<component::MusicComponent>(id.id, music.musicPath);
+                // }
+                // break;
             }
         }
     }
