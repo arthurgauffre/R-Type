@@ -191,7 +191,10 @@ jobs:
           git switch --orphan gh-pages || git checkout gh-pages
           # rm -rf *
           if [ -d "docs/html" ] && [ "$(ls -A docs/html)" ]; then
-            cp -r docs/html* .
+            # add the file named index.html that is my docs folder in my real project at the root of the gh-pages branch
+            cp docs/html/index.html .
+
+            cp -r docs/html/* .
             touch .nojekyll  # Disable Jekyll to enable support for files and directories starting with underscore
             git add --all
             git commit -m "Deploy Doxygen documentation to GitHub Pages"
