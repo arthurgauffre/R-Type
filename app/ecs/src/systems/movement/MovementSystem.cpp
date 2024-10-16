@@ -21,13 +21,11 @@
  */
 std::vector<std::string> ECS_system::MovementSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend)
-{
+    std::vector<std::string> msgToSend) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::TransformComponent, component::VelocityComponent,
-           component::PositionComponent>(entities))
-  {
+           component::PositionComponent>(entities)) {
     auto transform =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
@@ -51,7 +49,6 @@ std::vector<std::string> ECS_system::MovementSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
-{
+             entity::EntityManager &entityManager) {
   return new ECS_system::MovementSystem(componentManager, entityManager);
 }

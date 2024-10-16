@@ -71,9 +71,9 @@ public:
 
   std::string GetTexturePath(TexturePath texture);
 
-      KeyAction getAction(std::string action);
+  KeyAction getAction(std::string action);
 
-      virtual void Disconnect() {}
+  virtual void Disconnect() {}
 
 private:
   std::shared_ptr<CoreModule> _coreModule;

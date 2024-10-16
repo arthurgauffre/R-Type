@@ -25,8 +25,8 @@ std::vector<std::string> ECS_system::SystemManager::update(
     std::vector<std::string> msgToSend) {
   for (auto &system : _systems) {
     msgToSend = system->update(deltaTime, entities,
-                   msgToSend); // Each system updates itself because
-                               // each system has its own logic
+                               msgToSend); // Each system updates itself because
+                                           // each system has its own logic
   }
   return msgToSend;
 }

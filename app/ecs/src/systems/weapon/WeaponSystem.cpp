@@ -17,5 +17,5 @@ ECS_system::WeaponSystem::~WeaponSystem() {}
 std::vector<std::string> ECS_system::WeaponSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::string> msgToSend) {
-        return msgToSend;
-    }
+  return msgToSend;
+}
