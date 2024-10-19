@@ -18,7 +18,7 @@ public:
   int getHealth();
   void setHealth(int health);
 
-  void update(float deltaTime) override;
+  void update(int health);
 
 private:
   /**

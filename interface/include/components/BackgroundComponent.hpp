@@ -24,7 +24,10 @@ public:
 
   std::string getTexturePath() { return _texturePath; }
 
-  void update(float deltaTime) override{};
+  void update(std::string &path, sf::Vector2f &size){
+    _texturePath = path;
+    _size = size;
+  };
 
 private:
   /**

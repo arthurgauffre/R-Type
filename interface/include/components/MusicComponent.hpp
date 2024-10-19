@@ -44,7 +44,9 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  void update(float deltaTime) override {}
+  void update(std::string &path) {
+      _music.openFromFile(path);
+  }
 
   /**
    * @brief Play the music.
