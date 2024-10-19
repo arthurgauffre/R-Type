@@ -20,13 +20,11 @@
  * @param entities A vector of shared pointers to entities to be updated.
  */
 void ECS_system::MovementSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::TransformComponent, component::VelocityComponent,
-           component::TransformComponent>(entities))
-  {
+           component::TransformComponent>(entities)) {
     component::TransformComponent *transform =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
@@ -37,11 +35,12 @@ void ECS_system::MovementSystem::update(
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
 
-    float newX = transform->getPosition().first + velocity->getActualVelocity().first * deltaTime;
-    float newY = transform->getPosition().second + velocity->getActualVelocity().second * deltaTime;
+    float newX = transform->getPosition().first +
+                 velocity->getActualVelocity().first * deltaTime;
+    float newY = transform->getPosition().second +
+                 velocity->getActualVelocity().second * deltaTime;
 
-    if (type->getType() == "player")
-    {
+    if (type->getType() == "player") {
       if (newX < 0)
         newX = 0;
       if (newX > 1920)
@@ -50,9 +49,7 @@ void ECS_system::MovementSystem::update(
         newY = 0;
       if (newY > 1080)
         newY = 1080;
-    }
-    else if (type->getType() == "projectile")
-    {
+    } else if (type->getType() == "projectile") {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
         _entityManager.removeEntity(entity->getID());
     }
@@ -62,7 +59,6 @@ void ECS_system::MovementSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
-{
+             entity::EntityManager &entityManager) {
   return new ECS_system::MovementSystem(componentManager, entityManager);
 }

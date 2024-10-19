@@ -25,18 +25,21 @@ void ECS_system::BackgroundSystem::update(
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
 
-    std::pair <float, float> speed = scrollComponent->getScrollSpeed();
-    std::pair <float, float> position = {transformComponent->getPosition().first,
-                             transformComponent->getPosition().second};
+    std::pair<float, float> speed = scrollComponent->getScrollSpeed();
+    std::pair<float, float> position = {
+        transformComponent->getPosition().first,
+        transformComponent->getPosition().second};
 
     position.first -= speed.first * deltaTime;
     if (position.first <= -backgroundComponent->getSize().first ||
-        position.first <= -backgroundComponent->getSize().first + speed.first * deltaTime)
+        position.first <=
+            -backgroundComponent->getSize().first + speed.first * deltaTime)
       position.first = 0;
 
     position.second -= speed.second * deltaTime;
     if (position.second <= -backgroundComponent->getSize().second ||
-        position.second <= -backgroundComponent->getSize().second + speed.second * deltaTime)
+        position.second <=
+            -backgroundComponent->getSize().second + speed.second * deltaTime)
       position.second = 0;
 
     transformComponent->setPosition(position);

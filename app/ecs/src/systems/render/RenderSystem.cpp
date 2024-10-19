@@ -56,8 +56,8 @@ void ECS_system::RenderSystem::update(
     sf::Sprite duplicateSprite = backgroundComponent->getDuplicateSprite();
 
     sprite.setPosition(position);
-    duplicateSprite.setPosition(position.x + backgroundComponent->getSize().first,
-                                position.y);
+    duplicateSprite.setPosition(
+        position.x + backgroundComponent->getSize().first, position.y);
 
     _window.draw(sprite);
     _window.draw(duplicateSprite);
@@ -83,7 +83,7 @@ void ECS_system::RenderSystem::update(
                                transformComponent->getPosition().second};
 
     sf::Vector2f SfScale = {transformComponent->getScale().first,
-                          transformComponent->getScale().second};
+                            transformComponent->getScale().second};
 
     std::cout << "Scale: " << SfScale.x << " " << SfScale.y << std::endl;
 

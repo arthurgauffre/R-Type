@@ -38,107 +38,99 @@
 #include <systems/HealthSystem.hpp>
 #include <systems/RenderSystem.hpp>
 
-namespace rtype
-{
-      class CoreModule : virtual public ICoreModule
-      {
-      public:
-            CoreModule();
-            ~CoreModule();
+namespace rtype {
+class CoreModule : virtual public ICoreModule {
+public:
+  CoreModule();
+  ~CoreModule();
 
-            entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
-                                              std::pair<float, float> speed, std::pair<float, float> size);
-            entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
-                                          std::pair<float, float> position, std::pair<float, float> velocity,
-                                          std::pair<float, float> scale, int health);
-            entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
-                                         std::pair<float, float> position, std::pair<float, float> velocity,
-                                         std::pair<float, float> scale, int health, int damage);
-            entity::IEntity *createWeapon(uint32_t parentID, std::string type, int damage,
-                                          float cooldown);
+  entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
+                                    std::pair<float, float> speed,
+                                    std::pair<float, float> size);
+  entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
+                                std::pair<float, float> position,
+                                std::pair<float, float> velocity,
+                                std::pair<float, float> scale, int health);
+  entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
+                               std::pair<float, float> position,
+                               std::pair<float, float> velocity,
+                               std::pair<float, float> scale, int health,
+                               int damage);
+  entity::IEntity *createWeapon(uint32_t parentID, std::string type, int damage,
+                                float cooldown);
 
-            void init();
-            void run();
+  void init();
+  void run();
 
-            std::shared_ptr<entity::EntityManager> getEntityManager() const;
-            std::shared_ptr<component::ComponentManager> getComponentManager() const;
-            std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
+  std::shared_ptr<entity::EntityManager> getEntityManager() const;
+  std::shared_ptr<component::ComponentManager> getComponentManager() const;
+  std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
-            template <typename T>
-            class DLLoader
-            {
-            public:
-                  void *handle;
+  template <typename T> class DLLoader {
+  public:
+    void *handle;
 
-                  DLLoader(const std::string &libPath)
-                  {
+    DLLoader(const std::string &libPath) {
 #ifdef _WIN32
-                        handle = LoadLibrary(libPath.c_str());
-                        if (!handle)
-                        {
-                              std::cerr << "Error loading library: " << libPath
-                                        << " Error: " << GetLastError() << std::endl;
-                              exit(1);
-                        }
+      handle = LoadLibrary(libPath.c_str());
+      if (!handle) {
+        std::cerr << "Error loading library: " << libPath
+                  << " Error: " << GetLastError() << std::endl;
+        exit(1);
+      }
 #else
-                        handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
-                        if (!handle)
-                        {
-                              std::cerr << dlerror() << std::endl;
-                              exit(1);
-                        }
+      handle = dlopen(libPath.c_str(), RTLD_GLOBAL | RTLD_LAZY);
+      if (!handle) {
+        std::cerr << dlerror() << std::endl;
+        exit(1);
+      }
 #endif
-                  }
+    }
 
-                  ~DLLoader() {}
-                  template <typename... Args>
-                  ECS_system::ISystem *getInstance(const std::string &funcName,
-                                                   Args &&...args)
-                  {
-                        using FuncPtr =
-                            ECS_system::ISystem *(*)(Args...); // Function pointer type
-                        void *sym;
+    ~DLLoader() {}
+    template <typename... Args>
+    ECS_system::ISystem *getInstance(const std::string &funcName,
+                                     Args &&...args) {
+      using FuncPtr =
+          ECS_system::ISystem *(*)(Args...); // Function pointer type
+      void *sym;
 
 #ifdef _WIN32
-                        sym = GetProcAddress(static_cast<HMODULE>(handle), funcName.c_str());
+      sym = GetProcAddress(static_cast<HMODULE>(handle), funcName.c_str());
 #else
-                        sym = dlsym(handle, funcName.c_str());
+      sym = dlsym(handle, funcName.c_str());
 #endif
 
-                        if (!sym)
-                        {
+      if (!sym) {
 #ifdef _WIN32
-                              std::cerr << "Error getting symbol: " << funcName
-                                        << " Error: " << GetLastError() << std::endl;
+        std::cerr << "Error getting symbol: " << funcName
+                  << " Error: " << GetLastError() << std::endl;
 #else
-                              std::cerr << dlerror()
-                                        << std::endl; // Print the dynamic loader error message
+        std::cerr << dlerror()
+                  << std::endl; // Print the dynamic loader error message
 #endif
-                              exit(1); // Exit if symbol resolution fails
-                        }
+        exit(1); // Exit if symbol resolution fails
+      }
 
-                        FuncPtr createFunc = reinterpret_cast<FuncPtr>(
-                            sym); // Cast to correct function pointer type
-                        return createFunc(
-                            std::forward<Args>(args)...); // Call function and return the pointer
-                  }
+      FuncPtr createFunc = reinterpret_cast<FuncPtr>(
+          sym); // Cast to correct function pointer type
+      return createFunc(
+          std::forward<Args>(args)...); // Call function and return the pointer
+    }
 
-                  void DLunloader()
-                  {
+    void DLunloader() {
 #ifdef _WIN32
-                        if (handle)
-                        {
-                              FreeLibrary(static_cast<HMODULE>(handle));
-                        }
+      if (handle) {
+        FreeLibrary(static_cast<HMODULE>(handle));
+      }
 #else
-                        if (handle)
-                        {
-                              dlclose(handle);
-                        }
+      if (handle) {
+        dlclose(handle);
+      }
 #endif
-                  }
-            };
-      };
+    }
+  };
+};
 }; // namespace rtype
 
 #endif /* !COREMODULE_HPP_ */

@@ -24,23 +24,22 @@
 #include <unordered_map>
 #include <vector>
 
-namespace ECS_system
-{
+namespace ECS_system {
 
-  class WeaponSystem : virtual public ASystem
-  {
-  public:
-    WeaponSystem(component::ComponentManager &componentManager,
-                 entity::EntityManager &entityManager);
-    ~WeaponSystem();
+class WeaponSystem : virtual public ASystem {
+public:
+  WeaponSystem(component::ComponentManager &componentManager,
+               entity::EntityManager &entityManager);
+  ~WeaponSystem();
 
-    void update(float deltaTime,
-                std::vector<std::shared_ptr<entity::IEntity>> entities) override;
-    void initialize() override {}
-    void handleComponents() override {}
+  void update(float deltaTime,
+              std::vector<std::shared_ptr<entity::IEntity>> entities) override;
+  void initialize() override {}
+  void handleComponents() override {}
 
-  private:
-    void createProjectile(uint32_t parentID, std::string texturePath,
-                          std::pair<float, float> velocity, std::pair<float, float> scale, int damage);
-  };
+private:
+  void createProjectile(uint32_t parentID, std::string texturePath,
+                        std::pair<float, float> velocity,
+                        std::pair<float, float> scale, int damage);
+};
 } // namespace ECS_system

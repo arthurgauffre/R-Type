@@ -13,19 +13,18 @@
 namespace component {
 class TransformComponent : public AComponent {
 public:
-
-  TransformComponent(uint32_t entityID, std::pair <float, float> position,
-                     std::pair <float, float> scale = {1.0f, 1.0f}, float rotation = 0.0f);
+  TransformComponent(uint32_t entityID, std::pair<float, float> position,
+                     std::pair<float, float> scale = {1.0f, 1.0f},
+                     float rotation = 0.0f);
 
   /**
    * @brief Default destructor for the TransformComponent class.
    */
   ~TransformComponent() = default;
 
-
   /**
    * @brief Retrieves the current position of the component.
-   * 
+   *
    * @return A std::pair containing the x and y coordinates of the position.
    */
   std::pair<float, float> getPosition() { return _position; }
@@ -33,10 +32,12 @@ public:
   /**
    * @brief Sets the position of the transform component.
    *
-   * @param position A constant reference to an std::pair <float, float> representing the
-   * new position.
+   * @param position A constant reference to an std::pair <float, float>
+   * representing the new position.
    */
-  void setPosition(const std::pair <float, float> &position) { _position = position; }
+  void setPosition(const std::pair<float, float> &position) {
+    _position = position;
+  }
 
   /**
    * @brief Get the current rotation value.
@@ -57,15 +58,15 @@ public:
    *
    * @return std::pair <float, float> The current scale as a 2D vector.
    */
-  std::pair <float, float> getScale() { return _scale; }
+  std::pair<float, float> getScale() { return _scale; }
 
   /**
    * @brief Sets the scale of the transform component.
    *
-   * @param scale A constant reference to an std::pair <float, float> representing the new
-   * scale.
+   * @param scale A constant reference to an std::pair <float, float>
+   * representing the new scale.
    */
-  void setScale(const std::pair <float, float> &scale) { _scale = scale; }
+  void setScale(const std::pair<float, float> &scale) { _scale = scale; }
 
   /**
    * @brief Update the transform component.
@@ -78,15 +79,14 @@ public:
   void update(float deltaTime) override{};
 
 private:
-
   /**
    * @brief Represents the position of the component in 2D space.
-   * 
-   * The position is stored as a pair of floating-point values, 
-   * where the first element represents the x-coordinate and 
+   *
+   * The position is stored as a pair of floating-point values,
+   * where the first element represents the x-coordinate and
    * the second element represents the y-coordinate.
    */
-   std::pair <float, float> _position;
+  std::pair<float, float> _position;
 
   /**
    * @brief Represents the rotation of the entity in degrees.
@@ -99,10 +99,10 @@ private:
 
   /**
    * @brief Represents the scale of the transform component.
-   * 
+   *
    * This pair contains two float values representing the scale factors
    * along the x and y axes respectively.
    */
-  std::pair <float, float> _scale;
+  std::pair<float, float> _scale;
 };
 } // namespace component

@@ -15,11 +15,10 @@ ECS_system::WeaponSystem::WeaponSystem(
 
 ECS_system::WeaponSystem::~WeaponSystem() {}
 
-void ECS_system::WeaponSystem::createProjectile(uint32_t parentID,
-                                                std::string texturePath,
-                                                std::pair <float, float> velocity,
-                                                std::pair <float, float> scale,
-                                                int damage) {
+void ECS_system::WeaponSystem::createProjectile(
+    uint32_t parentID, std::string texturePath,
+    std::pair<float, float> velocity, std::pair<float, float> scale,
+    int damage) {
   uint32_t projectileID = _entityManager.generateEntityID();
   entity::IEntity *projectile = _entityManager.createEntity(projectileID);
 
@@ -48,15 +47,17 @@ void ECS_system::WeaponSystem::createProjectile(uint32_t parentID,
       _componentManager.getComponent<component::SpriteComponent>(parentID);
   const sf::Texture *texturePlayer = spritePlayer->getSprite().getTexture();
 
-  std::pair <float, float> position = {
+  std::pair<float, float> position = {
       transformPlayer->getPosition().first +
           texturePlayer->getSize().x * transformPlayer->getScale().first,
       transformPlayer->getPosition().second +
-          (texturePlayer->getSize().y * transformPlayer->getScale().second) / 2};
+          (texturePlayer->getSize().y * transformPlayer->getScale().second) /
+              2};
 
   if (_componentManager.getComponent<component::TypeComponent>(parentID)
           ->getType() == "enemy")
-    position.first -= texturePlayer->getSize().x * transformPlayer->getScale().first;
+    position.first -=
+        texturePlayer->getSize().x * transformPlayer->getScale().first;
 
   component::TransformComponent *transformComponent =
       _componentManager.addComponent<component::TransformComponent>(
@@ -94,10 +95,11 @@ void ECS_system::WeaponSystem::update(
 
     float weaponVelocity = weaponComponent->getVelocity();
     if (weaponComponent->getIsFiring()) {
-      std::pair <float, float> projectileVelocity = std::pair <float, float>(weaponVelocity, 0);
-      this->createProjectile(weaponComponent->getEntityID(),
-                             "app/assets/sprites/projectile.gif",
-                             projectileVelocity, std::pair <float, float>(1, 1), 10);
+      std::pair<float, float> projectileVelocity =
+          std::pair<float, float>(weaponVelocity, 0);
+      this->createProjectile(
+          weaponComponent->getEntityID(), "app/assets/sprites/projectile.gif",
+          projectileVelocity, std::pair<float, float>(1, 1), 10);
 
       cooldownComponent->setTimeRemaining(cooldownComponent->getCooldown());
 

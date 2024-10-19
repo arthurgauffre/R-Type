@@ -9,9 +9,9 @@
 
 #include <iostream>
 
-component::BackgroundComponent::BackgroundComponent(uint32_t entityID,
-                                                    std::string texturePath,
-                                                    const std::pair <float, float> &size)
+component::BackgroundComponent::BackgroundComponent(
+    uint32_t entityID, std::string texturePath,
+    const std::pair<float, float> &size)
     : AComponent(entityID), _size(size) {
   if (!_texture.loadFromFile(texturePath)) {
     throw std::runtime_error("Could not load texture from file: " +
@@ -36,7 +36,9 @@ sf::Sprite component::BackgroundComponent::getSprite() { return _sprite; }
  *
  * @return std::pair <float, float> The size of the background component.
  */
-const std::pair <float, float> component::BackgroundComponent::getSize() { return _size; }
+const std::pair<float, float> component::BackgroundComponent::getSize() {
+  return _size;
+}
 
 /**
  * @brief Retrieves a duplicate sprite of the background component.

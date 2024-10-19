@@ -10,21 +10,19 @@
 #include <r-type/AComponent.hpp>
 #include <utility>
 
-namespace component
-{
-  class ScrollComponent : public AComponent
-  {
-  public:
-    ScrollComponent(uint32_t entityID, std::pair<float, float> speed);
-    ~ScrollComponent() = default;
+namespace component {
+class ScrollComponent : public AComponent {
+public:
+  ScrollComponent(uint32_t entityID, std::pair<float, float> speed);
+  ~ScrollComponent() = default;
 
-    const std::pair<float, float> getScrollSpeed();
+  const std::pair<float, float> getScrollSpeed();
 
-    void setScrollSpeed(const std::pair<float, float> &speed);
+  void setScrollSpeed(const std::pair<float, float> &speed);
 
-    void update(float deltaTime) override {};
+  void update(float deltaTime) override{};
 
-  private:
-    std::pair<float, float> _scrollSpeed;
-  };
+private:
+  std::pair<float, float> _scrollSpeed;
+};
 } // namespace component
