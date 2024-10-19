@@ -7,42 +7,36 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
+#include <utility>
 
 namespace component {
 class TransformComponent : public AComponent {
 public:
-  /**
-   * @brief Construct a new TransformComponent object.
-   *
-   * @param entityID The unique identifier for the entity.
-   * @param position The initial position of the entity as a 2D vector.
-   * @param scale The scale of the entity as a 2D vector. Defaults to
-   * {1.0f, 1.0f}.
-   */
-  TransformComponent(uint32_t entityID, sf::Vector2f position,
-                     sf::Vector2f scale = {1.0f, 1.0f}, float rotation = 0.0f);
+
+  TransformComponent(uint32_t entityID, std::pair <float, float> position,
+                     std::pair <float, float> scale = {1.0f, 1.0f}, float rotation = 0.0f);
 
   /**
    * @brief Default destructor for the TransformComponent class.
    */
   ~TransformComponent() = default;
 
+
   /**
    * @brief Retrieves the current position of the component.
-   *
-   * @return sf::Vector2f The current position as a 2D vector.
+   * 
+   * @return A std::pair containing the x and y coordinates of the position.
    */
-  sf::Vector2f getPosition() { return _position; }
+  std::pair<float, float> getPosition() { return _position; }
 
   /**
    * @brief Sets the position of the transform component.
    *
-   * @param position A constant reference to an sf::Vector2f representing the
+   * @param position A constant reference to an std::pair <float, float> representing the
    * new position.
    */
-  void setPosition(const sf::Vector2f &position) { _position = position; }
+  void setPosition(const std::pair <float, float> &position) { _position = position; }
 
   /**
    * @brief Get the current rotation value.
@@ -61,17 +55,17 @@ public:
   /**
    * @brief Retrieves the scale of the transform component.
    *
-   * @return sf::Vector2f The current scale as a 2D vector.
+   * @return std::pair <float, float> The current scale as a 2D vector.
    */
-  sf::Vector2f getScale() { return _scale; }
+  std::pair <float, float> getScale() { return _scale; }
 
   /**
    * @brief Sets the scale of the transform component.
    *
-   * @param scale A constant reference to an sf::Vector2f representing the new
+   * @param scale A constant reference to an std::pair <float, float> representing the new
    * scale.
    */
-  void setScale(const sf::Vector2f &scale) { _scale = scale; }
+  void setScale(const std::pair <float, float> &scale) { _scale = scale; }
 
   /**
    * @brief Update the transform component.
@@ -84,15 +78,15 @@ public:
   void update(float deltaTime) override{};
 
 private:
+
   /**
-   * @brief Represents a 2D vector with float coordinates.
-   *
-   * This class is part of the SFML (Simple and Fast Multimedia Library) and is
-   * used to define positions, velocities, and other 2D vector quantities. It
-   * contains two public member variables: x and y, which represent the
-   * x-coordinate and y-coordinate of the vector, respectively.
+   * @brief Represents the position of the component in 2D space.
+   * 
+   * The position is stored as a pair of floating-point values, 
+   * where the first element represents the x-coordinate and 
+   * the second element represents the y-coordinate.
    */
-  sf::Vector2f _position;
+   std::pair <float, float> _position;
 
   /**
    * @brief Represents the rotation of the entity in degrees.
@@ -105,10 +99,10 @@ private:
 
   /**
    * @brief Represents the scale of the transform component.
-   *
-   * This member variable stores the scale factors along the x and y axes.
-   * It is used to scale the size of the entity in the 2D space.
+   * 
+   * This pair contains two float values representing the scale factors
+   * along the x and y axes respectively.
    */
-  sf::Vector2f _scale;
+  std::pair <float, float> _scale;
 };
 } // namespace component

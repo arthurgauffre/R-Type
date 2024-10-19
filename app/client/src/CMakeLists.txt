@@ -17,7 +17,6 @@ add_executable(r-type_client
     ../../ecs/src/managers/entity/EntityManager.cpp
     ../../ecs/src/components/sprite/SpriteComponent.cpp
     ../../ecs/src/components/texture/TextureComponent.cpp
-    ../../ecs/src/components/position/PositionComponent.cpp
     ../../ecs/src/components/hitbox/HitBoxComponent.cpp
     ../../ecs/src/components/music/MusicComponent.cpp
     ../../ecs/src/components/sound/SoundComponent.cpp

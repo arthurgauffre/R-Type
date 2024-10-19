@@ -24,10 +24,10 @@ ECS_system::RenderSystem::RenderSystem(
 
 /**
  * @brief Updates the render system by drawing all entities with
- * PositionComponent, SpriteComponent, and TextureComponent.
+ * TransformComponent, SpriteComponent, and TextureComponent.
  *
  * This function clears the window, iterates through all entities that have a
- * PositionComponent, retrieves the corresponding PositionComponent,
+ * TransformComponent, retrieves the corresponding TransformComponent,
  * SpriteComponent, and TextureComponent for each entity, sets the sprite's
  * position and texture, and then draws the sprite to the window. Finally, it
  * displays the window.
@@ -41,22 +41,22 @@ void ECS_system::RenderSystem::update(
 
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
-           component::BackgroundComponent, component::PositionComponent>(
+           component::BackgroundComponent, component::TransformComponent>(
            entities)) {
     component::BackgroundComponent *backgroundComponent =
         _componentManager.getComponent<component::BackgroundComponent>(
             entity->getID());
-    component::PositionComponent *positionComponent =
-        _componentManager.getComponent<component::PositionComponent>(
+    component::TransformComponent *transformComponent =
+        _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
 
-    sf::Vector2f position = {positionComponent->getX(),
-                             positionComponent->getY()};
+    sf::Vector2f position = {transformComponent->getPosition().first,
+                             transformComponent->getPosition().second};
     sf::Sprite sprite = backgroundComponent->getSprite();
     sf::Sprite duplicateSprite = backgroundComponent->getDuplicateSprite();
 
     sprite.setPosition(position);
-    duplicateSprite.setPosition(position.x + backgroundComponent->getSize().x,
+    duplicateSprite.setPosition(position.x + backgroundComponent->getSize().first,
                                 position.y);
 
     _window.draw(sprite);
@@ -79,10 +79,18 @@ void ECS_system::RenderSystem::update(
         _componentManager.getComponent<component::TextureComponent>(
             entity.get()->getID());
 
+    sf::Vector2f SfPosition = {transformComponent->getPosition().first,
+                               transformComponent->getPosition().second};
+
+    sf::Vector2f SfScale = {transformComponent->getScale().first,
+                          transformComponent->getScale().second};
+
+    std::cout << "Scale: " << SfScale.x << " " << SfScale.y << std::endl;
+
     spriteComponent->getSprite().setTexture(textureComponent->getTexture());
-    spriteComponent->getSprite().setPosition(transformComponent->getPosition());
+    spriteComponent->getSprite().setPosition(SfPosition);
     spriteComponent->getSprite().setRotation(transformComponent->getRotation());
-    spriteComponent->getSprite().setScale(transformComponent->getScale());
+    spriteComponent->getSprite().setScale(SfScale);
 
     _window.draw(spriteComponent->getSprite());
   }

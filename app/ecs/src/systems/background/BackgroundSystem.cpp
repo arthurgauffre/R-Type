@@ -14,33 +14,32 @@ void ECS_system::BackgroundSystem::update(
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::ScrollComponent, component::BackgroundComponent,
-           component::PositionComponent>(entities)) {
+           component::TransformComponent>(entities)) {
     component::ScrollComponent *scrollComponent =
         _componentManager.getComponent<component::ScrollComponent>(
             entity->getID());
     component::BackgroundComponent *backgroundComponent =
         _componentManager.getComponent<component::BackgroundComponent>(
             entity->getID());
-    component::PositionComponent *positionComponent =
-        _componentManager.getComponent<component::PositionComponent>(
+    component::TransformComponent *transformComponent =
+        _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
 
-    sf::Vector2f speed = scrollComponent->getScrollSpeed();
-    sf::Vector2f position = {positionComponent->getX(),
-                             positionComponent->getY()};
+    std::pair <float, float> speed = scrollComponent->getScrollSpeed();
+    std::pair <float, float> position = {transformComponent->getPosition().first,
+                             transformComponent->getPosition().second};
 
-    position.x -= speed.x * deltaTime;
-    if (position.x <= -backgroundComponent->getSize().x ||
-        position.x <= -backgroundComponent->getSize().x + speed.x * deltaTime)
-      position.x = 0;
+    position.first -= speed.first * deltaTime;
+    if (position.first <= -backgroundComponent->getSize().first ||
+        position.first <= -backgroundComponent->getSize().first + speed.first * deltaTime)
+      position.first = 0;
 
-    position.y -= speed.y * deltaTime;
-    if (position.y <= -backgroundComponent->getSize().y ||
-        position.y <= -backgroundComponent->getSize().y + speed.y * deltaTime)
-      position.y = 0;
+    position.second -= speed.second * deltaTime;
+    if (position.second <= -backgroundComponent->getSize().second ||
+        position.second <= -backgroundComponent->getSize().second + speed.second * deltaTime)
+      position.second = 0;
 
-    positionComponent->setX(position.x);
-    positionComponent->setY(position.y);
+    transformComponent->setPosition(position);
   }
 }
 

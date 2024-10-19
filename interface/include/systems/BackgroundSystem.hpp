@@ -8,7 +8,7 @@
 #pragma once
 
 #include <components/BackgroundComponent.hpp>
-#include <components/PositionComponent.hpp>
+#include <components/TransformComponent.hpp>
 #include <components/ScrollComponent.hpp>
 #include <r-type/ASystem.hpp>
 

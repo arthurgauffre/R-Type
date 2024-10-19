@@ -9,7 +9,6 @@ Welcome to the **Game Engine** documentation! This guide will explain how to use
 1. [Getting Started](#getting-started)
 2. [Creating Entities](#creating-entities)
 3. [Adding Components to Entities](#adding-components-to-entities)
-   - [PositionComponent](#positioncomponent)
    - [VelocityComponent](#velocitycomponent)
    - [SpriteComponent](#spritecomponent)
 4. [Working with Systems](#working-with-systems)
@@ -51,14 +50,6 @@ Each entity has a unique ID and can hold multiple components.
 
 Components define the properties of an entity, such as its position, velocity, and appearance. Below are examples of how to add different components to an entity.
 
-### PositionComponent
-
-The `PositionComponent` defines the X and Y coordinates of an entity in the game world.
-
-```cpp
-_componentManager.addComponent<component::PositionComponent>(player->getId(), 100.0f, 200.0f);
-```
-
 ### VelocityComponent
 
 The `VelocityComponent` controls the speed and direction of an entity's movement.
@@ -84,7 +75,7 @@ Systems are responsible for updating entities that have certain components. The 
 
 ### MovementSystem
 
-The `MovementSystem` handles the movement of entities with a `PositionComponent` and `VelocityComponent`. To ensure entities move as expected, the system is updated on each frame.
+The `MovementSystem` handles the movement of entities with a `TransformComponent` and `VelocityComponent`. To ensure entities move as expected, the system is updated on each frame.
 
 ```cpp
 _movementSystem.update(deltaTime, _entityManager.getEntities());

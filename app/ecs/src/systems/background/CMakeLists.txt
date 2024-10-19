@@ -2,7 +2,7 @@ add_library(r-type_background_system SHARED
     BackgroundSystem.cpp
     ../../components/background/BackgroundComponent.cpp
     ../../components/scroll/ScrollComponent.cpp
-    ../../components/position/PositionComponent.cpp
+    ../../components/transform/TransformComponent.cpp
 )
 
 target_include_directories(r-type_background_system PRIVATE ${SFML_INCLUDE_DIR})

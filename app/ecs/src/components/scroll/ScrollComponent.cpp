@@ -8,13 +8,15 @@
 #include <components/ScrollComponent.hpp>
 
 component::ScrollComponent::ScrollComponent(uint32_t entityID,
-                                            sf::Vector2f speed)
+                                            std::pair<float, float> speed)
     : AComponent(entityID), _scrollSpeed(speed) {}
 
-const sf::Vector2f component::ScrollComponent::getScrollSpeed() {
+const std::pair<float, float> component::ScrollComponent::getScrollSpeed()
+{
   return _scrollSpeed;
 }
 
-void component::ScrollComponent::setScrollSpeed(const sf::Vector2f &speed) {
+void component::ScrollComponent::setScrollSpeed(const std::pair<float, float> &speed)
+{
   _scrollSpeed = speed;
 }

@@ -25,14 +25,14 @@ void ECS_system::InputSystem::update(
     velocityComponent->setActualVelocityY(0);
     if (inputComponent->isActionActive("MoveUp"))
       velocityComponent->setActualVelocityY(
-          -velocityComponent->getVelocity().y);
+          -velocityComponent->getVelocity().second);
     if (inputComponent->isActionActive("MoveDown"))
-      velocityComponent->setActualVelocityY(velocityComponent->getVelocity().y);
+      velocityComponent->setActualVelocityY(velocityComponent->getVelocity().second);
     if (inputComponent->isActionActive("MoveLeft"))
       velocityComponent->setActualVelocityX(
-          -velocityComponent->getVelocity().x);
+          -velocityComponent->getVelocity().first);
     if (inputComponent->isActionActive("MoveRight"))
-      velocityComponent->setActualVelocityX(velocityComponent->getVelocity().x);
+      velocityComponent->setActualVelocityX(velocityComponent->getVelocity().first);
     if (!inputComponent->isActionActive("Shoot"))
       return;
 
