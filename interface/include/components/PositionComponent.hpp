@@ -62,7 +62,7 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  void update(float x, float y){
+  void update(float x, float y) {
     _position.x = x;
     _position.y = y;
   };

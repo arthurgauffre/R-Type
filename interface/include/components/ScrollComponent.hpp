@@ -20,9 +20,7 @@ public:
 
   void setScrollSpeed(const sf::Vector2f &speed);
 
-  void update(sf::Vector2f speed){
-    _scrollSpeed = speed;
-  };
+  void update(sf::Vector2f speed) { _scrollSpeed = speed; };
 
 private:
   sf::Vector2f _scrollSpeed;

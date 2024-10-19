@@ -50,8 +50,8 @@ public:
    * @param deltaTime The time elapsed since the last frame, in seconds.
    */
   void update(std::string &path) {
-      _soundBuffer.loadFromFile(path);
-      _sound.setBuffer(_soundBuffer);
+    _soundBuffer.loadFromFile(path);
+    _sound.setBuffer(_soundBuffer);
   }
 
 private:

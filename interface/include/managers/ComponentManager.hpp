@@ -41,7 +41,8 @@ public:
   }
 
   /**
-   * @brief Updates the component of type T associated with the specified entity.
+   * @brief Updates the component of type T associated with the specified
+   * entity.
    *
    * This function searches for the specified entity ID in the component map.
    * If found, it iterates through the components associated with the entity

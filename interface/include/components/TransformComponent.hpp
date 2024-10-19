@@ -81,7 +81,7 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  void update(sf::Vector2f position, sf::Vector2f scale){
+  void update(sf::Vector2f position, sf::Vector2f scale) {
     _position = position;
     _scale = scale;
   };

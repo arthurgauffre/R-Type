@@ -40,9 +40,7 @@ public:
    */
   void setVelocity(const sf::Vector2f &velocity) { _velocity = velocity; }
 
-  void update(sf::Vector2f velocity){
-    _velocity = velocity;
-  };
+  void update(sf::Vector2f velocity) { _velocity = velocity; };
 
 private:
   sf::Vector2f _velocity;
