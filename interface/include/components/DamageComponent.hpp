@@ -18,6 +18,8 @@ public:
   void setDamage(int damage);
   int getDamage();
 
+  void update(int damage) { _damage = damage; };
+
 private:
   int _damage;
 };

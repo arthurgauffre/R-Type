@@ -47,7 +47,7 @@ public:
    *
    * @param deltaTime The time elapsed since the last update.
    */
-  void update(float deltaTime) override {}
+  void update(float deltaTime) {}
 
 private:
   /**

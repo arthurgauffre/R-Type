@@ -62,7 +62,7 @@ void ECS_system::CollisionSystem::handleCollision(
  * @param entities A vector of shared pointers to entities to be checked for
  * collisions.
  */
-void ECS_system::CollisionSystem::update(
+std::vector<std::string> ECS_system::CollisionSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::string> msgToSend) {
   for (auto &entity : entities) {
@@ -85,6 +85,7 @@ void ECS_system::CollisionSystem::update(
         handleCollision(hitbox1, hitbox2);
     }
   }
+  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

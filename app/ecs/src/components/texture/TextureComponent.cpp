@@ -7,7 +7,7 @@
 
 #include <components/TextureComponent.hpp>
 
-void component::TextureComponent::update(float deltaTime) {
-  (void)deltaTime;
+void component::TextureComponent::update(std::string &path) {
+  _texture.loadFromFile(path);
   // Update the component
 }

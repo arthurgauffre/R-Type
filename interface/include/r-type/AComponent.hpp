@@ -63,7 +63,6 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  virtual void update(float deltaTime) = 0;
 
 protected:
   uint32_t id;   // Id of the associated entity

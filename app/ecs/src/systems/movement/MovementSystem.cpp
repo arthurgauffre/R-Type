@@ -19,7 +19,7 @@
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be updated.
  */
-void ECS_system::MovementSystem::update(
+std::vector<std::string> ECS_system::MovementSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::string> msgToSend) {
   for (auto &entity :
@@ -44,6 +44,7 @@ void ECS_system::MovementSystem::update(
     position->setX(newX);
     position->setY(newY);
   }
+  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

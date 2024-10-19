@@ -53,9 +53,10 @@ public:
    * @param deltaTime The time elapsed since the last update, in seconds.
    * @param entities A vector of shared pointers to the entities to be updated.
    */
-  void update(float deltaTime,
-              std::vector<std::shared_ptr<entity::IEntity>> entities,
-              std::vector<std::string> msgToSend) override;
+  std::vector<std::string>
+  update(float deltaTime,
+         std::vector<std::shared_ptr<entity::IEntity>> entities,
+         std::vector<std::string> msgToSend) override;
 
   /**
    * @brief Handles the components of the MovementSystem.

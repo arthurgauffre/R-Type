@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-void ECS_system::BackgroundSystem::update(
+std::vector<std::string> ECS_system::BackgroundSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::string> msgToSend) {
   for (auto &entity :
@@ -43,6 +43,7 @@ void ECS_system::BackgroundSystem::update(
     positionComponent->setX(position.x);
     positionComponent->setY(position.y);
   }
+  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

@@ -17,7 +17,7 @@ enum class NetworkMessages : uint32_t {
   ServerMessage,
   ClientConnection,
   createEntity,
-  destroyEntity,
+  deleteEntity,
   updateEntity,
   createTexture,
   createPosition,
@@ -60,8 +60,23 @@ enum class NetworkMessages : uint32_t {
   deleteParent,
 };
 
+enum class TexturePath : uint32_t {
+  Player,
+  Enemy,
+  Bullet,
+  Background,
+};
+
+enum class KeyAction : uint32_t {
+  moveUp,
+  moveDown,
+  moveLeft,
+  moveRight,
+  shoot,
+};
+
 struct TextureComponent {
-  std::string texturePath;
+  TexturePath texturePath;
 };
 
 struct EntityId {
@@ -121,7 +136,7 @@ struct TransformComponent {
 };
 
 struct BackgroundComponent {
-  std::string texturePath;
+  TexturePath texturePath;
   float x;
   float y;
 };

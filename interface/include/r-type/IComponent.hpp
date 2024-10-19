@@ -25,17 +25,6 @@ public:
   virtual uint32_t getEntityID() const = 0;
 
   /**
-   * @brief Updates the component with the given delta time.
-   *
-   * This function is called to update the state of the component based on the
-   * elapsed time since the last update. The delta time is typically measured
-   * in seconds.
-   *
-   * @param deltaTime The time elapsed since the last update, in seconds.
-   */
-  virtual void update(float deltaTime) = 0;
-
-  /**
    * @brief Retrieve the active status of the component.
    *
    * This pure virtual function must be implemented by derived classes

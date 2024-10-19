@@ -18,29 +18,11 @@ namespace rtype {
 namespace network {
 class Server : virtual public rtype::network::AServer<NetworkMessages> {
 public:
-  Server(uint16_t port, std::shared_ptr<CoreModule> coreModule)
+  Server(uint16_t port)
       : rtype::network::IServer<NetworkMessages>(),
-        rtype::network::AServer<NetworkMessages>(port),
-        _coreModule(coreModule) {}
+        rtype::network::AServer<NetworkMessages>(port) {}
 
   ~Server(){};
-
-  virtual void init() {
-    component::ComponentManager &componentManager =
-        *_coreModule->getComponentManager();
-    entity::EntityManager &entityManager = *_coreModule->getEntityManager();
-
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "movement");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "collision");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "movement");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "health");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "movement");
-  }
 
   virtual void run() {
     std::vector<std::string> msgToSend;
@@ -48,6 +30,7 @@ public:
     while (1) {
       float deltatime = clock.restart().asSeconds();
       this->Update(deltatime, false);
+      std::lock_guard<std::mutex> lock(coreModuleMutex);
       _coreModule.get()->getSystemManager()->update(
           deltatime, _coreModule.get()->getEntityManager()->getEntities(),
           msgToSend);
@@ -98,13 +81,7 @@ protected:
     // std::cout << "Client disconnected : " << client->GetId() << std::endl;
   }
 
-  virtual void SendMessageToClient(
-      const rtype::network::Message<NetworkMessages> &message,
-      std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
-          client) {}
-
 private:
-  std::shared_ptr<CoreModule> _coreModule;
 };
 } // namespace network
 } // namespace rtype

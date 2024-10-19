@@ -20,26 +20,25 @@ namespace rtype {
 namespace network {
 class Client : virtual public rtype::network::AClient<NetworkMessages> {
 public:
-  Client() : AClient() {}
+  Client() : AClient() {
+    _coreModule = std::make_shared<CoreModule>();
+    init();
+  }
 
-  // void init() {
-  //   component::ComponentManager &componentManager =
-  //       *_coreModule->getComponentManager();
-  //   entity::EntityManager &entityManager = *_coreModule->getEntityManager();
+  void init() {
+    component::ComponentManager &componentManager =
+        *_coreModule->getComponentManager();
+    entity::EntityManager &entityManager = *_coreModule->getEntityManager();
 
-  //   _coreModule->getSystemManager()->addSystem(componentManager,
-  //   entityManager,
-  //                                              "render");
-  //   _coreModule->getSystemManager()->addSystem(componentManager,
-  //   entityManager,
-  //                                              "audio");
-  //   _coreModule->getSystemManager()->addSystem(componentManager,
-  //   entityManager,
-  //                                              "background");
-  //   _coreModule->getSystemManager()->addSystem(componentManager,
-  //   entityManager,
-  //                                              "input");
-  // }
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "render");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "audio");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "background");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "input");
+  }
 
   void PingServer() {
     rtype::network::Message<NetworkMessages> message;
@@ -59,10 +58,6 @@ public:
     std::cout << "Message sent : " << message << std::endl;
   }
 
-  void CreateEntity() {
-    Send(_networkMessageFactory.createEntityMsg(entityID));
-  }
-
   void SendMessageToAllClients() {
     rtype::network::Message<NetworkMessages> message;
     message.header.id = NetworkMessages::MessageAll;
@@ -70,17 +65,13 @@ public:
     Send(message);
   }
 
-  void run() {
-    std::vector<std::string> msgToSend;
-    sf::Clock clock;
-    while (1) {
-      float deltaTime = clock.restart().asSeconds();
-      _coreModule.get()->getSystemManager()->update(
-          deltaTime, _coreModule.get()->getEntityManager()->getEntities(),
-          msgToSend);
-    }
-    std::cout << "Client running" << std::endl;
-  };
+  void handdleMessage(rtype::network::Message<NetworkMessages> &msg);
+
+  void run();
+
+  std::string GetTexturePath(TexturePath texture);
+
+  KeyAction getAction(std::string action);
 
   virtual void Disconnect() {}
 

@@ -29,6 +29,8 @@ public:
 
   std::vector<std::shared_ptr<IEntity>> &getEntities();
 
+  uint32_t generateEntityID() { return _entityCounter++; }
+
 private:
   /**
    * @brief A container that holds shared pointers to IEntity objects.
@@ -38,5 +40,6 @@ private:
    * management and to allow shared ownership of the entities.
    */
   std::vector<std::shared_ptr<IEntity>> _entities;
+  uint32_t _entityCounter;
 };
 } // namespace entity

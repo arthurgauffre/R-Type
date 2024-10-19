@@ -22,7 +22,12 @@ public:
 
   sf::Sprite getDuplicateSprite();
 
-  void update(float deltaTime) override{};
+  std::string getTexturePath() { return _texturePath; }
+
+  void update(std::string &path, sf::Vector2f &size) {
+    _texturePath = path;
+    _size = size;
+  };
 
 private:
   /**
@@ -62,5 +67,7 @@ private:
    * and the y component represents the height.
    */
   sf::Vector2f _size;
+
+  std::string _texturePath;
 };
 } // namespace component

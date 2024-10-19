@@ -43,6 +43,4 @@ void component::HealthComponent::setHealth(int health) {
   this->_health = health;
 }
 
-void component::HealthComponent::update(float deltaTime) {
-  // std::cout << "HealthComponent update" << std::endl;
-}
+void component::HealthComponent::update(int health) { this->_health = health; }

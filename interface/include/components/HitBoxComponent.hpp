@@ -50,7 +50,7 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  void update(float deltaTime) override;
+  void update(float width, float height);
 
 private:
   /**

@@ -17,9 +17,12 @@
 #include <vector>
 
 #include <components/BackgroundComponent.hpp>
+#include <components/DamageComponent.hpp>
 #include <components/HealthComponent.hpp>
+#include <components/HitBoxComponent.hpp>
 #include <components/InputComponent.hpp>
 #include <components/MusicComponent.hpp>
+#include <components/ParentComponent.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/ScrollComponent.hpp>
 #include <components/SoundComponent.hpp>

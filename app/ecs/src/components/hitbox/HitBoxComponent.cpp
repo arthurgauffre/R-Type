@@ -17,4 +17,7 @@ float component::HitBoxComponent::getWidth() const { return _width; }
 
 float component::HitBoxComponent::getHeight() const { return _height; }
 
-void component::HitBoxComponent::update(float deltaTime) {}
+void component::HitBoxComponent::update(float width, float height) {
+  _width = width;
+  _height = height;
+}

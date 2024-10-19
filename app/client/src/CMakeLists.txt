@@ -42,6 +42,8 @@ add_executable(r-type_client
     ../../ecs/src/components/scroll/ScrollComponent.cpp
     # app/ecs/src/components/health/HealthComponent.cpp
     ../../ecs/src/components/health/HealthComponent.cpp
+    ../../ecs/src/components/damage/DamageComponent.cpp
+    ../../ecs/src/components/parent/ParentComponent.cpp
     # app/ecs/src/entity/Entity.cpp
     ../../ecs/src/entity/Entity.cpp
 )
@@ -143,7 +145,7 @@ add_custom_command(
     TARGET r-type_client
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
-            ${LIB_SERVER_SYSTEMS_DESTINATION}/r-type_collision_system.so)
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_collision_system.so)
 
 add_custom_command(
     TARGET r-type_client
