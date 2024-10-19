@@ -39,6 +39,11 @@ if [ "${args[0]}" == "help" ] || [ "${args[0]}" == "h" ]; then
     exit 0
 fi
 
+cmakePath=$( which cmake )
+if [ ! $? -eq 0 ]; then
+    echo -e "\nPlease install CMake first.\n"
+    exit 1
+
 if [[ "${args[0]}" == "clean" ]] ; then
     clean
 elif [[ "${args[0]}" == "fclean" ]] ; then

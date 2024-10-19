@@ -15,9 +15,14 @@ if (WIN32)
     # Windows-specific settings
     # Set the vcpkg toolchain file first
     set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+    # Add the install of the SFML library
     execute_process(COMMAND vcpkg integrate install)
     execute_process(COMMAND vcpkg install sfml)
-else()
+endif()
+
+if (UNIX)
+    # Add the install of the SFML library
+    execute_process(COMMAND sudo apt-get install libsfml-dev)
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
