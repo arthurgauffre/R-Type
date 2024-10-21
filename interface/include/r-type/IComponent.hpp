@@ -10,6 +10,13 @@
 #include <cstdint>
 
 namespace component {
+enum class ComponentCommunication {
+  NONE,
+  CREATE,
+  UPDATE,
+  DELETE,
+};
+
 class IComponent {
 public:
   /*

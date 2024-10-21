@@ -7,8 +7,13 @@
 
 #include <systems/ServerSystem.hpp>
 
-EXPORT_API ECS_system::ISystem *
-createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new rtype::network::ServerSystem(componentManager, entityManager);
-}
+namespace rtype::network
+{
+
+  EXPORT_API ECS_system::ISystem *
+  createSystem(component::ComponentManager &componentManager,
+               entity::EntityManager &entityManager)
+  {
+    return new ServerSystem<NetworkMessages>(componentManager, entityManager);
+  }
+} // namespace rtype::network
