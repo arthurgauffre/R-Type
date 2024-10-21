@@ -10,20 +10,23 @@
 
 #pragma once
 
-#include <r-type/AClient.hpp>
 #include <CoreModule.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkMessageFactory.hpp>
 #include <NetworkMessagesCommunication.hpp>
+#include <r-type/AClient.hpp>
 #include <r-type/ASystem.hpp>
 
 namespace rtype {
 namespace network {
-class ClientSystem : virtual public rtype::network::AClient<NetworkMessages>, virtual public ECS_system::ASystem {
+class ClientSystem : virtual public rtype::network::AClient<NetworkMessages>,
+                     virtual public ECS_system::ASystem {
 public:
   ClientSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager) : AClient(), ASystem(componentManager, entityManager), _componentManager(componentManager), _entityManager(entityManager) {
-      Connect("127.0.0.1", 60000);
+               entity::EntityManager &entityManager)
+      : AClient(), ASystem(componentManager, entityManager),
+        _componentManager(componentManager), _entityManager(entityManager) {
+    Connect("127.0.0.1", 60000);
   }
 
   void PingServer() {

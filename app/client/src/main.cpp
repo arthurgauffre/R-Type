@@ -10,16 +10,20 @@
 
 int main(void) {
 
-    std::shared_ptr<rtype::CoreModule> core = std::make_shared<rtype::CoreModule>();
+  std::shared_ptr<rtype::CoreModule> core =
+      std::make_shared<rtype::CoreModule>();
 
-    // load all systems
-    component::ComponentManager &componentManager = *core->getComponentManager();
-    entity::EntityManager &entityManager = *core->getEntityManager();
+  // load all systems
+  component::ComponentManager &componentManager = *core->getComponentManager();
+  entity::EntityManager &entityManager = *core->getEntityManager();
 
-    core->getSystemManager()->addSystem(componentManager, entityManager, "render");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "client");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "background");
+  core->getSystemManager()->addSystem(componentManager, entityManager,
+                                      "render");
+  core->getSystemManager()->addSystem(componentManager, entityManager,
+                                      "client");
+  core->getSystemManager()->addSystem(componentManager, entityManager,
+                                      "background");
 
-    core->run();
+  core->run();
   return 0;
 }
