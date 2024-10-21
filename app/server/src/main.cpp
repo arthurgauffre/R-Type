@@ -6,7 +6,7 @@
 */
 
 #include <CoreModule.hpp>
-#include <ServerSystem.hpp>
+#include <systems/ServerSystem.hpp>
 #include <iostream>
 
 int main(void) {

@@ -5,7 +5,7 @@
 ** ServerSystem
 */
 
-#include <ServerSystem.hpp>
+#include <systems/ServerSystem.hpp>
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
