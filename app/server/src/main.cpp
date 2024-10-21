@@ -6,14 +6,21 @@
 */
 
 #include <CoreModule.hpp>
-#include <Server.hpp>
+#include <ServerSystem.hpp>
 #include <iostream>
 
 int main(void) {
-  rtype::network::Server server(60000);
+  std::shared_ptr<rtype::CoreModule> coreModule =
+      std::make_shared<rtype::CoreModule>();
 
-  server.Start();
+  component::ComponentManager &componentManager =
+      *coreModule->getComponentManager();
+  entity::EntityManager &entityManager = *coreModule->getEntityManager();
 
-  server.run();
+  coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                            "server");
+
+  // rtype::network::ServerSystem server(componentManager, entityManager);
+  coreModule->run();
   return 0;
 }

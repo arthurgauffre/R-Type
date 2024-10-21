@@ -13,28 +13,40 @@
 #include <AServer.hpp>
 #include <CoreModule.hpp>
 #include <NetworkMessagesCommunication.hpp>
+#include <r-type/ASystem.hpp>
 
 namespace rtype {
 namespace network {
-class Server : virtual public rtype::network::AServer<NetworkMessages> {
+class ServerSystem : virtual public rtype::network::AServer<NetworkMessages>,
+                     virtual public ECS_system::ASystem {
 public:
-  Server(uint16_t port)
+  ServerSystem(component::ComponentManager &componentManager,
+               entity::EntityManager &entityManager)
       : rtype::network::IServer<NetworkMessages>(),
-        rtype::network::AServer<NetworkMessages>(port) {}
+        rtype::network::AServer<NetworkMessages>(), ECS_system::ASystem(
+                                                        componentManager,
+                                                        entityManager) {
+    Start();
+  }
 
-  ~Server(){};
+  ~ServerSystem(){};
 
-  virtual void run() {
-    std::vector<std::string> msgToSend;
+  void initialize(){};
+
+  void handleComponents(){};
+
+  std::vector<std::string>
+  update(float deltaTime,
+         std::vector<std::shared_ptr<entity::IEntity>> entities,
+         std::vector<std::string> msgToSend) {
     sf::Clock clock;
-    while (1) {
-      float deltatime = clock.restart().asSeconds();
-      this->Update(deltatime, false);
-      std::lock_guard<std::mutex> lock(coreModuleMutex);
-      _coreModule.get()->getSystemManager()->update(
-          deltatime, _coreModule.get()->getEntityManager()->getEntities(),
-          msgToSend);
-    }
+    float deltatime = clock.restart().asSeconds();
+    this->ServerUpdate(deltatime, false);
+    std::lock_guard<std::mutex> lock(coreModuleMutex);
+    return msgToSend;
+    // _coreModule.get()->getSystemManager()->update(
+    //     deltatime, _coreModule.get()->getEntityManager()->getEntities(),
+    //     msgToSend);
   }
 
 protected:
