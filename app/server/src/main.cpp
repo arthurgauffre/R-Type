@@ -10,12 +10,15 @@
 #include <iostream>
 
 int main(void) {
-  std::shared_ptr<rtype::CoreModule> coreModule = std::make_shared<rtype::CoreModule>();
+  std::shared_ptr<rtype::CoreModule> coreModule =
+      std::make_shared<rtype::CoreModule>();
 
-  component::ComponentManager &componentManager = *coreModule->getComponentManager();
+  component::ComponentManager &componentManager =
+      *coreModule->getComponentManager();
   entity::EntityManager &entityManager = *coreModule->getEntityManager();
 
-  coreModule->getSystemManager()->addSystem(componentManager, entityManager, "server");
+  coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                            "server");
 
   // rtype::network::ServerSystem server(componentManager, entityManager);
   coreModule->run();

@@ -45,18 +45,21 @@ public:
     // _coreModule->getSystemManager()->addSystem(componentManager,
     // entityManager,
     //                                            "movement");
-    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+    // _coreModule->getSystemManager()->addSystem(componentManager,
+    // entityManager,
     //                                            "health");
 
     // uint32_t backgroundEntityID =
     //     _coreModule->getEntityManager()->generateEntityID();
     // _coreModule->getEntityManager()->createEntity(backgroundEntityID);
     // _coreModule->getComponentManager()
-    //     ->addComponent<component::PositionComponent>(backgroundEntityID, 0.0f,
+    //     ->addComponent<component::PositionComponent>(backgroundEntityID,
+    //     0.0f,
     //                                                  0.0f);
     // _coreModule->getComponentManager()
     //     ->addComponent<component::ScrollComponent>(backgroundEntityID,
-    //                                                sf::Vector2f(100.0f, 0.0f));
+    //                                                sf::Vector2f(100.0f,
+    //                                                0.0f));
     // _coreModule->getComponentManager()
     //     ->addComponent<component::BackgroundComponent>(
     //         backgroundEntityID, GetTexturePath(TexturePath::Background),
@@ -231,7 +234,6 @@ public:
       return TexturePath::Background;
     return TexturePath::Player;
   }
-
 
   rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;
   std::deque<std::shared_ptr<NetworkConnection<T>>> deqConnections;

@@ -11,43 +11,43 @@
 #pragma once
 
 #include <AServer.hpp>
-#include <r-type/ASystem.hpp>
 #include <CoreModule.hpp>
 #include <NetworkMessagesCommunication.hpp>
+#include <r-type/ASystem.hpp>
 
 namespace rtype {
 namespace network {
-class ServerSystem : virtual public rtype::network::AServer<NetworkMessages>, virtual public ECS_system::ASystem {
+class ServerSystem : virtual public rtype::network::AServer<NetworkMessages>,
+                     virtual public ECS_system::ASystem {
 public:
   ServerSystem(component::ComponentManager &componentManager,
                entity::EntityManager &entityManager)
       : rtype::network::IServer<NetworkMessages>(),
-        rtype::network::AServer<NetworkMessages>(),
-        ECS_system::ASystem(componentManager, entityManager)
-        {
-          Start();
-        }
+        rtype::network::AServer<NetworkMessages>(), ECS_system::ASystem(
+                                                        componentManager,
+                                                        entityManager) {
+    Start();
+  }
 
   ~ServerSystem(){};
 
-  void initialize() {};
+  void initialize(){};
 
-  void handleComponents() {};
+  void handleComponents(){};
 
-  std::vector<std::string> update(float deltaTime,
-                                   std::vector<std::shared_ptr<entity::IEntity>> entities,
-                                   std::vector<std::string> msgToSend) {
+  std::vector<std::string>
+  update(float deltaTime,
+         std::vector<std::shared_ptr<entity::IEntity>> entities,
+         std::vector<std::string> msgToSend) {
     sf::Clock clock;
     float deltatime = clock.restart().asSeconds();
     this->ServerUpdate(deltatime, false);
     std::lock_guard<std::mutex> lock(coreModuleMutex);
     return msgToSend;
-      // _coreModule.get()->getSystemManager()->update(
-      //     deltatime, _coreModule.get()->getEntityManager()->getEntities(),
-      //     msgToSend);
+    // _coreModule.get()->getSystemManager()->update(
+    //     deltatime, _coreModule.get()->getEntityManager()->getEntities(),
+    //     msgToSend);
   }
-
-
 
 protected:
   virtual void OnMessageReceived(
