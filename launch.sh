@@ -22,6 +22,12 @@ function fclean() {
     rm -f $libDirectory/shared_entity/*.so
 }
 
+function compile() {
+    git submodule update --init --recursive
+    cmake -B $buildDirectory -S .
+    cmake --build $buildDirectory -j $(nproc)
+}
+
 args=("$@")
 
 if [ "$#" -gt 1 ]; then
@@ -51,9 +57,7 @@ elif [[ "${args[0]}" == "fclean" ]] ; then
     fclean
 elif [[ "${args[0]}" == "re" ]] ; then
     fclean
-    cmake -B $buildDirectory -S .
-    cmake --build $buildDirectory -j $(nproc)
+    compile
 else
-    cmake -B $buildDirectory -S .
-    cmake --build $buildDirectory -j $(nproc)
+    compile
 fi
