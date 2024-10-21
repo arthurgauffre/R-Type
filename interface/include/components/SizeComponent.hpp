@@ -11,18 +11,16 @@
 
 #include <utility>
 
-namespace component
-{
-    class SizeComponent : public AComponent
-    {
-    public:
-        SizeComponent(uint32_t entityID, std::pair<float, float> size);
-        ~SizeComponent();
+namespace component {
+class SizeComponent : public AComponent {
+public:
+  SizeComponent(uint32_t entityID, std::pair<float, float> size);
+  ~SizeComponent();
 
-        void setSize(const std::pair<float, float> &size);
-        const std::pair<float, float> getSize();
+  void setSize(const std::pair<float, float> &size);
+  const std::pair<float, float> getSize();
 
-    private:
-        std::pair<float, float> _size;
-    };
-}
+private:
+  std::pair<float, float> _size;
+};
+} // namespace component
