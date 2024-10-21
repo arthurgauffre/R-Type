@@ -85,8 +85,6 @@ void ECS_system::RenderSystem::update(
     sf::Vector2f SfScale = {transformComponent->getScale().first,
                             transformComponent->getScale().second};
 
-    // std::cout << "Scale: " << SfScale.x << " " << SfScale.y << std::endl;
-
     spriteComponent->getSprite().setTexture(textureComponent->getTexture());
     spriteComponent->getSprite().setPosition(SfPosition);
     spriteComponent->getSprite().setRotation(transformComponent->getRotation());
