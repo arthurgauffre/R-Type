@@ -24,7 +24,6 @@
 #include <components/InputComponent.hpp>
 #include <components/MusicComponent.hpp>
 #include <components/ParentComponent.hpp>
-#include <components/ScrollComponent.hpp>
 #include <components/SoundComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>

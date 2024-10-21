@@ -24,7 +24,6 @@ add_executable(r-type_client
     ../../ecs/src/components/velocity/VelocityComponent.cpp
     ../../ecs/src/components/transform/TransformComponent.cpp
     ../../ecs/src/components/background/BackgroundComponent.cpp
-    ../../ecs/src/components/scroll/ScrollComponent.cpp
     ../../ecs/src/components/health/HealthComponent.cpp
     ../../ecs/src/components/damage/DamageComponent.cpp
     ../../ecs/src/components/type/TypeComponent.cpp
@@ -144,12 +143,6 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_movement_system>
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_movement_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_background_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_background_system.so)
 
 add_custom_command(
     TARGET r-type_client

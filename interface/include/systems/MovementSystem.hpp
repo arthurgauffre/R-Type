@@ -11,6 +11,7 @@
 #include <components/TransformComponent.hpp>
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
+#include <components/BackgroundComponent.hpp>
 #include <r-type/ASystem.hpp>
 
 namespace ECS_system {

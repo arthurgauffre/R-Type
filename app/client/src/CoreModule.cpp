@@ -137,8 +137,8 @@ rtype::CoreModule::createBackground(uint32_t entityID, std::string texturePath,
       entityID, "app/assets/musics/testSong.wav");
   this->getComponentManager()->addComponent<component::TransformComponent>(
       entityID, std::pair<float, float>(0, 0));
-  this->getComponentManager()->addComponent<component::ScrollComponent>(
-      entityID, speed);
+  this->getComponentManager()->addComponent<component::VelocityComponent>(
+      entityID, speed, speed);
   this->getComponentManager()->addComponent<component::BackgroundComponent>(
       entityID, texturePath, size);
 
@@ -262,7 +262,7 @@ void rtype::CoreModule::init() {
 
   this->createBackground(this->getEntityManager()->generateEntityID(),
                          "app/assets/images/city_background.png",
-                         std::pair<float, float>(100.0f, 0.0f),
+                         std::pair<float, float>(-100.0f, 0.0f),
                          std::pair<float, float>(4448.0f, 1200.0f));
   this->createEnemy(this->getEntityManager()->generateEntityID(),
                     "app/assets/sprites/enemy.png",
@@ -304,8 +304,6 @@ void rtype::CoreModule::init() {
   this->getSystemManager()->addSystem(componentManager, entityManager, "input");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "movement");
-  this->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "background");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "health");
   this->getSystemManager()->addSystem(componentManager, entityManager,
