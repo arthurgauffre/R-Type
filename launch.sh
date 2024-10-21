@@ -43,6 +43,7 @@ cmakePath=$( which cmake )
 if [ ! $? -eq 0 ]; then
     echo -e "\nPlease install CMake first.\n"
     exit 1
+fi
 
 if [[ "${args[0]}" == "clean" ]] ; then
     clean
