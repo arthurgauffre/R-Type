@@ -23,21 +23,21 @@ namespace network {
 template <typename T> class AServer : virtual public IServer<T> {
 public:
   std::mutex coreModuleMutex;
-  AServer(uint16_t port)
+  AServer()
       : rtype::network::IServer<T>(),
         asioSocket(asioContext,
-                   asio::ip::udp::endpoint(asio::ip::udp::v4(), port)) {
-    _coreModule = std::make_shared<CoreModule>();
-    init();
+                   asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000)) {
+    // _coreModule = std::make_shared<CoreModule>();
+    // init();
     // clientEndpoint(asio::ip::udp::endpoint(asio::ip::udp::v4(), port))
   }
 
   ~AServer() { Stop(); }
 
   virtual void init() {
-    component::ComponentManager &componentManager =
-        *_coreModule->getComponentManager();
-    entity::EntityManager &entityManager = *_coreModule->getEntityManager();
+    // component::ComponentManager &componentManager =
+    //     *_coreModule->getComponentManager();
+    // entity::EntityManager &entityManager = *_coreModule->getEntityManager();
 
     // _coreModule->getSystemManager()->addSystem(componentManager,
     // entityManager,
@@ -45,22 +45,22 @@ public:
     // _coreModule->getSystemManager()->addSystem(componentManager,
     // entityManager,
     //                                            "movement");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "health");
+    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+    //                                            "health");
 
-    uint32_t backgroundEntityID =
-        _coreModule->getEntityManager()->generateEntityID();
-    _coreModule->getEntityManager()->createEntity(backgroundEntityID);
-    _coreModule->getComponentManager()
-        ->addComponent<component::PositionComponent>(backgroundEntityID, 0.0f,
-                                                     0.0f);
-    _coreModule->getComponentManager()
-        ->addComponent<component::ScrollComponent>(backgroundEntityID,
-                                                   sf::Vector2f(100.0f, 0.0f));
-    _coreModule->getComponentManager()
-        ->addComponent<component::BackgroundComponent>(
-            backgroundEntityID, GetTexturePath(TexturePath::Background),
-            sf::Vector2f(1920.0f, 1080.0f));
+    // uint32_t backgroundEntityID =
+    //     _coreModule->getEntityManager()->generateEntityID();
+    // _coreModule->getEntityManager()->createEntity(backgroundEntityID);
+    // _coreModule->getComponentManager()
+    //     ->addComponent<component::PositionComponent>(backgroundEntityID, 0.0f,
+    //                                                  0.0f);
+    // _coreModule->getComponentManager()
+    //     ->addComponent<component::ScrollComponent>(backgroundEntityID,
+    //                                                sf::Vector2f(100.0f, 0.0f));
+    // _coreModule->getComponentManager()
+    //     ->addComponent<component::BackgroundComponent>(
+    //         backgroundEntityID, GetTexturePath(TexturePath::Background),
+    //         sf::Vector2f(1920.0f, 1080.0f));
   }
 
   bool Start() {
@@ -117,34 +117,34 @@ public:
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
               // add to a function
-              sendAllEntitiesToClient(deqConnections.back());
-              size_t id =
-                  _coreModule.get()->getEntityManager()->generateEntityID();
-              _coreModule.get()->getEntityManager()->createEntity(id);
-              SendMessageToAllClients(
-                  networkMessageFactory.createEntityMsg(id));
-              _coreModule.get()
-                  ->getComponentManager()
-                  ->addComponent<component::PositionComponent>(id, 0, 0);
-              SendMessageToAllClients(
-                  networkMessageFactory.createPositionMsg(id, 0, 0));
-              _coreModule.get()
-                  ->getComponentManager()
-                  ->addComponent<component::SpriteComponent>(id, 0, 0);
-              SendMessageToAllClients(
-                  networkMessageFactory.createSpriteMsg(id, 0, 0));
-              _coreModule.get()
-                  ->getComponentManager()
-                  ->addComponent<component::TextureComponent>(
-                      id, GetTexturePath(TexturePath::Player));
-              SendMessageToAllClients(networkMessageFactory.createTextureMsg(
-                  id, TexturePath::Player));
-              _coreModule.get()
-                  ->getComponentManager()
-                  ->addComponent<component::TransformComponent>(
-                      id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
-              SendMessageToAllClients(
-                  networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
+              // sendAllEntitiesToClient(deqConnections.back());
+              // size_t id =
+              //     _coreModule.get()->getEntityManager()->generateEntityID();
+              // _coreModule.get()->getEntityManager()->createEntity(id);
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createEntityMsg(id));
+              // _coreModule.get()
+              //     ->getComponentManager()
+              //     ->addComponent<component::PositionComponent>(id, 0, 0);
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createPositionMsg(id, 0, 0));
+              // _coreModule.get()
+              //     ->getComponentManager()
+              //     ->addComponent<component::SpriteComponent>(id, 0, 0);
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createSpriteMsg(id, 0, 0));
+              // _coreModule.get()
+              //     ->getComponentManager()
+              //     ->addComponent<component::TextureComponent>(
+              //         id, GetTexturePath(TexturePath::Player));
+              // SendMessageToAllClients(networkMessageFactory.createTextureMsg(
+              //     id, TexturePath::Player));
+              // _coreModule.get()
+              //     ->getComponentManager()
+              //     ->addComponent<component::TransformComponent>(
+              //         id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
             } else {
               std::cout << "Connection denied" << std::endl;
             }
@@ -194,7 +194,7 @@ public:
     }
   }
 
-  void Update(size_t maxMessages = -1, bool needToWait = false) {
+  void ServerUpdate(size_t maxMessages = -1, bool needToWait = false) {
     if (needToWait == true)
       incomingMessages.wait();
     size_t messageCount = 0;
@@ -232,148 +232,6 @@ public:
     return TexturePath::Player;
   }
 
-  void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client) {
-    if (client->IsConnected() == false) {
-      std::cout << "Client is not connected" << std::endl;
-    } else {
-      std::cout << "Client is connected" << std::endl;
-    }
-    _coreModule.get()->getEntityManager()->getEntities();
-    for (auto &entity : _coreModule.get()->getEntityManager()->getEntities()) {
-      SendMessageToClient(
-          networkMessageFactory.createEntityMsg(entity->getID()), client);
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::PositionComponent>(entity->getID())) {
-        component::PositionComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::PositionComponent>(entity->getID());
-        SendMessageToClient(
-            networkMessageFactory.createPositionMsg(
-                entity->getID(), component->getX(), component->getY()),
-            client);
-      }
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::SpriteComponent>(entity->getID())) {
-        component::SpriteComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::SpriteComponent>(entity->getID());
-        SendMessageToClient(
-            networkMessageFactory.createSpriteMsg(
-                entity->getID(), component->getX(), component->getY()),
-            client);
-      }
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::TextureComponent>(entity->getID())) {
-        component::TextureComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::TextureComponent>(entity->getID());
-        SendMessageToClient(
-            networkMessageFactory.createTextureMsg(
-                entity->getID(), GetEnumTexturePath(component->getPath())),
-            client);
-      }
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::TransformComponent>(entity->getID())) {
-        component::TransformComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::TransformComponent>(entity->getID());
-        SendMessageToClient(networkMessageFactory.createTransformMsg(
-                                entity->getID(), component->getPosition().x,
-                                component->getPosition().y,
-                                component->getScale().x,
-                                component->getScale().y),
-                            client);
-      }
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::BackgroundComponent>(entity->getID())) {
-        component::BackgroundComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::BackgroundComponent>(entity->getID());
-        SendMessageToClient(networkMessageFactory.createBackgroundMsg(
-                                entity->getID(),
-                                GetEnumTexturePath(component->getTexturePath()),
-                                component->getSize().x, component->getSize().y),
-                            client);
-      }
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::ScrollComponent>(entity->getID())) {
-        component::ScrollComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::ScrollComponent>(entity->getID());
-        SendMessageToClient(networkMessageFactory.createScrollMsg(
-                                entity->getID(), component->getScrollSpeed().x,
-                                component->getScrollSpeed().y),
-                            client);
-      }
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::HealthComponent>(entity->getID())) {
-        component::HealthComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::HealthComponent>(entity->getID());
-        SendMessageToClient(networkMessageFactory.createHealthMsg(
-                                entity->getID(), component->getHealth()),
-                            client);
-      }
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::DamageComponent>(entity->getID())) {
-        component::DamageComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::DamageComponent>(entity->getID());
-        SendMessageToClient(networkMessageFactory.createDamageMsg(
-                                entity->getID(), component->getDamage()),
-                            client);
-      }
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::HitBoxComponent>(entity->getID())) {
-        component::HitBoxComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::HitBoxComponent>(entity->getID());
-        SendMessageToClient(
-            networkMessageFactory.createHitboxMsg(
-                entity->getID(), component->getHeight(), component->getWidth()),
-            client);
-      }
-      // if
-      // (_coreModule.get()->getComponentManager()->getComponent<component::MusicComponent>(entity->getID()))
-      //   SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(),
-      //   dynamic_cast<component::MusicComponent
-      //   *>(component.get())->musicPath), client);
-      // if
-      // (_coreModule.get()->getComponentManager()->getComponent<component::SoundComponent>(entity->getID()))
-      //   SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(),
-      //   dynamic_cast<component::SoundComponent
-      //   *>(component.get())->soundPath), client);
-      if (_coreModule.get()
-              ->getComponentManager()
-              ->getComponent<component::ParentComponent>(entity->getID())) {
-        component::ParentComponent *component =
-            _coreModule.get()
-                ->getComponentManager()
-                ->getComponent<component::ParentComponent>(entity->getID());
-        SendMessageToClient(networkMessageFactory.createParentMsg(
-                                entity->getID(), component->getParentID()),
-                            client);
-      }
-    }
-  }
 
   rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;
   std::deque<std::shared_ptr<NetworkConnection<T>>> deqConnections;
@@ -397,7 +255,7 @@ protected:
   }
   virtual void OnClientDisconnection(
       std::shared_ptr<rtype::network::NetworkConnection<T>> client) {}
-  std::shared_ptr<CoreModule> _coreModule;
+  // std::shared_ptr<CoreModule> _coreModule;
 };
 } // namespace network
 } // namespace rtype

@@ -21,8 +21,41 @@ if (WIN32)
 endif()
 
 if (UNIX)
+# Detect the current Linux distribution using /etc/os-release
+    execute_process(
+        COMMAND uname -s
+        OUTPUT_VARIABLE OS_NAME
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    # Reading the /etc/os-release file to get the ID of the distribution
+    file(READ /etc/os-release OS_RELEASE_CONTENTS)
+
+    string(REGEX MATCH "ID=([^\n]+)" _ ${OS_RELEASE_CONTENTS})
+    set(DISTRO ${CMAKE_MATCH_1})
+
+    # Set the package manager based on the detected distribution
+    if(DISTRO STREQUAL "fedora" OR DISTRO STREQUAL "rhel" OR DISTRO STREQUAL "centos")
+        set(PACKAGE_MANAGER "dnf install")
+    elseif(DISTRO STREQUAL "ubuntu" OR DISTRO STREQUAL "debian" OR DISTRO STREQUAL "linuxmint")
+        set(PACKAGE_MANAGER "apt-get install")
+    elseif(DISTRO STREQUAL "arch" OR DISTRO STREQUAL "manjaro")
+        set(PACKAGE_MANAGER "pacman -S")
+    elseif(DISTRO STREQUAL "opensuse")
+        set(PACKAGE_MANAGER "zypper install")
+    else()
+        message(WARNING "Unknown Linux distribution: ${DISTRO}")
+        set(PACKAGE_MANAGER "unknown")
+    endif()
+
+    # Output the detected package manager
+    message(STATUS "Detected Linux distribution: ${DISTRO}")
+    message(STATUS "Using package manager: ${PACKAGE_MANAGER}")
+
     # Add the install of the SFML library
-    execute_process(COMMAND sudo apt-get install libsfml-dev)
+    if (NOT EXISTS "/usr/include/SFML")
+        execute_process(COMMAND sudo ${PACKAGE_MANAGER} libsfml-dev)
+    endif()
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
