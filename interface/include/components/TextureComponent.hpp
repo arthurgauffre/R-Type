@@ -13,6 +13,14 @@
 namespace component {
 class TextureComponent : public AComponent {
 public:
+  /**
+   * @brief Constructs a new TextureComponent object.
+   * 
+   * This constructor initializes a TextureComponent with the given entity ID and loads a texture from the specified file path.
+   * 
+   * @param entityID The unique identifier for the entity associated with this component.
+   * @param path The file path to the texture to be loaded.
+   */
   TextureComponent(uint32_t entityID, const std::string &path)
       : AComponent(entityID) {
     _texture.loadFromFile(path);
@@ -30,14 +38,6 @@ public:
    */
   sf::Texture &getTexture() { return _texture; }
 
-  /**
-   * @brief Updates the texture component.
-   *
-   * This function is called to update the state of the texture component
-   * based on the elapsed time since the last update.
-   *
-   * @param deltaTime The time elapsed since the last update, in seconds.
-   */
   void update(float deltaTime) override;
 
 private:

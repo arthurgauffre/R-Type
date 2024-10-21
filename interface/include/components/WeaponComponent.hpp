@@ -30,8 +30,21 @@ public:
   float getVelocity() { return _velocity; }
 
 private:
+  /**
+   * @brief Unique identifier for the weapon entity associated with this component.
+   */
   uint32_t _weaponEntityID;
+  
+  /**
+   * @brief Indicates whether the weapon is currently firing.
+   */
   bool _isFiring;
+  
+  /**
+   * @brief Represents the velocity of the weapon.
+   * 
+   * This variable stores the speed at which the weapon moves.
+   */
   float _velocity;
 };
 } // namespace component

@@ -15,12 +15,7 @@
 namespace component {
 class InputComponent : public AComponent {
 public:
-  /**
-   * @brief Constructs an InputComponent object.
-   *
-   * @param entityID The unique identifier of the entity associated with this
-   * component.
-   */
+
   InputComponent(uint32_t entityID) : AComponent(entityID){};
 
   /**

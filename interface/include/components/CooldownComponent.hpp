@@ -24,7 +24,19 @@ public:
   float getTimeRemaining();
 
 private:
+  /**
+   * @brief Represents the cooldown period for an action or ability.
+   * 
+   * This member variable stores the duration of the cooldown in seconds.
+   * It is used to determine how long an action or ability must wait before it can be used again.
+   */
   float _cooldown;
+
+  /**
+   * @brief Represents the remaining cooldown time.
+   * 
+   * This variable holds the amount of time left before an action can be performed again.
+   */
   float _timeRemaining;
 };
 } // namespace component

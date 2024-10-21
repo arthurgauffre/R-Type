@@ -23,14 +23,11 @@ ECS_system::RenderSystem::RenderSystem(
       _window(sf::VideoMode(1920, 1080), "R-Type"), _event(sf::Event()) {}
 
 /**
- * @brief Updates the render system by drawing all entities with
- * TransformComponent, SpriteComponent, and TextureComponent.
+ * @brief Updates the render system by drawing all entities with the appropriate components.
  *
- * This function clears the window, iterates through all entities that have a
- * TransformComponent, retrieves the corresponding TransformComponent,
- * SpriteComponent, and TextureComponent for each entity, sets the sprite's
- * position and texture, and then draws the sprite to the window. Finally, it
- * displays the window.
+ * This function clears the window, processes entities with background and transform components
+ * to draw background sprites, and processes entities with transform, sprite, and texture components
+ * to draw textured sprites. Finally, it displays the window and handles window events.
  *
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be processed.
