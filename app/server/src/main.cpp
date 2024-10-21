@@ -9,7 +9,8 @@
 #include <systems/ServerSystem.hpp>
 #include <iostream>
 
-int main(void) {
+int main(void)
+{
   std::shared_ptr<rtype::CoreModule> coreModule =
       std::make_shared<rtype::CoreModule>();
 
@@ -19,7 +20,6 @@ int main(void) {
 
   coreModule->getSystemManager()->addSystem(componentManager, entityManager,
                                             "server");
-
   // rtype::network::ServerSystem server(componentManager, entityManager);
   coreModule->run();
   return 0;

@@ -126,35 +126,26 @@ protected:
                                                                actualId++);
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
-              // add to a function
-              // sendAllEntitiesToClient(deqConnections.back());
-              // size_t id =
-              //     _coreModule.get()->getEntityManager()->generateEntityID();
-              // _coreModule.get()->getEntityManager()->createEntity(id);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createEntityMsg(id));
-              // _coreModule.get()
-              //     ->getComponentManager()
-              //     ->addComponent<component::PositionComponent>(id, 0, 0);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createPositionMsg(id, 0, 0));
-              // _coreModule.get()
-              //     ->getComponentManager()
-              //     ->addComponent<component::SpriteComponent>(id, 0, 0);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createSpriteMsg(id, 0, 0));
-              // _coreModule.get()
-              //     ->getComponentManager()
-              //     ->addComponent<component::TextureComponent>(
-              //         id, GetTexturePath(TexturePath::Player));
-              // SendMessageToAllClients(networkMessageFactory.createTextureMsg(
-              //     id, TexturePath::Player));
-              // _coreModule.get()
-              //     ->getComponentManager()
-              //     ->addComponent<component::TransformComponent>(
-              //         id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
+              sendAllEntitiesToClient(deqConnections.back());
+              size_t id =
+                  _entityManager.generateEntityID();
+              _entityManager.createEntity(id);
+              SendMessageToAllClients(
+                  networkMessageFactory.createEntityMsg(id));
+              _componentManager.addComponent<component::PositionComponent>(id, 0, 0);
+              SendMessageToAllClients(
+                  networkMessageFactory.createPositionMsg(id, 0, 0));
+              _componentManager.addComponent<component::SpriteComponent>(id, 0, 0);
+              SendMessageToAllClients(
+                  networkMessageFactory.createSpriteMsg(id, 0, 0));
+              _componentManager.addComponent<component::TextureComponent>(
+                      id, GetTexturePath(TexturePath::Player));
+              SendMessageToAllClients(networkMessageFactory.createTextureMsg(
+                  id, TexturePath::Player));
+              _componentManager.addComponent<component::TransformComponent>(
+                      id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
+              SendMessageToAllClients(
+                  networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
             } else {
               std::cout << "Connection denied" << std::endl;
             }
