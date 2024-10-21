@@ -15,7 +15,6 @@
 namespace component {
 class InputComponent : public AComponent {
 public:
-
   InputComponent(uint32_t entityID) : AComponent(entityID){};
 
   /**

@@ -11,16 +11,18 @@
 
 /**
  * @brief Constructs a new BackgroundComponent object.
- * 
- * This constructor initializes a BackgroundComponent with the specified entity ID, texture path, and size.
- * It loads the texture from the given file path and sets it to the sprite and duplicate sprite.
- * The sprite and duplicate sprite are then scaled according to the provided size.
- * 
+ *
+ * This constructor initializes a BackgroundComponent with the specified entity
+ * ID, texture path, and size. It loads the texture from the given file path and
+ * sets it to the sprite and duplicate sprite. The sprite and duplicate sprite
+ * are then scaled according to the provided size.
+ *
  * @param entityID The unique identifier for the entity.
  * @param texturePath The file path to the texture to be loaded.
  * @param size A pair representing the width and height to scale the sprite.
- * 
- * @throws std::runtime_error If the texture cannot be loaded from the specified file path.
+ *
+ * @throws std::runtime_error If the texture cannot be loaded from the specified
+ * file path.
  */
 component::BackgroundComponent::BackgroundComponent(
     uint32_t entityID, std::string texturePath,

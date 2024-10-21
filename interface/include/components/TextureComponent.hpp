@@ -15,10 +15,12 @@ class TextureComponent : public AComponent {
 public:
   /**
    * @brief Constructs a new TextureComponent object.
-   * 
-   * This constructor initializes a TextureComponent with the given entity ID and loads a texture from the specified file path.
-   * 
-   * @param entityID The unique identifier for the entity associated with this component.
+   *
+   * This constructor initializes a TextureComponent with the given entity ID
+   * and loads a texture from the specified file path.
+   *
+   * @param entityID The unique identifier for the entity associated with this
+   * component.
    * @param path The file path to the texture to be loaded.
    */
   TextureComponent(uint32_t entityID, const std::string &path)

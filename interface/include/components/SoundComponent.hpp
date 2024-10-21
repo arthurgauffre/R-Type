@@ -77,10 +77,10 @@ private:
 
   /**
    * @brief Indicates whether the sound should be played.
-   * 
+   *
    * This boolean member variable is used to determine if the sound associated
-   * with this component should be played. When set to true, the sound will play;
-   * when set to false, the sound will not play.
+   * with this component should be played. When set to true, the sound will
+   * play; when set to false, the sound will not play.
    */
   bool _shouldPlay;
 };

@@ -33,7 +33,7 @@ void component::DamageComponent::setDamage(int damage) {
 
 /**
  * @brief Retrieves the damage value of the DamageComponent.
- * 
+ *
  * @return int The damage value.
  */
 int component::DamageComponent::getDamage() { return this->_damage; }

@@ -11,7 +11,7 @@
 
 /**
  * @brief Constructs a new CooldownSystem object.
- * 
+ *
  * @param componentManager Reference to the ComponentManager.
  * @param entityManager Reference to the EntityManager.
  */
@@ -22,9 +22,9 @@ ECS_system::CooldownSystem::CooldownSystem(
 
 /**
  * @brief Destructor for the CooldownSystem class.
- * 
- * This destructor is responsible for cleaning up any resources 
- * or performing any necessary finalization tasks when an instance 
+ *
+ * This destructor is responsible for cleaning up any resources
+ * or performing any necessary finalization tasks when an instance
  * of the CooldownSystem class is destroyed.
  */
 ECS_system::CooldownSystem::~CooldownSystem() {}

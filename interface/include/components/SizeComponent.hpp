@@ -23,10 +23,10 @@ public:
 private:
   /**
    * @brief Represents the size of a component.
-   * 
+   *
    * This member variable stores the width and height of a component
    * as a pair of floating-point values.
-   * 
+   *
    * @var _size
    * @type std::pair<float, float>
    */

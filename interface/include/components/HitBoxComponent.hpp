@@ -9,28 +9,25 @@
 
 #include <r-type/AComponent.hpp>
 
-namespace component
-{
-  class HitBoxComponent : public AComponent
-  {
-  public:
+namespace component {
+class HitBoxComponent : public AComponent {
+public:
+  HitBoxComponent(uint32_t entityID, float width, float height);
+  ~HitBoxComponent();
 
-    HitBoxComponent(uint32_t entityID, float width, float height);
-    ~HitBoxComponent();
+  float getWidth() const;
+  float getHeight() const;
+  void update(float deltaTime) override;
 
-    float getWidth() const;
-    float getHeight() const;
-    void update(float deltaTime) override;
+private:
+  /**
+   * @brief Represents the width of the hitbox.
+   */
+  float _width;
 
-  private:
-    /**
-     * @brief Represents the width of the hitbox.
-     */
-    float _width;
-
-    /**
-     * @brief Represents the height of the hitbox.
-     */
-    float _height;
-  };
+  /**
+   * @brief Represents the height of the hitbox.
+   */
+  float _height;
+};
 } // namespace component
