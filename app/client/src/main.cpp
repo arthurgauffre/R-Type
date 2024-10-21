@@ -5,13 +5,21 @@
 ** main
 */
 
-#include "Client.cpp"
-#include <Client.hpp>
+#include <CoreModule.hpp>
 #include <memory>
 
 int main(void) {
-  rtype::network::Client c;
-  c.Connect("127.0.0.1", 60000);
-  c.run();
+
+    std::shared_ptr<rtype::CoreModule> core = std::make_shared<rtype::CoreModule>();
+
+    // load all systems
+    component::ComponentManager &componentManager = *core->getComponentManager();
+    entity::EntityManager &entityManager = *core->getEntityManager();
+
+    core->getSystemManager()->addSystem(componentManager, entityManager, "render");
+    core->getSystemManager()->addSystem(componentManager, entityManager, "client");
+    core->getSystemManager()->addSystem(componentManager, entityManager, "background");
+
+    core->run();
   return 0;
 }

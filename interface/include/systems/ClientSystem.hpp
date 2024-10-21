@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** R-Type
 ** File description:
-** Client
+** ClientSystem
 */
 
 #ifndef CLIENT_HPP_
@@ -10,34 +10,20 @@
 
 #pragma once
 
-#include <AClient.hpp>
+#include <r-type/AClient.hpp>
 #include <CoreModule.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkMessageFactory.hpp>
 #include <NetworkMessagesCommunication.hpp>
+#include <r-type/ASystem.hpp>
 
 namespace rtype {
 namespace network {
-class Client : virtual public rtype::network::AClient<NetworkMessages> {
+class ClientSystem : virtual public rtype::network::AClient<NetworkMessages>, virtual public ECS_system::ASystem {
 public:
-  Client() : AClient() {
-    _coreModule = std::make_shared<CoreModule>();
-    init();
-  }
-
-  void init() {
-    component::ComponentManager &componentManager =
-        *_coreModule->getComponentManager();
-    entity::EntityManager &entityManager = *_coreModule->getEntityManager();
-
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "render");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "audio");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "background");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "input");
+  ClientSystem(component::ComponentManager &componentManager,
+                   entity::EntityManager &entityManager) : AClient(), ASystem(componentManager, entityManager), _componentManager(componentManager), _entityManager(entityManager) {
+      Connect("127.0.0.1", 60000);
   }
 
   void PingServer() {
@@ -67,18 +53,25 @@ public:
 
   void handdleMessage(rtype::network::Message<NetworkMessages> &msg);
 
-  void run();
-
   std::string GetTexturePath(TexturePath texture);
 
   KeyAction getAction(std::string action);
 
   virtual void Disconnect() {}
 
+  void initialize() override{};
+  void handleComponents() override{};
+
+  std::vector<std::string>
+  update(float deltaTime,
+         std::vector<std::shared_ptr<entity::IEntity>> entities,
+         std::vector<std::string> msgToSend) override;
+
 private:
-  std::shared_ptr<CoreModule> _coreModule;
   uint8_t entityID = 0;
   NetworkMessageFactory _networkMessageFactory;
+  component::ComponentManager &_componentManager;
+  entity::EntityManager &_entityManager;
 };
 } // namespace network
 } // namespace rtype
