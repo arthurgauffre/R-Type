@@ -58,6 +58,7 @@ enum class NetworkMessages : uint32_t {
   deleteBackground,
   deleteScroll,
   deleteParent,
+  AcknowledgeMessage
 };
 
 enum class TexturePath : uint32_t {

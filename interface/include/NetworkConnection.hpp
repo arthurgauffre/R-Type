@@ -195,8 +195,13 @@ private:
 
     if (temporaryIncomingMessage.body.size() > 0) {
 
-      // std::cout << "Incoming message is : " << temporaryIncomingMessage
-      // << std::endl;
+      std::cout << "Incoming message is : " << temporaryIncomingMessage
+      << std::endl;
+
+    auto message = static_cast<int>(temporaryIncomingMessage.header.id);
+
+      std::cout << "Message Id : " << message
+                << std::endl;
       // std::cout << queueOfIncomingMessages.front().message << std::endl;
       // Deserialize PositionComponent from bytes and print the values
       // PositionComponent pos;

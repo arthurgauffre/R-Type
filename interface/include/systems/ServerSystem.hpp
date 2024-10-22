@@ -72,6 +72,9 @@ protected:
       std::cout << client->GetId() << " : Ping the server" << std::endl;
       client->Send(message);
     } break;
+    case NetworkMessages::AcknowledgeMessage: {
+      std::cout << "Ack received" << std::endl;
+    } break;
     case NetworkMessages::createEntity: {
       std::cout << "creation of the entity" << std::endl;
     } break;
@@ -132,6 +135,7 @@ protected:
               _entityManager.createEntity(id);
               SendMessageToAllClients(
                   networkMessageFactory.createEntityMsg(id));
+              //! TODO
               _componentManager.addComponent<component::PositionComponent>(id, 0, 0);
               SendMessageToAllClients(
                   networkMessageFactory.createPositionMsg(id, 0, 0));
@@ -342,7 +346,7 @@ protected:
     if (needToWait == true)
       incomingMessages.wait();
     size_t messageCount = 0;
-    while (messageCount < maxMessages && !incomingMessages.empty()) {
+    while (!incomingMessages.empty()) {
       auto message = incomingMessages.popFront();
       OnMessageReceived(message.remoteConnection, message.message);
       messageCount++;

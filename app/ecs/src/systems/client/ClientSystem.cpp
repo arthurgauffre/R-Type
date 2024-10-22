@@ -48,6 +48,16 @@ namespace rtype
       return KeyAction::moveUp;
     }
 
+    rtype::network::Message<NetworkMessages> CreateAcknowledgementMessage()
+    {
+      rtype::network::Message<NetworkMessages> message;
+      message.header.id = NetworkMessages::AcknowledgeMessage;
+      std::chrono::system_clock::time_point timeNow =
+          std::chrono::system_clock::now();
+      message << timeNow;
+      return message;
+    }
+
     void ClientSystem::handdleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
       switch (msg.header.id)
@@ -95,6 +105,10 @@ namespace rtype
 
           std::cout << "Entity id: " << entity.id << std::endl;
           _entityManager.createEntity(entity.id);
+          rtype::network::Message<NetworkMessages> ackMessage =
+              CreateAcknowledgementMessage();
+          Send(ackMessage);
+
         } break;
         case NetworkMessages::deleteEntity: {
           std::cout << "Entity destroyed" << std::endl;
