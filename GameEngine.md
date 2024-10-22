@@ -39,16 +39,16 @@ Once everything is set up, you can start creating entities, adding components, a
 
 ```mermaid
 graph TD;
-    A[Entity] -->|Possesses| B[Component]
-    A[Entity] -->|Possesses| C[Component]
-    A[Entity] -->|Possesses| D[Component]
+    A[Entity] -->|Possesses| B[AComponent]
+    A[Entity] -->|Possesses| C[BComponent]
+    A[Entity] -->|Possesses| D[CComponent]
 
-    B -->|Used by| E[System]
-    C -->|Used by| E[System]
-    D -->|Used by| F[System]
+    B -->|Used by| E[ASystem]
+    C -->|Used by| E[ASystem]
+    D -->|Used by| F[BSystem]
 
-    E[System] -->|Updates| A[Entity]
-    F[System] -->|Updates| A[Entity]
+    E[ASystem] -->|Updates| A[Entity]
+    F[BSystem] -->|Updates| A[Entity]
 
     subgraph "ECS"
         direction TB
@@ -60,12 +60,12 @@ graph TD;
         F
     end
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px;
-    style B fill:#ff9,stroke:#333,stroke-width:2px;
-    style C fill:#ff9,stroke:#333,stroke-width:2px;
-    style D fill:#ff9,stroke:#333,stroke-width:2px;
-    style E fill:#9f9,stroke:#333,stroke-width:2px;
-    style F fill:#9f9,stroke:#333,stroke-width:2px;
+style A fill:#8b008b,stroke:#333,stroke-width:2px;
+style B fill:#b8860b,stroke:#333,stroke-width:2px;
+style C fill:#b8860b,stroke:#333,stroke-width:2px;
+style D fill:#b8860b,stroke:#333,stroke-width:2px;
+style E fill:#228b22,stroke:#333,stroke-width:2px;
+style F fill:#228b22,stroke:#333,stroke-width:2px;
 ```
 
 ### Diagram Description
