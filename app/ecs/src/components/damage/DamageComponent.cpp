@@ -15,7 +15,10 @@
  * @param damage The amount of damage this component represents.
  */
 component::DamageComponent::DamageComponent(uint32_t entityID, int damage)
-    : AComponent(entityID), _damage(damage) {}
+    : AComponent(entityID), _damage(damage)
+{
+  this->_communication = ComponentCommunication::SERVERONLY;
+}
 
 /**
  * @brief Destroys the DamageComponent object.
@@ -27,7 +30,8 @@ component::DamageComponent::~DamageComponent() {}
  *
  * @param damage The new damage value to be set.
  */
-void component::DamageComponent::setDamage(int damage) {
+void component::DamageComponent::setDamage(int damage)
+{
   this->_damage = damage;
 }
 

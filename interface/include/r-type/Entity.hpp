@@ -53,6 +53,12 @@ public:
    */
   bool getActive() const override;
 
+  /**
+   * @brief 
+   * 
+   */
+  EntityCommunication getCommunication() const override;
+
 protected:
   /**
    * @brief Unique identifier for the entity.

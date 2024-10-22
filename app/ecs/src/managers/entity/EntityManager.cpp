@@ -11,7 +11,7 @@
 /**
  * @brief Constructs an EntityManager object.
  */
-entity::EntityManager::EntityManager() { _entityCounter = 0; }
+entity::EntityManager::EntityManager() : _entityCounter(0) {}
 
 /**
  * @brief Retrieves an entity by its unique identifier.
@@ -72,4 +72,32 @@ entity::IEntity *entity::EntityManager::createEntity(uint32_t id) {
 std::vector<std::shared_ptr<entity::IEntity>> &
 entity::EntityManager::getEntities() {
   return _entities;
+}
+
+/**
+ * @brief Generates a new unique identifier for an entity.
+ *
+ * This function generates a new unique identifier for an entity by incrementing
+ * the ID counter and returning the new ID.
+ *
+ * @return uint32_t The new unique identifier for an entity.
+ */
+uint32_t entity::EntityManager::generateEntityID() { return _entityCounter++; }
+
+#include <iostream>
+
+/**
+ * @brief Removes an entity with the specified ID from the list of entities.
+ *
+ * This function removes the entity with the given ID from the list of entities.
+ * It uses the erase-remove idiom to find and remove the entity.
+ *
+ * @param id The ID of the entity to be removed.
+ */
+void entity::EntityManager::removeEntity(uint32_t id) {
+  _entities.erase(std::remove_if(_entities.begin(), _entities.end(),
+                                 [id](const std::shared_ptr<IEntity> &entity) {
+                                   return entity->getID() == id;
+                                 }),
+                  _entities.end());
 }

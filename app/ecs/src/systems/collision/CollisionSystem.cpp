@@ -45,9 +45,46 @@ bool ECS_system::CollisionSystem::isColliding(
  * @param hitbox1 A shared pointer to the first entity's HitBoxComponent.
  * @param hitbox2 A shared pointer to the second entity's HitBoxComponent.
  */
-void ECS_system::CollisionSystem::handleCollision(
-    component::HitBoxComponent *hitbox1, component::HitBoxComponent *hitbox2) {
-  std::cout << "Collision detected" << std::endl;
+void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
+                                                  entity::IEntity *entity2) {
+  std::string type1 =
+      _componentManager
+          .getComponent<component::TypeComponent>(entity1->getID())
+          ->getType();
+  std::string type2 =
+      _componentManager
+          .getComponent<component::TypeComponent>(entity2->getID())
+          ->getType();
+
+  if (type1 == "player" && type2 == "enemy") {
+    _componentManager
+        .getComponent<component::HealthComponent>(entity1->getID())
+        ->setHealth(0);
+  } else if (type1 == "enemy" && type2 == "player") {
+    _componentManager
+        .getComponent<component::HealthComponent>(entity2->getID())
+        ->setHealth(0);
+  }
+
+  if (type1 == "playerProjectile" && type2 == "enemy") {
+    _componentManager
+        .getComponent<component::HealthComponent>(entity2->getID())
+        ->setHealth(0);
+  } else if (type1 == "enemy" && type2 == "playerProjectile") {
+    _componentManager
+        .getComponent<component::HealthComponent>(entity1->getID())
+        ->setHealth(0);
+  }
+
+  if (type1 == "enemyProjectile" && type2 == "player") {
+    _componentManager
+        .getComponent<component::HealthComponent>(entity2->getID())
+        ->setHealth(0);
+  } else if (type1 == "player" && type2 == "enemyProjectile") {
+    _componentManager
+        .getComponent<component::HealthComponent>(entity1->getID())
+        ->setHealth(0);
+  }
 }
 
 /**
@@ -82,7 +119,7 @@ std::vector<std::string> ECS_system::CollisionSystem::update(
       if (hitbox1->getEntityID() == hitbox2->getEntityID())
         continue;
       if (isColliding(hitbox1, hitbox2))
-        handleCollision(hitbox1, hitbox2);
+        handleCollision(entity.get(), entity2.get());
     }
   }
   return msgToSend;

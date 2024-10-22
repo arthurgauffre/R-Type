@@ -2,6 +2,17 @@ add_library(r-type_weapon_system SHARED
     WeaponSystem.cpp
     ../../components/damage/DamageComponent.cpp
     ../../components/parent/ParentComponent.cpp
+    ../../components/weapon/WeaponComponent.cpp
+    ../../components/cooldown/CooldownComponent.cpp
+    ../../components/position/PositionComponent.cpp
+    ../../components/velocity/VelocityComponent.cpp
+    ../../components/texture/TextureComponent.cpp
+    ../../components/type/TypeComponent.cpp
+    ../../components/transform/TransformComponent.cpp
+    ../../components/hitbox/HitBoxComponent.cpp
+    ../../components/sound/SoundComponent.cpp
+    ../../managers/entity/EntityManager.cpp
+    ../../entity/Entity.cpp
 )
 
 # Specify the SFML include directory

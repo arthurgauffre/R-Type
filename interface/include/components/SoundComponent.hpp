@@ -54,6 +54,9 @@ public:
     _sound.setBuffer(_soundBuffer);
   }
 
+  void setShouldPlay(bool shouldPlay) { _shouldPlay = shouldPlay; }
+  bool getShouldPlay() { return _shouldPlay; }
+
 private:
   /**
    * @brief Holds the sound buffer data for the sound component.
@@ -74,5 +77,7 @@ private:
    * @see sf::Sound
    */
   sf::Sound _sound;
+
+  bool _shouldPlay;
 };
 } // namespace component

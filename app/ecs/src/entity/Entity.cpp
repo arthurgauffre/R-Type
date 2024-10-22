@@ -17,4 +17,6 @@ uint32_t entity::Entity::getID() const { return id; }
 void entity::Entity::setActive(bool active) { isActive = active; }
 
 bool entity::Entity::getActive() const { return isActive; }
+
+EntityCommunication entity::Entity::getCommunication() const { return communicationStatus; }
 } // namespace entity

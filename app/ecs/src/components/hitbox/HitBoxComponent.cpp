@@ -9,7 +9,9 @@
 
 component::HitBoxComponent::HitBoxComponent(uint32_t entityID, float width,
                                             float height)
-    : AComponent(entityID), _width(width), _height(height) {}
+    : AComponent(entityID), _width(width), _height(height) {
+      this->_communication = ComponentCommunication::SERVERONLY;
+    }
 
 component::HitBoxComponent::~HitBoxComponent() {}
 

@@ -29,9 +29,12 @@
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
 #include <components/TransformComponent.hpp>
+#include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
+#include <components/WeaponComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
+#include <systems/GameSystem.hpp>
 #include <systems/HealthSystem.hpp>
 #include <systems/RenderSystem.hpp>
 

@@ -26,20 +26,35 @@ std::vector<std::string> ECS_system::MovementSystem::update(
        _componentManager.getEntitiesWithComponents<
            component::TransformComponent, component::VelocityComponent,
            component::PositionComponent>(entities)) {
-    auto transform =
+    component::TransformComponent *transform =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
-    auto velocity =
+    component::VelocityComponent *velocity =
         _componentManager.getComponent<component::VelocityComponent>(
             entity->getID());
-    auto position =
+    component::PositionComponent *position =
         _componentManager.getComponent<component::PositionComponent>(
             entity->getID());
+    component::TypeComponent *type =
+        _componentManager.getComponent<component::TypeComponent>(
+            entity->getID());
 
-    // go to the right of the screen
-    float newX = position->getX() + velocity->getVelocity().x * deltaTime;
-    float newY = position->getY() + velocity->getVelocity().y * deltaTime;
+    float newX = position->getX() + velocity->getActualVelocity().x * deltaTime;
+    float newY = position->getY() + velocity->getActualVelocity().y * deltaTime;
 
+    if (type->getType() == "player") {
+      if (newX < 0)
+        newX = 0;
+      if (newX > 1920)
+        newX = 1920;
+      if (newY < 0)
+        newY = 0;
+      if (newY > 1080)
+        newY = 1080;
+    } else if (type->getType() == "projectile") {
+      if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
+        _entityManager.removeEntity(entity->getID());
+    }
     transform->setPosition({newX, newY});
     position->setX(newX);
     position->setY(newY);

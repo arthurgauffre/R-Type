@@ -8,6 +8,7 @@
 #pragma once
 
 #include <components/BackgroundComponent.hpp>
+#include <components/HitBoxComponent.hpp>
 #include <components/PositionComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>

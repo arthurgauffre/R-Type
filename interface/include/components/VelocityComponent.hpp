@@ -19,8 +19,8 @@ public:
    * @param entityID The ID of the entity associated with this component.
    * @param velocity The initial velocity of the entity.
    */
-  VelocityComponent(uint32_t entityID, sf::Vector2f velocity = {0, 0});
-
+  VelocityComponent(uint32_t entityID, sf::Vector2f velocity = {0, 0},
+                    sf::Vector2f actualVelocity = {0, 0});
   /**
    * @brief Default destructor for the VelocityComponent class.
    */
@@ -41,8 +41,13 @@ public:
   void setVelocity(const sf::Vector2f &velocity) { _velocity = velocity; }
 
   void update(sf::Vector2f velocity) { _velocity = velocity; };
+  void setActualVelocityX(const float x) { _actualVelocity.x = x; }
+  void setActualVelocityY(const float y) { _actualVelocity.y = y; }
+  sf::Vector2f getActualVelocity() { return _actualVelocity; }
 
 private:
   sf::Vector2f _velocity;
+
+  sf::Vector2f _actualVelocity;
 };
 } // namespace component

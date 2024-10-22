@@ -15,6 +15,8 @@ enum class ComponentCommunication {
   CREATE,
   UPDATE,
   DELETE,
+  SERVERONLY,
+  CLIENTONLY,
 };
 
 class IComponent {
@@ -50,5 +52,19 @@ public:
    * deactivates it.
    */
   virtual void setActive(bool active) = 0;
+
+  /**
+   * @brief Retrieves the communication status of the component.
+   *
+   * This method is used to determine the current communication status of the
+   * component.
+   *
+   * @return ComponentCommunication The current communication status of the
+   * component.
+   */
+  virtual ComponentCommunication getCommunication() const = 0;
+
+  protected:
+    ComponentCommunication _communication{ComponentCommunication::CREATE};
 };
 } // namespace component

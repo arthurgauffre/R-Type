@@ -156,6 +156,11 @@ protected:
         });
   }
 
+  void sendAllEntitiesUpdateOrCreateToAllClient(std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore) {
+    for (auto &entity : _entityManager.getEntities()) {
+    }
+  }
+
   void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client)
   {
     if (client->IsConnected() == false)
@@ -166,7 +171,6 @@ protected:
     {
       std::cout << "Client is connected" << std::endl;
     }
-    _entityManager.getEntities();
     for (auto &entity : _entityManager.getEntities())
     {
       SendMessageToClient(

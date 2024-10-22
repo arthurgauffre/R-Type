@@ -27,9 +27,11 @@ public:
 
   IEntity *getEntityByID(uint32_t id) const;
 
+  uint32_t generateEntityID();
+
   std::vector<std::shared_ptr<IEntity>> &getEntities();
 
-  uint32_t generateEntityID() { return _entityCounter++; }
+  void removeEntity(uint32_t id);
 
 private:
   /**
@@ -40,6 +42,7 @@ private:
    * management and to allow shared ownership of the entities.
    */
   std::vector<std::shared_ptr<IEntity>> _entities;
+
   uint32_t _entityCounter;
 };
 } // namespace entity

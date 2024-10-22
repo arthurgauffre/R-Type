@@ -31,8 +31,10 @@ std::vector<std::string> ECS_system::AudioSystem::update(
             entity->getID());
 
     if (soundComponent) {
-      if (!soundComponent->isPlaying())
+      if (soundComponent->getShouldPlay()) {
         soundComponent->play();
+        soundComponent->setShouldPlay(false);
+      }
     }
     if (musicComponent) {
       if (!musicComponent->isPlaying())

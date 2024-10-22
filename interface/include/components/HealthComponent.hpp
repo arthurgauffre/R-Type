@@ -18,7 +18,11 @@ public:
   int getHealth();
   void setHealth(int health);
 
-  void update(int health);
+  void update(int health) {
+    this->_health = health;
+  };
+  int getDamageIncoming();
+  void setDamageIncoming(int damage);
 
 private:
   /**
@@ -29,5 +33,14 @@ private:
    * by various game mechanics such as taking damage or healing.
    */
   int _health;
+
+  /**
+   * @brief Represents the amount of incoming damage to the entity.
+   *
+   * This variable holds the value of damage that the entity is about to
+   * receive. It is used to calculate the reduction of the entity's health when
+   * damage is applied.
+   */
+  int _damageIncoming;
 };
 } // namespace component

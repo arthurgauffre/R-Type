@@ -53,8 +53,11 @@ std::vector<std::string> ECS_system::HealthSystem::update(
     component::HealthComponent *healthComponent =
         _componentManager.getComponent<component::HealthComponent>(
             entity->getID());
+    healthComponent->setHealth(healthComponent->getHealth() -
+                               healthComponent->getDamageIncoming());
+    healthComponent->setDamageIncoming(0);
     if (healthComponent->getHealth() <= 0) {
-      entity.get()->setActive(false);
+      _entityManager.destroyEntity(entity->getID());
     }
   }
   return msgToSend;
