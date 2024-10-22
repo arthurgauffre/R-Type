@@ -19,4 +19,6 @@ void entity::Entity::setActive(bool active) { isActive = active; }
 bool entity::Entity::getActive() const { return isActive; }
 
 EntityCommunication entity::Entity::getCommunication() const { return communicationStatus; }
+
+void entity::Entity::setCommunication(EntityCommunication communication) { communicationStatus = communication; }
 } // namespace entity

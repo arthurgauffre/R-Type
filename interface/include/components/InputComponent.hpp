@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
 #include <string>
+#include <iostream>
 #include <unordered_map>
 
 namespace component {
@@ -28,6 +29,10 @@ public:
    */
   ~InputComponent() = default;
 
+  void update(std::string action, sf::Keyboard::Key key) {
+    bindAction(action, key);
+  }
+
   /**
    * @brief Associates an action with a specific key.
    *
@@ -35,19 +40,13 @@ public:
    * @param key The key from the keyboard to bind to this action.
    */
   void bindAction(const std::string &action, sf::Keyboard::Key key) {
+    std::cout << "Binding action " << action << " to key " << key << std::endl;
     _keyBindings[action] = key;
   }
 
   sf::Keyboard::Key getBoundKey(const std::string &action) const;
 
   bool isActionActive(const std::string &action) const;
-
-  /**
-   * @brief Updates the input component (empty implementation for now).
-   *
-   * @param deltaTime The time elapsed since the last update.
-   */
-  void update(float deltaTime) {}
 
 private:
   /**

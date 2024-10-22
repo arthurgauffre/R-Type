@@ -219,15 +219,11 @@ private:
   }
 
   void ReadHeader() {
-    std::cout
-        << "Reading the Header of the message at the start of the method...."
-        << std::endl;
     asioSocket.async_receive_from(
         asio::buffer(&temporaryIncomingMessage.header,
                      sizeof(rtype::network::MessageHeader<T>)),
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (!ec) {
-            std::cout << "Reading the Header of the message...." << std::endl;
             if (temporaryIncomingMessage.header.size > 0) {
               temporaryIncomingMessage.body.resize(
                   temporaryIncomingMessage.header.size);

@@ -32,6 +32,7 @@ enum class NetworkMessages : uint32_t {
   createBackground,
   createScroll,
   createParent,
+  createInput,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -45,6 +46,7 @@ enum class NetworkMessages : uint32_t {
   updateBackground,
   updateScroll,
   updateParent,
+  updateInput,
   deleteTexture,
   deletePosition,
   deleteVelocity,
@@ -58,6 +60,13 @@ enum class NetworkMessages : uint32_t {
   deleteBackground,
   deleteScroll,
   deleteParent,
+  deleteInput,
+  moveUp,
+  moveDown,
+  moveLeft,
+  moveRight,
+  shoot,
+  none,
 };
 
 enum class TexturePath : uint32_t {
@@ -67,12 +76,41 @@ enum class TexturePath : uint32_t {
   Background,
 };
 
-enum class KeyAction : uint32_t {
-  moveUp,
-  moveDown,
-  moveLeft,
-  moveRight,
-  shoot,
+enum class BindAction : uint32_t {
+  MoveUp,
+  MoveDown,
+  MoveLeft,
+  MoveRight,
+  Shoot,
+};
+
+enum class KeyBoard : uint32_t {
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+  J,
+  K,
+  L,
+  M,
+  N,
+  O,
+  P,
+  Q,
+  R,
+  S,
+  T,
+  U,
+  V,
+  W,
+  X,
+  Y,
+  Z,
 };
 
 struct TextureComponent {
@@ -139,4 +177,9 @@ struct BackgroundComponent {
   TexturePath texturePath;
   float x;
   float y;
+};
+
+struct BindKey {
+  KeyBoard key;
+  BindAction action;
 };

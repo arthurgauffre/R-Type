@@ -55,7 +55,11 @@ public:
 
   std::string GetTexturePath(TexturePath texture);
 
-  KeyAction getAction(std::string action);
+  NetworkMessages getAction(std::string action);
+
+  std::string getStringAction(BindAction action);
+
+  sf::Keyboard::Key getKey(KeyBoard key);
 
   virtual void Disconnect() {}
 

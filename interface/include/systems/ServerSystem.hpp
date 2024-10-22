@@ -47,7 +47,7 @@ public:
          std::vector<std::string> msgToSend) {
     sf::Clock clock;
     float deltatime = clock.restart().asSeconds();
-    this->ServerUpdate(deltatime, false);
+    this->ServerUpdate(deltaTime, false);
     return msgToSend;
   }
 
@@ -56,8 +56,6 @@ protected:
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
           client,
       rtype::network::Message<NetworkMessages> &message) {
-    std::cout << "Message received from client : " << client->GetId()
-              << std::endl;
     switch (message.header.id) {
     case NetworkMessages::ClientConnection: {
       std::cout << "Client connected : " << client->GetId() << std::endl;
@@ -72,9 +70,34 @@ protected:
       std::cout << client->GetId() << " : Ping the server" << std::endl;
       client->Send(message);
     } break;
-    case NetworkMessages::createEntity: {
-      std::cout << "creation of the entity" << std::endl;
+    default: {
+      handleInputMessage(client, message);
+    }
+    }
+  }
+
+  void handleInputMessage(
+      std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
+      rtype::network::Message<NetworkMessages> &message) {
+    switch (message.header.id) {
+    case NetworkMessages::moveUp: {
+      std::cout << "Move Up" << std::endl;
     } break;
+    case NetworkMessages::moveDown: {
+      std::cout << "Move Down" << std::endl;
+    } break;
+    case NetworkMessages::moveLeft: {
+      std::cout << "Move Left" << std::endl;
+    } break;
+    case NetworkMessages::moveRight: {
+      std::cout << "Move Right" << std::endl;
+    } break;
+    case NetworkMessages::shoot: {
+      std::cout << "Shoot" << std::endl;
+    } break;
+    default: {
+      std::cout << "Unknown message" << std::endl;
+    }
     }
   }
 
@@ -146,6 +169,12 @@ protected:
                       id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
               SendMessageToAllClients(
                   networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
+              _componentManager.addComponent<component::InputComponent>(id);
+              SendMessageToAllClients(
+                  networkMessageFactory.createInputMsg(id));
+              BindKey moveUp = BindKey(KeyBoard::Z, BindAction::MoveUp);
+              SendMessageToAllClients(
+                  networkMessageFactory.updateInputMsg(id, moveUp));
             } else {
               std::cout << "Connection denied" << std::endl;
             }
@@ -158,6 +187,145 @@ protected:
 
   void sendAllEntitiesUpdateOrCreateToAllClient(std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore) {
     for (auto &entity : _entityManager.getEntities()) {
+      // if (entity->getCommunication() == entity::EntityCommunication::CREATE) {
+      //   SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID()), clientToIgnore);
+      //   entity->setCommunication(entity::EntityCommunication::NONE);
+      // } else if (entity->getCommunication() == entity::EntityCommunication::UPDATE) {
+      //   SendMessageToAllClients(networkMessageFactory.updateEntityMsg(entity->getID()), clientToIgnore);
+      //   entity->setCommunication(entity::EntityCommunication::NONE);
+      // } else if (entity->getCommunication() == entity::EntityCommunication::DELETE) {
+      //   SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
+      // }
+      // if (_componentManager.getComponent<component::PositionComponent>(entity->getID()))
+      // {
+      //   component::PositionComponent *component =
+      //       _componentManager.getComponent<component::PositionComponent>(entity->getID());
+        // if (entity->getCommunication() == entity::EntityCommunication::CREATE) {
+        //   SendMessageToAllClients(networkMessageFactory.createPositionMsg(entity->getID(), component->getX(), component->getY()), clientToIgnore);
+        // } else if (entity->getCommunication() == entity::EntityCommunication::UPDATE) {
+        //   SendMessageToAllClients(networkMessageFactory.updatePositionMsg(entity->getID(), component->getX(), component->getY()), clientToIgnore);
+        // } else if (entity->getCommunication() == entity::EntityCommunication::DELETE) {
+        //   SendMessageToAllClients(networkMessageFactory.deletePositionMsg(entity->getID()), clientToIgnore);
+        // }
+      // }
+      // if (_componentManager.getComponent<component::SpriteComponent>(entity->getID()))
+      // {
+      //   component::SpriteComponent *component =
+      //       _componentManager.getComponent<component::SpriteComponent>(entity->getID());
+      //   if (entity->getCommunication() == entity::EntityCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createSpriteMsg(entity->getID(), component->getX(), component->getY()), clientToIgnore);
+      //   } else if (entity->getCommunication() == entity::EntityCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateSpriteMsg(entity->getID(), component->getX(), component->getY()), clientToIgnore);
+      //   } else if (entity->getCommunication() == entity::EntityCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteSpriteMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
+      // if (_componentManager.getComponent<component::TextureComponent>(entity->getID()))
+      // {
+      //   component::TextureComponent *component =
+      //       _componentManager.getComponent<component::TextureComponent>(entity->getID());
+      //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createTextureMsg(entity->getID(), GetEnumTexturePath(component->getPath())), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateTextureMsg(entity->getID(), GetEnumTexturePath(component->getPath())), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteTextureMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
+      // if (_componentManager.getComponent<component::TransformComponent>(entity->getID()))
+      // {
+      //   component::TransformComponent *component =
+      //       _componentManager.getComponent<component::TransformComponent>(entity->getID());
+      //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createTransformMsg(entity->getID(), component->getPosition().x, component->getPosition().y, component->getScale().x, component->getScale().y), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().x, component->getPosition().y, component->getScale().x, component->getScale().y), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteTransformMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
+      // if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
+      // {
+      //   component::BackgroundComponent *component =
+      //       _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
+      //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().x, component->getSize().y), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().x, component->getSize().y), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteBackgroundMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
+      // if (_componentManager.getComponent<component::ScrollComponent>(entity->getID()))
+      // {
+      //   component::ScrollComponent *component =
+      //       _componentManager.getComponent<component::ScrollComponent>(entity->getID());
+      //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createScrollMsg(entity->getID(), component->getScrollSpeed().x, component->getScrollSpeed().y), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateScrollMsg(entity->getID(), component->getScrollSpeed().x, component->getScrollSpeed().y), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteScrollMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
+      // if (_componentManager.getComponent<component::HealthComponent>(entity->getID()))
+      // {
+      //   component::HealthComponent *component =
+      //       _componentManager.getComponent<component::HealthComponent>(entity->getID());
+      //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createHealthMsg(entity->getID(), component->getHealth()), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateHealthMsg(entity->getID(), component->getHealth()), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteHealthMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
+      // if (_componentManager.getComponent<component::DamageComponent>(entity->getID()))
+      // {
+      //   component::DamageComponent *component =
+      //       _componentManager.getComponent<component::DamageComponent>(entity->getID());
+      //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createDamageMsg(entity->getID(), component->getDamage()), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateDamageMsg(entity->getID(), component->getDamage()), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteDamageMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
+      // if (_componentManager.getComponent<component::HitBoxComponent>(entity->getID()))
+      // {
+      //   component::HitBoxComponent *component =
+      //       _componentManager.getComponent<component::HitBoxComponent>(entity->getID());
+      //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createHitboxMsg(entity->getID(), component->getHeight(), component->getWidth()), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateHitboxMsg(entity->getID(), component->getHeight(), component->getWidth()), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteHitboxMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
+      // // if
+      // // (_coreModule.get()->getComponentManager()->getComponent<component::MusicComponent>(entity->getID()))
+      // //   SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(),
+      // //   dynamic_cast<component::MusicComponent
+      // //   *>(component.get())->musicPath), client);
+      // // if
+      // // (_coreModule.get()->getComponentManager()->getComponent<component::SoundComponent>(entity->getID()))
+      // //   SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(),
+      // //   dynamic_cast<component::SoundComponent
+      // //   *>(component.get())->soundPath), client);
+      // if (_componentManager.getComponent<component::ParentComponent>(entity->getID()))
+      // {
+      //   component::ParentComponent *component =
+      //       _componentManager.getComponent<component::ParentComponent>(entity->getID());
+      //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
+      //     SendMessageToAllClients(networkMessageFactory.createParentMsg(entity->getID(), component->getParentID()), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
+      //     SendMessageToAllClients(networkMessageFactory.updateParentMsg(entity->getID(), component->getParentID()), clientToIgnore);
+      //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
+      //     SendMessageToAllClients(networkMessageFactory.deleteParentMsg(entity->getID()), clientToIgnore);
+      //   }
+      // }
     }
   }
 
@@ -345,6 +513,7 @@ protected:
     while (messageCount < maxMessages && !incomingMessages.empty()) {
       auto message = incomingMessages.popFront();
       OnMessageReceived(message.remoteConnection, message.message);
+      sendAllEntitiesUpdateOrCreateToAllClient(nullptr);
       messageCount++;
     }
   }

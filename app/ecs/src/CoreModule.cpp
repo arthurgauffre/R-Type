@@ -81,7 +81,7 @@ void rtype::CoreModule::run() {
   sf::Clock clock;
   while (1) {
     float deltatime = clock.restart().asSeconds();
-    this->getSystemManager()->update(
+    msgToSend = this->getSystemManager()->update(
         deltatime, this->getEntityManager()->getEntities(), msgToSend);
   }
 }

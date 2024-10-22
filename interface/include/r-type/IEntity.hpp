@@ -63,6 +63,15 @@ public:
    */
   virtual EntityCommunication getCommunication() const = 0;
 
+  /**
+   * @brief Sets the communication status of the entity.
+   *
+   * This method is used to set the communication status of the entity to the
+   * specified value.
+   *
+   * @param status The new communication status for the entity.
+   */
+  virtual void setCommunication(EntityCommunication status) = 0;
   protected:
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
 };

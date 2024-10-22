@@ -17,8 +17,9 @@ int main(void) {
     entity::EntityManager &entityManager = *core->getEntityManager();
 
     core->getSystemManager()->addSystem(componentManager, entityManager, "render");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "client");
+    core->getSystemManager()->addSystem(componentManager, entityManager, "input");
     core->getSystemManager()->addSystem(componentManager, entityManager, "background");
+    core->getSystemManager()->addSystem(componentManager, entityManager, "client");
 
     core->run();
   return 0;

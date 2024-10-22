@@ -59,6 +59,12 @@ public:
    */
   EntityCommunication getCommunication() const override;
 
+  /**
+   * @brief 
+   * 
+   */
+  void setCommunication(EntityCommunication communication) override;
+
 protected:
   /**
    * @brief Unique identifier for the entity.
