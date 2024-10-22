@@ -36,13 +36,13 @@ if (UNIX)
 
     # Set the package manager based on the detected distribution
     if(DISTRO STREQUAL "fedora" OR DISTRO STREQUAL "rhel" OR DISTRO STREQUAL "centos")
-        set(PACKAGE_MANAGER "dnf")
+        set(PACKAGE_MANAGER "dnf install")
     elseif(DISTRO STREQUAL "ubuntu" OR DISTRO STREQUAL "debian" OR DISTRO STREQUAL "linuxmint")
-        set(PACKAGE_MANAGER "apt-get")
+        set(PACKAGE_MANAGER "apt-get install")
     elseif(DISTRO STREQUAL "arch" OR DISTRO STREQUAL "manjaro")
-        set(PACKAGE_MANAGER "pacman")
+        set(PACKAGE_MANAGER "pacman -S")
     elseif(DISTRO STREQUAL "opensuse")
-        set(PACKAGE_MANAGER "zypper")
+        set(PACKAGE_MANAGER "zypper install")
     else()
         message(WARNING "Unknown Linux distribution: ${DISTRO}")
         set(PACKAGE_MANAGER "unknown")
@@ -50,11 +50,10 @@ if (UNIX)
 
     # Output the detected package manager
     message(STATUS "Detected Linux distribution: ${DISTRO}")
-    message(STATUS "Using package manager: ${PACKAGE_MANAGER}")
 
     # Add the install of the SFML library
     if (NOT EXISTS "/usr/include/SFML")
-        execute_process(COMMAND sudo ${PACKAGE_MANAGER} install libsfml-dev)
+        execute_process(COMMAND sudo ${PACKAGE_MANAGER} libsfml-dev)
     endif()
     # Linux-specific settings (by adding a sanitizer)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
@@ -79,6 +78,7 @@ endif()
 
 
 
+include_directories(${CMAKE_SOURCE_DIR}/3rd_party_lib/asio/asio/include)
 
 
 # Add the interface to the project
@@ -86,6 +86,7 @@ add_subdirectory(interface)
 add_subdirectory(app/ecs)
 add_subdirectory(app/server)
 add_subdirectory(app/client)
+
 
 # Link the interface to the executables
 # target_link_libraries(r-type_client r-type_interfaces)
