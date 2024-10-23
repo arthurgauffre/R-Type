@@ -10,7 +10,7 @@ Welcome to the **Game Engine** documentation! This guide will explain how to use
 2. [Diagram](#diagram)
 3. [Creating Entities](#creating-entities)
 4. [Adding Components to Entities](#adding-components-to-entities)
-   - [PositionComponent](#positioncomponent)
+   - [TransformComponent](#TransformComponent)
    - [VelocityComponent](#velocitycomponent)
    - [SpriteComponent](#spritecomponent)
 5. [Working with Systems](#working-with-systems)
@@ -84,7 +84,7 @@ The diagram illustrates the fundamental structure and relationships within the E
 
 - The diagram shows multiple components connected to the entity, such as `B[Component]`, `C[Component]`, and `D[Component]`.
 - Components are data structures that hold specific attributes or functionalities. Examples include:
-  - **PositionComponent**: Holds the position data of the entity.
+  - **TransformComponent**: Stores position, rotation, and scale data.
   - **HealthComponent**: Holds health-related data.
   - **SpriteComponent**: Contains graphical information.
 - Each entity can possess one or more components, allowing for varied and complex behavior.
@@ -120,12 +120,12 @@ Each entity has a unique ID and can hold multiple components.
 
 Components define the properties of an entity, such as its position, velocity, and appearance. Below are examples of how to add different components to an entity.
 
-### PositionComponent
+### TransformComponent
 
-The `PositionComponent` defines the X and Y coordinates of an entity in the game world.
+The `Transform` defines the X and Y coordinates of an entity in the game world.
 
 ```cpp
-_componentManager.addComponent<component::PositionComponent>(player->getId(), 100.0f, 200.0f);
+_componentManager.addComponent<component::TransformComponent>(player->getId(), 100.0f, 200.0f);
 ```
 
 ### VelocityComponent
@@ -153,7 +153,7 @@ Systems are responsible for updating entities that have certain components. The 
 
 ### MovementSystem
 
-The `MovementSystem` handles the movement of entities with a `PositionComponent` and `VelocityComponent`. To ensure entities move as expected, the system is updated on each frame.
+The `MovementSystem` handles the movement of entities with a `TransformComponent` and `VelocityComponent`. To ensure entities move as expected, the system is updated on each frame.
 
 ```cpp
 _movementSystem.update(deltaTime, _entityManager.getEntities());
@@ -180,7 +180,6 @@ void game::GameLoop::run()
     {
         processEvents();
         update();
-        render();
     }
 }
 
