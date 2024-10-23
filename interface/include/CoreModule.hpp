@@ -51,7 +51,7 @@ public:
   //                                 sf::Vector2f position, sf::Vector2f
   //                                 velocity, sf::Vector2f scale, int health);
 
-  void init();
+  void update();
   void run();
 
   std::shared_ptr<entity::EntityManager> getEntityManager() const;
@@ -59,6 +59,8 @@ public:
   std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
   std::vector<std::pair<std::string, size_t>> msgReceived;
+  std::vector<std::string> msgToSend;
+  sf::Clock clock;
 
   template <typename T> class DLLoader {
   public:

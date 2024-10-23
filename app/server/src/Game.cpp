@@ -5,7 +5,7 @@
 ** Game
 */
 
-#include "../include/Game.hpp"
+#include "include/Game.hpp"
 
 Game::Game(std::shared_ptr<rtype::CoreModule> coreModule) : _coreModule(coreModule)
 {
@@ -15,23 +15,24 @@ Game::~Game()
 {
 }
 
-entity::IEntity *Game::createWeapon(uint32_t parentID,
-                                                 std::string type, int damage,
-                                                 float cooldown) {
-  auto weapon = _coreModule->getEntityManager()->createEntity(
-      _coreModule->getEntityManager()->generateEntityID());
+// entity::IEntity *Game::createWeapon(uint32_t parentID,
+//                                     std::string type, int damage,
+//                                     float cooldown)
+// {
+//     auto weapon = _coreModule->getEntityManager()->createEntity(
+//         _coreModule->getEntityManager()->generateEntityID());
 
-  _coreModule->getComponentManager()->addComponent<component::SoundComponent>(
-      weapon->getID(), "app/assets/musics/blaster.wav");
-  _coreModule->getComponentManager()->addComponent<component::TypeComponent>(
-      weapon->getID(), type);
-  _coreModule->getComponentManager()->addComponent<component::ParentComponent>(
-      weapon->getID(), parentID);
-//   _coreModule->getComponentManager()->addComponent<component::CooldownComponent>(
-//       weapon->getID(), cooldown);
+//     _coreModule->getComponentManager()->addComponent<component::SoundComponent>(
+//         weapon->getID(), "app/assets/musics/blaster.wav");
+//     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(
+//         weapon->getID(), type);
+//     _coreModule->getComponentManager()->addComponent<component::ParentComponent>(
+//         weapon->getID(), parentID);
+//       _coreModule->getComponentManager()->addComponent<component::CooldownComponent>(
+//           weapon->getID(), cooldown);
 
-  return weapon;
-}
+//     return weapon;
+// }
 
 /**
  * @brief Creates a background entity with the specified components.
@@ -46,25 +47,26 @@ entity::IEntity *Game::createWeapon(uint32_t parentID,
  * @param size The size of the background entity.
  * @return A pointer to the created background entity.
  */
-entity::IEntity *
-Game::createBackground(uint32_t entityID, std::string texturePath,
-                                    std::pair<float, float> speed,
-                                    std::pair<float, float> size) {
-  auto background = _coreModule->getEntityManager()->createEntity(entityID);
+// entity::IEntity *
+// Game::createBackground(uint32_t entityID, std::string texturePath,
+//                        std::pair<float, float> speed,
+//                        std::pair<float, float> size)
+// {
+//     auto background = _coreModule->getEntityManager()->createEntity(entityID);
 
-  _coreModule->getComponentManager()->addComponent<component::TypeComponent>(
-      entityID, "background");
-  _coreModule->getComponentManager()->addComponent<component::MusicComponent>(
-      entityID, "app/assets/musics/testSong.wav");
-  _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
-      entityID, std::pair<float, float>(0, 0));
-  _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
-      entityID, speed, speed);
-  _coreModule->getComponentManager()->addComponent<component::BackgroundComponent>(
-      entityID, texturePath, size);
+//     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(
+//         entityID, "background");
+//     _coreModule->getComponentManager()->addComponent<component::MusicComponent>(
+//         entityID, "app/assets/musics/testSong.wav");
+//     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
+//         entityID, std::pair<float, float>(0, 0));
+//     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+//         entityID, speed, speed);
+//     _coreModule->getComponentManager()->addComponent<component::BackgroundComponent>(
+//         entityID, texturePath, size);
 
-  return background;
-}
+//     return background;
+// }
 
 /**
  * @brief Creates a player entity with the specified components.
@@ -80,71 +82,73 @@ Game::createBackground(uint32_t entityID, std::string texturePath,
  * @param scale The scale of the entity.
  * @return A pointer to the created player entity.
  */
-entity::IEntity *
-Game::createPlayer(uint32_t entityID, std::string texturePath,
-                                std::pair<float, float> position,
-                                std::pair<float, float> velocity,
-                                std::pair<float, float> scale, int health) {
-  auto player = _coreModule->getEntityManager()->createEntity(entityID);
+// entity::IEntity *
+// Game::createPlayer(uint32_t entityID, std::string texturePath,
+//                    std::pair<float, float> position,
+//                    std::pair<float, float> velocity,
+//                    std::pair<float, float> scale, int health)
+// {
+//     auto player = _coreModule->getEntityManager()->createEntity(entityID);
 
-  auto weapon = createWeapon(entityID, "weapon", 15, 0.5);
+//     auto weapon = createWeapon(entityID, "weapon", 15, 0.5);
 
-  _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
-      entityID, weapon->getID(), true, 500);
-  _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
-                                                                      "player");
-  _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-      entityID, position.first, position.second);
-  auto texture =
-      _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-          entityID, texturePath);
-  _coreModule->getComponentManager()->addComponent<component::InputComponent>(
-      entityID);
-  _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
-      entityID, velocity);
-  _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
-      entityID, position, scale);
-  _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
-      entityID, health);
-  _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-      entityID, texture->getTexture().getSize().x * scale.first,
-      texture->getTexture().getSize().y * scale.second);
+//     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
+//         entityID, weapon->getID(), true, 500);
+//     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
+//                                                                                "player");
+//     _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
+//         entityID, position.first, position.second);
+//     auto texture =
+//         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
+//             entityID, texturePath);
+//     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
+//         entityID);
+//     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+//         entityID, velocity);
+//     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
+//         entityID, position, scale);
+//     _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
+//         entityID, health);
+//     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
+//         entityID, texture->getTexture().getSize().x * scale.first,
+//         texture->getTexture().getSize().y * scale.second);
 
-  return player;
-}
+//     return player;
+// }
 
-entity::IEntity *Game::createEnemy(
-    uint32_t entityID, std::string texturePath,
-    std::pair<float, float> position, std::pair<float, float> velocity,
-    std::pair<float, float> scale, int health, int damage) {
-  auto enemy = _coreModule->getEntityManager()->createEntity(entityID);
+// entity::IEntity *Game::createEnemy(
+//     uint32_t entityID, std::string texturePath,
+//     std::pair<float, float> position, std::pair<float, float> velocity,
+//     std::pair<float, float> scale, int health, int damage)
+// {
+//     auto enemy = _coreModule->getEntityManager()->createEntity(entityID);
 
-  auto weapon = createWeapon(entityID, "enemyWeapon", 15, 2);
+//     auto weapon = createWeapon(entityID, "enemyWeapon", 15, 2);
 
-  _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
-      entityID, weapon->getID(), true, -500);
-  _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
-                                                                      "enemy");
-  _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-      entityID, position.first, position.second);
-  auto texture =
-      _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-          entityID, texturePath);
-  _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
-      entityID, velocity);
-  _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
-      entityID, position, scale);
+//     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
+//         entityID, weapon->getID(), true, -500);
+//     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
+//                                                                                "enemy");
+//     _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
+//         entityID, position.first, position.second);
+//     auto texture =
+//         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
+//             entityID, texturePath);
+//     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+//         entityID, velocity);
+//     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
+//         entityID, position, scale);
 
-  _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
-      entityID, health);
-  _coreModule->getComponentManager()->addComponent<component::DamageComponent>(
-      entityID, damage);
-  _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-      entityID, texture->getTexture().getSize().x * scale.first,
-      texture->getTexture().getSize().y * scale.second);
+//     _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
+//         entityID, health);
+//     _coreModule->getComponentManager()->addComponent<component::DamageComponent>(
+//         entityID, damage);
+//     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
+//         entityID, texture->getTexture().getSize().x * scale.first,
+//         texture->getTexture().getSize().y * scale.second);
 
-  return enemy;
-}
+//     return enemy;
+// }
 
 /**
  * @brief Initializes the core module of the R-Type game.
@@ -174,80 +178,94 @@ entity::IEntity *Game::createEnemy(
  * - "MoveUp" to the 'W' key
  * - "MoveDown" to the 'S' key
  */
-void Game::init() {
-  auto player = this->createPlayer(_coreModule->getEntityManager()->generateEntityID(),
-                                   "app/assets/sprites/plane.png",
-                                   std::pair<float, float>(100.0f, 100.0f),
-                                   std::pair<float, float>(500.0f, 500.0f),
-                                   std::pair<float, float>(0.25f, 0.25f), 1);
+void Game::init()
+{
+    //   auto player = this->createPlayer(_coreModule->getEntityManager()->generateEntityID(),
+    //                                    "app/assets/sprites/plane.png",
+    //                                    std::pair<float, float>(100.0f, 100.0f),
+    //                                    std::pair<float, float>(500.0f, 500.0f),
+    //                                    std::pair<float, float>(0.25f, 0.25f), 1);
 
-  this->createBackground(_coreModule->getEntityManager()->generateEntityID(),
-                         "app/assets/images/city_background.png",
-                         std::pair<float, float>(-100.0f, 0.0f),
-                         std::pair<float, float>(4448.0f, 1200.0f));
-  this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-                    "app/assets/sprites/enemy.png",
-                    std::pair<float, float>(1800.0f, 0.0f),
-                    std::pair<float, float>(0.0f, 0.0f),
-                    std::pair<float, float>(0.2f, 0.2f), 1, 100);
+    //   this->createBackground(_coreModule->getEntityManager()->generateEntityID(),
+    //                          "app/assets/images/city_background.png",
+    //                          std::pair<float, float>(-100.0f, 0.0f),
+    //                          std::pair<float, float>(4448.0f, 1200.0f));
+    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+    //                     "app/assets/sprites/enemy.png",
+    //                     std::pair<float, float>(1800.0f, 0.0f),
+    //                     std::pair<float, float>(0.0f, 0.0f),
+    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
 
-  this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-                    "app/assets/sprites/enemy.png",
-                    std::pair<float, float>(1800.0f, 200.0f),
-                    std::pair<float, float>(0.0f, 0.0f),
-                    std::pair<float, float>(0.2f, 0.2f), 1, 100);
+    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+    //                     "app/assets/sprites/enemy.png",
+    //                     std::pair<float, float>(1800.0f, 200.0f),
+    //                     std::pair<float, float>(0.0f, 0.0f),
+    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
 
-  this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-                    "app/assets/sprites/enemy.png",
-                    std::pair<float, float>(1800.0f, 400.0f),
-                    std::pair<float, float>(0.0f, 0.0f),
-                    std::pair<float, float>(0.2f, 0.2f), 1, 100);
+    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+    //                     "app/assets/sprites/enemy.png",
+    //                     std::pair<float, float>(1800.0f, 400.0f),
+    //                     std::pair<float, float>(0.0f, 0.0f),
+    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
 
-  this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-                    "app/assets/sprites/enemy.png",
-                    std::pair<float, float>(1800.0f, 600.0f),
-                    std::pair<float, float>(0.0f, 0.0f),
-                    std::pair<float, float>(0.2f, 0.2f), 1, 100);
+    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+    //                     "app/assets/sprites/enemy.png",
+    //                     std::pair<float, float>(1800.0f, 600.0f),
+    //                     std::pair<float, float>(0.0f, 0.0f),
+    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
 
-  this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-                    "app/assets/sprites/enemy.png",
-                    std::pair<float, float>(1800.0f, 800.0f),
-                    std::pair<float, float>(0.0f, 0.0f),
-                    std::pair<float, float>(0.2f, 0.2f), 1, 100);
+    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+    //                     "app/assets/sprites/enemy.png",
+    //                     std::pair<float, float>(1800.0f, 800.0f),
+    //                     std::pair<float, float>(0.0f, 0.0f),
+    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
 
-  component::ComponentManager &componentManager = *this->getComponentManager();
+    component::ComponentManager &componentManager = *_coreModule->getComponentManager();
 
-  entity::EntityManager &entityManager = *_coreModule->getEntityManager();
+    entity::EntityManager &entityManager = *_coreModule->getEntityManager();
 
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager, "audio");
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "render");
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager, "input");
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "movement");
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "health");
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "collision");
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "weapon");
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "cooldown");
-  _coreModule->getSystemManager()->addSystem(componentManager, entityManager, "game");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "movement");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "server");
 
-  _coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveLeft", sf::Keyboard::A);
-  _coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveRight", sf::Keyboard::D);
-  _coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveUp", sf::Keyboard::W);
-  _coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("MoveDown", sf::Keyboard::S);
-  _coreModule->getComponentManager()
-      ->getComponent<component::InputComponent>(0)
-      ->bindAction("Shoot", sf::Keyboard::Space);
+    //   _coreModule->getComponentManager()
+    //       ->getComponent<component::InputComponent>(0)
+    //       ->bindAction("MoveLeft", sf::Keyboard::A);
+    //   _coreModule->getComponentManager()
+    //       ->getComponent<component::InputComponent>(0)
+    //       ->bindAction("MoveRight", sf::Keyboard::D);
+    //   _coreModule->getComponentManager()
+    //       ->getComponent<component::InputComponent>(0)
+    //       ->bindAction("MoveUp", sf::Keyboard::W);
+    //   _coreModule->getComponentManager()
+    //       ->getComponent<component::InputComponent>(0)
+    //       ->bindAction("MoveDown", sf::Keyboard::S);
+    //   _coreModule->getComponentManager()
+    //       ->getComponent<component::InputComponent>(0)
+    //       ->bindAction("Shoot", sf::Keyboard::Space);
+}
+
+void Game::handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived)
+{
+    while (!msgReceived.empty())
+    {
+        std::string msg = msgReceived.front().first;
+        size_t id = msgReceived.front().second;
+        msgReceived.erase(msgReceived.begin());
+
+        std::cout << "Message received: " << msg << std::endl;
+    }
+}
+
+void Game::run()
+{
+    while (1)
+    {
+        _coreModule->update();
+        if (!_coreModule->msgReceived.empty())
+        {
+            handdleReceivedMessage(_coreModule->msgReceived);
+        }
+    }
 }

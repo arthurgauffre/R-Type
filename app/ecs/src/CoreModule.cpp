@@ -76,54 +76,14 @@ rtype::CoreModule::getSystemManager() const {
  * with the elapsed time since the last update and the current entities from
  * the entity manager.
  */
-void rtype::CoreModule::run() {
-  std::vector<std::string> msgToSend;
-  sf::Clock clock;
-  while (1) {
-    float deltatime = clock.restart().asSeconds();
-    msgToSend = this->getSystemManager()->update(
-        deltatime, this->getEntityManager()->getEntities(), msgToSend, this->msgReceived);
-    if (this->msgReceived.size() > 0)
-      std::cout << "msgReceived size: " << this->msgReceived.size() << std::endl;
-  }
+void rtype::CoreModule::update() {
+  float deltatime = clock.restart().asSeconds();
+  msgToSend = this->getSystemManager()->update(
+      deltatime, this->getEntityManager()->getEntities(), msgToSend, this->msgReceived);
 }
 
-/**
- * @brief Initializes the core module of the R-Type game.
- *
- * This function sets up the initial state of the game by creating the player
- * and background entities, adding necessary systems to the system manager,
- * and binding input actions to specific keys.
- *
- * The following entities are created:
- * - Player with ID 0, sprite located at "app/assets/sprites/r-typesheet1.gif",
- *   initial position (100.0f, 100.0f), velocity (10.0f, 0.0f), and scale
- * (1.0f, 1.0f).
- * - Background with ID 1, image located at
- * "app/assets/images/city_background.png", initial position (100.0f, 0.0f), and
- * size (1920.0f, 1080.0f).
- *
- * The following systems are added to the system manager:
- * - Audio system
- * - Render system
- * - Input system
- * - Movement system
- * - Background system
- *
- * The following input actions are bound to keys for the player with ID 0:
- * - "MoveLeft" to the 'A' key
- * - "MoveRight" to the 'D' key
- * - "MoveUp" to the 'W' key
- * - "MoveDown" to the 'S' key
- */
-void rtype::CoreModule::init() {
-  component::ComponentManager &componentManager = *this->getComponentManager();
-  entity::EntityManager &entityManager = *this->getEntityManager();
-
-  this->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "movement");
-  this->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "background");
-  this->getSystemManager()->addSystem(componentManager, entityManager,
-                                      "health");
+void rtype::CoreModule::run() {
+  while (1) {
+    this->update();
+  }
 }
