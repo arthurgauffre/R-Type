@@ -42,23 +42,23 @@ std::vector<std::string> ECS_system::RenderSystem::update(
 
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
-           component::BackgroundComponent, component::PositionComponent>(
+           component::BackgroundComponent, component::TransformComponent>(
            entities)) {
     component::BackgroundComponent *backgroundComponent =
         _componentManager.getComponent<component::BackgroundComponent>(
             entity->getID());
-    component::PositionComponent *positionComponent =
-        _componentManager.getComponent<component::PositionComponent>(
+    component::TransformComponent *transformComponent =
+        _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
 
-    sf::Vector2f position = {positionComponent->getX(),
-                             positionComponent->getY()};
+    sf::Vector2f position = {transformComponent->getPosition().first,
+                             transformComponent->getPosition().second};
     sf::Sprite sprite = backgroundComponent->getSprite();
     sf::Sprite duplicateSprite = backgroundComponent->getDuplicateSprite();
 
     sprite.setPosition(position);
-    duplicateSprite.setPosition(position.x + backgroundComponent->getSize().x,
-                                position.y);
+    duplicateSprite.setPosition(
+        position.x + backgroundComponent->getSize().first, position.y);
 
     _window.draw(sprite);
     _window.draw(duplicateSprite);
@@ -80,10 +80,16 @@ std::vector<std::string> ECS_system::RenderSystem::update(
         _componentManager.getComponent<component::TextureComponent>(
             entity.get()->getID());
 
+    sf::Vector2f SfPosition = {transformComponent->getPosition().first,
+                               transformComponent->getPosition().second};
+
+    sf::Vector2f SfScale = {transformComponent->getScale().first,
+                            transformComponent->getScale().second};
+
     spriteComponent->getSprite().setTexture(textureComponent->getTexture());
-    spriteComponent->getSprite().setPosition(transformComponent->getPosition());
+    spriteComponent->getSprite().setPosition(SfPosition);
     spriteComponent->getSprite().setRotation(transformComponent->getRotation());
-    spriteComponent->getSprite().setScale(transformComponent->getScale());
+    spriteComponent->getSprite().setScale(SfScale);
 
     _window.draw(spriteComponent->getSprite());
   }

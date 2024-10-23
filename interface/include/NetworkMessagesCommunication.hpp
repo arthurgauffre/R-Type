@@ -30,7 +30,6 @@ enum class NetworkMessages : uint32_t {
   createSprite,
   createTransform,
   createBackground,
-  createScroll,
   createParent,
   createInput,
   updateTexture,
@@ -44,7 +43,6 @@ enum class NetworkMessages : uint32_t {
   updateSprite,
   updateTransform,
   updateBackground,
-  updateScroll,
   updateParent,
   updateInput,
   deleteTexture,
@@ -58,7 +56,6 @@ enum class NetworkMessages : uint32_t {
   deleteSprite,
   deleteTransform,
   deleteBackground,
-  deleteScroll,
   deleteParent,
   deleteInput,
   moveUp,
@@ -121,11 +118,6 @@ struct EntityId {
   size_t id;
 };
 
-struct PositionComponent {
-  float x;
-  float y;
-};
-
 struct VelocityComponent {
   float x;
   float y;
@@ -133,11 +125,6 @@ struct VelocityComponent {
 
 struct ParentComponent {
   uint32_t parentID;
-};
-
-struct ScrollComponent {
-  float x;
-  float y;
 };
 
 struct HealthComponent {

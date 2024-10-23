@@ -17,7 +17,6 @@ add_executable(r-type_client
     ../../ecs/src/managers/entity/EntityManager.cpp
     ../../ecs/src/components/sprite/SpriteComponent.cpp
     ../../ecs/src/components/texture/TextureComponent.cpp
-    ../../ecs/src/components/position/PositionComponent.cpp
     ../../ecs/src/components/hitbox/HitBoxComponent.cpp
     ../../ecs/src/components/music/MusicComponent.cpp
     ../../ecs/src/components/sound/SoundComponent.cpp
@@ -25,7 +24,6 @@ add_executable(r-type_client
     ../../ecs/src/components/velocity/VelocityComponent.cpp
     ../../ecs/src/components/transform/TransformComponent.cpp
     ../../ecs/src/components/background/BackgroundComponent.cpp
-    ../../ecs/src/components/scroll/ScrollComponent.cpp
     ../../ecs/src/components/health/HealthComponent.cpp
     ../../ecs/src/components/damage/DamageComponent.cpp
     ../../ecs/src/components/type/TypeComponent.cpp

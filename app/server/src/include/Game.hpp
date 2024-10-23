@@ -18,10 +18,10 @@ public:
     // entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
     //                                   std::pair<float, float> speed,
     //                                   std::pair<float, float> size);
-    // entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
-    //                               std::pair<float, float> position,
-    //                               std::pair<float, float> velocity,
-    //                               std::pair<float, float> scale, int health);
+    entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
+                                  std::pair<float, float> position,
+                                  std::pair<float, float> velocity,
+                                  std::pair<float, float> scale, int health);
     // entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
     //                              std::pair<float, float> position,
     //                              std::pair<float, float> velocity,

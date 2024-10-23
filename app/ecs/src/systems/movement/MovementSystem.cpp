@@ -24,25 +24,46 @@ std::vector<std::string> ECS_system::MovementSystem::update(
     std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
-           component::TransformComponent, component::VelocityComponent,
-           component::PositionComponent>(entities)) {
+           component::TransformComponent, component::VelocityComponent>(
+           entities)) {
     component::TransformComponent *transform =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
     component::VelocityComponent *velocity =
         _componentManager.getComponent<component::VelocityComponent>(
             entity->getID());
-    component::PositionComponent *position =
-        _componentManager.getComponent<component::PositionComponent>(
-            entity->getID());
     component::TypeComponent *type =
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
 
-    float newX = position->getX() + velocity->getActualVelocity().x * deltaTime;
-    float newY = position->getY() + velocity->getActualVelocity().y * deltaTime;
+    float newX = transform->getPosition().first +
+                 velocity->getActualVelocity().first * deltaTime;
+    float newY = transform->getPosition().second +
+                 velocity->getActualVelocity().second * deltaTime;
 
-    if (type->getType() == "player") {
+    if (type->getType() == "background") {
+      component::BackgroundComponent *backgroundComponent =
+          _componentManager.getComponent<component::BackgroundComponent>(
+              entity->getID());
+
+      std::pair<float, float> speed = velocity->getVelocity();
+      std::pair<float, float> position = {transform->getPosition().first,
+                                          transform->getPosition().second};
+
+      position.first -= speed.first * deltaTime;
+      if (position.first <= -backgroundComponent->getSize().first ||
+          position.first <=
+              -backgroundComponent->getSize().first + speed.first * deltaTime)
+        position.first = 0;
+
+      position.second -= speed.second * deltaTime;
+      if (position.second <= -backgroundComponent->getSize().second ||
+          position.second <=
+              -backgroundComponent->getSize().second + speed.second * deltaTime)
+        position.second = 0;
+
+      transform->setPosition(position);
+    } else if (type->getType() == "player") {
       if (newX < 0)
         newX = 0;
       if (newX > 1920)
@@ -56,8 +77,6 @@ std::vector<std::string> ECS_system::MovementSystem::update(
         _entityManager.removeEntity(entity->getID());
     }
     transform->setPosition({newX, newY});
-    position->setX(newX);
-    position->setY(newY);
   }
   return msgToSend;
 }

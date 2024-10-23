@@ -20,18 +20,22 @@
  */
 bool ECS_system::CollisionSystem::isColliding(
     component::HitBoxComponent *hitbox1, component::HitBoxComponent *hitbox2) {
-  component::PositionComponent *pos1 =
-      _componentManager.getComponent<component::PositionComponent>(
+  component::TransformComponent *pos1 =
+      _componentManager.getComponent<component::TransformComponent>(
           hitbox1->getEntityID());
-  component::PositionComponent *pos2 =
-      _componentManager.getComponent<component::PositionComponent>(
+  component::TransformComponent *pos2 =
+      _componentManager.getComponent<component::TransformComponent>(
           hitbox2->getEntityID());
 
   // Check if the hitboxes are colliding
-  if (pos1->getX() < pos2->getX() + hitbox2->getWidth() &&
-      pos1->getX() + hitbox1->getWidth() > pos2->getX() &&
-      pos1->getY() < pos2->getY() + hitbox2->getHeight() &&
-      pos1->getY() + hitbox1->getHeight() > pos2->getY())
+  if (pos1->getPosition().first <
+          pos2->getPosition().first + hitbox2->getWidth() &&
+      pos1->getPosition().first + hitbox1->getWidth() >
+          pos2->getPosition().first &&
+      pos1->getPosition().second <
+          pos2->getPosition().second + hitbox2->getHeight() &&
+      pos1->getPosition().second + hitbox1->getHeight() >
+          pos2->getPosition().second)
     return true;
   return false;
 }

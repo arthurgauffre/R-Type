@@ -66,28 +66,6 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createPositionMsg(size_t id, float x,
-                                                               float y)
-    {
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::createPosition;
-        EntityId entity = {id};
-        PositionComponent position = {x, y};
-        std::vector<uint8_t> positionBytes(reinterpret_cast<uint8_t *>(&position),
-                                           reinterpret_cast<uint8_t *>(&position) +
-                                               sizeof(PositionComponent));
-        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
-                                         reinterpret_cast<uint8_t *>(&entity) +
-                                             sizeof(EntityId));
-        message.body.insert(message.body.end(), entityBytes.begin(),
-                            entityBytes.end());
-        message.body.insert(message.body.end(), positionBytes.begin(),
-                            positionBytes.end());
-        std::chrono::system_clock::time_point timeNow =
-            std::chrono::system_clock::now();
-        message << timeNow;
-        return message;
-    }
     rtype::network::Message<NetworkMessages> createVelocityMsg(size_t id, float x,
                                                                float y)
     {
@@ -286,28 +264,6 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createScrollMsg(size_t id, float x,
-                                                             float y)
-    {
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::createScroll;
-        EntityId entity = {id};
-        ScrollComponent scroll = {x, y};
-        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
-                                         reinterpret_cast<uint8_t *>(&entity) +
-                                             sizeof(EntityId));
-        std::vector<uint8_t> scrollBytes(reinterpret_cast<uint8_t *>(&scroll),
-                                         reinterpret_cast<uint8_t *>(&scroll) +
-                                             sizeof(ScrollComponent));
-        message.body.insert(message.body.end(), entityBytes.begin(),
-                            entityBytes.end());
-        message.body.insert(message.body.end(), scrollBytes.begin(),
-                            scrollBytes.end());
-        std::chrono::system_clock::time_point timeNow =
-            std::chrono::system_clock::now();
-        message << timeNow;
-        return message;
-    }
     rtype::network::Message<NetworkMessages> createParentMsg(size_t id,
                                                              uint32_t parentID)
     {
@@ -364,28 +320,6 @@ public:
                             entityBytes.end());
         message.body.insert(message.body.end(), textureBytes.begin(),
                             textureBytes.end());
-        std::chrono::system_clock::time_point timeNow =
-            std::chrono::system_clock::now();
-        message << timeNow;
-        return message;
-    }
-    rtype::network::Message<NetworkMessages> updatePositionMsg(size_t id, float x,
-                                                               float y)
-    {
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::updatePosition;
-        EntityId entity = {id};
-        PositionComponent position = {x, y};
-        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
-                                         reinterpret_cast<uint8_t *>(&entity) +
-                                             sizeof(EntityId));
-        std::vector<uint8_t> positionBytes(reinterpret_cast<uint8_t *>(&position),
-                                           reinterpret_cast<uint8_t *>(&position) +
-                                               sizeof(PositionComponent));
-        message.body.insert(message.body.end(), entityBytes.begin(),
-                            entityBytes.end());
-        message.body.insert(message.body.end(), positionBytes.begin(),
-                            positionBytes.end());
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
@@ -582,28 +516,6 @@ public:
             reinterpret_cast<uint8_t *>(&background) + sizeof(BackgroundComponent));
         message.body.insert(message.body.end(), backgroundBytes.begin(),
                             backgroundBytes.end());
-        std::chrono::system_clock::time_point timeNow =
-            std::chrono::system_clock::now();
-        message << timeNow;
-        return message;
-    }
-    rtype::network::Message<NetworkMessages> updateScrollMsg(size_t id, float x,
-                                                             float y)
-    {
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::updateScroll;
-        EntityId entity = {id};
-        ScrollComponent scroll = {x, y};
-        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
-                                         reinterpret_cast<uint8_t *>(&entity) +
-                                             sizeof(EntityId));
-        std::vector<uint8_t> scrollBytes(reinterpret_cast<uint8_t *>(&scroll),
-                                         reinterpret_cast<uint8_t *>(&scroll) +
-                                             sizeof(ScrollComponent));
-        message.body.insert(message.body.end(), entityBytes.begin(),
-                            entityBytes.end());
-        message.body.insert(message.body.end(), scrollBytes.begin(),
-                            scrollBytes.end());
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
@@ -824,21 +736,6 @@ public:
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteBackground;
-        EntityId entity = {id};
-        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
-                                         reinterpret_cast<uint8_t *>(&entity) +
-                                             sizeof(EntityId));
-        message.body.insert(message.body.end(), entityBytes.begin(),
-                            entityBytes.end());
-        std::chrono::system_clock::time_point timeNow =
-            std::chrono::system_clock::now();
-        message << timeNow;
-        return message;
-    }
-    rtype::network::Message<NetworkMessages> deleteScrollMsg(size_t id)
-    {
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::deleteScroll;
         EntityId entity = {id};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +

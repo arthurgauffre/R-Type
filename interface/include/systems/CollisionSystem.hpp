@@ -9,7 +9,7 @@
 
 #include <components/HealthComponent.hpp>
 #include <components/HitBoxComponent.hpp>
-#include <components/PositionComponent.hpp>
+#include <components/TransformComponent.hpp>
 #include <components/TypeComponent.hpp>
 #include <r-type/ASystem.hpp>
 

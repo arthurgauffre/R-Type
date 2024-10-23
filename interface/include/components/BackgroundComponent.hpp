@@ -14,22 +14,31 @@ namespace component {
 class BackgroundComponent : virtual public AComponent {
 public:
   BackgroundComponent(uint32_t entityID, std::string texturePath,
-                      const sf::Vector2f &size);
+                      const std::pair<float, float> &size);
   ~BackgroundComponent() = default;
 
   sf::Sprite getSprite();
-  const sf::Vector2f getSize();
+  const std::pair<float, float> getSize();
 
   sf::Sprite getDuplicateSprite();
 
-  std::string getTexturePath() { return _texturePath; }
-
-  void update(std::string &path, sf::Vector2f &size) {
-    _texturePath = path;
+  void update(std::string texturePath, const std::pair<float, float> &size) {
     _size = size;
-  };
+    _texture.loadFromFile(texturePath);
+    _sprite.setTexture(_texture);
+  }
 
 private:
+  /**
+   * @brief Holds the texture data for the background component.
+   *
+   * This member variable stores the texture used for rendering the background
+   * in the application. It is an instance of the sf::Texture class from the
+   * SFML library, which provides functionalities for loading, manipulating,
+   * and drawing textures.
+   */
+
+  sf::Texture _texture;
   /**
    * @brief A sprite object from the SFML library used to represent the
    * background.
@@ -41,16 +50,6 @@ private:
   sf::Sprite _sprite;
 
   /**
-   * @brief Holds the texture data for the background component.
-   *
-   * This member variable stores the texture used for rendering the background
-   * in the application. It is an instance of the sf::Texture class from the
-   * SFML library, which provides functionalities for loading, manipulating,
-   * and drawing textures.
-   */
-  sf::Texture _texture;
-
-  /**
    * @brief A duplicate sprite used for rendering purposes.
    *
    * This sprite is a copy of the original sprite and is used to create
@@ -60,14 +59,11 @@ private:
   sf::Sprite _duplicateSprite;
 
   /**
-   * @brief Represents the size of the background component.
+   * @brief A pair representing the size of the background component.
    *
-   * This member variable stores the dimensions of the background
-   * as a 2D vector, where the x component represents the width
-   * and the y component represents the height.
+   * The first element of the pair represents the width,
+   * and the second element represents the height.
    */
-  sf::Vector2f _size;
-
-  std::string _texturePath;
+  std::pair<float, float> _size;
 };
 } // namespace component

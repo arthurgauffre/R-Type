@@ -13,7 +13,6 @@
 #include <components/DamageComponent.hpp>
 #include <components/HitBoxComponent.hpp>
 #include <components/ParentComponent.hpp>
-#include <components/PositionComponent.hpp>
 #include <components/SoundComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
@@ -50,6 +49,8 @@ public:
 
 private:
   void createProjectile(uint32_t parentID, std::string texturePath,
-                        sf::Vector2f velocity, sf::Vector2f scale, int damage);
+                        std::pair<float, float> velocity,
+                        std::pair<float, float> scale, int damage);
+
 };
 } // namespace ECS_system

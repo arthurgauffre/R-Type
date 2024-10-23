@@ -8,7 +8,7 @@
 #pragma once
 
 #include <SFML/System/Time.hpp>
-#include <components/PositionComponent.hpp>
+#include <components/BackgroundComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>

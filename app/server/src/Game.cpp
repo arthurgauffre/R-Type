@@ -82,39 +82,39 @@ Game::~Game()
  * @param scale The scale of the entity.
  * @return A pointer to the created player entity.
  */
-// entity::IEntity *
-// Game::createPlayer(uint32_t entityID, std::string texturePath,
-//                    std::pair<float, float> position,
-//                    std::pair<float, float> velocity,
-//                    std::pair<float, float> scale, int health)
-// {
-//     auto player = _coreModule->getEntityManager()->createEntity(entityID);
+entity::IEntity *
+Game::createPlayer(uint32_t entityID, std::string texturePath,
+                   std::pair<float, float> position,
+                   std::pair<float, float> velocity,
+                   std::pair<float, float> scale, int health)
+{
+    auto player = _coreModule->getEntityManager()->createEntity(entityID);
 
-//     auto weapon = createWeapon(entityID, "weapon", 15, 0.5);
+    // auto weapon = createWeapon(entityID, "weapon", 15, 0.5);
 
-//     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
-//         entityID, weapon->getID(), true, 500);
-//     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
-//                                                                                "player");
-//     _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-//         entityID, position.first, position.second);
-//     auto texture =
-//         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-//             entityID, texturePath);
-//     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
-//         entityID);
-//     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
-//         entityID, velocity);
-//     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
-//         entityID, position, scale);
-//     _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
-//         entityID, health);
-//     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-//         entityID, texture->getTexture().getSize().x * scale.first,
-//         texture->getTexture().getSize().y * scale.second);
+    // _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
+    //     entityID, weapon->getID(), true, 500);
+    _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
+                                                                               "player");
+    _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
+        entityID, position.first, position.second);
+    auto texture =
+        _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
+            entityID, texturePath);
+    _coreModule->getComponentManager()->addComponent<component::InputComponent>(
+        entityID);
+    _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+        entityID, velocity);
+    _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
+        entityID, position, scale);
+    _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
+        entityID, health);
+    _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
+        entityID, texture->getTexture().getSize().x * scale.first,
+        texture->getTexture().getSize().y * scale.second);
 
-//     return player;
-// }
+    return player;
+}
 
 // entity::IEntity *Game::createEnemy(
 //     uint32_t entityID, std::string texturePath,
