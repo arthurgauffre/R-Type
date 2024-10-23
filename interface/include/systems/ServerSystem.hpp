@@ -44,10 +44,14 @@ public:
   std::vector<std::string>
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend) {
+         std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
     sf::Clock clock;
     float deltatime = clock.restart().asSeconds();
-    this->ServerUpdate(deltaTime, false);
+    this->ServerUpdate(100, false);
+    while (!_msgReceived.empty()) {
+      msgReceived.emplace_back(_msgReceived.back());
+      _msgReceived.pop_back();
+    }
     return msgToSend;
   }
 
@@ -56,6 +60,7 @@ protected:
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
           client,
       rtype::network::Message<NetworkMessages> &message) {
+    // std::cout << "Message received" << std::endl;
     switch (message.header.id) {
     case NetworkMessages::ClientConnection: {
       std::cout << "Client connected : " << client->GetId() << std::endl;
@@ -79,9 +84,13 @@ protected:
   void handleInputMessage(
       std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
       rtype::network::Message<NetworkMessages> &message) {
+    // std::cout << "Handling input message" << std::endl;
     switch (message.header.id) {
     case NetworkMessages::moveUp: {
       std::cout << "Move Up" << std::endl;
+      EntityId entity;
+      std::memcpy(&entity, message.body.data(), sizeof(EntityId));
+      _msgReceived.emplace_back(std::make_pair("moveUp", entity.id));
     } break;
     case NetworkMessages::moveDown: {
       std::cout << "Move Down" << std::endl;
@@ -150,31 +159,32 @@ protected:
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
               sendAllEntitiesToClient(deqConnections.back());
-              size_t id =
-                  _entityManager.generateEntityID();
-              _entityManager.createEntity(id);
-              SendMessageToAllClients(
-                  networkMessageFactory.createEntityMsg(id));
-              _componentManager.addComponent<component::PositionComponent>(id, 0, 0);
-              SendMessageToAllClients(
-                  networkMessageFactory.createPositionMsg(id, 0, 0));
-              _componentManager.addComponent<component::SpriteComponent>(id, 0, 0);
-              SendMessageToAllClients(
-                  networkMessageFactory.createSpriteMsg(id, 0, 0));
-              _componentManager.addComponent<component::TextureComponent>(
-                      id, GetTexturePath(TexturePath::Player));
-              SendMessageToAllClients(networkMessageFactory.createTextureMsg(
-                  id, TexturePath::Player));
-              _componentManager.addComponent<component::TransformComponent>(
-                      id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
-              SendMessageToAllClients(
-                  networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
-              _componentManager.addComponent<component::InputComponent>(id);
-              SendMessageToAllClients(
-                  networkMessageFactory.createInputMsg(id));
-              BindKey moveUp = BindKey(KeyBoard::Z, BindAction::MoveUp);
-              SendMessageToAllClients(
-                  networkMessageFactory.updateInputMsg(id, moveUp));
+              _msgReceived.emplace_back(std::make_pair("clientConnection", -1));
+              // size_t id =
+              //     _entityManager.generateEntityID();
+              // _entityManager.createEntity(id);
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createEntityMsg(id));
+              // _componentManager.addComponent<component::PositionComponent>(id, 0, 0);
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createPositionMsg(id, 0, 0));
+              // _componentManager.addComponent<component::SpriteComponent>(id, 0, 0);
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createSpriteMsg(id, 0, 0));
+              // _componentManager.addComponent<component::TextureComponent>(
+              //         id, GetTexturePath(TexturePath::Player));
+              // SendMessageToAllClients(networkMessageFactory.createTextureMsg(
+              //     id, TexturePath::Player));
+              // _componentManager.addComponent<component::TransformComponent>(
+              //         id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
+              // _componentManager.addComponent<component::InputComponent>(id);
+              // SendMessageToAllClients(
+              //     networkMessageFactory.createInputMsg(id));
+              // BindKey moveUp = BindKey(KeyBoard::Z, BindAction::MoveUp);
+              // SendMessageToAllClients(
+              //     networkMessageFactory.updateInputMsg(id, moveUp));
             } else {
               std::cout << "Connection denied" << std::endl;
             }
@@ -196,8 +206,7 @@ protected:
       // } else if (entity->getCommunication() == entity::EntityCommunication::DELETE) {
       //   SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
       // }
-      // if (_componentManager.getComponent<component::PositionComponent>(entity->getID()))
-      // {
+       // {
       //   component::PositionComponent *component =
       //       _componentManager.getComponent<component::PositionComponent>(entity->getID());
         // if (entity->getCommunication() == entity::EntityCommunication::CREATE) {
@@ -557,6 +566,8 @@ protected:
   NetworkMessageFactory networkMessageFactory;
   std::array<char, 1024> bufferOfIncomingMessages;
   uint32_t actualId = 0;
+
+  std::vector<std::pair<std::string, size_t>> _msgReceived;
 
 private:
   component::ComponentManager &_componentManager;

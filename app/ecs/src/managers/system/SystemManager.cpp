@@ -22,10 +22,10 @@ ECS_system::SystemManager::SystemManager() {}
  */
 std::vector<std::string> ECS_system::SystemManager::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend) {
+    std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &system : _systems) {
     msgToSend = system->update(deltaTime, entities,
-                               msgToSend); // Each system updates itself because
+                               msgToSend, msgReceived); // Each system updates itself because
                                            // each system has its own logic
   }
   return msgToSend;

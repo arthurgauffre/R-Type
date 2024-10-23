@@ -82,7 +82,9 @@ void rtype::CoreModule::run() {
   while (1) {
     float deltatime = clock.restart().asSeconds();
     msgToSend = this->getSystemManager()->update(
-        deltatime, this->getEntityManager()->getEntities(), msgToSend);
+        deltatime, this->getEntityManager()->getEntities(), msgToSend, this->msgReceived);
+    if (this->msgReceived.size() > 0)
+      std::cout << "msgReceived size: " << this->msgReceived.size() << std::endl;
   }
 }
 

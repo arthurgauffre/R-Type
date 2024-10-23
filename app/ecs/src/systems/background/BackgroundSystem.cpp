@@ -11,7 +11,7 @@
 
 std::vector<std::string> ECS_system::BackgroundSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend) {
+    std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::ScrollComponent, component::BackgroundComponent,

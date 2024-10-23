@@ -37,7 +37,7 @@ ECS_system::RenderSystem::RenderSystem(
  */
 std::vector<std::string> ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend) {
+    std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   _window.clear();
 
   for (auto &entity :

@@ -571,7 +571,7 @@ namespace rtype
 
     std::vector<std::string> ClientSystem::update(float deltaTime,
                                                   std::vector<std::shared_ptr<entity::IEntity>> entities,
-                                                  std::vector<std::string> msgToSend)
+                                                  std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
     {
       while (!msgToSend.empty())
       {

@@ -20,7 +20,7 @@ public:
   ~GameSystem();
 
   std::vector<std::string> update(float deltaTime,
-              std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend) override;
+              std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
 
   void initialize() override {}
   void handleComponents() override {}

@@ -27,8 +27,8 @@ entity::IEntity *Game::createWeapon(uint32_t parentID,
       weapon->getID(), type);
   _coreModule->getComponentManager()->addComponent<component::ParentComponent>(
       weapon->getID(), parentID);
-  _coreModule->getComponentManager()->addComponent<component::CooldownComponent>(
-      weapon->getID(), cooldown);
+//   _coreModule->getComponentManager()->addComponent<component::CooldownComponent>(
+//       weapon->getID(), cooldown);
 
   return weapon;
 }

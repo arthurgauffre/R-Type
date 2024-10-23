@@ -20,7 +20,6 @@ int main(void)
 
   coreModule->getSystemManager()->addSystem(componentManager, entityManager,
                                             "server");
-  // rtype::network::ServerSystem server(componentManager, entityManager);
   coreModule->run();
   return 0;
 }

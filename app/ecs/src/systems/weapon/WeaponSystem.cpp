@@ -72,7 +72,7 @@ void ECS_system::WeaponSystem::createProjectile(uint32_t parentID,
 }
 
 std::vector<std::string> ECS_system::WeaponSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::WeaponComponent>(
            entities)) {

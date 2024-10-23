@@ -58,6 +58,8 @@ public:
   std::shared_ptr<component::ComponentManager> getComponentManager() const;
   std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
+  std::vector<std::pair<std::string, size_t>> msgReceived;
+
   template <typename T> class DLLoader {
   public:
     void *handle;

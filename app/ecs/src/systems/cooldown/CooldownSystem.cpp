@@ -17,7 +17,7 @@ ECS_system::CooldownSystem::CooldownSystem(
 ECS_system::CooldownSystem::~CooldownSystem() {}
 
 std::vector<std::string> ECS_system::CooldownSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager
            .getEntitiesWithComponents<component::CooldownComponent>(entities)) {

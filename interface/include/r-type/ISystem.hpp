@@ -52,7 +52,7 @@ public:
   virtual std::vector<std::string>
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend) = 0;
+         std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) = 0;
 
   /**
    * @brief Pure virtual function to handle the components of the system.
