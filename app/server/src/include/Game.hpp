@@ -39,4 +39,5 @@ public:
 protected:
 private:
     std::shared_ptr<rtype::CoreModule> _coreModule;
+    sf::Clock inputClock;
 };

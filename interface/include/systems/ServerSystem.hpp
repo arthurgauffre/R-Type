@@ -53,7 +53,7 @@ namespace rtype
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
-        this->ServerUpdate(10, false);
+        this->ServerUpdate(100, false);
         sendAllEntitiesUpdateOrCreateToAllClient(nullptr);
         while (!_msgReceived.empty())
         {

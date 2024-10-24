@@ -77,13 +77,9 @@ rtype::CoreModule::getSystemManager() const {
  * the entity manager.
  */
 void rtype::CoreModule::update() {
-  float deltatime = clock.getElapsedTime().asSeconds();
-  if (deltatime < 0.01) {
-    return;
-  }
+  float deltatime = clock.restart().asSeconds();
   this->getSystemManager()->update(
       deltatime, this->getEntityManager()->getEntities(), msgToSend, this->msgReceived);
-  clock.restart();
 }
 
 void rtype::CoreModule::run() {

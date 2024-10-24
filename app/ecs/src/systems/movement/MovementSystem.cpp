@@ -38,7 +38,6 @@ void ECS_system::MovementSystem::update(
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
 
-    std::cout << "deltaTime: " << deltaTime << std::endl;
     float newX = transform->getPosition().first +
                  velocity->getActualVelocity().first * deltaTime;
     float newY = transform->getPosition().second +
@@ -86,7 +85,7 @@ void ECS_system::MovementSystem::update(
     }
     float subPreviousX = transform->getPreviousPosition().first - newX;
     float subPreviousY = transform->getPreviousPosition().second - newY;
-    if (subPreviousX > 5 || subPreviousX < -5 ||
+    if (subPreviousX > 5 || subPreviousX < -5||
         subPreviousY > 5 || subPreviousY < -5)
     {
       transform->setCommunication(component::ComponentCommunication::UPDATE);

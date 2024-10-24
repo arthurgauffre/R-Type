@@ -262,27 +262,24 @@ void Game::init()
 
 void Game::handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived)
 {
-    while (!msgReceived.empty())
+    std::string msg = msgReceived.front().first;
+    size_t id = msgReceived.front().second;
+    msgReceived.erase(msgReceived.begin());
+    if (msg == "clientConnection")
     {
-        std::string msg = msgReceived.front().first;
-        size_t id = msgReceived.front().second;
-        msgReceived.erase(msgReceived.begin());
-        if (msg == "clientConnection")
-        {
-            entity::IEntity *entity = createPlayer(_coreModule->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
-                                                   std::pair<float, float>(100.0f, 100.0f),
-                                                   std::pair<float, float>(500.0f, 500.0f),
-                                                   std::pair<float, float>(0.25f, 0.25f), 1);
-            std::cout << "Client connected : " << id << std::endl;
-        }
-        if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")
-            moveEntity(msg, id);
+        entity::IEntity *entity = createPlayer(_coreModule->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
+                                               std::pair<float, float>(100.0f, 100.0f),
+                                               std::pair<float, float>(500.0f, 500.0f),
+                                               std::pair<float, float>(0.25f, 0.25f), 1);
+        std::cout << "Client connected : " << id << std::endl;
     }
+    if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")
+        moveEntity(msg, id);
 }
 
 void Game::moveEntity(std::string msg, size_t id)
 {
-   if (_coreModule->getComponentManager()->getComponent<component::VelocityComponent>(id))
+    if (_coreModule->getComponentManager()->getComponent<component::VelocityComponent>(id))
     {
         component::VelocityComponent *velocityComponent = _coreModule->getComponentManager()->getComponent<component::VelocityComponent>(id);
         if (msg == "moveUp")
@@ -308,12 +305,13 @@ void Game::resetInput()
             if (_coreModule->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID()))
             {
                 component::VelocityComponent *velocityComponent = _coreModule->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID());
-                if (velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0)
+                if ((velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0) && inputClock.getElapsedTime().asSeconds() > 0.1)
                 {
+                    std::cout << "resetting velocity" << std::endl;
                     velocityComponent->setActualVelocityX(0);
                     velocityComponent->setActualVelocityY(0);
+                    inputClock.restart();
                 }
-                
             }
         }
     }
@@ -321,13 +319,17 @@ void Game::resetInput()
 
 void Game::run()
 {
+    inputClock.restart();
     while (1)
     {
         _coreModule->update();
         if (!_coreModule->msgReceived.empty())
         {
+            std::cout << "msgReceivedSize: " << _coreModule->msgReceived.size() << std::endl;
             handdleReceivedMessage(_coreModule->msgReceived);
-        } else {
+        }
+        else
+        {
             resetInput();
         }
     }
