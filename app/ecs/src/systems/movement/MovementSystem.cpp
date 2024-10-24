@@ -19,13 +19,15 @@
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be updated.
  */
-std::vector<std::string> ECS_system::MovementSystem::update(
+void ECS_system::MovementSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
+{
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::TransformComponent, component::VelocityComponent>(
-           entities)) {
+           entities))
+  {
     component::TransformComponent *transform =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
@@ -36,12 +38,14 @@ std::vector<std::string> ECS_system::MovementSystem::update(
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
 
+    std::cout << "deltaTime: " << deltaTime << std::endl;
     float newX = transform->getPosition().first +
                  velocity->getActualVelocity().first * deltaTime;
     float newY = transform->getPosition().second +
                  velocity->getActualVelocity().second * deltaTime;
 
-    if (type->getType() == "background") {
+    if (type->getType() == "background")
+    {
       component::BackgroundComponent *backgroundComponent =
           _componentManager.getComponent<component::BackgroundComponent>(
               entity->getID());
@@ -63,7 +67,9 @@ std::vector<std::string> ECS_system::MovementSystem::update(
         position.second = 0;
 
       transform->setPosition(position);
-    } else if (type->getType() == "player") {
+    }
+    else if (type->getType() == "player")
+    {
       if (newX < 0)
         newX = 0;
       if (newX > 1920)
@@ -72,17 +78,27 @@ std::vector<std::string> ECS_system::MovementSystem::update(
         newY = 0;
       if (newY > 1080)
         newY = 1080;
-    } else if (type->getType() == "projectile") {
+    }
+    else if (type->getType() == "projectile")
+    {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
         _entityManager.removeEntity(entity->getID());
     }
+    float subPreviousX = transform->getPreviousPosition().first - newX;
+    float subPreviousY = transform->getPreviousPosition().second - newY;
+    if (subPreviousX > 5 || subPreviousX < -5 ||
+        subPreviousY > 5 || subPreviousY < -5)
+    {
+      transform->setCommunication(component::ComponentCommunication::UPDATE);
+      transform->setPreviousPosition({newX, newY});
+    }
     transform->setPosition({newX, newY});
   }
-  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
+             entity::EntityManager &entityManager)
+{
   return new ECS_system::MovementSystem(componentManager, entityManager);
 }

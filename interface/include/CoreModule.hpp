@@ -57,7 +57,7 @@ public:
   std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
   std::vector<std::pair<std::string, size_t>> msgReceived;
-  std::vector<std::string> msgToSend;
+  std::vector<std::pair<std::string, size_t>> msgToSend;
   sf::Clock clock;
 
   template <typename T> class DLLoader {

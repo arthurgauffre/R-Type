@@ -14,8 +14,8 @@ ECS_system::GameSystem::GameSystem(
 
 ECS_system::GameSystem::~GameSystem() {}
 
-std::vector<std::string> ECS_system::GameSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
+void ECS_system::GameSystem::update(
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   int _playerCount = 0;
   int _enemyCount = 0;
 
@@ -39,7 +39,6 @@ std::vector<std::string> ECS_system::GameSystem::update(
 
   if (_enemyCount == 0)
     throw rtype::GameWon("You Win");
-  return msgToSend;
 }
 
 extern "C" ECS_system::ISystem *

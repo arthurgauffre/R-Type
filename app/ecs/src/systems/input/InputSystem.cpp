@@ -8,27 +8,26 @@
 #include <components/VelocityComponent.hpp>
 #include <systems/InputSystem.hpp>
 
-std::vector<std::string> ECS_system::InputSystem::update(
+void ECS_system::InputSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
            entities)) {
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(
             entity.get()->getID());
-    if (inputComponent->isActionActive("MoveUp")) {
-      msgToSend.push_back("MoveUp");
-    }
+    if (inputComponent->isActionActive("MoveUp"))
+      msgToSend.emplace_back("MoveUp", entity->getID());
     if (inputComponent->isActionActive("MoveDown"))
-      msgToSend.push_back("MoveDown");
+      msgToSend.emplace_back("MoveDown", entity->getID());
     if (inputComponent->isActionActive("MoveLeft"))
-      msgToSend.push_back("MoveLeft");
+      msgToSend.emplace_back("MoveLeft", entity->getID());
     if (inputComponent->isActionActive("MoveRight"))
-      msgToSend.push_back("MoveRight");
+      msgToSend.emplace_back("MoveRight", entity->getID());
             entity->getID();
     if (!inputComponent)
-      return msgToSend;
+      return;
 
     // component::WeaponComponent *weaponComponent =
     //     _componentManager.getComponent<component::WeaponComponent>(
@@ -38,7 +37,6 @@ std::vector<std::string> ECS_system::InputSystem::update(
 
     // weaponComponent->setIsFiring(true);
   }
-  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

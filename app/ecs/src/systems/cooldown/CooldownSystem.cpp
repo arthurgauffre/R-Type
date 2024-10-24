@@ -16,8 +16,8 @@ ECS_system::CooldownSystem::CooldownSystem(
 
 ECS_system::CooldownSystem::~CooldownSystem() {}
 
-std::vector<std::string> ECS_system::CooldownSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
+void ECS_system::CooldownSystem::update(
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager
            .getEntitiesWithComponents<component::CooldownComponent>(entities)) {
@@ -28,7 +28,6 @@ std::vector<std::string> ECS_system::CooldownSystem::update(
       cooldownComponent->setTimeRemaining(
           cooldownComponent->getTimeRemaining() - deltaTime);
   }
-  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

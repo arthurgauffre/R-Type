@@ -32,6 +32,8 @@ enum class NetworkMessages : uint32_t {
   createBackground,
   createParent,
   createInput,
+  createCooldown,
+  createType,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -45,6 +47,8 @@ enum class NetworkMessages : uint32_t {
   updateBackground,
   updateParent,
   updateInput,
+  updateType,
+  updateCooldown,
   deleteTexture,
   deletePosition,
   deleteVelocity,
@@ -58,12 +62,21 @@ enum class NetworkMessages : uint32_t {
   deleteBackground,
   deleteParent,
   deleteInput,
+  deleteCooldown,
+  deleteType,
   moveUp,
   moveDown,
   moveLeft,
   moveRight,
   shoot,
   none,
+};
+
+enum class EntityType : uint32_t {
+  Player,
+  Enemy,
+  Bullet,
+  Background,
 };
 
 enum class TexturePath : uint32_t {
@@ -158,12 +171,22 @@ struct TransformComponent {
   float y;
   float scaleX;
   float scaleY;
+  float rotation;
 };
 
 struct BackgroundComponent {
   TexturePath texturePath;
   float x;
   float y;
+};
+
+struct CoolDownComponent {
+  float cooldown;
+  float timeRemaining;
+};
+
+struct TypeComponent {
+  EntityType type;
 };
 
 struct BindKey {

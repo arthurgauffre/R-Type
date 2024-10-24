@@ -18,6 +18,7 @@ add_library(r-type_server_system SHARED
     ../../components/health/HealthComponent.cpp
     ../../components/damage/DamageComponent.cpp
     ../../components/parent/ParentComponent.cpp
+    ../../components/type/TypeComponent.cpp
     ../../entity/Entity.cpp
 )
 

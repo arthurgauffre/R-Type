@@ -32,6 +32,8 @@ public:
 
     void init();
     void run();
+    void resetInput();
+    void moveEntity(std::string msg, size_t id);
     void handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived);
 
 protected:

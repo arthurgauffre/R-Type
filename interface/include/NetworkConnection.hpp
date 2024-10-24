@@ -239,7 +239,6 @@ private:
   }
 
   void ReadBody() {
-    std::cout << "Reading the Body of the message...." << std::endl;
     asioSocket.async_receive_from(
         asio::buffer(temporaryIncomingMessage.body.data(),
                      temporaryIncomingMessage.body.size()),

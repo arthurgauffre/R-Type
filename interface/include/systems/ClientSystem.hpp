@@ -55,15 +55,17 @@ public:
 
   sf::Keyboard::Key getKey(KeyBoard key);
 
+  std::string getTypedEntity(EntityType type);
+
   virtual void Disconnect() {}
 
   void initialize() override{};
   void handleComponents() override{};
 
-  std::vector<std::string>
+  void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
 
 private:
   uint8_t entityID = 0;

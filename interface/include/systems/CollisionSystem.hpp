@@ -46,10 +46,10 @@ public:
    * @param entities A vector of shared pointers to the entities that need to be
    * updated.
    */
-  std::vector<std::string>
+  void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
 
   /**
    * @brief Initializes the collision system.

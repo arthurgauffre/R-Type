@@ -48,6 +48,8 @@ public:
 
   bool isActionActive(const std::string &action) const;
 
+  std::unordered_map<std::string, sf::Keyboard::Key> getKeyBindings() const;
+
 private:
   /**
    * @brief Stores key bindings for various actions.

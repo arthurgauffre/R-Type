@@ -126,6 +126,18 @@ namespace rtype
       return sf::Keyboard::Unknown;
     }
 
+    std::string ClientSystem::getTypedEntity(EntityType type)
+    {
+      switch (type)
+      {
+      case EntityType::Player:
+        return "Player";
+      case EntityType::Enemy:
+        return "Enemy";
+      }
+      return "";
+    }
+
     void ClientSystem::handdleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
       switch (msg.header.id)
@@ -211,21 +223,22 @@ namespace rtype
                 id.id, GetTexturePath(texture.texturePath));
       }
       break;
-      // case NetworkMessages::createTransform:
-      // {
-      //   std::cout << "Transform component created" << std::endl;
-      //   TransformComponent transform;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&transform, msg.body.data() + sizeof(EntityId),
-      //               sizeof(TransformComponent));
-      //   std::cout << "Transform: " << transform.x << " " << transform.y << " "
-      //             << transform.scaleX << " " << transform.scaleY << std::endl;
-      //   _componentManager
-      //       .addComponent<component::TransformComponent>(
-      //           id.id, sf::Vector2f(transform.x, transform.y),
-      //           sf::Vector2f(transform.scaleX, transform.scaleY));
-      // }
+      case NetworkMessages::createTransform:
+      {
+        std::cout << "Transform component created" << std::endl;
+        TransformComponent transform;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&transform, msg.body.data() + sizeof(EntityId),
+                    sizeof(TransformComponent));
+        std::cout << "Transform: " << transform.x << " " << transform.y << " "
+                  << transform.scaleX << " " << transform.scaleY << " " << transform.rotation << std::endl;
+        _componentManager
+            .addComponent<component::TransformComponent>(
+                id.id, std::make_pair(transform.x, transform.y),
+                std::make_pair(transform.scaleX, transform.scaleY), transform.rotation);
+      }
+      break;
       // break;
       // case NetworkMessages::createBackground:
       // {
@@ -245,20 +258,20 @@ namespace rtype
       //           sf::Vector2f(background.x, background.y));
       // }
       // break;
-      // case NetworkMessages::createVelocity:
-      // {
-      //   std::cout << "Velocity component created" << std::endl;
-      //   VelocityComponent velocity;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&velocity, msg.body.data() + sizeof(EntityId),
-      //               sizeof(VelocityComponent));
-      //   std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
-      //   _componentManager
-      //       .addComponent<component::VelocityComponent>(
-      //           id.id, sf::Vector2f(velocity.x, velocity.y));
-      // }
-      // break;
+      case NetworkMessages::createVelocity:
+      {
+        std::cout << "Velocity component created" << std::endl;
+        VelocityComponent velocity;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&velocity, msg.body.data() + sizeof(EntityId),
+                    sizeof(VelocityComponent));
+        std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
+        _componentManager
+            .addComponent<component::VelocityComponent>(
+                id.id, std::make_pair(velocity.x, velocity.y));
+      }
+      break;
       case NetworkMessages::createParent:
       {
         std::cout << "Parent component created" << std::endl;
@@ -356,6 +369,32 @@ namespace rtype
                                                         getKey(input.key));
       }
       break;
+      case NetworkMessages::createType:
+      {
+        std::cout << "Type component created" << std::endl;
+        TypeComponent type;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&type, msg.body.data() + sizeof(EntityId),
+                    sizeof(TypeComponent));
+        std::cout << "Type: " << getTypedEntity(type.type) << std::endl;
+        _componentManager
+            .addComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
+      }
+      break;
+      case NetworkMessages::updateType:
+      {
+        std::cout << "Type component updated" << std::endl;
+        TypeComponent type;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&type, msg.body.data() + sizeof(EntityId),
+                    sizeof(TypeComponent));
+        std::cout << "Type: " << getTypedEntity(type.type) << std::endl;
+        _componentManager
+            .updateComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
+      }
+      break;
       case NetworkMessages::updateSprite:
       {
         std::cout << "Sprite component updated" << std::endl;
@@ -386,22 +425,22 @@ namespace rtype
       //           id.id, GetTexturePath(texture.texturePath));
       // }
       // break;
-      // case NetworkMessages::updateTransform:
-      // {
-      //   std::cout << "Transform component updated" << std::endl;
-      //   TransformComponent transform;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&transform, msg.body.data() + sizeof(EntityId),
-      //               sizeof(TransformComponent));
-      //   std::cout << "Transform: " << transform.x << " " << transform.y << " "
-      //             << transform.scaleX << " " << transform.scaleY << std::endl;
-      //   _componentManager
-      //       .updateComponent<component::TransformComponent>(
-      //           id.id, sf::Vector2f(transform.x, transform.y),
-      //           sf::Vector2f(transform.scaleX, transform.scaleY));
-      // }
-      // break;
+      case NetworkMessages::updateTransform:
+      {
+        std::cout << "Transform component updated" << std::endl;
+        TransformComponent transform;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&transform, msg.body.data() + sizeof(EntityId),
+                    sizeof(TransformComponent));
+        std::cout << "Transform: " << transform.x << " " << transform.y << " "
+                  << transform.scaleX << " " << transform.scaleY << std::endl;
+        _componentManager
+            .updateComponent<component::TransformComponent>(
+                id.id, std::make_pair(transform.x, transform.y),
+                std::make_pair(transform.scaleX, transform.scaleY), transform.rotation);
+      }
+      break;
       // case NetworkMessages::updateBackground:
       // {
       //   std::cout << "Background component updated" << std::endl;
@@ -421,20 +460,20 @@ namespace rtype
       //           sf::Vector2f(background.x, background.y));
       // }
       // break;
-      // case NetworkMessages::updateVelocity:
-      // {
-      //   std::cout << "Velocity component updated" << std::endl;
-      //   VelocityComponent velocity;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&velocity, msg.body.data() + sizeof(EntityId),
-      //               sizeof(VelocityComponent));
-      //   std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
-      //   _componentManager
-      //       .updateComponent<component::VelocityComponent>(
-      //           id.id, sf::Vector2f(velocity.x, velocity.y));
-      // }
-      // break;
+      case NetworkMessages::updateVelocity:
+      {
+        std::cout << "Velocity component updated" << std::endl;
+        VelocityComponent velocity;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&velocity, msg.body.data() + sizeof(EntityId),
+                    sizeof(VelocityComponent));
+        std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
+        _componentManager
+            .updateComponent<component::VelocityComponent>(
+                id.id, std::make_pair(velocity.x, velocity.y));
+      }
+      break;
       case NetworkMessages::updateParent:
       {
         std::cout << "Parent component updated" << std::endl;
@@ -448,7 +487,7 @@ namespace rtype
             .updateComponent<component::ParentComponent>(id.id, parent.parentID);
       }
       break;
-      break;
+        break;
       case NetworkMessages::updateHealth:
       {
         std::cout << "Health component updated" << std::endl;
@@ -516,20 +555,29 @@ namespace rtype
       }
     }
 
-    std::vector<std::string> ClientSystem::update(float deltaTime,
-                                                  std::vector<std::shared_ptr<entity::IEntity>> entities,
-                                                  std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
+    void ClientSystem::update(float deltaTime,
+                              std::vector<std::shared_ptr<entity::IEntity>> entities,
+                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
     {
       while (!msgToSend.empty())
       {
         // popfront the first message in the queue
-        std::string msg = msgToSend.front();
+        std::string msg = msgToSend.front().first;
+        EntityId id = {msgToSend.front().second};
         msgToSend.erase(msgToSend.begin());
         rtype::network::Message<NetworkMessages> message;
         NetworkMessages action = getAction(msg);
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&id),
+                                         reinterpret_cast<uint8_t *>(&id) +
+                                             sizeof(EntityId));
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
         if (action != NetworkMessages::none)
         {
           message.header.id = action;
+          std::chrono::system_clock::time_point timeNow =
+              std::chrono::system_clock::now();
+          message << timeNow;
           Send(message);
         }
       }
@@ -547,7 +595,6 @@ namespace rtype
       {
         std::cout << "Server Down" << std::endl;
       }
-      return msgToSend;
     }
 
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,

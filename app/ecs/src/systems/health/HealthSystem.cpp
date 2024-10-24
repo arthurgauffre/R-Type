@@ -44,9 +44,9 @@ ECS_system::HealthSystem::~HealthSystem() {}
  * @param entities A vector of shared pointers to entities that need to be
  * updated.
  */
-std::vector<std::string> ECS_system::HealthSystem::update(
+void ECS_system::HealthSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::HealthComponent>(
            entities)) {
@@ -60,7 +60,6 @@ std::vector<std::string> ECS_system::HealthSystem::update(
       _entityManager.destroyEntity(entity->getID());
     }
   }
-  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

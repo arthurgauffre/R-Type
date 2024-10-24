@@ -103,9 +103,9 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
  * @param entities A vector of shared pointers to entities to be checked for
  * collisions.
  */
-std::vector<std::string> ECS_system::CollisionSystem::update(
+void ECS_system::CollisionSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity : entities) {
     component::HitBoxComponent *hitbox1 =
         _componentManager.getComponent<component::HitBoxComponent>(
@@ -126,7 +126,6 @@ std::vector<std::string> ECS_system::CollisionSystem::update(
         handleCollision(entity.get(), entity2.get());
     }
   }
-  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *

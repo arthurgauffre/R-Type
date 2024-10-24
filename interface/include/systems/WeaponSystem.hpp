@@ -40,10 +40,10 @@ public:
                entity::EntityManager &entityManager);
   ~WeaponSystem();
 
-  std::vector<std::string>
+  void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
   void initialize() override {}
   void handleComponents() override {}
 

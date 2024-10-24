@@ -41,10 +41,10 @@ public:
   void addSystem(component::ComponentManager &componentManager,
                  entity::EntityManager &entityManager, std::string systemName);
 
-  std::vector<std::string>
+  void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived);
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived);
 
   std::vector<std::shared_ptr<ISystem>> getSystems() const { return _systems; }
 

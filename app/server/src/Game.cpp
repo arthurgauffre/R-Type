@@ -103,15 +103,30 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
             entityID, texturePath);
     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
         entityID);
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("MoveLeft", sf::Keyboard::Q);
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("MoveRight", sf::Keyboard::D);
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("MoveUp", sf::Keyboard::Z);
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("MoveDown", sf::Keyboard::S);
+    //   _coreModule->getComponentManager()
+    //       ->getComponent<component::InputComponent>(entityID)
+    //       ->bindAction("Shoot", sf::Keyboard::Space);
     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, velocity);
     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
         entityID, position, scale);
-    _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
-        entityID, health);
-    _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-        entityID, texture->getTexture().getSize().x * scale.first,
-        texture->getTexture().getSize().y * scale.second);
+    // _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
+    //     entityID, health);
+    // _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
+    //     entityID, texture->getTexture().getSize().x * scale.first,
+    //     texture->getTexture().getSize().y * scale.second);
 
     return player;
 }
@@ -228,7 +243,6 @@ void Game::init()
                                                "movement");
     _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
                                                "server");
-
     //   _coreModule->getComponentManager()
     //       ->getComponent<component::InputComponent>(0)
     //       ->bindAction("MoveLeft", sf::Keyboard::A);
@@ -253,8 +267,55 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &m
         std::string msg = msgReceived.front().first;
         size_t id = msgReceived.front().second;
         msgReceived.erase(msgReceived.begin());
+        if (msg == "clientConnection")
+        {
+            entity::IEntity *entity = createPlayer(_coreModule->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
+                                                   std::pair<float, float>(100.0f, 100.0f),
+                                                   std::pair<float, float>(500.0f, 500.0f),
+                                                   std::pair<float, float>(0.25f, 0.25f), 1);
+            std::cout << "Client connected : " << id << std::endl;
+        }
+        if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")
+            moveEntity(msg, id);
+    }
+}
 
-        std::cout << "Message received: " << msg << std::endl;
+void Game::moveEntity(std::string msg, size_t id)
+{
+   if (_coreModule->getComponentManager()->getComponent<component::VelocityComponent>(id))
+    {
+        component::VelocityComponent *velocityComponent = _coreModule->getComponentManager()->getComponent<component::VelocityComponent>(id);
+        if (msg == "moveUp")
+            velocityComponent->setActualVelocityY(-velocityComponent->getVelocity().second);
+        if (msg == "moveDown")
+            velocityComponent->setActualVelocityY(velocityComponent->getVelocity().second);
+        if (msg == "moveLeft")
+            velocityComponent->setActualVelocityX(-velocityComponent->getVelocity().first);
+        if (msg == "moveRight")
+            velocityComponent->setActualVelocityX(velocityComponent->getVelocity().first);
+    }
+}
+
+void Game::resetInput()
+{
+    // get All entities with input component
+    std::vector<std::shared_ptr<entity::IEntity>> entities = _coreModule->getEntityManager()->getEntities();
+
+    for (auto &entity : entities)
+    {
+        if (_coreModule->getComponentManager()->getComponent<component::InputComponent>(entity->getID()))
+        {
+            if (_coreModule->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID()))
+            {
+                component::VelocityComponent *velocityComponent = _coreModule->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID());
+                if (velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0)
+                {
+                    velocityComponent->setActualVelocityX(0);
+                    velocityComponent->setActualVelocityY(0);
+                }
+                
+            }
+        }
     }
 }
 
@@ -266,6 +327,8 @@ void Game::run()
         if (!_coreModule->msgReceived.empty())
         {
             handdleReceivedMessage(_coreModule->msgReceived);
+        } else {
+            resetInput();
         }
     }
 }

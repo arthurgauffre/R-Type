@@ -64,6 +64,15 @@ public:
    */
   virtual ComponentCommunication getCommunication() const = 0;
 
+  /**
+   * @brief Sets the communication status of the component.
+   *
+   * This method is used to set the communication status of the component.
+   *
+   * @param communication The new communication status of the component.
+   */
+  virtual void setCommunication(ComponentCommunication communication) = 0;
+
   protected:
     ComponentCommunication _communication{ComponentCommunication::CREATE};
 };

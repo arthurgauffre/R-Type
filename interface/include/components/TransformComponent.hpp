@@ -29,6 +29,12 @@ public:
    */
   std::pair<float, float> getPosition() { return _position; }
 
+  std::pair<float, float> getPreviousPosition() { return _previousPosition; }
+
+  void setPreviousPosition(std::pair<float, float> position) {
+    _previousPosition = position;
+  }
+
   /**
    * @brief Sets the position of the transform component.
    *
@@ -78,7 +84,7 @@ public:
    */
   void update(std::pair<float, float> position,
                      std::pair<float, float> scale,
-                     float rotation) {
+                     float rotation = 0) {
     _position = position;
     _scale = scale;
     _rotation = rotation;
@@ -110,5 +116,7 @@ private:
    * along the x and y axes respectively.
    */
   std::pair<float, float> _scale;
+
+  std::pair<float, float> _previousPosition;
 };
 } // namespace component
