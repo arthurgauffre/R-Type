@@ -16,6 +16,7 @@ add_library(r-type_client_system SHARED
     ../../components/damage/DamageComponent.cpp
     ../../components/parent/ParentComponent.cpp
     ../../components/type/TypeComponent.cpp
+    ../../components/cooldown/CooldownComponent.cpp
     ../../entity/Entity.cpp
 )
 

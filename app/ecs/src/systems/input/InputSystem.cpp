@@ -26,9 +26,10 @@ void ECS_system::InputSystem::update(
     if (inputComponent->isActionActive("MoveRight"))
       msgToSend.emplace_back("MoveRight", entity->getID());
             entity->getID();
+    if (inputComponent->isActionActive("Shoot"))
+      msgToSend.emplace_back("Shoot", entity->getID());
     if (!inputComponent)
       return;
-
     // component::WeaponComponent *weaponComponent =
     //     _componentManager.getComponent<component::WeaponComponent>(
     //         entity->getID());

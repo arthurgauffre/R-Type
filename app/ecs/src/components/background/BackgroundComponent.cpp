@@ -27,7 +27,7 @@
 component::BackgroundComponent::BackgroundComponent(
     uint32_t entityID, std::string texturePath,
     const std::pair<float, float> &size)
-    : AComponent(entityID), _size(size) {
+    : AComponent(entityID), _size(size), _texturePath(texturePath) {
   if (!_texture.loadFromFile(texturePath)) {
     throw std::runtime_error("Could not load texture from file: " +
                              texturePath);

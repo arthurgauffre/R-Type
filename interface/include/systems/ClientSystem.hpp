@@ -55,7 +55,7 @@ public:
 
   sf::Keyboard::Key getKey(KeyBoard key);
 
-  std::string getTypedEntity(EntityType type);
+  component::Type getTypedEntity(EntityType type);
 
   virtual void Disconnect() {}
 

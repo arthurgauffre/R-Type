@@ -75,8 +75,12 @@ enum class NetworkMessages : uint32_t {
 enum class EntityType : uint32_t {
   Player,
   Enemy,
-  Bullet,
+  Weapon,
+  Projectile,
+  Player_projectile,
+  Enemy_projectile,
   Background,
+  Unknown,
 };
 
 enum class TexturePath : uint32_t {
@@ -121,6 +125,7 @@ enum class KeyBoard : uint32_t {
   X,
   Y,
   Z,
+  Space,
 };
 
 struct TextureComponent {

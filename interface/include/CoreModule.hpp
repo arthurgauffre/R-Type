@@ -30,6 +30,7 @@
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
 #include <components/WeaponComponent.hpp>
+#include <components/CooldownComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/GameSystem.hpp>

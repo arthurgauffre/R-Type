@@ -43,7 +43,7 @@ void ECS_system::MovementSystem::update(
     float newY = transform->getPosition().second +
                  velocity->getActualVelocity().second * deltaTime;
 
-    if (type->getType() == "background")
+    if (type->getType() == component::Type::BACKGROUND)
     {
       component::BackgroundComponent *backgroundComponent =
           _componentManager.getComponent<component::BackgroundComponent>(
@@ -67,7 +67,7 @@ void ECS_system::MovementSystem::update(
 
       transform->setPosition(position);
     }
-    else if (type->getType() == "player")
+    else if (type->getType() == component::Type::PLAYER)
     {
       if (newX < 0)
         newX = 0;
@@ -78,7 +78,7 @@ void ECS_system::MovementSystem::update(
       if (newY > 1080)
         newY = 1080;
     }
-    else if (type->getType() == "projectile")
+    else if (type->getType() == component::Type::PROJECTILE)
     {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
         _entityManager.removeEntity(entity->getID());

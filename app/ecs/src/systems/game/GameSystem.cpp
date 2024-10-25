@@ -27,10 +27,10 @@ void ECS_system::GameSystem::update(
     if (!type)
       continue;
 
-    if (type->getType() == "player")
+    if (type->getType() == component::Type::PLAYER)
       _playerCount++;
 
-    if (type->getType() == "enemy")
+    if (type->getType() == component::Type::ENEMY)
       _enemyCount++;
   }
 

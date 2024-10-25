@@ -51,40 +51,40 @@ bool ECS_system::CollisionSystem::isColliding(
  */
 void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
                                                   entity::IEntity *entity2) {
-  std::string type1 =
+  component::Type type1 =
       _componentManager
           .getComponent<component::TypeComponent>(entity1->getID())
           ->getType();
-  std::string type2 =
+  component::Type type2 =
       _componentManager
           .getComponent<component::TypeComponent>(entity2->getID())
           ->getType();
 
-  if (type1 == "player" && type2 == "enemy") {
+  if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY) {
     _componentManager
         .getComponent<component::HealthComponent>(entity1->getID())
         ->setHealth(0);
-  } else if (type1 == "enemy" && type2 == "player") {
+  } else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER) {
     _componentManager
         .getComponent<component::HealthComponent>(entity2->getID())
         ->setHealth(0);
   }
 
-  if (type1 == "playerProjectile" && type2 == "enemy") {
+  if (type1 == component::Type::PLAYER_PROJECTILE && type2 == component::Type::ENEMY) {
     _componentManager
         .getComponent<component::HealthComponent>(entity2->getID())
         ->setHealth(0);
-  } else if (type1 == "enemy" && type2 == "playerProjectile") {
+  } else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER_PROJECTILE) {
     _componentManager
         .getComponent<component::HealthComponent>(entity1->getID())
         ->setHealth(0);
   }
 
-  if (type1 == "enemyProjectile" && type2 == "player") {
+  if (type1 == component::Type::ENEMY_PROJECTILE && type2 == component::Type::PLAYER) {
     _componentManager
         .getComponent<component::HealthComponent>(entity2->getID())
         ->setHealth(0);
-  } else if (type1 == "player" && type2 == "enemyProjectile") {
+  } else if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY_PROJECTILE) {
     _componentManager
         .getComponent<component::HealthComponent>(entity1->getID())
         ->setHealth(0);

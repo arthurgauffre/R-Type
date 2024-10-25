@@ -122,20 +122,32 @@ namespace rtype
         return sf::Keyboard::Y;
       case KeyBoard::Z:
         return sf::Keyboard::Z;
+      case KeyBoard::Space:
+        return sf::Keyboard::Space;
       }
       return sf::Keyboard::Unknown;
     }
 
-    std::string ClientSystem::getTypedEntity(EntityType type)
+    component::Type ClientSystem::getTypedEntity(EntityType type)
     {
       switch (type)
       {
       case EntityType::Player:
-        return "Player";
+        return component::Type::PLAYER;
       case EntityType::Enemy:
-        return "Enemy";
+        return component::Type::ENEMY;
+      case EntityType::Background:
+        return component::Type::BACKGROUND;
+      case EntityType::Player_projectile:
+        return component::Type::PLAYER_PROJECTILE;
+      case EntityType::Enemy_projectile:
+        return component::Type::ENEMY_PROJECTILE;
+      case EntityType::Projectile:
+        return component::Type::PROJECTILE;
+      case EntityType::Weapon:
+        return component::Type::WEAPON;
       }
-      return "";
+      return component::Type::UNKNOWN;
     }
 
     void ClientSystem::handdleMessage(rtype::network::Message<NetworkMessages> &msg)
@@ -239,25 +251,24 @@ namespace rtype
                 std::make_pair(transform.scaleX, transform.scaleY), transform.rotation);
       }
       break;
-      // break;
-      // case NetworkMessages::createBackground:
-      // {
-      //   std::cout << "Background component created" << std::endl;
-      //   BackgroundComponent background;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&background, msg.body.data() + sizeof(EntityId),
-      //               sizeof(BackgroundComponent));
-      //   std::cout << "Background: " << background.x << " " << background.y
-      //             << std::endl;
-      //   std::cout << "Texture: " << GetTexturePath(background.texturePath)
-      //             << std::endl;
-      //   _componentManager
-      //       .addComponent<component::BackgroundComponent>(
-      //           id.id, GetTexturePath(background.texturePath),
-      //           sf::Vector2f(background.x, background.y));
-      // }
-      // break;
+      case NetworkMessages::createBackground:
+      {
+        std::cout << "Background component created" << std::endl;
+        BackgroundComponent background;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&background, msg.body.data() + sizeof(EntityId),
+                    sizeof(BackgroundComponent));
+        std::cout << "Background: " << background.x << " " << background.y
+                  << std::endl;
+        std::cout << "Texture: " << GetTexturePath(background.texturePath)
+                  << std::endl;
+        _componentManager
+            .addComponent<component::BackgroundComponent>(
+                id.id, GetTexturePath(background.texturePath),
+                std::make_pair(background.x, background.y));
+      }
+      break;
       case NetworkMessages::createVelocity:
       {
         std::cout << "Velocity component created" << std::endl;
@@ -377,7 +388,6 @@ namespace rtype
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&type, msg.body.data() + sizeof(EntityId),
                     sizeof(TypeComponent));
-        std::cout << "Type: " << getTypedEntity(type.type) << std::endl;
         _componentManager
             .addComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
       }
@@ -390,7 +400,6 @@ namespace rtype
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&type, msg.body.data() + sizeof(EntityId),
                     sizeof(TypeComponent));
-        std::cout << "Type: " << getTypedEntity(type.type) << std::endl;
         _componentManager
             .updateComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
       }

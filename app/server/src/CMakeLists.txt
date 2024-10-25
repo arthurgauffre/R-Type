@@ -18,6 +18,8 @@ add_executable(r-type_server
     ../../ecs/src/components/damage/DamageComponent.cpp
     ../../ecs/src/components/parent/ParentComponent.cpp
     ../../ecs/src/components/type/TypeComponent.cpp
+    ../../ecs/src/components/cooldown/CooldownComponent.cpp
+    ../../ecs/src/components/weapon/WeaponComponent.cpp
     ../../ecs/src/entity/Entity.cpp
 )
 
