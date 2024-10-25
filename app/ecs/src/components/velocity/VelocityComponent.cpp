@@ -13,6 +13,5 @@ VelocityComponent::VelocityComponent(uint32_t entityID,
                                      std::pair<float, float> actualVelocity)
     : AComponent(entityID), _velocity(velocity),
       _actualVelocity(actualVelocity) {
-        _communication = component::ComponentCommunication::SERVERONLY;
       }
 } // namespace component

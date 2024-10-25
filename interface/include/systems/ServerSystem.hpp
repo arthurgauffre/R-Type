@@ -236,9 +236,7 @@ namespace rtype
 
       void sendAllEntitiesUpdateOrCreateToAllClient(std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore)
       {
-        if (frequencyClock.getElapsedTime().asSeconds() < 0.04)
-          return;
-        frequencyClock.restart();
+        bool transform = false;
         for (auto &entity : _entityManager.getEntities())
         {
           if (entity->getCommunication() == entity::EntityCommunication::CREATE)
@@ -307,8 +305,12 @@ namespace rtype
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
+              if (frequencyClock.getElapsedTime().asSeconds() > 3)
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
+                transform = true;
+              }
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -510,6 +512,10 @@ namespace rtype
           //       SendMessageToAllClients(networkMessageFactory.deleteParentMsg(entity->getID()), clientToIgnore);
           //     }
           //   }
+        }
+        if (transform)
+        {
+          frequencyClock.restart();
         }
       }
 
