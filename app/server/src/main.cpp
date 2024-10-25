@@ -5,16 +5,16 @@
 ** main
 */
 
-#include <Server.hpp>
+#include <CoreModule.hpp>
+#include "include/Game.hpp"
 #include <iostream>
 
-int main(void) {
-  rtype::network::Server server(60000);
-  server.Start();
-
-  while (1) {
-    server.Update(-1, true);
-  }
-
+int main(void)
+{
+  std::shared_ptr<rtype::CoreModule> coreModule =
+      std::make_shared<rtype::CoreModule>();
+  Game game(coreModule);
+  game.init();
+  game.run();
   return 0;
 }

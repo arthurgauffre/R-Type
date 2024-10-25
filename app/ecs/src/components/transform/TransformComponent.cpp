@@ -24,5 +24,5 @@ TransformComponent::TransformComponent(uint32_t entityID,
                                        std::pair<float, float> scale,
                                        float rotation)
     : AComponent(entityID), _position(position), _scale(scale),
-      _rotation(rotation) {}
+      _rotation(rotation), _previousPosition(position) {}
 } // namespace component

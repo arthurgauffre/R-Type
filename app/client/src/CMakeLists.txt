@@ -11,7 +11,7 @@ endif()
 
 add_executable(r-type_client
     main.cpp
-    CoreModule.cpp
+    ../../ecs/src/CoreModule.cpp
     ../../ecs/src/managers/system/SystemManager.cpp
     ../../ecs/src/managers/component/ComponentManager.cpp
     ../../ecs/src/managers/entity/EntityManager.cpp
@@ -36,23 +36,17 @@ add_executable(r-type_client
 target_link_libraries(r-type_client r-type_interfaces r-type_client_interfaces sfml-graphics sfml-window sfml-system)
 target_include_directories(r-type_client PRIVATE ${SFML_INCLUDE_DIR})
 
-
+add_custom_command(
+    TARGET r-type_client
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ${CMAKE_SOURCE_DIR}
+)
 
 # Move .so files out of the build folder into the lib one
 # set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 # set(LIB_COMPONENTS_DESTINATION ${LIB_DESTINATION}/components)
 # set(LIB_SYSTEMS_DESTINATION ${LIB_DESTINATION}/systems)
 # set(LIB_MANAGERS_DESTINATION ${LIB_DESTINATION}/managers)
-set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
-set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
-set(LIB_SERVER_SYSTEMS_DESTINATION ${LIB_DESTINATION}/server_systems)
-set(LIB_SHARED_SYSTEMS_DESTINATION ${LIB_DESTINATION}/shared_systems)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client> ${CMAKE_SOURCE_DIR}
-)
 
 # add_custom_command(
 #   TARGET r-type_client
@@ -114,56 +108,3 @@ add_custom_command(
 #     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
 #             ${LIB_SYSTEMS_DESTINATION}/r-type_collision_system.so)
 
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_audio_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_audio_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_render_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_render_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_collision_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_collision_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_input_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_input_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_movement_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_movement_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_health_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_health_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_weapon_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_weapon_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_cooldown_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_cooldown_system.so)
-
-add_custom_command(
-    TARGET r-type_client
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_game_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_game_system.so)

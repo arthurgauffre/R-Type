@@ -8,8 +8,6 @@
 - [Launch the Project](#launch-the-project)
 - [How to Play](#how-to-play)
 - [Authors](#authors)
-- [Documentation Dev](https://jsuissayker.github.io/R-Type/)
-- [Game Engine Documentation](GameEngine.md)
 - [Networking Protocol](ServerProtocol.md)
 - [Comparative Analysis](ComparativeAnalysis.md)
 

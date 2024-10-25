@@ -17,7 +17,6 @@
 #include <vector>
 
 #include <components/BackgroundComponent.hpp>
-#include <components/CooldownComponent.hpp>
 #include <components/DamageComponent.hpp>
 #include <components/HealthComponent.hpp>
 #include <components/HitBoxComponent.hpp>
@@ -31,6 +30,7 @@
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
 #include <components/WeaponComponent.hpp>
+#include <components/CooldownComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/GameSystem.hpp>
@@ -43,27 +43,23 @@ public:
   CoreModule();
   ~CoreModule();
 
-  entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
-                                    std::pair<float, float> speed,
-                                    std::pair<float, float> size);
-  entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
-                                std::pair<float, float> position,
-                                std::pair<float, float> velocity,
-                                std::pair<float, float> scale, int health);
-  entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
-                               std::pair<float, float> position,
-                               std::pair<float, float> velocity,
-                               std::pair<float, float> scale, int health,
-                               int damage);
-  entity::IEntity *createWeapon(uint32_t parentID, std::string type, int damage,
-                                float cooldown);
+  //   entity::IEntity *createBackground(uint32_t entityID, std::string
+  //   texturePath,
+  //                                     sf::Vector2f speed, sf::Vector2f size);
+  //   entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
+  //                                 sf::Vector2f position, sf::Vector2f
+  //                                 velocity, sf::Vector2f scale, int health);
 
-  void init();
+  void update();
   void run();
 
   std::shared_ptr<entity::EntityManager> getEntityManager() const;
   std::shared_ptr<component::ComponentManager> getComponentManager() const;
   std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
+
+  std::vector<std::pair<std::string, size_t>> msgReceived;
+  std::vector<std::pair<std::string, size_t>> msgToSend;
+  sf::Clock clock;
 
   template <typename T> class DLLoader {
   public:

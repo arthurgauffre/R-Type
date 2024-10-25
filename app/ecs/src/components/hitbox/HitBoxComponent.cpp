@@ -16,7 +16,9 @@
  */
 component::HitBoxComponent::HitBoxComponent(uint32_t entityID, float width,
                                             float height)
-    : AComponent(entityID), _width(width), _height(height) {}
+    : AComponent(entityID), _width(width), _height(height) {
+      this->_communication = ComponentCommunication::SERVERONLY;
+    }
 
 /**
  * @brief Destructor for the HitBoxComponent class.
@@ -44,13 +46,7 @@ float component::HitBoxComponent::getWidth() const { return _width; }
  */
 float component::HitBoxComponent::getHeight() const { return _height; }
 
-/**
- * @brief Updates the HitBoxComponent.
- *
- * This function is called to update the state of the HitBoxComponent.
- * It is typically called once per frame and is used to update the component's
- * state based on the elapsed time since the last update.
- *
- * @param deltaTime The time elapsed since the last update, in seconds.
- */
-void component::HitBoxComponent::update(float deltaTime) {}
+void component::HitBoxComponent::update(float width, float height) {
+  _width = width;
+  _height = height;
+}

@@ -19,16 +19,17 @@ void ECS_system::WeaponSystem::createProjectile(
     uint32_t parentID, std::string texturePath,
     std::pair<float, float> velocity, std::pair<float, float> scale,
     int damage) {
+  std::cout << "Creating projectile" << std::endl;
   uint32_t projectileID = _entityManager.generateEntityID();
   entity::IEntity *projectile = _entityManager.createEntity(projectileID);
 
   if (_componentManager.getComponent<component::TypeComponent>(parentID)
-          ->getType() == "player")
+          ->getType() == component::Type::PLAYER)
     _componentManager.addComponent<component::TypeComponent>(
-        projectileID, "playerProjectile");
+        projectileID, component::Type::PLAYER_PROJECTILE);
   else
     _componentManager.addComponent<component::TypeComponent>(projectileID,
-                                                             "enemyProjectile");
+                                                             component::Type::ENEMY_PROJECTILE);
   _componentManager.addComponent<component::DamageComponent>(projectileID,
                                                              damage);
   _componentManager.addComponent<component::ParentComponent>(projectileID,
@@ -43,9 +44,14 @@ void ECS_system::WeaponSystem::createProjectile(
 
   component::TransformComponent *transformPlayer =
       _componentManager.getComponent<component::TransformComponent>(parentID);
-  component::SpriteComponent *spritePlayer =
-      _componentManager.getComponent<component::SpriteComponent>(parentID);
-  const sf::Texture *texturePlayer = spritePlayer->getSprite().getTexture();
+  component::TextureComponent *textureP =
+      _componentManager.getComponent<component::TextureComponent>(parentID);
+  const sf::Texture *texturePlayer = &textureP->getTexture();
+
+  if (!texturePlayer) {
+    std::cout << "Error: Player transform or texture not found" << std::endl;
+    return;
+  }
 
   std::pair<float, float> position = {
       transformPlayer->getPosition().first +
@@ -55,7 +61,7 @@ void ECS_system::WeaponSystem::createProjectile(
               2};
 
   if (_componentManager.getComponent<component::TypeComponent>(parentID)
-          ->getType() == "enemy")
+          ->getType() == component::Type::ENEMY)
     position.first -=
         texturePlayer->getSize().x * transformPlayer->getScale().first;
 
@@ -66,12 +72,12 @@ void ECS_system::WeaponSystem::createProjectile(
       projectileID, position.first, position.second);
 
   if (_componentManager.getComponent<component::TypeComponent>(parentID)
-          ->getType() == "enemy")
+          ->getType() == component::Type::ENEMY)
     transformComponent->setRotation(180);
 }
 
 void ECS_system::WeaponSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::WeaponComponent>(
            entities)) {
@@ -81,7 +87,7 @@ void ECS_system::WeaponSystem::update(
     component::CooldownComponent *cooldownComponent =
         _componentManager.getComponent<component::CooldownComponent>(
             weaponComponent->getWeaponEntityID());
-    std::string entityType =
+    component::Type entityType =
         _componentManager
             .getComponent<component::TypeComponent>(entity->getID())
             ->getType();
@@ -90,7 +96,7 @@ void ECS_system::WeaponSystem::update(
         cooldownComponent->getTimeRemaining() > 0)
       weaponComponent->setIsFiring(false);
 
-    if (cooldownComponent->getTimeRemaining() <= 0 && entityType == "enemy")
+    if (cooldownComponent->getTimeRemaining() <= 0 && entityType == component::Type::ENEMY)
       weaponComponent->setIsFiring(true);
 
     float weaponVelocity = weaponComponent->getVelocity();
@@ -103,11 +109,11 @@ void ECS_system::WeaponSystem::update(
 
       cooldownComponent->setTimeRemaining(cooldownComponent->getCooldown());
 
-      if (entityType == "player") {
-        _componentManager
-            .getComponent<component::SoundComponent>(
-                weaponComponent->getWeaponEntityID())
-            ->setShouldPlay(true);
+      if (entityType == component::Type::PLAYER) {
+        // _componentManager
+        //     .getComponent<component::SoundComponent>(
+        //         weaponComponent->getWeaponEntityID())
+        //     ->setShouldPlay(true);
         weaponComponent->setIsFiring(false);
       }
     }

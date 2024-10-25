@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <CoreModule.hpp>
 #include <NetworkConnection.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkingCommon.hpp>
@@ -33,7 +34,8 @@ public:
       const rtype::network::Message<T> &message,
       std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore =
           nullptr) = 0;
-  virtual void Update(size_t maxMessages = -1, bool needToWait = false) = 0;
+  virtual void ServerUpdate(size_t maxMessages = -1,
+                            bool needToWait = false) = 0;
   virtual void OnClientValidated(
       std::shared_ptr<rtype::network::NetworkConnection<T>> client) = 0;
 

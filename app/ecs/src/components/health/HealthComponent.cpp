@@ -16,6 +16,7 @@
 component::HealthComponent::HealthComponent(uint32_t entityID, int health)
     : AComponent(entityID) {
   this->_health = health;
+  this->_communication = ComponentCommunication::SERVERONLY;
 }
 
 /**
@@ -41,10 +42,6 @@ int component::HealthComponent::getHealth() { return this->_health; }
  */
 void component::HealthComponent::setHealth(int health) {
   this->_health = health;
-}
-
-void component::HealthComponent::update(float deltaTime) {
-  // std::cout << "HealthComponent update" << std::endl;
 }
 
 /**

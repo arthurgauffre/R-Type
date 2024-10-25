@@ -15,7 +15,9 @@
  */
 component::CooldownComponent::CooldownComponent(uint32_t entityID,
                                                 float cooldown)
-    : AComponent(entityID), _cooldown(cooldown), _timeRemaining(0) {}
+    : AComponent(entityID), _cooldown(cooldown), _timeRemaining(0) {
+      this->_communication = ComponentCommunication::SERVERONLY;
+    }
 
 component::CooldownComponent::~CooldownComponent() {}
 

@@ -22,7 +22,13 @@ public:
 
   sf::Sprite getDuplicateSprite();
 
-  void update(float deltaTime) override{};
+  std::string getTexturePath() { return _texturePath; }
+
+  void update(std::string texturePath, const std::pair<float, float> &size) {
+    _size = size;
+    _texture.loadFromFile(texturePath);
+    _sprite.setTexture(_texture);
+  }
 
 private:
   /**
@@ -61,5 +67,7 @@ private:
    * and the second element represents the height.
    */
   std::pair<float, float> _size;
+
+  std::string _texturePath;
 };
 } // namespace component

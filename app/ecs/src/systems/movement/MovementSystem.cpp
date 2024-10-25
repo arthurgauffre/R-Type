@@ -27,11 +27,14 @@
  * @param entities A vector of shared pointers to entities to be updated.
  */
 void ECS_system::MovementSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
+{
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::TransformComponent, component::VelocityComponent>(
-           entities)) {
+           entities))
+  {
     component::TransformComponent *transform =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
@@ -47,7 +50,8 @@ void ECS_system::MovementSystem::update(
     float newY = transform->getPosition().second +
                  velocity->getActualVelocity().second * deltaTime;
 
-    if (type->getType() == "background") {
+    if (type->getType() == component::Type::BACKGROUND)
+    {
       component::BackgroundComponent *backgroundComponent =
           _componentManager.getComponent<component::BackgroundComponent>(
               entity->getID());
@@ -69,7 +73,9 @@ void ECS_system::MovementSystem::update(
         position.second = 0;
 
       transform->setPosition(position);
-    } else if (type->getType() == "player") {
+    }
+    else if (type->getType() == component::Type::PLAYER)
+    {
       if (newX < 0)
         newX = 0;
       if (newX > 1920)
@@ -78,9 +84,20 @@ void ECS_system::MovementSystem::update(
         newY = 0;
       if (newY > 1080)
         newY = 1080;
-    } else if (type->getType() == "projectile") {
+    }
+    else if (type->getType() == component::Type::PROJECTILE)
+    {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
         _entityManager.removeEntity(entity->getID());
+    }
+    float subPreviousX = transform->getPreviousPosition().first - newX;
+    float subPreviousY = transform->getPreviousPosition().second - newY;
+    if (subPreviousX > 5 || subPreviousX < -5 || subPreviousY > 5 ||
+        subPreviousY < -5)
+    {
+      transform->setCommunication(component::ComponentCommunication::UPDATE);
+      transform->setPreviousPosition({newX, newY});
+      transform->setPosition({newX, newY});
     }
     transform->setPosition({newX, newY});
   }
@@ -88,6 +105,7 @@ void ECS_system::MovementSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
+             entity::EntityManager &entityManager)
+{
   return new ECS_system::MovementSystem(componentManager, entityManager);
 }

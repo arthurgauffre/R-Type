@@ -18,7 +18,7 @@ public:
   void setParentID(uint32_t parentID);
   uint32_t getParentID();
 
-  void update(float deltaTime) override {}
+  void update(uint32_t parentID) { _parentEntityID = parentID; };
 
 private:
   /**

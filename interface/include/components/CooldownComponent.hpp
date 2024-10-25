@@ -15,7 +15,10 @@ public:
   CooldownComponent(uint32_t entityID, float cooldown);
   ~CooldownComponent();
 
-  void update(float deltaTime) override {}
+  void update(float cooldown, float timeRemaining) {
+    _cooldown = cooldown;
+    _timeRemaining = timeRemaining;
+  }
 
   void setCooldown(float cooldown);
   float getCooldown();

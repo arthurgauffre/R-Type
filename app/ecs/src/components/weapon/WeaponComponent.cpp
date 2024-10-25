@@ -23,6 +23,7 @@ component::WeaponComponent::WeaponComponent(uint32_t entityID,
     : AComponent(entityID), _weaponEntityID(weaponEntityID),
       _velocity(velocity) {
   _isFiring = isAlwaysFiring;
+  this->_communication = ComponentCommunication::SERVERONLY;
 }
 
 /**

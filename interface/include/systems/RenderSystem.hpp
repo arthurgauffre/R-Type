@@ -35,8 +35,10 @@ public:
 
   // bool getGameClosed() const { return _gameClosed; }
 
-  void update(float deltaTime,
-              std::vector<std::shared_ptr<entity::IEntity>> entities) override;
+  void
+  update(float deltaTime,
+         std::vector<std::shared_ptr<entity::IEntity>> entities,
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
 
   /**
    * @brief Initializes the render system.

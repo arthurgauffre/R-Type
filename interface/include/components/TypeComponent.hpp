@@ -12,17 +12,29 @@
 #include <iostream>
 
 namespace component {
+enum class Type {
+  PLAYER,
+  ENEMY,
+  WEAPON,
+  PROJECTILE,
+  PLAYER_PROJECTILE,
+  ENEMY_PROJECTILE,
+  BACKGROUND,
+  UNKNOWN,
+};
 class TypeComponent : public AComponent {
 public:
-  TypeComponent(uint32_t entityID, std::string type);
+  TypeComponent(uint32_t entityID, Type type);
   ~TypeComponent();
 
-  std::string getType();
-  void setType(std::string type);
+  Type getType();
+  void setType(Type type);
 
-  void update(float deltaTime) override {}
+  void update(Type _type) {
+    this->_type = _type;
+  }
 
 private:
-  std::string _type;
+  Type _type;
 };
 } // namespace component

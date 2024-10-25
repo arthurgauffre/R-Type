@@ -41,6 +41,36 @@ public:
   }
 
   /**
+   * @brief Updates the component of type T associated with the specified
+   * entity.
+   *
+   * This function searches for the specified entity ID in the component map.
+   * If found, it iterates through the components associated with the entity
+   * and attempts to dynamically cast each component to the specified type T.
+   * If a component of type T is found, it is updated with the provided
+   * arguments. If no component of type T is found, the function does nothing.
+   *
+   * @tparam T The type of the component to update.
+   * @tparam Args The types of the arguments to be forwarded to the component's
+   * update method.
+   * @param entityID The ID of the entity whose component is to be updated.
+   * @param args The arguments to be forwarded to the component's update method.
+   */
+  template <typename T, typename... Args>
+  void updateComponent(uint32_t entityID, Args &&...args) {
+    auto it = _components.find(entityID);
+    if (it == _components.end())
+      return;
+
+    const auto &entityComponents = it->second;
+
+    for (const auto &component : entityComponents) {
+      if (T *casted = dynamic_cast<T *>(component.get()))
+        casted->update(std::forward<Args>(args)...);
+    }
+  }
+
+  /**
    * @brief Retrieves a component of type T associated with a given entity ID.
    *
    * This function searches for the specified entity ID in the component map.
@@ -110,7 +140,7 @@ public:
     return result;
   }
 
-  void update(float deltaTime);
+  // void update(float deltaTime);
 
 private:
   /**

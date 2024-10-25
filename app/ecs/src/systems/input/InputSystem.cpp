@@ -23,42 +23,34 @@
  * @param entities A vector of shared pointers to entities to be updated.
  */
 void ECS_system::InputSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
            entities)) {
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(
-            entity->getID());
+            entity.get()->getID());
+    if (inputComponent->isActionActive("MoveUp"))
+      msgToSend.emplace_back("MoveUp", entity->getID());
+    if (inputComponent->isActionActive("MoveDown"))
+      msgToSend.emplace_back("MoveDown", entity->getID());
+    if (inputComponent->isActionActive("MoveLeft"))
+      msgToSend.emplace_back("MoveLeft", entity->getID());
+    if (inputComponent->isActionActive("MoveRight"))
+      msgToSend.emplace_back("MoveRight", entity->getID());
+            entity->getID();
+    if (inputComponent->isActionActive("Shoot"))
+      msgToSend.emplace_back("Shoot", entity->getID());
     if (!inputComponent)
       return;
-    component::VelocityComponent *velocityComponent =
-        _componentManager.getComponent<component::VelocityComponent>(
-            entity->getID());
-    velocityComponent->setActualVelocityX(0);
-    velocityComponent->setActualVelocityY(0);
-    if (inputComponent->isActionActive("MoveUp"))
-      velocityComponent->setActualVelocityY(
-          -velocityComponent->getVelocity().second);
-    if (inputComponent->isActionActive("MoveDown"))
-      velocityComponent->setActualVelocityY(
-          velocityComponent->getVelocity().second);
-    if (inputComponent->isActionActive("MoveLeft"))
-      velocityComponent->setActualVelocityX(
-          -velocityComponent->getVelocity().first);
-    if (inputComponent->isActionActive("MoveRight"))
-      velocityComponent->setActualVelocityX(
-          velocityComponent->getVelocity().first);
-    if (!inputComponent->isActionActive("Shoot"))
-      return;
+    // component::WeaponComponent *weaponComponent =
+    //     _componentManager.getComponent<component::WeaponComponent>(
+    //         entity->getID());
+    // if (!weaponComponent)
+    //   return msgToSend;
 
-    component::WeaponComponent *weaponComponent =
-        _componentManager.getComponent<component::WeaponComponent>(
-            entity->getID());
-    if (!weaponComponent)
-      return;
-
-    weaponComponent->setIsFiring(true);
+    // weaponComponent->setIsFiring(true);
   }
 }
 

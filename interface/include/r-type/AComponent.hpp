@@ -56,14 +56,24 @@ public:
   void setActive(bool active) override { isActive = active; }
 
   /**
-   * @brief Update the component.
+   * @brief Retrieves the communication status of the component.
    *
-   * This pure virtual function must be overridden by derived classes to update
-   * the component's state.
+   * This method is used to determine the current communication status of the
+   * component.
    *
-   * @param deltaTime The time elapsed since the last update, in seconds.
+   * @return ComponentCommunication The current communication status of the
+   * component.
    */
-  virtual void update(float deltaTime) = 0;
+  ComponentCommunication getCommunication() const override { return _communication; }
+
+  /**
+   * @brief Sets the communication status of the component.
+   *
+   * This method is used to set the communication status of the component.
+   *
+   * @param communication The new communication status of the component.
+   */
+  void setCommunication(ComponentCommunication communication) override { _communication = communication; }
 
 protected:
   uint32_t id;   // Id of the associated entity

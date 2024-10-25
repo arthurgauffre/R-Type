@@ -17,7 +17,18 @@ public:
 
   float getWidth() const;
   float getHeight() const;
-  void update(float deltaTime) override;
+
+  /**
+   * @brief Updates the HitBoxComponent.
+   *
+   * This function is called to update the state of the HitBoxComponent.
+   * It is typically called once per frame and allows the component to
+   * perform any necessary updates based on the elapsed time since the
+   * last update.
+   *
+   * @param deltaTime The time elapsed since the last update, in seconds.
+   */
+  void update(float width, float height);
 
 private:
   /**

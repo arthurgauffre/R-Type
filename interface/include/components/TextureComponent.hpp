@@ -25,6 +25,7 @@ public:
    */
   TextureComponent(uint32_t entityID, const std::string &path)
       : AComponent(entityID) {
+    _path = path;
     _texture.loadFromFile(path);
   }
 
@@ -40,7 +41,22 @@ public:
    */
   sf::Texture &getTexture() { return _texture; }
 
-  void update(float deltaTime) override;
+  /**
+   * @brief Retrieves the path to the texture file.
+   *
+   * @return The path to the texture file.
+   */
+  std::string getPath() { return _path; }
+
+  /**
+   * @brief Updates the texture component.
+   *
+   * This function is called to update the state of the texture component
+   * based on the elapsed time since the last update.
+   *
+   * @param deltaTime The time elapsed since the last update, in seconds.
+   */
+  void update(std::string &path);
 
 private:
   /**
@@ -53,5 +69,6 @@ private:
    * @see sf::Texture
    */
   sf::Texture _texture;
+  std::string _path;
 };
 } // namespace component

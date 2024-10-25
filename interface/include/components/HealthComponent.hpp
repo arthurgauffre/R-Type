@@ -18,10 +18,11 @@ public:
   int getHealth();
   void setHealth(int health);
 
+  void update(int health) {
+    this->_health = health;
+  };
   int getDamageIncoming();
   void setDamageIncoming(int damage);
-
-  void update(float deltaTime) override;
 
 private:
   /**

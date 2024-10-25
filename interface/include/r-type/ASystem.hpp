@@ -49,7 +49,8 @@ public:
    */
   virtual void
   update(float deltaTime,
-         std::vector<std::shared_ptr<entity::IEntity>> entities) = 0;
+         std::vector<std::shared_ptr<entity::IEntity>> entities,
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) = 0;
 
   /**
    * @brief Pure virtual function to handle the components of the system.

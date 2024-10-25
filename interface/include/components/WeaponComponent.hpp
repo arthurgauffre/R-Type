@@ -18,7 +18,11 @@ public:
                   bool isAlwaysFiring = false, float velocity = 0);
   ~WeaponComponent();
 
-  void update(float deltaTime) override {}
+  void update(uint32_t weaponEntityID, bool _isFiring, float _velocity) {
+    this->_isFiring = _isFiring;
+    this->_velocity = _velocity;
+    this->_weaponEntityID = weaponEntityID;
+  }
 
   uint32_t getWeaponEntityID();
   void setWeaponEntityID(uint32_t weaponEntityID);

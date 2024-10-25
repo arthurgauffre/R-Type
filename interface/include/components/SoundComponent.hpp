@@ -49,7 +49,10 @@ public:
    *
    * @param deltaTime The time elapsed since the last frame, in seconds.
    */
-  void update(float deltaTime) override {}
+  void update(std::string &path) {
+    _soundBuffer.loadFromFile(path);
+    _sound.setBuffer(_soundBuffer);
+  }
 
   void setShouldPlay(bool shouldPlay) { _shouldPlay = shouldPlay; }
   bool getShouldPlay() { return _shouldPlay; }

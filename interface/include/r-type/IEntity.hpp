@@ -9,6 +9,12 @@
 #include <cstdint>
 
 namespace entity {
+enum class EntityCommunication {
+  NONE,
+  CREATE,
+  UPDATE,
+  DELETE,
+};
 class IEntity {
 public:
   /**
@@ -46,5 +52,27 @@ public:
    * @return true if the entity is active, false otherwise.
    */
   virtual bool getActive() const = 0;
+
+  /**
+   * @brief Retrieves the communication status of the entity.
+   *
+   * This method is used to determine the current communication status of the
+   * entity.
+   *
+   * @return EntityCommunication The current communication status of the entity.
+   */
+  virtual EntityCommunication getCommunication() const = 0;
+
+  /**
+   * @brief Sets the communication status of the entity.
+   *
+   * This method is used to set the communication status of the entity to the
+   * specified value.
+   *
+   * @param status The new communication status for the entity.
+   */
+  virtual void setCommunication(EntityCommunication status) = 0;
+  protected:
+    EntityCommunication communicationStatus{EntityCommunication::CREATE};
 };
 } // namespace entity

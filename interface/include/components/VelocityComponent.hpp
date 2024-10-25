@@ -13,9 +13,16 @@
 namespace component {
 class VelocityComponent : public AComponent {
 public:
+  /**
+   * @brief Constructs a new VelocityComponent object.
+   *
+   * @param entityID The ID of the entity associated with this component.
+   * @param velocity The initial velocity of the entity.
+   */
   VelocityComponent(uint32_t entityID,
                     std::pair<float, float> velocity = {0, 0},
                     std::pair<float, float> actualVelocity = {0, 0});
+
   /**
    * @brief Default destructor for the VelocityComponent class.
    */
@@ -65,15 +72,8 @@ public:
    */
   std::pair<float, float> getActualVelocity() { return _actualVelocity; }
 
-  /**
-   * @brief Updates the velocity component.
-   *
-   * This function is called to update the velocity component based on the
-   * elapsed time.
-   *
-   * @param deltaTime The time elapsed since the last update, in seconds.
-   */
-  void update(float deltaTime) override{};
+  void update(std::pair<float, float> velocity) { _velocity = velocity; };
+
 
 private:
   /**
@@ -92,5 +92,6 @@ private:
    * and the second element represents the velocity in the y direction.
    */
   std::pair<float, float> _actualVelocity;
+
 };
 } // namespace component

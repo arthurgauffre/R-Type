@@ -10,6 +10,15 @@
 #include <cstdint>
 
 namespace component {
+enum class ComponentCommunication {
+  NONE,
+  CREATE,
+  UPDATE,
+  DELETE,
+  SERVERONLY,
+  CLIENTONLY,
+};
+
 class IComponent {
 public:
   /*
@@ -23,17 +32,6 @@ public:
    * @return uint32_t The ID of the entity.
    */
   virtual uint32_t getEntityID() const = 0;
-
-  /**
-   * @brief Updates the component with the given delta time.
-   *
-   * This function is called to update the state of the component based on the
-   * elapsed time since the last update. The delta time is typically measured
-   * in seconds.
-   *
-   * @param deltaTime The time elapsed since the last update, in seconds.
-   */
-  virtual void update(float deltaTime) = 0;
 
   /**
    * @brief Retrieve the active status of the component.
@@ -54,5 +52,28 @@ public:
    * deactivates it.
    */
   virtual void setActive(bool active) = 0;
+
+  /**
+   * @brief Retrieves the communication status of the component.
+   *
+   * This method is used to determine the current communication status of the
+   * component.
+   *
+   * @return ComponentCommunication The current communication status of the
+   * component.
+   */
+  virtual ComponentCommunication getCommunication() const = 0;
+
+  /**
+   * @brief Sets the communication status of the component.
+   *
+   * This method is used to set the communication status of the component.
+   *
+   * @param communication The new communication status of the component.
+   */
+  virtual void setCommunication(ComponentCommunication communication) = 0;
+
+  protected:
+    ComponentCommunication _communication{ComponentCommunication::CREATE};
 };
 } // namespace component

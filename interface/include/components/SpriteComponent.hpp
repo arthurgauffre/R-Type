@@ -49,7 +49,7 @@ public:
    */
   sf::Sprite &getSprite() { return _sprite; }
 
-  void update(float deltaTime) override;
+  void update(float x, float y);
 
 private:
   /**
