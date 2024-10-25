@@ -44,9 +44,9 @@ void ECS_system::WeaponSystem::createProjectile(
 
   component::TransformComponent *transformPlayer =
       _componentManager.getComponent<component::TransformComponent>(parentID);
-  component::SpriteComponent *spritePlayer =
-      _componentManager.getComponent<component::SpriteComponent>(parentID);
-  const sf::Texture *texturePlayer = spritePlayer->getSprite().getTexture();
+  component::TextureComponent *textureP =
+      _componentManager.getComponent<component::TextureComponent>(parentID);
+  const sf::Texture *texturePlayer = &textureP->getTexture();
 
   if (!texturePlayer) {
     std::cout << "Error: Player transform or texture not found" << std::endl;
@@ -110,10 +110,10 @@ void ECS_system::WeaponSystem::update(
       cooldownComponent->setTimeRemaining(cooldownComponent->getCooldown());
 
       if (entityType == component::Type::PLAYER) {
-        _componentManager
-            .getComponent<component::SoundComponent>(
-                weaponComponent->getWeaponEntityID())
-            ->setShouldPlay(true);
+        // _componentManager
+        //     .getComponent<component::SoundComponent>(
+        //         weaponComponent->getWeaponEntityID())
+        //     ->setShouldPlay(true);
         weaponComponent->setIsFiring(false);
       }
     }
