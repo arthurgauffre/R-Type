@@ -27,8 +27,15 @@ namespace rtype
         return "app/assets/sprites/plane.png";
       }
       break;
-        // case TexturePath::Enemy:
-        // return "assets/enemy.png";
+      case TexturePath::Enemy:
+      {
+        return "app/assets/sprites/enemy.png";
+      }
+      break;
+      case TexturePath::Bullet:
+      {
+        return "app/assets/sprites/projectile.gif";
+      }
       }
       return "";
     }
@@ -192,39 +199,39 @@ namespace rtype
       break;
       case NetworkMessages::createEntity:
       {
-        std::cout << "Entity created" << std::endl;
+        // std::cout << "Entity created" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
 
-        std::cout << "Entity id: " << entity.id << std::endl;
+        // std::cout << "Entity id: " << entity.id << std::endl;
         _entityManager.createEntity(entity.id);
       }
       break;
       case NetworkMessages::deleteEntity:
       {
-        std::cout << "Entity destroyed" << std::endl;
+        // std::cout << "Entity destroyed" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
-        std::cout << "Entity id: " << entity.id << std::endl;
+        // std::cout << "Entity id: " << entity.id << std::endl;
         _entityManager.destroyEntity(entity.id);
       }
       break;
       case NetworkMessages::createSprite:
       {
-        std::cout << "Sprite component created" << std::endl;
+        // std::cout << "Sprite component created" << std::endl;
         SpriteComponent sprite;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&sprite, msg.body.data() + sizeof(EntityId),
                     sizeof(SpriteComponent));
-        std::cout << "Sprite: " << sprite.x << " " << sprite.y << std::endl;
+        // std::cout << "Sprite: " << sprite.x << " " << sprite.y << std::endl;
         _componentManager
             .addComponent<component::SpriteComponent>(id.id, sprite.x, sprite.y);
       }
       break;
       case NetworkMessages::createTexture:
       {
-        std::cout << "Texture component created" << std::endl;
+        // std::cout << "Texture component created" << std::endl;
         TextureComponent texture;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -237,100 +244,82 @@ namespace rtype
       break;
       case NetworkMessages::createTransform:
       {
-        std::cout << "Transform component created" << std::endl;
+        // std::cout << "Transform component created" << std::endl;
         TransformComponent transform;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&transform, msg.body.data() + sizeof(EntityId),
                     sizeof(TransformComponent));
-        std::cout << "Transform: " << transform.x << " " << transform.y << " "
-                  << transform.scaleX << " " << transform.scaleY << " " << transform.rotation << std::endl;
+        // std::cout << "Transform: " << transform.x << " " << transform.y << " "
+        //           << transform.scaleX << " " << transform.scaleY << " " << transform.rotation << std::endl;
         _componentManager
             .addComponent<component::TransformComponent>(
                 id.id, std::make_pair(transform.x, transform.y),
                 std::make_pair(transform.scaleX, transform.scaleY), transform.rotation);
       }
       break;
-      case NetworkMessages::createBackground:
-      {
-        std::cout << "Background component created" << std::endl;
-        BackgroundComponent background;
-        EntityId id;
-        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        std::memcpy(&background, msg.body.data() + sizeof(EntityId),
-                    sizeof(BackgroundComponent));
-        std::cout << "Background: " << background.x << " " << background.y
-                  << std::endl;
-        std::cout << "Texture: " << GetTexturePath(background.texturePath)
-                  << std::endl;
-        _componentManager
-            .addComponent<component::BackgroundComponent>(
-                id.id, GetTexturePath(background.texturePath),
-                std::make_pair(background.x, background.y));
-      }
-      break;
       case NetworkMessages::createVelocity:
       {
-        std::cout << "Velocity component created" << std::endl;
+        // std::cout << "Velocity component created" << std::endl;
         VelocityComponent velocity;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&velocity, msg.body.data() + sizeof(EntityId),
                     sizeof(VelocityComponent));
-        std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
+        // std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
         _componentManager
             .addComponent<component::VelocityComponent>(
-                id.id, std::make_pair(velocity.x, velocity.y));
+                id.id, std::make_pair(velocity.x, velocity.y), std::make_pair(velocity.actualX, velocity.actualY));
       }
       break;
       case NetworkMessages::createParent:
       {
-        std::cout << "Parent component created" << std::endl;
+        // std::cout << "Parent component created" << std::endl;
         ParentComponent parent;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&parent, msg.body.data() + sizeof(EntityId),
                     sizeof(ParentComponent));
-        std::cout << "Parent: " << parent.parentID << std::endl;
+        // std::cout << "Parent: " << parent.parentID << std::endl;
         _componentManager
             .addComponent<component::ParentComponent>(id.id, parent.parentID);
       }
       break;
       case NetworkMessages::createHealth:
       {
-        std::cout << "Health component created" << std::endl;
+        // std::cout << "Health component created" << std::endl;
         HealthComponent health;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&health, msg.body.data() + sizeof(EntityId),
                     sizeof(HealthComponent));
-        std::cout << "Health: " << health.health << std::endl;
+        // std::cout << "Health: " << health.health << std::endl;
         _componentManager
             .addComponent<component::HealthComponent>(id.id, health.health);
       }
       break;
       case NetworkMessages::createDamage:
       {
-        std::cout << "Damage component created" << std::endl;
+        // std::cout << "Damage component created" << std::endl;
         DamageComponent damage;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&damage, msg.body.data() + sizeof(EntityId),
                     sizeof(DamageComponent));
-        std::cout << "Damage: " << damage.damage << std::endl;
+        // std::cout << "Damage: " << damage.damage << std::endl;
         _componentManager
             .addComponent<component::DamageComponent>(id.id, damage.damage);
       }
       break;
       case NetworkMessages::createHitbox:
       {
-        std::cout << "Hitbox component created" << std::endl;
+        // std::cout << "Hitbox component created" << std::endl;
         HitboxComponent hitbox;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&hitbox, msg.body.data() + sizeof(EntityId),
                     sizeof(HitboxComponent));
-        std::cout << "Hitbox: " << hitbox.x << " " << hitbox.y << std::endl;
+        // std::cout << "Hitbox: " << hitbox.x << " " << hitbox.y << std::endl;
         _componentManager
             .addComponent<component::HitBoxComponent>(id.id, hitbox.x, hitbox.y);
       }
@@ -361,7 +350,7 @@ namespace rtype
       // break;
       case NetworkMessages::createInput:
       {
-        std::cout << "Input component created" << std::endl;
+        // std::cout << "Input component created" << std::endl;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         _componentManager.addComponent<component::InputComponent>(id.id);
@@ -369,7 +358,7 @@ namespace rtype
       break;
       case NetworkMessages::updateInput:
       {
-        std::cout << "Input component updated" << std::endl;
+        // std::cout << "Input component updated" << std::endl;
         BindKey input;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -382,7 +371,7 @@ namespace rtype
       break;
       case NetworkMessages::createType:
       {
-        std::cout << "Type component created" << std::endl;
+        // std::cout << "Type component created" << std::endl;
         TypeComponent type;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -394,7 +383,7 @@ namespace rtype
       break;
       case NetworkMessages::updateType:
       {
-        std::cout << "Type component updated" << std::endl;
+        // std::cout << "Type component updated" << std::endl;
         TypeComponent type;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -406,13 +395,13 @@ namespace rtype
       break;
       case NetworkMessages::updateSprite:
       {
-        std::cout << "Sprite component updated" << std::endl;
+        // std::cout << "Sprite component updated" << std::endl;
         SpriteComponent sprite;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&sprite, msg.body.data() + sizeof(EntityId),
                     sizeof(SpriteComponent));
-        std::cout << "Sprite: " << sprite.x << " " << sprite.y << std::endl;
+        // std::cout << "Sprite: " << sprite.x << " " << sprite.y << std::endl;
         _componentManager
             .updateComponent<component::SpriteComponent>(id.id, sprite.x,
                                                          sprite.y);
@@ -436,62 +425,43 @@ namespace rtype
       // break;
       case NetworkMessages::updateTransform:
       {
-        std::cout << "Transform component updated" << std::endl;
+        // std::cout << "Transform component updated" << std::endl;
         TransformComponent transform;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&transform, msg.body.data() + sizeof(EntityId),
                     sizeof(TransformComponent));
-        std::cout << "Transform: " << transform.x << " " << transform.y << " "
-                  << transform.scaleX << " " << transform.scaleY << std::endl;
+        // std::cout << "Transform: " << transform.x << " " << transform.y << " "
+        //           << transform.scaleX << " " << transform.scaleY << std::endl;
         _componentManager
             .updateComponent<component::TransformComponent>(
                 id.id, std::make_pair(transform.x, transform.y),
                 std::make_pair(transform.scaleX, transform.scaleY), transform.rotation);
       }
       break;
-      // case NetworkMessages::updateBackground:
-      // {
-      //   std::cout << "Background component updated" << std::endl;
-      //   BackgroundComponent background;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&background, msg.body.data() + sizeof(EntityId),
-      //               sizeof(BackgroundComponent));
-      //   std::cout << "Background: " << background.x << " " << background.y
-      //             << std::endl;
-      //   std::cout << "Texture: " << GetTexturePath(background.texturePath)
-      //             << std::endl;
-      //   _coreModule.get()
-      //       ->getComponentManager()
-      //       ->updateComponent<component::BackgroundComponent>(
-      //           id.id, GetTexturePath(background.texturePath),
-      //           sf::Vector2f(background.x, background.y));
-      // }
-      // break;
       case NetworkMessages::updateVelocity:
       {
-        std::cout << "Velocity component updated" << std::endl;
+        // std::cout << "Velocity component updated" << std::endl;
         VelocityComponent velocity;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&velocity, msg.body.data() + sizeof(EntityId),
                     sizeof(VelocityComponent));
-        std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
+        // std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.actualX << " " << velocity.actualY << std::endl;
         _componentManager
             .updateComponent<component::VelocityComponent>(
-                id.id, std::make_pair(velocity.x, velocity.y));
+                id.id, std::make_pair(velocity.x, velocity.y), std::make_pair(velocity.actualX, velocity.actualY));
       }
       break;
       case NetworkMessages::updateParent:
       {
-        std::cout << "Parent component updated" << std::endl;
+        // std::cout << "Parent component updated" << std::endl;
         ParentComponent parent;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&parent, msg.body.data() + sizeof(EntityId),
                     sizeof(ParentComponent));
-        std::cout << "Parent: " << parent.parentID << std::endl;
+        // std::cout << "Parent: " << parent.parentID << std::endl;
         _componentManager
             .updateComponent<component::ParentComponent>(id.id, parent.parentID);
       }
@@ -499,43 +469,70 @@ namespace rtype
         break;
       case NetworkMessages::updateHealth:
       {
-        std::cout << "Health component updated" << std::endl;
+        // std::cout << "Health component updated" << std::endl;
         HealthComponent health;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&health, msg.body.data() + sizeof(EntityId),
                     sizeof(HealthComponent));
-        std::cout << "Health: " << health.health << std::endl;
+        // std::cout << "Health: " << health.health << std::endl;
         _componentManager
             .updateComponent<component::HealthComponent>(id.id, health.health);
       }
       break;
       case NetworkMessages::updateDamage:
       {
-        std::cout << "Damage component updated" << std::endl;
+        // std::cout << "Damage component updated" << std::endl;
         DamageComponent damage;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&damage, msg.body.data() + sizeof(EntityId),
                     sizeof(DamageComponent));
-        std::cout << "Damage: " << damage.damage << std::endl;
+        // std::cout << "Damage: " << damage.damage << std::endl;
         _componentManager
             .updateComponent<component::DamageComponent>(id.id, damage.damage);
       }
       break;
       case NetworkMessages::updateHitbox:
       {
-        std::cout << "Hitbox component updated" << std::endl;
+        // std::cout << "Hitbox component updated" << std::endl;
         HitboxComponent hitbox;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&hitbox, msg.body.data() + sizeof(EntityId),
                     sizeof(HitboxComponent));
-        std::cout << "Hitbox: " << hitbox.x << " " << hitbox.y << std::endl;
+        // std::cout << "Hitbox: " << hitbox.x << " " << hitbox.y << std::endl;
         _componentManager
             .updateComponent<component::HitBoxComponent>(id.id, hitbox.x,
                                                          hitbox.y);
       }
+      break;
+      case NetworkMessages::createSize:
+      {
+        // std::cout << "Size component created" << std::endl;
+        SizeComponent size;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&size, msg.body.data() + sizeof(EntityId),
+                    sizeof(SizeComponent));
+        // std::cout << "Size: " << size.x << " " << size.y << std::endl;
+        _componentManager
+            .addComponent<component::SizeComponent>(id.id, std::make_pair(size.x, size.y));
+      }
+      break;
+      case NetworkMessages::updateSize:
+      {
+        // std::cout << "Size component updated" << std::endl;
+        SizeComponent size;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&size, msg.body.data() + sizeof(EntityId),
+                    sizeof(SizeComponent));
+        // std::cout << "Size: " << size.x << " " << size.y << std::endl;
+        _componentManager
+            .updateComponent<component::SizeComponent>(id.id, std::make_pair(size.x, size.y));
+      }
+      break;
         // break;
         // case NetworkMessages::updateMusic:
         // {
@@ -594,7 +591,8 @@ namespace rtype
       {
         if (!GetIncomingMessages().empty())
         {
-          std::cout << "Incoming" << std::endl;
+          // std::cout << "Incoming" << std::endl;
+          std::cout << "Size of incoming messages: " << GetIncomingMessages().queueSize() << std::endl;
           rtype::network::Message<NetworkMessages> msg =
               GetIncomingMessages().popFront().message;
           handdleMessage(msg);

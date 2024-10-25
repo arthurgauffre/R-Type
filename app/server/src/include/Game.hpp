@@ -15,18 +15,18 @@ public:
     Game(std::shared_ptr<rtype::CoreModule> coreModule);
     ~Game();
 
-    entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
+    entity::IEntity *createBackground(std::string texturePath,
                                       std::pair<float, float> speed,
                                       std::pair<float, float> size);
     entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
                                   std::pair<float, float> position,
                                   std::pair<float, float> velocity,
                                   std::pair<float, float> scale, int health);
-    // entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
-    //                              std::pair<float, float> position,
-    //                              std::pair<float, float> velocity,
-    //                              std::pair<float, float> scale, int health,
-    //                              int damage);
+    entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
+                                 std::pair<float, float> position,
+                                 std::pair<float, float> velocity,
+                                 std::pair<float, float> scale, int health,
+                                 int damage);
     entity::IEntity *createWeapon(uint32_t parentID, component::Type type, int damage,
                                   float cooldown);
 

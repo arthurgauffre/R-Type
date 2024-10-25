@@ -31,7 +31,7 @@ component::InputComponent::getBoundKey(const std::string &action) const {
  */
 bool component::InputComponent::isActionActive(
     const std::string &action) const {
-  auto key = getBoundKey(action);
+  sf::Keyboard::Key key = getBoundKey(action);
 
   if (key != sf::Keyboard::Unknown) {
     return sf::Keyboard::isKeyPressed(key);

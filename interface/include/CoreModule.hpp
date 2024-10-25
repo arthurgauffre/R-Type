@@ -17,7 +17,6 @@
 #include <r-type/ISystem.hpp>
 #include <vector>
 
-#include <components/CooldownComponent.hpp>
 #include <components/DamageComponent.hpp>
 #include <components/HealthComponent.hpp>
 #include <components/HitBoxComponent.hpp>
@@ -33,6 +32,7 @@
 #include <components/VelocityComponent.hpp>
 #include <components/WeaponComponent.hpp>
 #include <components/CooldownComponent.hpp>
+#include <components/SizeComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/GameSystem.hpp>

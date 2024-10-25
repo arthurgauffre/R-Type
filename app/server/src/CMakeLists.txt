@@ -13,13 +13,13 @@ add_executable(r-type_server
     ../../ecs/src/components/input/InputComponent.cpp
     ../../ecs/src/components/velocity/VelocityComponent.cpp
     ../../ecs/src/components/transform/TransformComponent.cpp
-    ../../ecs/src/components/background/BackgroundComponent.cpp
     ../../ecs/src/components/health/HealthComponent.cpp
     ../../ecs/src/components/damage/DamageComponent.cpp
     ../../ecs/src/components/parent/ParentComponent.cpp
     ../../ecs/src/components/type/TypeComponent.cpp
     ../../ecs/src/components/cooldown/CooldownComponent.cpp
     ../../ecs/src/components/weapon/WeaponComponent.cpp
+    ../../ecs/src/components/size/SizeComponent.cpp
     ../../ecs/src/entity/Entity.cpp
 )
 

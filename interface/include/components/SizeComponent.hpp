@@ -20,7 +20,9 @@ public:
   void setSize(const std::pair<float, float> &size);
   const std::pair<float, float> getSize();
 
-  void update(float deltaTime) override {}
+  void update(std::pair<float, float> size) {
+    _size = size;
+  }
 
 private:
   /**

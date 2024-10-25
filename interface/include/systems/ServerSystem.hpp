@@ -236,9 +236,7 @@ namespace rtype
 
       void sendAllEntitiesUpdateOrCreateToAllClient(std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore)
       {
-        if (frequencyClock.getElapsedTime().asSeconds() < 0.04)
-          return;
-        frequencyClock.restart();
+        bool transform = false;
         for (auto &entity : _entityManager.getEntities())
         {
           if (entity->getCommunication() == entity::EntityCommunication::CREATE)
@@ -255,6 +253,7 @@ namespace rtype
           {
             SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
             _entityManager.removeEntity(entity->getID());
+            return;
           }
           if (_componentManager.getComponent<component::SpriteComponent>(entity->getID()))
           {
@@ -307,8 +306,12 @@ namespace rtype
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
+              if (frequencyClock.getElapsedTime().asSeconds() > 0.2)
+              {
                 component->setCommunication(component::ComponentCommunication::NONE);
                 SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
+                transform = true;
+              }
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -323,12 +326,12 @@ namespace rtype
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createVelocityMsg(entity->getID(), component->getVelocity().first, component->getVelocity().second), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createVelocityMsg(entity->getID(), component->getVelocity().first, component->getVelocity().second, component->getActualVelocity().first, component->getActualVelocity().second), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateVelocityMsg(entity->getID(), component->getVelocity().first, component->getVelocity().second), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateVelocityMsg(entity->getID(), component->getVelocity().first, component->getVelocity().second, component->getActualVelocity().first, component->getActualVelocity().second), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -385,24 +388,24 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteTypeMsg(entity->getID()), clientToIgnore);
             }
           }
-          if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
+          if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
           {
-            component::BackgroundComponent *component =
-                _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
+            component::SizeComponent *component =
+                _componentManager.getComponent<component::SizeComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createSizeMsg(entity->getID(), component->getSize().first, component->getSize().second), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateSizeMsg(entity->getID(), component->getSize().first, component->getSize().second), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.deleteBackgroundMsg(entity->getID()), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.deleteSizeMsg(entity->getID()), clientToIgnore);
             }
           }
           // if (_componentManager.getComponent<component::WeaponComponent>(entity->getID()))
@@ -420,21 +423,6 @@ namespace rtype
           //     SendMessageToAllClients(networkMessageFactory.deleteWeaponMsg(entity->getID()), clientToIgnore);
           //   }
           // }
-            if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
-            {
-              component::BackgroundComponent *component =
-                  _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
-              if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-                component->setCommunication(component::ComponentCommunication::NONE);
-                SendMessageToAllClients(networkMessageFactory.createBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
-              } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-                component->setCommunication(component::ComponentCommunication::NONE);
-                SendMessageToAllClients(networkMessageFactory.updateBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
-              } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-                component->setCommunication(component::ComponentCommunication::NONE);
-                SendMessageToAllClients(networkMessageFactory.deleteBackgroundMsg(entity->getID()), clientToIgnore);
-              }
-            }
           //   if (_componentManager.getComponent<component::ScrollComponent>(entity->getID()))
           //   {
           //     component::ScrollComponent *component =
@@ -506,6 +494,10 @@ namespace rtype
           //     }
           //   }
         }
+        if (transform)
+        {
+          frequencyClock.restart();
+        }
       }
 
       void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client)
@@ -560,19 +552,9 @@ namespace rtype
 
               SendMessageToClient(networkMessageFactory.createVelocityMsg(
                                       entity->getID(), component->getVelocity().first,
-                                      component->getVelocity().second),
+                                      component->getVelocity().second, component->getActualVelocity().first, component->getActualVelocity().second),
                                   client);
             }
-          }
-          if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
-          {
-            component::BackgroundComponent *component =
-                _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
-            SendMessageToClient(networkMessageFactory.createBackgroundMsg(
-                                    entity->getID(),
-                                    GetEnumTexturePath(component->getTexturePath()),
-                                    component->getSize().first, component->getSize().second),
-                                client);
           }
           if (_componentManager.getComponent<component::HealthComponent>(entity->getID()))
           {
@@ -636,6 +618,14 @@ namespace rtype
                                     entity->getID(), getEntityType(component->getType())),
                                 client);
           }
+          if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
+          {
+            component::SizeComponent *component =
+                _componentManager.getComponent<component::SizeComponent>(entity->getID());
+            SendMessageToClient(networkMessageFactory.createSizeMsg(
+                                    entity->getID(), component->getSize().first, component->getSize().second),
+                                client);
+          }
         }
       }
 
@@ -669,10 +659,10 @@ namespace rtype
       void SendMessageToClient(const Message<T> &message,
                                std::shared_ptr<NetworkConnection<T>> client)
       {
-        std::cout << "checking message to client" << std::endl;
+        // std::cout << "checking message to client" << std::endl;
         if (client && client->IsConnected())
         {
-          std::cout << "Sending message to client" << std::endl;
+          // std::cout << "Sending message to client" << std::endl;
           client->Send(message);
         }
         else
@@ -683,7 +673,7 @@ namespace rtype
               std::remove(deqConnections.begin(), deqConnections.end(), client),
               deqConnections.end());
         }
-        std::cout << "Message sent to client" << std::endl;
+        // std::cout << "Message sent to client" << std::endl;
       }
 
       void SendMessageToAllClients(
@@ -692,7 +682,6 @@ namespace rtype
               nullptr)
       {
         bool invalidClientExists = false;
-
         for (auto &client : deqConnections)
         {
           if (client && client->IsConnected())
@@ -746,8 +735,10 @@ namespace rtype
           return "app/assets/sprites/plane.png";
         }
         break;
-          // case TexturePath::Enemy:
-          // return "assets/enemy.png";
+        case TexturePath::Enemy:
+        {
+          return "assets/enemy.png";
+        }
         }
         return "";
       }
@@ -756,10 +747,12 @@ namespace rtype
       {
         if (texture == "app/assets/sprites/plane.png")
           return TexturePath::Player;
-        // if (texture == "assets/enemy.png")
-        //   return TexturePath::Enemy;
+        if (texture == "app/assets/sprites/enemy.png")
+          return TexturePath::Enemy;
         if (texture == "app/assets/images/city_background.png")
           return TexturePath::Background;
+        if (texture == "app/assets/sprites/projectile.gif")
+          return TexturePath::Bullet;
         return TexturePath::Player;
       }
 

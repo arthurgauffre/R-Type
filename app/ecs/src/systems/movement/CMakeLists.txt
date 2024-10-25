@@ -6,7 +6,7 @@ add_library(r-type_movement_system SHARED
     ../../components/transform/TransformComponent.cpp
     ../../components/size/SizeComponent.cpp
     ../../components/type/TypeComponent.cpp
-    ../../components/velocity/VelocityComponent.cpp
+    ../../components/size/SizeComponent.cpp
 )
 
 # Specify the SFML include directory

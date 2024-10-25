@@ -45,16 +45,22 @@ void ECS_system::MovementSystem::update(
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
 
+    if (!transform || !velocity || !type)
+      return;
+
     float newX = transform->getPosition().first +
                  velocity->getActualVelocity().first * deltaTime;
     float newY = transform->getPosition().second +
                  velocity->getActualVelocity().second * deltaTime;
 
-    if (type->getType() == "background") {
+    if (type->getType() == component::Type::BACKGROUND)
+    {
       component::SizeComponent *size =
           _componentManager.getComponent<component::SizeComponent>(
               entity->getID());
 
+      if (!size)
+        return;
       if (newX < -size->getSize().first)
         newX = size->getSize().first - 1;
       if (newX > size->getSize().first)
@@ -63,7 +69,6 @@ void ECS_system::MovementSystem::update(
         newY = size->getSize().second - 1;
       if (newY > size->getSize().second)
         newY = -size->getSize().second + 1;
-
     }
 
     else if (type->getType() == "player") {
@@ -76,10 +81,11 @@ void ECS_system::MovementSystem::update(
       if (newY > 1080)
         newY = 1080;
     }
-    else if (type->getType() == component::Type::PROJECTILE)
+    else if (type->getType() == component::Type::ENEMY_PROJECTILE ||
+             type->getType() == component::Type::PLAYER_PROJECTILE)
     {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
-        _entityManager.removeEntity(entity->getID());
+        entity->setCommunication(entity::EntityCommunication::DELETE);
     }
     float subPreviousX = transform->getPreviousPosition().first - newX;
     float subPreviousY = transform->getPreviousPosition().second - newY;
@@ -88,7 +94,6 @@ void ECS_system::MovementSystem::update(
     {
       transform->setCommunication(component::ComponentCommunication::UPDATE);
       transform->setPreviousPosition({newX, newY});
-      transform->setPosition({newX, newY});
     }
     transform->setPosition({newX, newY});
   }

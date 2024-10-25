@@ -43,10 +43,10 @@ void ECS_system::RenderSystem::update(
                       component::SpriteComponent, component::TransformComponent,
                       component::TextureComponent, component::SizeComponent,
                       component::SpriteComponent>(entities)) {
-    if (entity.get()->getActive() == false ||
+     if (entity.get()->getActive() == false ||
         _componentManager
                 .getComponent<component::TypeComponent>(entity.get()->getID())
-                ->getType() != "background")
+                ->getType() != component::Type::BACKGROUND)
       continue;
     component::SpriteComponent *spriteComponent =
         _componentManager.getComponent<component::SpriteComponent>(
@@ -74,12 +74,12 @@ void ECS_system::RenderSystem::update(
 
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
-                      component::TextureComponent>(entities)) {
+                      component::TextureComponent, component::TypeComponent>(entities)) {
 
-    if (entity.get()->getActive() == false ||
+     if (entity.get()->getActive() == false ||
         _componentManager
                 .getComponent<component::TypeComponent>(entity.get()->getID())
-                ->getType() == "background")
+                ->getType() == component::Type::BACKGROUND)
       continue;
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(
