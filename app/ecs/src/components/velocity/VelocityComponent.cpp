@@ -14,6 +14,5 @@ VelocityComponent::VelocityComponent(uint32_t entityID,
                                      std::pair<float, float> actualVelocity)
     : AComponent(entityID), _velocity(velocity),
       _actualVelocity(actualVelocity) {
-        std::cout << "velocity" << velocity.first << " " << velocity.second << std::endl;
       }
 } // namespace component

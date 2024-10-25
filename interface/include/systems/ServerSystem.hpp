@@ -253,6 +253,7 @@ namespace rtype
           {
             SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
             _entityManager.removeEntity(entity->getID());
+            return;
           }
           if (_componentManager.getComponent<component::SpriteComponent>(entity->getID()))
           {
@@ -305,7 +306,7 @@ namespace rtype
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
-              if (frequencyClock.getElapsedTime().asSeconds() > 0.9)
+              if (frequencyClock.getElapsedTime().asSeconds() > 0.2)
               {
                 component->setCommunication(component::ComponentCommunication::NONE);
                 SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
@@ -680,10 +681,10 @@ namespace rtype
       void SendMessageToClient(const Message<T> &message,
                                std::shared_ptr<NetworkConnection<T>> client)
       {
-        std::cout << "checking message to client" << std::endl;
+        // std::cout << "checking message to client" << std::endl;
         if (client && client->IsConnected())
         {
-          std::cout << "Sending message to client" << std::endl;
+          // std::cout << "Sending message to client" << std::endl;
           client->Send(message);
         }
         else
@@ -694,7 +695,7 @@ namespace rtype
               std::remove(deqConnections.begin(), deqConnections.end(), client),
               deqConnections.end());
         }
-        std::cout << "Message sent to client" << std::endl;
+        // std::cout << "Message sent to client" << std::endl;
       }
 
       void SendMessageToAllClients(

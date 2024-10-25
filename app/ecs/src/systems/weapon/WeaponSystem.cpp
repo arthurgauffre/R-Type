@@ -19,7 +19,7 @@ void ECS_system::WeaponSystem::createProjectile(
     uint32_t parentID, std::string texturePath,
     std::pair<float, float> velocity, std::pair<float, float> scale,
     int damage) {
-  std::cout << "Creating projectile" << std::endl;
+  // std::cout << "Creating projectile" << std::endl;
   uint32_t projectileID = _entityManager.generateEntityID();
   entity::IEntity *projectile = _entityManager.createEntity(projectileID);
 

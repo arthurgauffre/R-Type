@@ -81,10 +81,11 @@ void ECS_system::MovementSystem::update(
       if (newY > 1080)
         newY = 1080;
     }
-    else if (type->getType() == component::Type::PROJECTILE)
+    else if (type->getType() == component::Type::ENEMY_PROJECTILE ||
+             type->getType() == component::Type::PLAYER_PROJECTILE)
     {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
-        _entityManager.removeEntity(entity->getID());
+        entity->setCommunication(entity::EntityCommunication::DELETE);
     }
     float subPreviousX = transform->getPreviousPosition().first - newX;
     float subPreviousY = transform->getPreviousPosition().second - newY;

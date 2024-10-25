@@ -81,7 +81,7 @@ namespace component
     {
       _velocity = velocity;
       _actualVelocity = actualVelocity;
-      std::cout << "actual velocity: " << _actualVelocity.first << " " << _actualVelocity.second << std::endl;
+      // std::cout << "actual velocity: " << _actualVelocity.first << " " << _actualVelocity.second << std::endl;
       };
 
   private:

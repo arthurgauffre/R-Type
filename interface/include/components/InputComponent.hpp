@@ -40,7 +40,7 @@ public:
    * @param key The key from the keyboard to bind to this action.
    */
   void bindAction(const std::string &action, sf::Keyboard::Key key) {
-    std::cout << "Binding action " << action << " to key " << key << std::endl;
+    // std::cout << "Binding action " << action << " to key " << key << std::endl;
     _keyBindings[action] = key;
   }
 
