@@ -36,7 +36,7 @@ void ECS_system::WeaponSystem::createProjectile(
                                                              parentID);
   _componentManager.addComponent<component::VelocityComponent>(
       projectileID, velocity, velocity);
-  auto texture = _componentManager.addComponent<component::TextureComponent>(
+  component::TextureComponent *texture = _componentManager.addComponent<component::TextureComponent>(
       projectileID, texturePath);
   _componentManager.addComponent<component::HitBoxComponent>(
       projectileID, texture->getTexture().getSize().x,
