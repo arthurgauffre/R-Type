@@ -35,38 +35,47 @@ ECS_system::RenderSystem::RenderSystem(
  * @param entities A vector of shared pointers to entities to be processed.
  */
 void ECS_system::RenderSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
+{
   _window.clear();
 
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
-           component::BackgroundComponent, component::TransformComponent>(
-           entities)) {
-    component::BackgroundComponent *backgroundComponent =
-        _componentManager.getComponent<component::BackgroundComponent>(
+           component::SpriteComponent, component::TransformComponent, component::TextureComponent, component::SizeComponent, component::SpriteComponent>(
+           entities))
+  {
+    if (entity.get()->getActive() == false || _componentManager.getComponent<component::TypeComponent>(entity.get()->getID())->getType() != "background")
+      continue;
+    component::SpriteComponent *spriteComponent =
+        _componentManager.getComponent<component::SpriteComponent>(
+            entity->getID());
+    component::TextureComponent *textureComponent =
+        _componentManager.getComponent<component::TextureComponent>(
             entity->getID());
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
+    component::SizeComponent *sizeComponent =
+        _componentManager.getComponent<component::SizeComponent>(
+            entity->getID());
 
     sf::Vector2f position = {transformComponent->getPosition().first,
                              transformComponent->getPosition().second};
-    sf::Sprite sprite = backgroundComponent->getSprite();
-    sf::Sprite duplicateSprite = backgroundComponent->getDuplicateSprite();
+    sf::Sprite sprite = spriteComponent->getSprite();
+    sf::Texture backgroundTexture = textureComponent->getTexture();
 
+    sprite.setTexture(backgroundTexture);
     sprite.setPosition(position);
-    duplicateSprite.setPosition(
-        position.x + backgroundComponent->getSize().first, position.y);
 
     _window.draw(sprite);
-    _window.draw(duplicateSprite);
   }
 
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
-                      component::TextureComponent>(entities)) {
+                      component::TextureComponent>(entities))
+  {
 
-    if (entity.get()->getActive() == false)
+    if (entity.get()->getActive() == false || _componentManager.getComponent<component::TypeComponent>(entity.get()->getID())->getType() == "background")
       continue;
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(
@@ -94,8 +103,10 @@ void ECS_system::RenderSystem::update(
   _window.display();
 
   // sf event
-  while (_window.pollEvent(_event)) {
-    if (_event.type == sf::Event::Closed) {
+  while (_window.pollEvent(_event))
+  {
+    if (_event.type == sf::Event::Closed)
+    {
       _window.close();
       // this->_gameClosed = true;
     }
@@ -104,6 +115,7 @@ void ECS_system::RenderSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
+             entity::EntityManager &entityManager)
+{
   return new ECS_system::RenderSystem(componentManager, entityManager);
 }

@@ -27,8 +27,10 @@
 component::BackgroundComponent::BackgroundComponent(
     uint32_t entityID, std::string texturePath,
     const std::pair<float, float> &size)
-    : AComponent(entityID), _size(size) {
-  if (!_texture.loadFromFile(texturePath)) {
+    : AComponent(entityID), _size(size)
+{
+  if (!_texture.loadFromFile(texturePath))
+  {
     throw std::runtime_error("Could not load texture from file: " +
                              texturePath);
   }
@@ -51,7 +53,8 @@ sf::Sprite component::BackgroundComponent::getSprite() { return _sprite; }
  *
  * @return std::pair <float, float> The size of the background component.
  */
-const std::pair<float, float> component::BackgroundComponent::getSize() {
+const std::pair<float, float> component::BackgroundComponent::getSize()
+{
   return _size;
 }
 
@@ -60,6 +63,39 @@ const std::pair<float, float> component::BackgroundComponent::getSize() {
  *
  * @return sf::Sprite A duplicate sprite of the background component.
  */
-sf::Sprite component::BackgroundComponent::getDuplicateSprite() {
+sf::Sprite component::BackgroundComponent::getDuplicateSprite()
+{
   return _duplicateSprite;
+}
+
+/**
+ * @brief Retrieves the texture associated with the BackgroundComponent.
+ *
+ * @return sf::Texture The texture used for rendering the background.
+ */
+sf::Texture component::BackgroundComponent::getTexture() { return _texture; }
+
+/**
+ * @brief Sets the texture for the BackgroundComponent.
+ *
+ * This function loads a texture from the specified file path and sets it to the
+ * sprite and duplicate sprite of the BackgroundComponent.
+ *
+ * @param texturePath The file path to the texture to be loaded.
+ *
+ * @throws std::runtime_error If the texture cannot be loaded from the specified
+ * file path.
+ */
+void component::BackgroundComponent::setTexture(const std::string &texturePath)
+{
+  if (!_texture.loadFromFile(texturePath))
+  {
+    throw std::runtime_error("Could not load texture from file: " +
+                             texturePath);
+  }
+  _sprite.setTexture(_texture);
+  _duplicateSprite.setTexture(_texture);
+  _sprite.setScale(_size.first / _sprite.getTexture()->getSize().x,
+                   _size.second / _sprite.getTexture()->getSize().y);
+  _duplicateSprite = _sprite;
 }

@@ -14,9 +14,9 @@
 #include <memory>
 #include <r-type/ICoreModule.hpp>
 #include <r-type/ISystem.hpp>
+#include <r-type/Entity.hpp>
 #include <vector>
 
-#include <components/BackgroundComponent.hpp>
 #include <components/CooldownComponent.hpp>
 #include <components/DamageComponent.hpp>
 #include <components/HealthComponent.hpp>
@@ -31,6 +31,7 @@
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
 #include <components/WeaponComponent.hpp>
+#include <components/SizeComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/GameSystem.hpp>
@@ -43,7 +44,7 @@ public:
   CoreModule();
   ~CoreModule();
 
-  entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
+  entity::IEntity *createBackground(std::string texturePath,
                                     std::pair<float, float> speed,
                                     std::pair<float, float> size);
   entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,

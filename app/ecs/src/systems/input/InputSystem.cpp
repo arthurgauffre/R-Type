@@ -23,10 +23,12 @@
  * @param entities A vector of shared pointers to entities to be updated.
  */
 void ECS_system::InputSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
+{
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
-           entities)) {
+           entities))
+  {
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(
             entity->getID());
@@ -64,6 +66,7 @@ void ECS_system::InputSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
+             entity::EntityManager &entityManager)
+{
   return new ECS_system::InputSystem(componentManager, entityManager);
 }

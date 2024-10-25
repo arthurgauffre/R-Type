@@ -20,6 +20,9 @@ public:
   sf::Sprite getSprite();
   const std::pair<float, float> getSize();
 
+  sf::Texture getTexture();
+  void setTexture(const std::string &texturePath);
+
   sf::Sprite getDuplicateSprite();
 
   void update(float deltaTime) override{};
