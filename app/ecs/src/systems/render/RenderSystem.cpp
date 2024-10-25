@@ -39,35 +39,47 @@ void ECS_system::RenderSystem::update(
     std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
   _window.clear();
 
-  for (auto &entity :
-       _componentManager.getEntitiesWithComponents<
-           component::BackgroundComponent, component::TransformComponent>(
-           entities)) {
-    component::BackgroundComponent *backgroundComponent =
-        _componentManager.getComponent<component::BackgroundComponent>(
+  for (auto &entity : _componentManager.getEntitiesWithComponents<
+                      component::SpriteComponent, component::TransformComponent,
+                      component::TextureComponent, component::SizeComponent,
+                      component::SpriteComponent>(entities)) {
+    if (entity.get()->getActive() == false ||
+        _componentManager
+                .getComponent<component::TypeComponent>(entity.get()->getID())
+                ->getType() != "background")
+      continue;
+    component::SpriteComponent *spriteComponent =
+        _componentManager.getComponent<component::SpriteComponent>(
+            entity->getID());
+    component::TextureComponent *textureComponent =
+        _componentManager.getComponent<component::TextureComponent>(
             entity->getID());
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
+    component::SizeComponent *sizeComponent =
+        _componentManager.getComponent<component::SizeComponent>(
+            entity->getID());
 
     sf::Vector2f position = {transformComponent->getPosition().first,
                              transformComponent->getPosition().second};
-    sf::Sprite sprite = backgroundComponent->getSprite();
-    sf::Sprite duplicateSprite = backgroundComponent->getDuplicateSprite();
+    sf::Sprite sprite = spriteComponent->getSprite();
+    sf::Texture backgroundTexture = textureComponent->getTexture();
 
+    sprite.setTexture(backgroundTexture);
     sprite.setPosition(position);
-    duplicateSprite.setPosition(
-        position.x + backgroundComponent->getSize().first, position.y);
 
     _window.draw(sprite);
-    _window.draw(duplicateSprite);
   }
 
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
                       component::TextureComponent>(entities)) {
 
-    if (entity.get()->getActive() == false)
+    if (entity.get()->getActive() == false ||
+        _componentManager
+                .getComponent<component::TypeComponent>(entity.get()->getID())
+                ->getType() == "background")
       continue;
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(

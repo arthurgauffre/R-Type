@@ -20,6 +20,8 @@ public:
   void setSize(const std::pair<float, float> &size);
   const std::pair<float, float> getSize();
 
+  void update(float deltaTime) override {}
+
 private:
   /**
    * @brief Represents the size of a component.
