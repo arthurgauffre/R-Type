@@ -328,8 +328,8 @@ void rtype::CoreModule::init() {
                                       "health");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "collision");
-    // this->getSystemManager()->addSystem(componentManager, entityManager,
-    //                                     "weapon");
+  // this->getSystemManager()->addSystem(componentManager, entityManager,
+  //                                     "weapon");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "cooldown");
   this->getSystemManager()->addSystem(componentManager, entityManager, "game");
