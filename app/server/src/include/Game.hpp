@@ -15,7 +15,7 @@ public:
     Game(std::shared_ptr<rtype::CoreModule> coreModule);
     ~Game();
 
-    entity::IEntity *createBackground(uint32_t entityID, std::string texturePath,
+    entity::IEntity *createBackground(std::string texturePath,
                                       std::pair<float, float> speed,
                                       std::pair<float, float> size);
     entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,

@@ -29,11 +29,11 @@ enum class NetworkMessages : uint32_t {
   createSound,
   createSprite,
   createTransform,
-  createBackground,
   createParent,
   createInput,
   createCooldown,
   createType,
+  createSize,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -44,10 +44,10 @@ enum class NetworkMessages : uint32_t {
   updateSound,
   updateSprite,
   updateTransform,
-  updateBackground,
   updateParent,
   updateInput,
   updateType,
+  updateSize,
   updateCooldown,
   deleteTexture,
   deletePosition,
@@ -59,11 +59,11 @@ enum class NetworkMessages : uint32_t {
   deleteSound,
   deleteSprite,
   deleteTransform,
-  deleteBackground,
   deleteParent,
   deleteInput,
   deleteCooldown,
   deleteType,
+  deleteSize,
   moveUp,
   moveDown,
   moveLeft,
@@ -181,12 +181,6 @@ struct TransformComponent {
   float rotation;
 };
 
-struct BackgroundComponent {
-  TexturePath texturePath;
-  float x;
-  float y;
-};
-
 struct CoolDownComponent {
   float cooldown;
   float timeRemaining;
@@ -194,6 +188,11 @@ struct CoolDownComponent {
 
 struct TypeComponent {
   EntityType type;
+};
+
+struct SizeComponent {
+  float x;
+  float y;
 };
 
 struct BindKey {

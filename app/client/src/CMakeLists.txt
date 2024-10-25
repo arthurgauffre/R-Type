@@ -23,7 +23,6 @@ add_executable(r-type_client
     ../../ecs/src/components/input/InputComponent.cpp
     ../../ecs/src/components/velocity/VelocityComponent.cpp
     ../../ecs/src/components/transform/TransformComponent.cpp
-    ../../ecs/src/components/background/BackgroundComponent.cpp
     ../../ecs/src/components/health/HealthComponent.cpp
     ../../ecs/src/components/damage/DamageComponent.cpp
     ../../ecs/src/components/type/TypeComponent.cpp

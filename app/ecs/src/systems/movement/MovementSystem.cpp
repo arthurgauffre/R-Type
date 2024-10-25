@@ -37,7 +37,7 @@ void ECS_system::MovementSystem::update(
     component::TypeComponent *type =
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
-    
+
     if (!transform || !velocity || !type)
       return;
 
@@ -48,27 +48,20 @@ void ECS_system::MovementSystem::update(
 
     if (type->getType() == component::Type::BACKGROUND)
     {
-        component::BackgroundComponent *backgroundComponent =
-          _componentManager.getComponent<component::BackgroundComponent>(
+      component::SizeComponent *size =
+          _componentManager.getComponent<component::SizeComponent>(
               entity->getID());
 
-      std::pair<float, float> speed = velocity->getVelocity();
-      std::pair<float, float> position = {transform->getPosition().first,
-                                          transform->getPosition().second};
-
-      position.first -= speed.first * deltaTime;
-      if (position.first <= -backgroundComponent->getSize().first ||
-          position.first <=
-              -backgroundComponent->getSize().first + speed.first * deltaTime)
-        position.first = 0;
-
-      position.second -= speed.second * deltaTime;
-      if (position.second <= -backgroundComponent->getSize().second ||
-          position.second <=
-              -backgroundComponent->getSize().second + speed.second * deltaTime)
-        position.second = 0;
-
-      transform->setPosition(position);
+      if (!size)
+        return;
+      if (newX < -size->getSize().first)
+        newX = size->getSize().first - 1;
+      if (newX > size->getSize().first)
+        newX = -size->getSize().first + 1;
+      if (newY < -size->getSize().second)
+        newY = size->getSize().second - 1;
+      if (newY > size->getSize().second)
+        newY = -size->getSize().second + 1;
     }
     else if (type->getType() == component::Type::PLAYER)
     {

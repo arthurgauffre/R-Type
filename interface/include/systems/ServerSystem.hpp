@@ -388,24 +388,24 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteTypeMsg(entity->getID()), clientToIgnore);
             }
           }
-          if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
+          if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
           {
-            component::BackgroundComponent *component =
-                _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
+            component::SizeComponent *component =
+                _componentManager.getComponent<component::SizeComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createSizeMsg(entity->getID(), component->getSize().first, component->getSize().second), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateSizeMsg(entity->getID(), component->getSize().first, component->getSize().second), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.deleteBackgroundMsg(entity->getID()), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.deleteSizeMsg(entity->getID()), clientToIgnore);
             }
           }
           // if (_componentManager.getComponent<component::WeaponComponent>(entity->getID()))
@@ -423,26 +423,6 @@ namespace rtype
           //     SendMessageToAllClients(networkMessageFactory.deleteWeaponMsg(entity->getID()), clientToIgnore);
           //   }
           // }
-          if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
-          {
-            component::BackgroundComponent *component =
-                _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
-            if (component->getCommunication() == component::ComponentCommunication::CREATE)
-            {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
-            }
-            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
-            {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
-            }
-            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
-            {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.deleteBackgroundMsg(entity->getID()), clientToIgnore);
-            }
-          }
           //   if (_componentManager.getComponent<component::ScrollComponent>(entity->getID()))
           //   {
           //     component::ScrollComponent *component =
@@ -576,16 +556,6 @@ namespace rtype
                                   client);
             }
           }
-          if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
-          {
-            component::BackgroundComponent *component =
-                _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
-            SendMessageToClient(networkMessageFactory.createBackgroundMsg(
-                                    entity->getID(),
-                                    GetEnumTexturePath(component->getTexturePath()),
-                                    component->getSize().first, component->getSize().second),
-                                client);
-          }
           if (_componentManager.getComponent<component::HealthComponent>(entity->getID()))
           {
             component::HealthComponent *component =
@@ -646,6 +616,14 @@ namespace rtype
                 _componentManager.getComponent<component::TypeComponent>(entity->getID());
             SendMessageToClient(networkMessageFactory.createTypeMsg(
                                     entity->getID(), getEntityType(component->getType())),
+                                client);
+          }
+          if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
+          {
+            component::SizeComponent *component =
+                _componentManager.getComponent<component::SizeComponent>(entity->getID());
+            SendMessageToClient(networkMessageFactory.createSizeMsg(
+                                    entity->getID(), component->getSize().first, component->getSize().second),
                                 client);
           }
         }

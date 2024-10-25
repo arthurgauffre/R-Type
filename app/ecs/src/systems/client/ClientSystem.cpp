@@ -258,24 +258,6 @@ namespace rtype
                 std::make_pair(transform.scaleX, transform.scaleY), transform.rotation);
       }
       break;
-      case NetworkMessages::createBackground:
-      {
-        // std::cout << "Background component created" << std::endl;
-        BackgroundComponent background;
-        EntityId id;
-        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        std::memcpy(&background, msg.body.data() + sizeof(EntityId),
-                    sizeof(BackgroundComponent));
-        // std::cout << "Background: " << background.x << " " << background.y
-                  // << std::endl;
-        // std::cout << "Texture: " << GetTexturePath(background.texturePath)
-                  // << std::endl;
-        _componentManager
-            .addComponent<component::BackgroundComponent>(
-                id.id, GetTexturePath(background.texturePath),
-                std::make_pair(background.x, background.y));
-      }
-      break;
       case NetworkMessages::createVelocity:
       {
         // std::cout << "Velocity component created" << std::endl;
@@ -457,25 +439,6 @@ namespace rtype
                 std::make_pair(transform.scaleX, transform.scaleY), transform.rotation);
       }
       break;
-      // case NetworkMessages::updateBackground:
-      // {
-      //   std::cout << "Background component updated" << std::endl;
-      //   BackgroundComponent background;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&background, msg.body.data() + sizeof(EntityId),
-      //               sizeof(BackgroundComponent));
-      //   std::cout << "Background: " << background.x << " " << background.y
-      //             << std::endl;
-      //   std::cout << "Texture: " << GetTexturePath(background.texturePath)
-      //             << std::endl;
-      //   _coreModule.get()
-      //       ->getComponentManager()
-      //       ->updateComponent<component::BackgroundComponent>(
-      //           id.id, GetTexturePath(background.texturePath),
-      //           sf::Vector2f(background.x, background.y));
-      // }
-      // break;
       case NetworkMessages::updateVelocity:
       {
         // std::cout << "Velocity component updated" << std::endl;
@@ -543,6 +506,33 @@ namespace rtype
             .updateComponent<component::HitBoxComponent>(id.id, hitbox.x,
                                                          hitbox.y);
       }
+      break;
+      case NetworkMessages::createSize:
+      {
+        // std::cout << "Size component created" << std::endl;
+        SizeComponent size;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&size, msg.body.data() + sizeof(EntityId),
+                    sizeof(SizeComponent));
+        // std::cout << "Size: " << size.x << " " << size.y << std::endl;
+        _componentManager
+            .addComponent<component::SizeComponent>(id.id, std::make_pair(size.x, size.y));
+      }
+      break;
+      case NetworkMessages::updateSize:
+      {
+        // std::cout << "Size component updated" << std::endl;
+        SizeComponent size;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&size, msg.body.data() + sizeof(EntityId),
+                    sizeof(SizeComponent));
+        // std::cout << "Size: " << size.x << " " << size.y << std::endl;
+        _componentManager
+            .updateComponent<component::SizeComponent>(id.id, std::make_pair(size.x, size.y));
+      }
+      break;
         // break;
         // case NetworkMessages::updateMusic:
         // {
