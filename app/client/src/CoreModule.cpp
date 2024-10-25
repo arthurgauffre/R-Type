@@ -278,11 +278,11 @@ void rtype::CoreModule::init() {
   auto player = this->createPlayer(this->getEntityManager()->generateEntityID(),
                                    "app/assets/sprites/plane.png",
                                    std::pair<float, float>(100.0f, 100.0f),
-                                   std::pair<float, float>(500.0f, 500.0f),
+                                   std::pair<float, float>(300.0f, 300.0f),
                                    std::pair<float, float>(0.25f, 0.25f), 1);
 
   this->createBackground("app/assets/images/city_background.png",
-                         std::pair<float, float>(-500.0f, 0.0f),
+                         std::pair<float, float>(-100.0f, 0.0f),
                          std::pair<float, float>(4448.0f, 1200.0f));
   this->createEnemy(this->getEntityManager()->generateEntityID(),
                     "app/assets/sprites/enemy.png",
@@ -328,8 +328,8 @@ void rtype::CoreModule::init() {
                                       "health");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "collision");
-  //   this->getSystemManager()->addSystem(componentManager, entityManager,
-  //                                       "weapon");
+    // this->getSystemManager()->addSystem(componentManager, entityManager,
+    //                                     "weapon");
   this->getSystemManager()->addSystem(componentManager, entityManager,
                                       "cooldown");
   this->getSystemManager()->addSystem(componentManager, entityManager, "game");
