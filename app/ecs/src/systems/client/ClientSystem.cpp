@@ -27,8 +27,15 @@ namespace rtype
         return "app/assets/sprites/plane.png";
       }
       break;
-        // case TexturePath::Enemy:
-        // return "assets/enemy.png";
+      case TexturePath::Enemy:
+      {
+        return "app/assets/sprites/enemy.png";
+      }
+      break;
+      case TexturePath::Bullet:
+      {
+        return "app/assets/sprites/projectile.gif";
+      }
       }
       return "";
     }

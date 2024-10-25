@@ -131,39 +131,38 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
     return player;
 }
 
-// entity::IEntity *Game::createEnemy(
-//     uint32_t entityID, std::string texturePath,
-//     std::pair<float, float> position, std::pair<float, float> velocity,
-//     std::pair<float, float> scale, int health, int damage)
-// {
-//     auto enemy = _coreModule->getEntityManager()->createEntity(entityID);
+entity::IEntity *Game::createEnemy(
+    uint32_t entityID, std::string texturePath,
+    std::pair<float, float> position, std::pair<float, float> velocity,
+    std::pair<float, float> scale, int health, int damage)
+{
+    auto enemy = _coreModule->getEntityManager()->createEntity(entityID);
 
-//     auto weapon = createWeapon(entityID, "enemyWeapon", 15, 2);
+    auto weapon = createWeapon(entityID, component::Type::WEAPON, 15, 2);
 
-//     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
-//         entityID, weapon->getID(), true, -500);
-//     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
-//                                                                                "enemy");
-//     _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-//         entityID, position.first, position.second);
-//     auto texture =
-//         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-//             entityID, texturePath);
-//     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
-//         entityID, velocity);
-//     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
-//         entityID, position, scale);
+    _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
+        entityID, weapon->getID(), true, -500);
+    _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID, component::Type::ENEMY);
+    _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
+        entityID, position.first, position.second);
+    auto texture =
+        _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
+            entityID, texturePath);
+    _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+        entityID, velocity);
+    _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
+        entityID, position, scale);
 
-//     _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
-//         entityID, health);
-//     _coreModule->getComponentManager()->addComponent<component::DamageComponent>(
-//         entityID, damage);
-//     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-//         entityID, texture->getTexture().getSize().x * scale.first,
-//         texture->getTexture().getSize().y * scale.second);
+    _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
+        entityID, health);
+    _coreModule->getComponentManager()->addComponent<component::DamageComponent>(
+        entityID, damage);
+    _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
+        entityID, texture->getTexture().getSize().x * scale.first,
+        texture->getTexture().getSize().y * scale.second);
 
-//     return enemy;
-// }
+    return enemy;
+}
 
 /**
  * @brief Initializes the core module of the R-Type game.
@@ -205,11 +204,11 @@ void Game::init()
                              "app/assets/images/city_background.png",
                              std::pair<float, float>(-100.0f, 0.0f),
                              std::pair<float, float>(4448.0f, 1200.0f));
-    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-    //                     "app/assets/sprites/enemy.png",
-    //                     std::pair<float, float>(1800.0f, 0.0f),
-    //                     std::pair<float, float>(0.0f, 0.0f),
-    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
+      this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+                        "app/assets/sprites/enemy.png",
+                        std::pair<float, float>(1800.0f, 0.0f),
+                        std::pair<float, float>(0.0f, 0.0f),
+                        std::pair<float, float>(0.2f, 0.2f), 1, 100);
 
     //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
     //                     "app/assets/sprites/enemy.png",

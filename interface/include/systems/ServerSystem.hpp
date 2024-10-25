@@ -307,8 +307,8 @@ namespace rtype
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
-                component->setCommunication(component::ComponentCommunication::NONE);
-                SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -420,21 +420,26 @@ namespace rtype
           //     SendMessageToAllClients(networkMessageFactory.deleteWeaponMsg(entity->getID()), clientToIgnore);
           //   }
           // }
-            if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
+          if (_componentManager.getComponent<component::BackgroundComponent>(entity->getID()))
+          {
+            component::BackgroundComponent *component =
+                _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              component::BackgroundComponent *component =
-                  _componentManager.getComponent<component::BackgroundComponent>(entity->getID());
-              if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-                component->setCommunication(component::ComponentCommunication::NONE);
-                SendMessageToAllClients(networkMessageFactory.createBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
-              } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-                component->setCommunication(component::ComponentCommunication::NONE);
-                SendMessageToAllClients(networkMessageFactory.updateBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
-              } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-                component->setCommunication(component::ComponentCommunication::NONE);
-                SendMessageToAllClients(networkMessageFactory.deleteBackgroundMsg(entity->getID()), clientToIgnore);
-              }
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.createBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
             }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.updateBackgroundMsg(entity->getID(), GetEnumTexturePath(component->getTexturePath()), component->getSize().first, component->getSize().second), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteBackgroundMsg(entity->getID()), clientToIgnore);
+            }
+          }
           //   if (_componentManager.getComponent<component::ScrollComponent>(entity->getID()))
           //   {
           //     component::ScrollComponent *component =
@@ -746,8 +751,10 @@ namespace rtype
           return "app/assets/sprites/plane.png";
         }
         break;
-          // case TexturePath::Enemy:
-          // return "assets/enemy.png";
+        case TexturePath::Enemy:
+        {
+          return "assets/enemy.png";
+        }
         }
         return "";
       }
@@ -756,10 +763,12 @@ namespace rtype
       {
         if (texture == "app/assets/sprites/plane.png")
           return TexturePath::Player;
-        // if (texture == "assets/enemy.png")
-        //   return TexturePath::Enemy;
+        if (texture == "app/assets/sprites/enemy.png")
+          return TexturePath::Enemy;
         if (texture == "app/assets/images/city_background.png")
           return TexturePath::Background;
+        if (texture == "app/assets/sprites/projectile.gif")
+          return TexturePath::Bullet;
         return TexturePath::Player;
       }
 
