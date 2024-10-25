@@ -305,7 +305,7 @@ namespace rtype
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
-              if (frequencyClock.getElapsedTime().asSeconds() > 3)
+              if (frequencyClock.getElapsedTime().asSeconds() > 0.9)
               {
                 component->setCommunication(component::ComponentCommunication::NONE);
                 SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
@@ -325,12 +325,12 @@ namespace rtype
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createVelocityMsg(entity->getID(), component->getVelocity().first, component->getVelocity().second), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createVelocityMsg(entity->getID(), component->getVelocity().first, component->getVelocity().second, component->getActualVelocity().first, component->getActualVelocity().second), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateVelocityMsg(entity->getID(), component->getVelocity().first, component->getVelocity().second), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateVelocityMsg(entity->getID(), component->getVelocity().first, component->getVelocity().second, component->getActualVelocity().first, component->getActualVelocity().second), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -571,7 +571,7 @@ namespace rtype
 
               SendMessageToClient(networkMessageFactory.createVelocityMsg(
                                       entity->getID(), component->getVelocity().first,
-                                      component->getVelocity().second),
+                                      component->getVelocity().second, component->getActualVelocity().first, component->getActualVelocity().second),
                                   client);
             }
           }
@@ -703,7 +703,6 @@ namespace rtype
               nullptr)
       {
         bool invalidClientExists = false;
-
         for (auto &client : deqConnections)
         {
           if (client && client->IsConnected())

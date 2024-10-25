@@ -67,12 +67,12 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> createVelocityMsg(size_t id, float x,
-                                                               float y)
+                                                               float y, float actualX, float actualY)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createVelocity;
         EntityId entity = {id};
-        VelocityComponent velocity = {x, y};
+        VelocityComponent velocity = {x, y, actualX, actualY};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
@@ -417,20 +417,20 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> updateVelocityMsg(size_t id, float x,
-                                                               float y)
+                                                               float y, float actualX, float actualY)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateVelocity;
         EntityId entity = {id};
-        VelocityComponent velocity = {x, y};
+        VelocityComponent velocity = {x, y, actualX, actualY};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
         std::vector<uint8_t> velocityBytes(reinterpret_cast<uint8_t *>(&velocity),
                                            reinterpret_cast<uint8_t *>(&velocity) +
                                                sizeof(VelocityComponent));
-        message.body.insert(message.body.end(), velocityBytes.begin(),
-                            velocityBytes.end());
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
         message.body.insert(message.body.end(), velocityBytes.begin(),
                             velocityBytes.end());
         std::chrono::system_clock::time_point timeNow =

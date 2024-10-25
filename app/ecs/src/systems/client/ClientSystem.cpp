@@ -287,7 +287,7 @@ namespace rtype
         std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
         _componentManager
             .addComponent<component::VelocityComponent>(
-                id.id, std::make_pair(velocity.x, velocity.y));
+                id.id, std::make_pair(velocity.x, velocity.y), std::make_pair(velocity.actualX, velocity.actualY));
       }
       break;
       case NetworkMessages::createParent:
@@ -443,14 +443,14 @@ namespace rtype
       // break;
       case NetworkMessages::updateTransform:
       {
-        std::cout << "Transform component updated" << std::endl;
+        // std::cout << "Transform component updated" << std::endl;
         TransformComponent transform;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&transform, msg.body.data() + sizeof(EntityId),
                     sizeof(TransformComponent));
-        std::cout << "Transform: " << transform.x << " " << transform.y << " "
-                  << transform.scaleX << " " << transform.scaleY << std::endl;
+        // std::cout << "Transform: " << transform.x << " " << transform.y << " "
+        //           << transform.scaleX << " " << transform.scaleY << std::endl;
         _componentManager
             .updateComponent<component::TransformComponent>(
                 id.id, std::make_pair(transform.x, transform.y),
@@ -484,10 +484,10 @@ namespace rtype
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&velocity, msg.body.data() + sizeof(EntityId),
                     sizeof(VelocityComponent));
-        std::cout << "Velocity: " << velocity.x << " " << velocity.y << std::endl;
+        std::cout << "Velocity: " << velocity.x << " " << velocity.y << " " << velocity.actualX << " " << velocity.actualY << std::endl;
         _componentManager
             .updateComponent<component::VelocityComponent>(
-                id.id, std::make_pair(velocity.x, velocity.y));
+                id.id, std::make_pair(velocity.x, velocity.y), std::make_pair(velocity.actualX, velocity.actualY));
       }
       break;
       case NetworkMessages::updateParent:

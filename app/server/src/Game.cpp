@@ -291,6 +291,7 @@ void Game::moveEntity(std::string msg, size_t id)
             velocityComponent->setActualVelocityX(-velocityComponent->getVelocity().first);
         if (msg == "moveRight")
             velocityComponent->setActualVelocityX(velocityComponent->getVelocity().first);
+        velocityComponent->setCommunication(component::ComponentCommunication::UPDATE);
     }
 }
 
@@ -311,6 +312,7 @@ void Game::resetInput()
                     // std::cout << "resetting velocity" << std::endl;
                     velocityComponent->setActualVelocityX(0);
                     velocityComponent->setActualVelocityY(0);
+                    velocityComponent->setCommunication(component::ComponentCommunication::UPDATE);
                     inputClock.restart();
                 }
             }

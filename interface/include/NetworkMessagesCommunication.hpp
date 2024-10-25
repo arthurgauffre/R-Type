@@ -139,6 +139,8 @@ struct EntityId {
 struct VelocityComponent {
   float x;
   float y;
+  float actualX;
+  float actualY;
 };
 
 struct ParentComponent {

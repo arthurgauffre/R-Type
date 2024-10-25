@@ -48,7 +48,6 @@ void ECS_system::MovementSystem::update(
 
     if (type->getType() == component::Type::BACKGROUND)
     {
-        std::cout << "Background" << std::endl;
         component::BackgroundComponent *backgroundComponent =
           _componentManager.getComponent<component::BackgroundComponent>(
               entity->getID());
@@ -73,7 +72,6 @@ void ECS_system::MovementSystem::update(
     }
     else if (type->getType() == component::Type::PLAYER)
     {
-      std::cout << "Player" << std::endl;
       if (newX < 0)
         newX = 0;
       if (newX > 1920)
@@ -85,7 +83,6 @@ void ECS_system::MovementSystem::update(
     }
     else if (type->getType() == component::Type::PROJECTILE)
     {
-      std::cout << "Projectile" << std::endl;
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
         _entityManager.removeEntity(entity->getID());
     }
