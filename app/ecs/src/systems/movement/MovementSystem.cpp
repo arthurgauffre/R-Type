@@ -9,19 +9,12 @@
 #include <systems/MovementSystem.hpp>
 
 /**
- * @brief Updates the positions of entities based on their velocity and type.
+ * @brief Updates the positions of entities based on their velocity and the
+ * elapsed time.
  *
- * This function iterates through entities that have both TransformComponent and
- * VelocityComponent, and updates their positions according to their velocity
- * and the elapsed time (deltaTime). The behavior varies depending on the type
- * of the entity:
- *
- * - For entities of type "background", the position is adjusted to create a
- * looping background effect.
- * - For entities of type "player", the position is clamped within the screen
- * bounds (0 to 1920 for x, 0 to 1080 for y).
- * - For entities of type "projectile", the entity is removed if it goes out of
- * the screen bounds.
+ * This function iterates through all entities that have both TransformComponent
+ * and VelocityComponent. It updates each entity's position by adding the
+ * product of its velocity and the elapsed time (deltaTime).
  *
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be updated.
@@ -70,8 +63,8 @@ void ECS_system::MovementSystem::update(
       if (newY > size->getSize().second)
         newY = -size->getSize().second + 1;
     }
-
-    else if (type->getType() == "player") {
+    else if (type->getType() == component::Type::PLAYER)
+    {
       if (newX < 0)
         newX = 0;
       if (newX > 1920)
