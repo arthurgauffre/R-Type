@@ -85,11 +85,12 @@ void ECS_system::MovementSystem::update(
     }
     float subPreviousX = transform->getPreviousPosition().first - newX;
     float subPreviousY = transform->getPreviousPosition().second - newY;
-    if (subPreviousX > 5 || subPreviousX < -5||
-        subPreviousY > 5 || subPreviousY < -5)
+    if (subPreviousX > 5 || subPreviousX < -5 || subPreviousY > 5 ||
+        subPreviousY < -5)
     {
       transform->setCommunication(component::ComponentCommunication::UPDATE);
       transform->setPreviousPosition({newX, newY});
+      transform->setPosition({newX, newY});
     }
     transform->setPosition({newX, newY});
   }

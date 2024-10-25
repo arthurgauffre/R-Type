@@ -236,6 +236,9 @@ namespace rtype
 
       void sendAllEntitiesUpdateOrCreateToAllClient(std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore)
       {
+        if (frequencyClock.getElapsedTime().asSeconds() < 0.04)
+          return;
+        frequencyClock.restart();
         for (auto &entity : _entityManager.getEntities())
         {
           if (entity->getCommunication() == entity::EntityCommunication::CREATE)
@@ -304,8 +307,8 @@ namespace rtype
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -827,6 +830,7 @@ namespace rtype
     private:
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
+      sf::Clock frequencyClock;
     };
   } // namespace network
 } // namespace rtype
