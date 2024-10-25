@@ -8,10 +8,10 @@
 #pragma once
 
 #include <components/HitBoxComponent.hpp>
+#include <components/SizeComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
 #include <components/TransformComponent.hpp>
-#include <components/SizeComponent.hpp>
 #include <components/TypeComponent.hpp>
 #include <r-type/ASystem.hpp>
 

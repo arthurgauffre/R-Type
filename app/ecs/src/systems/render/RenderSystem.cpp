@@ -35,16 +35,17 @@ ECS_system::RenderSystem::RenderSystem(
  * @param entities A vector of shared pointers to entities to be processed.
  */
 void ECS_system::RenderSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities)
-{
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities) {
   _window.clear();
 
-  for (auto &entity :
-       _componentManager.getEntitiesWithComponents<
-           component::SpriteComponent, component::TransformComponent, component::TextureComponent, component::SizeComponent, component::SpriteComponent>(
-           entities))
-  {
-    if (entity.get()->getActive() == false || _componentManager.getComponent<component::TypeComponent>(entity.get()->getID())->getType() != "background")
+  for (auto &entity : _componentManager.getEntitiesWithComponents<
+                      component::SpriteComponent, component::TransformComponent,
+                      component::TextureComponent, component::SizeComponent,
+                      component::SpriteComponent>(entities)) {
+    if (entity.get()->getActive() == false ||
+        _componentManager
+                .getComponent<component::TypeComponent>(entity.get()->getID())
+                ->getType() != "background")
       continue;
     component::SpriteComponent *spriteComponent =
         _componentManager.getComponent<component::SpriteComponent>(
@@ -72,10 +73,12 @@ void ECS_system::RenderSystem::update(
 
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
-                      component::TextureComponent>(entities))
-  {
+                      component::TextureComponent>(entities)) {
 
-    if (entity.get()->getActive() == false || _componentManager.getComponent<component::TypeComponent>(entity.get()->getID())->getType() == "background")
+    if (entity.get()->getActive() == false ||
+        _componentManager
+                .getComponent<component::TypeComponent>(entity.get()->getID())
+                ->getType() == "background")
       continue;
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(
@@ -103,10 +106,8 @@ void ECS_system::RenderSystem::update(
   _window.display();
 
   // sf event
-  while (_window.pollEvent(_event))
-  {
-    if (_event.type == sf::Event::Closed)
-    {
+  while (_window.pollEvent(_event)) {
+    if (_event.type == sf::Event::Closed) {
       _window.close();
       // this->_gameClosed = true;
     }
@@ -115,7 +116,6 @@ void ECS_system::RenderSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
-{
+             entity::EntityManager &entityManager) {
   return new ECS_system::RenderSystem(componentManager, entityManager);
 }

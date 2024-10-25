@@ -12,9 +12,9 @@
 #include <iostream>
 #include <limits.h>
 #include <memory>
+#include <r-type/Entity.hpp>
 #include <r-type/ICoreModule.hpp>
 #include <r-type/ISystem.hpp>
-#include <r-type/Entity.hpp>
 #include <vector>
 
 #include <components/CooldownComponent.hpp>
@@ -24,6 +24,7 @@
 #include <components/InputComponent.hpp>
 #include <components/MusicComponent.hpp>
 #include <components/ParentComponent.hpp>
+#include <components/SizeComponent.hpp>
 #include <components/SoundComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
@@ -31,7 +32,6 @@
 #include <components/TypeComponent.hpp>
 #include <components/VelocityComponent.hpp>
 #include <components/WeaponComponent.hpp>
-#include <components/SizeComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/GameSystem.hpp>
