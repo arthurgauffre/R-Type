@@ -17,6 +17,7 @@ namespace component
     LINEAR,
     SINUSOIDAL,
     CIRCULAR,
+    UNKNOWN,
   };
   class AIComponent : public AComponent
   {

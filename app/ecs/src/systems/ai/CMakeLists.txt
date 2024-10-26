@@ -1,5 +1,5 @@
 add_library(r-type_ai_system SHARED
-    AIsystem.cpp
+    AISystem.cpp
     ../../components/ai/AIComponent.cpp
     ../../components/type/TypeComponent.cpp
     ../../components/velocity/VelocityComponent.cpp

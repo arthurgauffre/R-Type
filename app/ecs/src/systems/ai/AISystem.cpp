@@ -52,3 +52,9 @@ namespace ECS_system
         }
     }
 }
+
+extern "C" ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
+                                             entity::EntityManager &entityManager)
+{
+    return new ECS_system::AISytem(componentManager, entityManager);
+}

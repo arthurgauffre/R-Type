@@ -833,6 +833,17 @@ namespace rtype
         return EntityType::Unknown;
       }
 
+      AIType getAIType(component::AIType type)
+      {
+        if (type == component::AIType::LINEAR)
+          return AIType::Linear;
+        if (type == component::AIType::SINUSOIDAL)
+          return AIType::Sinusoidal;
+        if (type == component::AIType::CIRCULAR)
+          return AIType::Circular;
+        return AIType::Unknown;
+      }
+
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;
       std::deque<std::shared_ptr<NetworkConnection<T>>> deqConnections;
 

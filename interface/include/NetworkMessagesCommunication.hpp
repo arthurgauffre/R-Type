@@ -90,6 +90,7 @@ enum class AIType : uint32_t {
   Linear,
   Sinusoidal,
   Circular,
+  Unknown,
 };
 
 enum class TexturePath : uint32_t {
