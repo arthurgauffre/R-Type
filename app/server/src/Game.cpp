@@ -230,10 +230,10 @@ void Game::init()
                                                "movement");
     _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
                                                "server");
-    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-    //                                                 "cooldown");
-    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-    //                                               "weapon");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                                    "cooldown");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                                  "weapon");
    }
 
 void Game::handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived)
@@ -315,7 +315,7 @@ void Game::run()
         _coreModule->update();
         if (!_coreModule->msgReceived.empty())
         {
-            std::cout << "msgReceivedSize: " << _coreModule->msgReceived.size() << std::endl;
+            // std::cout << "msgReceivedSize: " << _coreModule->msgReceived.size() << std::endl;
             handdleReceivedMessage(_coreModule->msgReceived);
         }
         else

@@ -33,22 +33,6 @@ entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const {
 }
 
 /**
- * @brief Destroys an entity with the specified ID.
- *
- * This function removes the entity with the given ID from the list of entities.
- * It uses the erase-remove idiom to find and remove the entity.
- *
- * @param id The ID of the entity to be destroyed.
- */
-void entity::EntityManager::destroyEntity(uint32_t id) {
-  _entities.erase(std::remove_if(_entities.begin(), _entities.end(),
-                                 [id](const std::shared_ptr<IEntity> &entity) {
-                                   return entity->getID() == id;
-                                 }),
-                  _entities.end());
-}
-
-/**
  * @brief Creates a new entity with the given ID and adds it to the entity
  * manager.
  *

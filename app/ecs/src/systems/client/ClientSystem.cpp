@@ -201,21 +201,22 @@ namespace rtype
       break;
       case NetworkMessages::createEntity:
       {
-        std::cout << "Entity created" << std::endl;
+        // std::cout << "Entity created" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
 
-        std::cout << "Entity id: " << entity.id << std::endl;
+        // std::cout << "Entity id: " << entity.id << std::endl;
         _entityManager.createEntity(entity.id);
       }
       break;
       case NetworkMessages::deleteEntity:
       {
-        // std::cout << "Entity destroyed" << std::endl;
+        std::cout << "Entity destroyed" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
-        // std::cout << "Entity id: " << entity.id << std::endl;
-        _entityManager.destroyEntity(entity.id);
+        std::cout << "Entity id: " << entity.id << std::endl;
+        _componentManager.removeAllComponents(entity.id);
+        _entityManager.removeEntity(entity.id);
       }
       break;
       case NetworkMessages::createSprite:

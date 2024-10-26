@@ -227,6 +227,7 @@ namespace rtype
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
           {
             SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
+            _componentManager.removeAllComponents(entity->getID());
             _entityManager.removeEntity(entity->getID());
             return;
           }

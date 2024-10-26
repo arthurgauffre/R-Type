@@ -23,8 +23,6 @@ public:
 
   IEntity *createEntity(uint32_t id);
 
-  void destroyEntity(uint32_t id);
-
   IEntity *getEntityByID(uint32_t id) const;
 
   uint32_t generateEntityID();
