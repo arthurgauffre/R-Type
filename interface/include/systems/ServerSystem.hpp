@@ -408,6 +408,26 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteSizeMsg(entity->getID()), clientToIgnore);
             }
           }
+          if (_componentManager.getComponent<component::AIComponent>(entity->getID()))
+          {
+            component::AIComponent *component =
+                _componentManager.getComponent<component::AIComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.createAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.updateAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteAIMsg(entity->getID()), clientToIgnore);
+            }
+          }
           // if (_componentManager.getComponent<component::WeaponComponent>(entity->getID()))
           // {
           //   component::WeaponComponent *component =
@@ -616,6 +636,14 @@ namespace rtype
                 _componentManager.getComponent<component::TypeComponent>(entity->getID());
             SendMessageToClient(networkMessageFactory.createTypeMsg(
                                     entity->getID(), getEntityType(component->getType())),
+                                client);
+          }
+          if (_componentManager.getComponent<component::AIComponent>(entity->getID()))
+          {
+            component::AIComponent *component =
+                _componentManager.getComponent<component::AIComponent>(entity->getID());
+            SendMessageToClient(networkMessageFactory.createAIMsg(
+                                    entity->getID(), getAIType(component->getType())),
                                 client);
           }
           if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
