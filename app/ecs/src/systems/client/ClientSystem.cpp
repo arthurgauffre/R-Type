@@ -157,8 +157,10 @@ namespace rtype
       return component::Type::UNKNOWN;
     }
 
-    void ClientSystem::handdleMessage(rtype::network::Message<NetworkMessages> &msg)
+    void ClientSystem::handleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
+      std::lock_guard<std::mutex> lock(_entityMutex);
+
       switch (msg.header.id)
       {
       case NetworkMessages::ServerAcceptance:
@@ -199,11 +201,11 @@ namespace rtype
       break;
       case NetworkMessages::createEntity:
       {
-        // std::cout << "Entity created" << std::endl;
+        std::cout << "Entity created" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
 
-        // std::cout << "Entity id: " << entity.id << std::endl;
+        std::cout << "Entity id: " << entity.id << std::endl;
         _entityManager.createEntity(entity.id);
       }
       break;
@@ -565,6 +567,25 @@ namespace rtype
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
                               std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
     {
+      std::lock_guard<std::mutex> lock(_entityMutex); 
+      if (IsConnected())
+      {
+        if (!GetIncomingMessages().empty())
+        {
+          while (!GetIncomingMessages().empty())
+          {
+            // std::cout << "Incoming" << std::endl;
+            // std::cout << "Size of incoming messages: " << GetIncomingMessages().queueSize() << std::endl;
+            rtype::network::Message<NetworkMessages> msg =
+                GetIncomingMessages().popFront().message;
+            enqueueMessage(msg);
+          }
+        }
+      }
+      else
+      {
+        std::cout << "Server Down" << std::endl;
+      }
       while (!msgToSend.empty())
       {
         // popfront the first message in the queue
@@ -587,21 +608,51 @@ namespace rtype
           Send(message);
         }
       }
-      if (IsConnected())
+    }
+
+    void ClientSystem::startMessageProcessing()
+    {
+      processingMessages = true;
+      // Launch worker threads
+      for (int i = 0; i < std::thread::hardware_concurrency(); ++i)
       {
-        if (!GetIncomingMessages().empty())
-        {
-          // std::cout << "Incoming" << std::endl;
-          std::cout << "Size of incoming messages: " << GetIncomingMessages().queueSize() << std::endl;
-          rtype::network::Message<NetworkMessages> msg =
-              GetIncomingMessages().popFront().message;
-          handdleMessage(msg);
+        workerThreads.emplace_back([this]()
+                                   {
+            while (processingMessages) {
+                std::unique_lock<std::mutex> lock(queueMutex);
+                queueCondition.wait(lock, [this] { return !messageQueue.empty() || !processingMessages; });
+                if (!processingMessages) break;
+                auto msg = std::move(messageQueue.front());
+                messageQueue.pop();
+                lock.unlock();
+                handleMessage(msg); // Process message
+            } });
+      }
+    }
+
+    // Stop processing and join threads
+    void ClientSystem::stopMessageProcessing()
+{
+    {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        processingMessages = false;
+    }
+    queueCondition.notify_all();
+    for (auto &thread : workerThreads) {
+        if (thread.joinable()) {
+            thread.join();
         }
-      }
-      else
+    }
+    workerThreads.clear();
+}
+
+    void ClientSystem::enqueueMessage(Message<NetworkMessages> msg)
+    {
       {
-        std::cout << "Server Down" << std::endl;
+        std::lock_guard<std::mutex> lock(queueMutex);
+        messageQueue.push(std::move(msg));
       }
+      queueCondition.notify_one();
     }
 
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,

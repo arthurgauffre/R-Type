@@ -200,31 +200,6 @@ namespace rtype
                         << "] Connection approved" << std::endl;
               sendAllEntitiesToClient(deqConnections.back());
               _msgReceived.emplace_back(std::make_pair("clientConnection", 0));
-              // size_t id =
-              //     _entityManager.generateEntityID();
-              // _entityManager.createEntity(id);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createEntityMsg(id));
-              // _componentManager.addComponent<component::PositionComponent>(id, 0, 0);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createPositionMsg(id, 0, 0));
-              // _componentManager.addComponent<component::SpriteComponent>(id, 0, 0);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createSpriteMsg(id, 0, 0));
-              // _componentManager.addComponent<component::TextureComponent>(
-              //         id, GetTexturePath(TexturePath::Player));
-              // SendMessageToAllClients(networkMessageFactory.createTextureMsg(
-              //     id, TexturePath::Player));
-              // _componentManager.addComponent<component::TransformComponent>(
-              //         id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
-              // _componentManager.addComponent<component::InputComponent>(id);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createInputMsg(id));
-              // BindKey moveUp = BindKey(KeyBoard::Z, BindAction::MoveUp);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.updateInputMsg(id, moveUp));
             } else {
               std::cout << "Connection denied" << std::endl;
             }

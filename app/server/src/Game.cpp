@@ -213,44 +213,14 @@ entity::IEntity *Game::createEnemy(
  */
 void Game::init()
 {
-    //   auto player = this->createPlayer(_coreModule->getEntityManager()->generateEntityID(),
-    //                                    "app/assets/sprites/plane.png",
-    //                                    std::pair<float, float>(100.0f, 100.0f),
-    //                                    std::pair<float, float>(500.0f, 500.0f),
-    //                                    std::pair<float, float>(0.25f, 0.25f), 1);
-
-      this->createBackground("app/assets/images/city_background.png",
+    this->createBackground("app/assets/images/city_background.png",
                          std::pair<float, float>(-100.0f, 0.0f),
                          std::pair<float, float>(4448.0f, 1200.0f));
-      this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+    this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
                         "app/assets/sprites/enemy.png",
                         std::pair<float, float>(1800.0f, 0.0f),
                         std::pair<float, float>(0.0f, 0.0f),
                         std::pair<float, float>(0.2f, 0.2f), 1, 100);
-
-    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-    //                     "app/assets/sprites/enemy.png",
-    //                     std::pair<float, float>(1800.0f, 200.0f),
-    //                     std::pair<float, float>(0.0f, 0.0f),
-    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
-
-    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-    //                     "app/assets/sprites/enemy.png",
-    //                     std::pair<float, float>(1800.0f, 400.0f),
-    //                     std::pair<float, float>(0.0f, 0.0f),
-    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
-
-    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-    //                     "app/assets/sprites/enemy.png",
-    //                     std::pair<float, float>(1800.0f, 600.0f),
-    //                     std::pair<float, float>(0.0f, 0.0f),
-    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
-
-    //   this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-    //                     "app/assets/sprites/enemy.png",
-    //                     std::pair<float, float>(1800.0f, 800.0f),
-    //                     std::pair<float, float>(0.0f, 0.0f),
-    //                     std::pair<float, float>(0.2f, 0.2f), 1, 100);
 
     component::ComponentManager &componentManager = *_coreModule->getComponentManager();
 
@@ -260,10 +230,10 @@ void Game::init()
                                                "movement");
     _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
                                                "server");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                                    "cooldown");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                                  "weapon");
+    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+    //                                                 "cooldown");
+    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+    //                                               "weapon");
    }
 
 void Game::handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived)
@@ -327,7 +297,6 @@ void Game::resetInput()
                 component::VelocityComponent *velocityComponent = _coreModule->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID());
                 if ((velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0) && inputClock.getElapsedTime().asSeconds() > 0.1)
                 {
-                    // std::cout << "resetting velocity" << std::endl;
                     velocityComponent->setActualVelocityX(0);
                     velocityComponent->setActualVelocityY(0);
                     velocityComponent->setCommunication(component::ComponentCommunication::UPDATE);
@@ -346,7 +315,7 @@ void Game::run()
         _coreModule->update();
         if (!_coreModule->msgReceived.empty())
         {
-            // std::cout << "msgReceivedSize: " << _coreModule->msgReceived.size() << std::endl;
+            std::cout << "msgReceivedSize: " << _coreModule->msgReceived.size() << std::endl;
             handdleReceivedMessage(_coreModule->msgReceived);
         }
         else
