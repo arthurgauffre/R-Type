@@ -24,30 +24,36 @@ namespace ECS_system
                 continue;
             if (aiComponent->getType() == component::AIType::LINEAR)
             {
-                velocityComponent->setActualVelocityX(-velocityComponent->getActualVelocity().first);
+                float speed = -50.0f;
+
+                velocityComponent->setActualVelocityX(speed);
             }
             else if (aiComponent->getType() == component::AIType::SINUSOIDAL)
             {
-                // Définition de la vitesse de mouvement horizontal (vers la gauche)
-                float horizontalSpeed = -50.0f; // ajustable pour la vitesse souhaitée vers la gauche
+                float horizontalSpeed = -50.0f;
 
-                // Amplitude et fréquence du mouvement sinusoïdal
-                float amplitude = 30.0f; // ajustable pour définir la hauteur de la sinusoïde
-                float frequency = 2.0f;  // ajustable pour définir la fréquence de la sinusoïde
+                float amplitude = 100.0f;
+                float frequency = 2.0f;
 
-                // Calcul de la vitesse actuelle en fonction de la sinusoïde
                 float verticalSpeed = amplitude * std::sin(frequency * aiComponent->getElapsedTime());
 
-                // Met à jour `ActualVelocity` dans le VelocityComponent
                 velocityComponent->setActualVelocityX(horizontalSpeed);
                 velocityComponent->setActualVelocityY(verticalSpeed);
 
-                // Incrémente le temps pour la prochaine mise à jour
                 aiComponent->setElapsedTime(deltaTime + aiComponent->getElapsedTime());
             }
             else if (aiComponent->getType() == component::AIType::CIRCULAR)
             {
-                // Do something
+                float radius = 100.0f;
+                float angularSpeed = 0.5f;
+
+                float x = radius * std::cos(angularSpeed * aiComponent->getElapsedTime());
+                float y = radius * std::sin(angularSpeed * aiComponent->getElapsedTime());
+
+                velocityComponent->setActualVelocityX(x);
+                velocityComponent->setActualVelocityY(y);
+
+                aiComponent->setElapsedTime(deltaTime + aiComponent->getElapsedTime());
             }
         }
     }

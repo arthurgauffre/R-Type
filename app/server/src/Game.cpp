@@ -180,7 +180,7 @@ entity::IEntity *Game::createEnemy(
         entityID, texture->getTexture().getSize().x * scale.first,
         texture->getTexture().getSize().y * scale.second);
     _coreModule->getComponentManager()->addComponent<component::AIComponent>(
-        entityID, component::AIType::SINUSOIDAL);
+        entityID, component::AIType::LINEAR);
 
     return enemy;
 }
