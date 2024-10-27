@@ -6,6 +6,7 @@
 */
 
 #include <systems/GameSystem.hpp>
+#include <iostream>
 
 /**
  * @brief Constructs a new GameSystem object.
@@ -60,6 +61,8 @@ void ECS_system::GameSystem::update(
     if (type->getType() == component::Type::ENEMY)
       _enemyCount++;
   }
+
+  std::cout << "Player count: " << _playerCount << std::endl;
 
   if (_playerCount == 0)
     throw rtype::GameLoosed("Game Over");
