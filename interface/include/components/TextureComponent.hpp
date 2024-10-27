@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
+#include <IGraphic.hpp>
 
 namespace component {
 class TextureComponent : public AComponent {
@@ -16,59 +17,29 @@ public:
   /**
    * @brief Constructs a new TextureComponent object.
    *
-   * This constructor initializes a TextureComponent with the given entity ID
-   * and loads a texture from the specified file path.
-   *
-   * @param entityID The unique identifier for the entity associated with this
-   * component.
+   * @param entityID The unique identifier for the entity.
    * @param path The file path to the texture to be loaded.
+   * @param graphic Reference to the IGraphic interface for handling graphics.
    */
-  TextureComponent(uint32_t entityID, const std::string &path)
-      : AComponent(entityID) {
-    _path = path;
-    _texture.loadFromFile(path);
+  TextureComponent(uint32_t entityID, const std::string &path, IGraphic& graphic)
+      : AComponent(entityID), _graphic(graphic), _path(path) {
+    _textureId = _graphic.createTexture();
+    _graphic.loadTexture(_textureId, path);
   }
 
-  /**
-   * @brief Default destructor for the TextureComponent class.
-   */
   ~TextureComponent() = default;
 
-  /**
-   * @brief Retrieves the texture associated with this component.
-   *
-   * @return Reference to the sf::Texture object.
-   */
-  sf::Texture &getTexture() { return _texture; }
+  uint32_t getTextureId() const { return _textureId; }
+  std::string getPath() const { return _path; }
 
-  /**
-   * @brief Retrieves the path to the texture file.
-   *
-   * @return The path to the texture file.
-   */
-  std::string getPath() { return _path; }
-
-  /**
-   * @brief Updates the texture component.
-   *
-   * This function is called to update the state of the texture component
-   * based on the elapsed time since the last update.
-   *
-   * @param deltaTime The time elapsed since the last update, in seconds.
-   */
-  void update(std::string &path);
+  void update(const std::string& path) {
+      _path = path;
+      _graphic.loadTexture(_textureId, path);
+  }
 
 private:
-  /**
-   * @brief Represents a texture in the SFML library.
-   *
-   * This component holds an instance of sf::Texture, which is used to load and
-   * manage graphical textures in the application. Textures are used to draw
-   * images, sprites, and other graphical elements.
-   *
-   * @see sf::Texture
-   */
-  sf::Texture _texture;
+  uint32_t _textureId;
+  IGraphic& _graphic;
   std::string _path;
 };
-} // namespace component
+} 
