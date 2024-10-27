@@ -179,6 +179,8 @@ entity::IEntity *Game::createEnemy(
     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
         entityID, texture->getTexture().getSize().x * scale.first,
         texture->getTexture().getSize().y * scale.second);
+    _coreModule->getComponentManager()->addComponent<component::AIComponent>(
+        entityID, component::AIType::LINEAR);
 
     return enemy;
 }
@@ -234,6 +236,8 @@ void Game::init()
                                                     "cooldown");
     _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
                                                   "weapon");
+    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+                                                    "ai");
    }
 
 void Game::handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived)

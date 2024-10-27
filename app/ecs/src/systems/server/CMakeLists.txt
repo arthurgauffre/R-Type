@@ -20,6 +20,7 @@ add_library(r-type_server_system SHARED
     ../../components/type/TypeComponent.cpp
     ../../components/cooldown/CooldownComponent.cpp
     ../../components/size/SizeComponent.cpp
+    ../../components/ai/AIComponent.cpp
     ../../entity/Entity.cpp
 )
 

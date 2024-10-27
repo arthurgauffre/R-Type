@@ -34,6 +34,7 @@ enum class NetworkMessages : uint32_t {
   createCooldown,
   createType,
   createSize,
+  createAI,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -49,6 +50,7 @@ enum class NetworkMessages : uint32_t {
   updateType,
   updateSize,
   updateCooldown,
+  updateAI,
   deleteTexture,
   deletePosition,
   deleteVelocity,
@@ -64,6 +66,7 @@ enum class NetworkMessages : uint32_t {
   deleteCooldown,
   deleteType,
   deleteSize,
+  deleteAI,
   moveUp,
   moveDown,
   moveLeft,
@@ -80,6 +83,13 @@ enum class EntityType : uint32_t {
   Player_projectile,
   Enemy_projectile,
   Background,
+  Unknown,
+};
+
+enum class AIType : uint32_t {
+  Linear,
+  Sinusoidal,
+  Circular,
   Unknown,
 };
 
@@ -193,6 +203,11 @@ struct TypeComponent {
 struct SizeComponent {
   float x;
   float y;
+};
+
+struct AIComponent {
+  AIType type;
+  float elapsedTime;
 };
 
 struct BindKey {

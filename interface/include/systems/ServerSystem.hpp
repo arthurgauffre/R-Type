@@ -384,6 +384,26 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteSizeMsg(entity->getID()), clientToIgnore);
             }
           }
+          if (_componentManager.getComponent<component::AIComponent>(entity->getID()))
+          {
+            component::AIComponent *component =
+                _componentManager.getComponent<component::AIComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.createAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.updateAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteAIMsg(entity->getID()), clientToIgnore);
+            }
+          }
           // if (_componentManager.getComponent<component::WeaponComponent>(entity->getID()))
           // {
           //   component::WeaponComponent *component =
@@ -594,6 +614,14 @@ namespace rtype
                                     entity->getID(), getEntityType(component->getType())),
                                 client);
           }
+          if (_componentManager.getComponent<component::AIComponent>(entity->getID()))
+          {
+            component::AIComponent *component =
+                _componentManager.getComponent<component::AIComponent>(entity->getID());
+            SendMessageToClient(networkMessageFactory.createAIMsg(
+                                    entity->getID(), getAIType(component->getType())),
+                                client);
+          }
           if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
           {
             component::SizeComponent *component =
@@ -779,6 +807,17 @@ namespace rtype
         if (type == component::Type::WEAPON)
           return EntityType::Weapon;
         return EntityType::Unknown;
+      }
+
+      AIType getAIType(component::AIType type)
+      {
+        if (type == component::AIType::LINEAR)
+          return AIType::Linear;
+        if (type == component::AIType::SINUSOIDAL)
+          return AIType::Sinusoidal;
+        if (type == component::AIType::CIRCULAR)
+          return AIType::Circular;
+        return AIType::Unknown;
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;

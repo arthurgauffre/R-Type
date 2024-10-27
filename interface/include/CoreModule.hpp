@@ -33,6 +33,7 @@
 #include <components/WeaponComponent.hpp>
 #include <components/CooldownComponent.hpp>
 #include <components/SizeComponent.hpp>
+#include <components/AIComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/GameSystem.hpp>
