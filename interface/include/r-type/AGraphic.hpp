@@ -64,6 +64,15 @@ public:
   virtual bool isGamePaused() const override = 0;
 
   virtual bool isWindowOpen() const override = 0;
+  virtual void clear ()  override = 0 ;
+  virtual void display()  override = 0;
+  virtual void pollEvent()  override = 0;
+  virtual void getEventType()  override = 0;
+  virtual void closeWindow()  override = 0;
+  virtual void drawSprite(uint32_t SpriteId)  override = 0;
+  virtual void setRotation(uint32_t SpriteId, float rotation)  override = 0;
+  virtual void setScale(uint32_t SpriteId, float s1, float s2)  override = 0;
+
 };
 
 #endif // AGRAPHIC_HPP

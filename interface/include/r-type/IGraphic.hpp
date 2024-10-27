@@ -30,7 +30,9 @@ public:
 
   
   virtual void render() = 0;
-
+  virtual void drawSprite(uint32_t SpriteId) = 0;
+  virtual void setRotation(uint32_t SpriteId, float rotation) = 0;
+  virtual void setScale(uint32_t SpriteId, float s1, float s2) = 0;
   
   virtual uint32_t createText(const std::string &text,
                               const std::string &fontFile, int fontSize) = 0;
@@ -75,6 +77,11 @@ public:
 
 
   virtual bool isWindowOpen() const = 0;
+  virtual void clear () = 0 ;
+  virtual void display() = 0;
+  virtual void pollEvent() = 0;
+  virtual void getEventType() = 0;
+  virtual void closeWindow() = 0;
 };
 
 #endif // IGRAPHIC_HPP

@@ -26,6 +26,14 @@ public:
 
     virtual ~SfmlGraphic() {}
 
+    void clear();
+    void drawSprite(uint32_t SpriteId);
+    void setRotation(uint32_t SpriteId, float rotation);
+    void setScale(uint32_t SpriteId, float s1, float s2);
+    void display();
+    void pollEvent();
+    void getEventType();
+    void closeWindow();
     
     bool loadTexture(uint32_t textureId, const std::string& path) {
         if (sfTextures.find(textureId) != sfTextures.end()) {

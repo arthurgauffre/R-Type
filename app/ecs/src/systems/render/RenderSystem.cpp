@@ -18,9 +18,10 @@
  */
 ECS_system::RenderSystem::RenderSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager),
-      _window(sf::VideoMode(1920, 1080), "R-Type"), _event(sf::Event()) {}
+    entity::EntityManager &entityManager,
+    IGraphic &graphic)
+    : ASystem(componentManager, entityManager), _graphic(graphic) {}
+
 
 /**
  * @brief Updates the render system by drawing all entities with the appropriate
@@ -34,87 +35,65 @@ ECS_system::RenderSystem::RenderSystem(
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be processed.
  */
+ 
 void ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
-  _window.clear();
+    std::vector<std::pair<std::string, size_t>> &msgToSend,
+    std::vector<std::pair<std::string, size_t>> &msgReceived) {
 
+  _graphic.clear();
+
+  // Dessiner les entités de type "BACKGROUND"
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::SpriteComponent, component::TransformComponent,
                       component::TextureComponent, component::SizeComponent,
                       component::SpriteComponent>(entities)) {
-     if (entity.get()->getActive() == false ||
-        _componentManager
-                .getComponent<component::TypeComponent>(entity.get()->getID())
-                ->getType() != component::Type::BACKGROUND)
+    if (!entity->getActive() || _componentManager
+        .getComponent<component::TypeComponent>(entity->getID())
+        ->getType() != component::Type::BACKGROUND)
       continue;
-    component::SpriteComponent *spriteComponent =
-        _componentManager.getComponent<component::SpriteComponent>(
-            entity->getID());
-    component::TextureComponent *textureComponent =
-        _componentManager.getComponent<component::TextureComponent>(
-            entity->getID());
-    component::TransformComponent *transformComponent =
-        _componentManager.getComponent<component::TransformComponent>(
-            entity->getID());
-    component::SizeComponent *sizeComponent =
-        _componentManager.getComponent<component::SizeComponent>(
-            entity->getID());
 
-    sf::Vector2f position = {transformComponent->getPosition().first,
-                             transformComponent->getPosition().second};
-    sf::Sprite sprite = spriteComponent->getSprite();
-    sf::Texture backgroundTexture = textureComponent->getTexture();
+    // Récupération des composants nécessaires
+    auto spriteComponent = _componentManager.getComponent<component::SpriteComponent>(entity->getID());
+    auto textureComponent = _componentManager.getComponent<component::TextureComponent>(entity->getID());
+    auto transformComponent = _componentManager.getComponent<component::TransformComponent>(entity->getID());
 
-    sprite.setTexture(backgroundTexture);
-    sprite.setPosition(position);
+    // Mise à jour du sprite
+    uint32_t spriteId = spriteComponent->getSpriteId();
+    _graphic.setTexture(spriteId, textureComponent->getTextureId());
+    _graphic.setPosition(spriteId, transformComponent->getPosition().first, transformComponent->getPosition().second);
 
-    _window.draw(sprite);
+    _graphic.drawSprite(spriteId);
   }
 
+  // Dessiner les autres entités
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
                       component::TextureComponent, component::TypeComponent>(entities)) {
-
-     if (entity.get()->getActive() == false ||
-        _componentManager
-                .getComponent<component::TypeComponent>(entity.get()->getID())
-                ->getType() == component::Type::BACKGROUND)
+    if (!entity->getActive() || _componentManager
+        .getComponent<component::TypeComponent>(entity->getID())
+        ->getType() == component::Type::BACKGROUND)
       continue;
-    component::TransformComponent *transformComponent =
-        _componentManager.getComponent<component::TransformComponent>(
-            entity.get()->getID());
-    component::SpriteComponent *spriteComponent =
-        _componentManager.getComponent<component::SpriteComponent>(
-            entity.get()->getID());
-    component::TextureComponent *textureComponent =
-        _componentManager.getComponent<component::TextureComponent>(
-            entity.get()->getID());
 
-    sf::Vector2f SfPosition = {transformComponent->getPosition().first,
-                               transformComponent->getPosition().second};
+    auto transformComponent = _componentManager.getComponent<component::TransformComponent>(entity->getID());
+    auto spriteComponent = _componentManager.getComponent<component::SpriteComponent>(entity->getID());
+    auto textureComponent = _componentManager.getComponent<component::TextureComponent>(entity->getID());
 
-    sf::Vector2f SfScale = {transformComponent->getScale().first,
-                            transformComponent->getScale().second};
+    uint32_t spriteId = spriteComponent->getSpriteId();
 
-    spriteComponent->getSprite().setTexture(textureComponent->getTexture());
-    spriteComponent->getSprite().setPosition(SfPosition);
-    spriteComponent->getSprite().setRotation(transformComponent->getRotation());
-    spriteComponent->getSprite().setScale(SfScale);
+    _graphic.setTexture(spriteId, textureComponent->getTextureId());
+    _graphic.setPosition(spriteId, transformComponent->getPosition().first, transformComponent->getPosition().second);
+    _graphic.setRotation(spriteId, transformComponent->getRotation());
+    _graphic.setScale(spriteId, transformComponent->getScale().first, transformComponent->getScale().second);
 
-    _window.draw(spriteComponent->getSprite());
+    _graphic.drawSprite(spriteId);
   }
-  _window.display();
 
-  // sf event
-  while (_window.pollEvent(_event)) {
-    if (_event.type == sf::Event::Closed) {
-      _window.close();
-      // this->_gameClosed = true;
-    }
-  }
+  _graphic.display();
+
+  // Gérer les événements via IGraphic
+  _graphic.handleEvents();
 }
-
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager) {
