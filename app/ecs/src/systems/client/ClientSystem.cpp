@@ -207,16 +207,23 @@ namespace rtype
 
         // std::cout << "Entity id: " << entity.id << std::endl;
         _entityManager.createEntity(entity.id);
+        // Send acknowledgement message
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
       }
       break;
       case NetworkMessages::deleteEntity:
       {
-        std::cout << "Entity destroyed" << std::endl;
+        // std::cout << "Entity destroyed" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
-        std::cout << "Entity id: " << entity.id << std::endl;
+        // std::cout << "Entity id: " << entity.id << std::endl;
         _componentManager.removeAllComponents(entity.id);
         _entityManager.removeEntity(entity.id);
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
       }
       break;
       case NetworkMessages::createSprite:
@@ -569,7 +576,7 @@ namespace rtype
                               std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
     {
       _entityMutex = &entityMutex;
-      std::lock_guard<std::mutex> lock(*_entityMutex); 
+      std::lock_guard<std::mutex> lock(*_entityMutex);
       if (IsConnected())
       {
         if (!GetIncomingMessages().empty())

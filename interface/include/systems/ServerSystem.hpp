@@ -19,6 +19,7 @@
 #include <NetworkMessage.hpp>
 #include <Error.hpp>
 #include <r-type/ASystem.hpp>
+#include <ServerStatus.hpp>
 
 namespace rtype
 {
@@ -90,8 +91,15 @@ namespace rtype
           client->Send(message);
         }
         break;
+        case NetworkMessages::acknowledgementMesage:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          std::cout << "Acknowledgement message received" << std::endl;
+        }
+        break;
         default:
         {
+          status = ServerStatus::SERVER_RECEIVING;
           handleInputMessage(client, message);
         }
         }
@@ -216,6 +224,7 @@ namespace rtype
         {
           if (entity->getCommunication() == entity::EntityCommunication::CREATE)
           {
+            status = ServerStatus::WAITING_FOR_MESSAGE;
             SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
@@ -226,6 +235,7 @@ namespace rtype
           }
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
           {
+            // status = ServerStatus::WAITING_FOR_MESSAGE;
             SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
             _componentManager.removeAllComponents(entity->getID());
             _entityManager.removeEntity(entity->getID());
@@ -717,6 +727,11 @@ namespace rtype
         {
           auto message = incomingMessages.popFront();
           OnMessageReceived(message.remoteConnection, message.message);
+          while (status == ServerStatus::WAITING_FOR_MESSAGE) {
+            std::cout << "Packet lost" << std::endl;
+            OnMessageReceived(message.remoteConnection, message.message);
+
+          }
           messageCount++;
         }
       }
@@ -832,6 +847,7 @@ namespace rtype
       NetworkMessageFactory networkMessageFactory;
       std::array<char, 1024> bufferOfIncomingMessages;
       uint32_t actualId = 0;
+      ServerStatus status;
 
       std::vector<std::pair<std::string, size_t>> _msgReceived;
 

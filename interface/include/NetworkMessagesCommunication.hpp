@@ -72,6 +72,7 @@ enum class NetworkMessages : uint32_t {
   moveLeft,
   moveRight,
   shoot,
+  acknowledgementMesage,
   none,
 };
 
