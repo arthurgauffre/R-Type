@@ -71,6 +71,8 @@ public:
   std::vector<std::pair<std::string, size_t>> msgReceived;
   std::vector<std::pair<std::string, size_t>> msgToSend;
   sf::Clock clock;
+  std::mutex _entityMutex;
+  
 
   template <typename T> class DLLoader {
   public:
