@@ -159,7 +159,7 @@ namespace rtype
 
     void ClientSystem::handleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
-      std::lock_guard<std::mutex> lock(_entityMutex);
+      std::lock_guard<std::mutex> lock(*_entityMutex);
 
       switch (msg.header.id)
       {
@@ -566,9 +566,10 @@ namespace rtype
 
     void ClientSystem::update(float deltaTime,
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
-                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
+                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
     {
-      std::lock_guard<std::mutex> lock(_entityMutex); 
+      _entityMutex = &entityMutex;
+      std::lock_guard<std::mutex> lock(*_entityMutex); 
       if (IsConnected())
       {
         if (!GetIncomingMessages().empty())

@@ -78,8 +78,8 @@ rtype::CoreModule::getSystemManager() const {
  */
 void rtype::CoreModule::update() {
   float deltatime = clock.restart().asSeconds();
-  this->getSystemManager()->update(
-      deltatime, this->getEntityManager()->getEntities(), msgToSend, this->msgReceived);
+  auto entities = this->getEntityManager()->getEntities();
+  this->getSystemManager()->update(deltatime, entities, msgToSend, this->msgReceived);
 }
 
 void rtype::CoreModule::run() {

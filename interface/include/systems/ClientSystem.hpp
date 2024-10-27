@@ -85,7 +85,7 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) override;
 
     private:
       uint8_t entityID = 0;
@@ -93,7 +93,7 @@ namespace rtype
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
 
-      std::mutex _entityMutex;
+      std::mutex *_entityMutex;
       std::queue<Message<NetworkMessages>> messageQueue;
       std::mutex queueMutex;                  // Mutex for queue access
       std::condition_variable queueCondition; // Condition variable to notify threads

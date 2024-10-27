@@ -56,5 +56,7 @@ private:
    * system is uniquely owned and properly destroyed when no longer needed.
    */
   std::vector<std::shared_ptr<ISystem>> _systems;
+
+  std::mutex _entityMutex;
 };
 } // namespace ECS_system
