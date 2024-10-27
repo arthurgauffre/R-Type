@@ -46,7 +46,7 @@ ECS_system::HealthSystem::~HealthSystem() {}
  */
 void ECS_system::HealthSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) {
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::HealthComponent>(
            entities)) {
@@ -57,7 +57,7 @@ void ECS_system::HealthSystem::update(
                                healthComponent->getDamageIncoming());
     healthComponent->setDamageIncoming(0);
     if (healthComponent->getHealth() <= 0) {
-      _entityManager.destroyEntity(entity->getID());
+      _entityManager.removeEntity(entity->getID());
     }
   }
 }

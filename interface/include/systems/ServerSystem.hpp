@@ -49,7 +49,7 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
@@ -200,31 +200,6 @@ namespace rtype
                         << "] Connection approved" << std::endl;
               sendAllEntitiesToClient(deqConnections.back());
               _msgReceived.emplace_back(std::make_pair("clientConnection", 0));
-              // size_t id =
-              //     _entityManager.generateEntityID();
-              // _entityManager.createEntity(id);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createEntityMsg(id));
-              // _componentManager.addComponent<component::PositionComponent>(id, 0, 0);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createPositionMsg(id, 0, 0));
-              // _componentManager.addComponent<component::SpriteComponent>(id, 0, 0);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createSpriteMsg(id, 0, 0));
-              // _componentManager.addComponent<component::TextureComponent>(
-              //         id, GetTexturePath(TexturePath::Player));
-              // SendMessageToAllClients(networkMessageFactory.createTextureMsg(
-              //     id, TexturePath::Player));
-              // _componentManager.addComponent<component::TransformComponent>(
-              //         id, sf::Vector2f(0, 0), sf::Vector2f(1, 1));
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createTransformMsg(id, 0, 0, 1, 1));
-              // _componentManager.addComponent<component::InputComponent>(id);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.createInputMsg(id));
-              // BindKey moveUp = BindKey(KeyBoard::Z, BindAction::MoveUp);
-              // SendMessageToAllClients(
-              //     networkMessageFactory.updateInputMsg(id, moveUp));
             } else {
               std::cout << "Connection denied" << std::endl;
             }
@@ -252,6 +227,7 @@ namespace rtype
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
           {
             SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
+            _componentManager.removeAllComponents(entity->getID());
             _entityManager.removeEntity(entity->getID());
             return;
           }
@@ -406,6 +382,26 @@ namespace rtype
             {
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.deleteSizeMsg(entity->getID()), clientToIgnore);
+            }
+          }
+          if (_componentManager.getComponent<component::AIComponent>(entity->getID()))
+          {
+            component::AIComponent *component =
+                _componentManager.getComponent<component::AIComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.createAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.updateAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteAIMsg(entity->getID()), clientToIgnore);
             }
           }
           // if (_componentManager.getComponent<component::WeaponComponent>(entity->getID()))
@@ -618,6 +614,14 @@ namespace rtype
                                     entity->getID(), getEntityType(component->getType())),
                                 client);
           }
+          if (_componentManager.getComponent<component::AIComponent>(entity->getID()))
+          {
+            component::AIComponent *component =
+                _componentManager.getComponent<component::AIComponent>(entity->getID());
+            SendMessageToClient(networkMessageFactory.createAIMsg(
+                                    entity->getID(), getAIType(component->getType())),
+                                client);
+          }
           if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
           {
             component::SizeComponent *component =
@@ -803,6 +807,17 @@ namespace rtype
         if (type == component::Type::WEAPON)
           return EntityType::Weapon;
         return EntityType::Unknown;
+      }
+
+      AIType getAIType(component::AIType type)
+      {
+        if (type == component::AIType::LINEAR)
+          return AIType::Linear;
+        if (type == component::AIType::SINUSOIDAL)
+          return AIType::Sinusoidal;
+        if (type == component::AIType::CIRCULAR)
+          return AIType::Circular;
+        return AIType::Unknown;
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;

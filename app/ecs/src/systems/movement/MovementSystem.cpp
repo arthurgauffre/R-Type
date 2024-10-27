@@ -21,8 +21,10 @@
  */
 void ECS_system::MovementSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived)
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
 {
+  // lock the entity mutex
+  std::lock_guard<std::mutex> lock(entityMutex);
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
            component::TransformComponent, component::VelocityComponent>(

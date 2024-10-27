@@ -901,4 +901,61 @@ public:
         message << timeNow;
         return message;
     }
+    rtype::network::Message<NetworkMessages> createAIMsg(size_t id, AIType type)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::createAI;
+        EntityId entity = {id};
+        AIComponent ai = {type};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) +
+                                             sizeof(EntityId));
+        std::vector<uint8_t> aiBytes(reinterpret_cast<uint8_t *>(&ai),
+                                    reinterpret_cast<uint8_t *>(&ai) +
+                                        sizeof(AIComponent));
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
+        message.body.insert(message.body.end(), aiBytes.begin(),
+                            aiBytes.end());
+        std::chrono::system_clock::time_point timeNow =
+            std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> updateAIMsg(size_t id, AIType type)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::updateAI;
+        EntityId entity = {id};
+        AIComponent ai = {type};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) +
+                                             sizeof(EntityId));
+        std::vector<uint8_t> aiBytes(reinterpret_cast<uint8_t *>(&ai),
+                                    reinterpret_cast<uint8_t *>(&ai) +
+                                        sizeof(AIComponent));
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
+        message.body.insert(message.body.end(), aiBytes.begin(),
+                            aiBytes.end());
+        std::chrono::system_clock::time_point timeNow =
+            std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> deleteAIMsg(size_t id)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::deleteAI;
+        EntityId entity = {id};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) +
+                                             sizeof(EntityId));
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
+        std::chrono::system_clock::time_point timeNow =
+            std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
 };

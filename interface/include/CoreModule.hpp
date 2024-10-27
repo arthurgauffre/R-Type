@@ -33,6 +33,7 @@
 #include <components/WeaponComponent.hpp>
 #include <components/CooldownComponent.hpp>
 #include <components/SizeComponent.hpp>
+#include <components/AIComponent.hpp>
 
 #include <systems/AudioSystem.hpp>
 #include <systems/GameSystem.hpp>
@@ -70,6 +71,8 @@ public:
   std::vector<std::pair<std::string, size_t>> msgReceived;
   std::vector<std::pair<std::string, size_t>> msgToSend;
   sf::Clock clock;
+  std::mutex _entityMutex;
+  
 
   template <typename T> class DLLoader {
   public:
