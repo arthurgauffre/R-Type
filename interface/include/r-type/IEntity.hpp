@@ -18,9 +18,13 @@ enum class EntityCommunication {
 class IEntity {
 public:
   /**
+   * @brief Default constructor for the IEntity class.
+   */
+  IEntity() = default;
+  /**
    * @brief Virtual destructor for the IEntity class.
    */
-  virtual ~IEntity(){};
+  virtual ~IEntity() = default;
 
   /**
    * @brief Get the unique identifier of the entity.
