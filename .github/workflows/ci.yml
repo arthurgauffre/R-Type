@@ -152,7 +152,7 @@ jobs:
   push_to_mirror:
     runs-on: ubuntu-latest
     # needs:  run_tests
-    needs: [check_linux_program_compilation]
+    needs: [check_linux_program_compilation, check_windows_program_compilation]
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
