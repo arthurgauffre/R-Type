@@ -569,7 +569,7 @@ namespace rtype
                               std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
     {
       _entityMutex = &entityMutex;
-      std::lock_guard<std::mutex> lock(*_entityMutex); 
+      std::lock_guard<std::mutex> lock(*_entityMutex);
       if (IsConnected())
       {
         if (!GetIncomingMessages().empty())

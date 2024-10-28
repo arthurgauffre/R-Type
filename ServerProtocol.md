@@ -7,23 +7,24 @@ This document outlines the design and implementation of a custom UDP-based proto
 ## Table of Contents
 
 1. [Connection Establishement](#1-connection-establishment)
-   - [Encrypted Handshake](#encrypted-handshake)
-   - [Connection Handshake Example](#connection-handshake-example)
+    - [Encrypted Handshake](#encrypted-handshake)
+    - [Connection Handshake Example](#connection-handshake-example)
 2. [Data Transmission](#2-data-transmission)
-   - [Game Data Packet Structure](#game-data-packet-structure)
-   - [Critical Event Transmission](#12-critical-event-transmission)
-   - [Critical Event Packet Structure](#critical-event-packet-structure)
+    - [Game Data Packet Structure](#game-data-packet-structure)
+    - [Critical Event Transmission](#12-critical-event-transmission)
+    - [Critical Event Packet Structure](#critical-event-packet-structure)
 3. [Reliability Mechanisms](#2-reliability-mechanisms)
-   - [Packet Acknowledgment](#21-packet-acknowledgment)
-   - [Retransmission Strategy](#22-retransmission-strategy)
-   - [Events Answers](#23-events-answers)
-     - [Movements](#movements)
-     - [Entity Movement](#entity-movement)
-     - [Creation of an Entity / Component](#creation-of-an-entity--component)
-     - [Deletion of an Entity / Component](#deletion-of-an-entity--component)
-     - [Update Entity / Component](#update-entity--component)
+    - [Packet Acknowledgment](#21-packet-acknowledgment)
+    - [Retransmission Strategy](#22-retransmission-strategy)
+    - [Events Answers](#23-events-answers)
+        - [Movements](#movements)
+        - [Entity Movement](#entity-movement)
+        - [Creation of an Entity / Component](#creation-of-an-entity--component)
+        - [Deletion of an Entity / Component](#deletion-of-an-entity--component)
+        - [Update Entity / Component](#update-entity--component)
 4. [Conclusion](#3-conclusion)
 5. [Main documentation](Readme.md)
+
 
 ## 1. Connection Establishment
 
@@ -84,10 +85,10 @@ For these critical events, we employ a retransmission mechanism until the server
 
 #### Critical Event Packet Structure
 
-| Field       | Size     | Description                                                      |
-| ----------- | -------- | ---------------------------------------------------------------- |
-| Header->TID | 4 bytes  | Type of event (e.g., player death)                               |
-| Body        | Variable | Struct that contains the entityId and data specific to the event |
+| Field        | Size     | Description                          |
+|--------------|----------|--------------------------------------|
+| Header->TID   | 4 bytes  | Type of event (e.g., player death)    |
+| Body   | Variable | Struct that contains the entityId and data specific to the event            |
 
 1. **Event Sent**: The server sends the event packet to all clients.
 2. **Client ACK**: Each client sends an acknowledgment (ACK) back to the server.
@@ -112,8 +113,8 @@ For critical game events, the protocol requires clients to acknowledge receipt o
 - **Timeout-Based Retransmission**: The server uses a timeout mechanism to determine if a packet needs to be retransmitted. If no acknowledgment is received within the timeout window, the packet is retransmitted.
 - **Max Retransmissions**: To avoid excessive retransmissions, a maximum number of attempts is set. After this, the server logs an error and may take corrective actions, such as notifying the client of a disconnection.
 
-### 2.3 Events Answers
 
+### 2.3 Events Answers
 Here is the struct of the Message that the server and the client will exchange, and the T (template) id in the MessageHeader will be one of the enum value given below.
 
 ```cpp
@@ -129,7 +130,6 @@ template <typename T> struct Message {
 ```
 
 ## Movements
-
 ```cpp
 enum class NetworkMessages : uint32_t {
   MoveUp,
@@ -241,7 +241,6 @@ body = entityId, {struct message.header.id} // cast into uint8_t
 #
 
 ## Deletion of an Entity / Component
-
 ```cpp
 enum class NetworkMessages : uint32_t {
   destroyEntity,
@@ -318,7 +317,6 @@ sequenceDiagram
 #
 
 ## Update Entity / Component
-
 ```cpp
 enum class NetworkMessages : uint32_t {
   updateEntity,
