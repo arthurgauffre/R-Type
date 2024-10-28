@@ -5,6 +5,9 @@
 ** IEntity
 */
 
+#ifndef IENTITY_HPP_
+#define IENTITY_HPP_
+
 #pragma once
 #include <cstdint>
 
@@ -80,3 +83,5 @@ public:
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
 };
 } // namespace entity
+
+#endif /* !IENTITY_HPP_ */

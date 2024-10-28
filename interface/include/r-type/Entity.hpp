@@ -5,6 +5,9 @@
 ** Entity
 */
 
+#ifndef ENTITY_HPP_
+#define ENTITY_HPP_
+
 #pragma once
 
 #include <memory>
@@ -84,3 +87,5 @@ protected:
   bool isActive;
 };
 } // namespace entity
+
+#endif // ENTITY_HPP_
