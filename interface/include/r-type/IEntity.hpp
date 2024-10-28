@@ -20,7 +20,7 @@
 
 namespace entity
 {
-  enum class EntityCommunication
+  enum DLL_EXPORT class EntityCommunication
   {
     NONE,
     CREATE,
