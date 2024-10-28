@@ -45,12 +45,12 @@ This encryption ensures that the connection setup is secure from the beginning, 
 
 #### Connection Handshake Example
 
-| Step  | Message         | Description                                                      |
-|-------|-----------------|------------------------------------------------------------------|
-| 1     | SYN             | Client initiates connection                                      |
-| 2     | SYN-ACK         | Server acknowledges connection and sends cryptographic challenge |
-| 3     | Encrypted ACK   | Client responds with an encrypted hash using bcrypt              |
-| 4     | Validate ACK    | Server validates the encrypted response, completing the handshake|
+| Step | Message       | Description                                                       |
+| ---- | ------------- | ----------------------------------------------------------------- |
+| 1    | SYN           | Client initiates connection                                       |
+| 2    | SYN-ACK       | Server acknowledges connection and sends cryptographic challenge  |
+| 3    | Encrypted ACK | Client responds with an encrypted hash using bcrypt               |
+| 4    | Validate ACK  | Server validates the encrypted response, completing the handshake |
 
 ### 1.1 Data Transmission
 
@@ -65,11 +65,11 @@ The body contains the actual game data, and its size can vary depending on the m
 
 #### Game Data Packet Structure
 
-| Field      | Size     | Description                       |
-|------------|----------|-----------------------------------|
-| TID        | 4 bytes  | Unique identifier for the packet   |
-| Size       | 4 bytes  | Size of the packet in bytes        |
-| Body    | Variable | Game state data                   |
+| Field | Size     | Description                      |
+| ----- | -------- | -------------------------------- |
+| TID   | 4 bytes  | Unique identifier for the packet |
+| Size  | 4 bytes  | Size of the packet in bytes      |
+| Body  | Variable | Game state data                  |
 
 ### 1.2 Critical Event Transmission
 
@@ -96,11 +96,11 @@ For these critical events, we employ a retransmission mechanism until the server
 
 #### Critical Event Example
 
-| Step  | Message        | Description                                     |
-|-------|----------------|-------------------------------------------------|
-| 1     | Event (Death)   | Server sends player death event                 |
-| 2     | ACK             | Client acknowledges the event                   |
-| 3     | Retransmit      | If ACK not received, server retransmits the event|
+| Step | Message       | Description                                       |
+| ---- | ------------- | ------------------------------------------------- |
+| 1    | Event (Death) | Server sends player death event                   |
+| 2    | ACK           | Client acknowledges the event                     |
+| 3    | Retransmit    | If ACK not received, server retransmits the event |
 
 ## 2. Reliability Mechanisms
 
@@ -138,14 +138,16 @@ enum class NetworkMessages : uint32_t {
   MoveRight
 };
 ```
+
+```mermaid
+sequenceDiagram
+    Client->>Server: Entity Movement
 ```
-+--------+        (Entity Movement)        +--------+
-| Client | ------------------------------> | Server |
-+--------+                                 +--------+
 
 In this case the server Does not respond (because we can have the information in the next update if the packet has been lost in a transaction)
-```
+
 ### Entity Movement
+
 ```cpp
 message.header.id = NetworkMessages::MoveUp
 // OR
@@ -159,9 +161,11 @@ message.header.id = NetworkMessages::MoveLeft
 
 body = entityId // cast into uint8_t
 ```
+
 #
 
 ## Creation of an Entity / Component
+
 ```cpp
 enum class NetworkMessages : uint32_t {
   createEntity,
@@ -182,32 +186,21 @@ enum class NetworkMessages : uint32_t {
 ```
 
 ### FIRST CASE (No packet loss):
-```
-+--------+    (Create Entity / Component)    +--------+
-| Client | <-------------------------------- | Server |
-+--------+                                   +--------+
 
-+--------+  (I Received the message :ACK)    +--------+
-| Client | --------------------------------> | Server |
-+--------+                                   +--------+
+```mermaid
+sequenceDiagram
+    Server->>Client: Create Entity / Component
+    Client->>Server: I Received the message (ACK)
 ```
+
 ### SECOND CASE (Packet loss):
-```
-+--------+    (Create Entity / Component)    +--------+
-| Client | <-------------------------------- | Server |
-+--------+                                   +--------+
 
-+--------+ (I did not Received the message)  +--------+
-| Client | --------------------------------> | Server |
-+--------+                                   +--------+
-
-+--------+    (Create Entity / Component)    +--------+
-| Client | <-------------------------------- | Server |
-+--------+                                   +--------+
-                        .
-                        .
-                        .
-                        .
+```mermaid
+sequenceDiagram
+    Server->>Client: Create Entity / Component
+    Client->>Server: I did not Received the message
+    Server->>Client: Create Entity / Component
+    Client->>Server: ...
 ```
 
 ```cpp
@@ -268,14 +261,11 @@ enum class NetworkMessages : uint32_t {
 ```
 
 ### FIRST CASE (No packet loss):
-```
-+--------+    (Delete Entity / Component)    +--------+
-| Client | <-------------------------------- | Server |
-+--------+                                   +--------+
 
-+--------+  (I Received the message :ACK)    +--------+
-| Client | --------------------------------> | Server |
-+--------+                                   +--------+
+```mermaid
+sequenceDiagram
+    Server->>Client: Delete Entity / Component
+    Client->>Server: I Received the message (ACK)
 ```
 
 ```cpp
@@ -312,25 +302,16 @@ message.header.id = NetworkMessages::deleteParent
 body = entityId, {struct message.header.id} // cast into uint8_t
 ```
 
-
 ### SECOND CASE (Packet loss):
-```
-+--------+    (Delete Entity / Component)    +--------+
-| Client | <-------------------------------- | Server |
-+--------+                                   +--------+
 
-+--------+ (I did not Received the message)  +--------+
-| Client | --------------------------------> | Server |
-+--------+                                   +--------+
-
-+--------+    (Delete Entity / Component)    +--------+
-| Client | <-------------------------------- | Server |
-+--------+                                   +--------+
-                        .
-                        .
-                        .
-                        .
+```mermaid
+sequenceDiagram
+    Server->>Client: Delete Entity / Component
+    Client->>Server: I did not Received the message
+    Server->>Client: Delete Entity / Component
+    Client->>Server: ...
 ```
+
 ### [Reference case](#first-case-no-packet-loss-1)
 
 #
@@ -355,13 +336,12 @@ enum class NetworkMessages : uint32_t {
 };
 ```
 
+```mermaid
+sequenceDiagram
+    Server->>Client: Update Entity / Component
 ```
-+--------+    (Update Entity / Component)    +--------+
-| Client | <-------------------------------- | Server |
-+--------+                                   +--------+
 
 In this case the server Does not respond (because we can have the information in the next update if the packet has been lost in a transaction)
-```
 
 ```cpp
 message.header.id = NetworkMessages::updateEntity
@@ -396,12 +376,13 @@ message.header.id = NetworkMessages::updateParent
 
 body = entityId, {struct message.header.id} // cast into uint8_t
 ```
-#
 
+#
 
 ## 3. Conclusion
 
 This UDP-based protocol, implemented with the **ASIO** C++ library, balances the need for speed with the requirement for reliability in critical moments. While game state updates are transmitted without guarantees, important events are handled with care to ensure consistency across all clients. The use of a priority field in the message header ensures that critical information is delivered with precedence. This design allows for a fluid and responsive multiplayer experience while maintaining the integrity of essential game events.
 
 #
+
 Go to the main documentation : [Main documentation](Readme.md)

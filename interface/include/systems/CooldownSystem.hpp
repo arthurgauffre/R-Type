@@ -17,8 +17,8 @@ public:
                  entity::EntityManager &entityManager);
   ~CooldownSystem();
 
-  std::vector<std::string> update(float deltaTime,
-              std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::string> msgToSnend) override;
+  void update(float deltaTime,
+              std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) override;
   void initialize() override {}
   void handleComponents() override {}
 

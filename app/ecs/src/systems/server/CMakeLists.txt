@@ -8,18 +8,19 @@ add_library(r-type_server_system SHARED
     ../../managers/entity/EntityManager.cpp
     ../../components/sprite/SpriteComponent.cpp
     ../../components/texture/TextureComponent.cpp
-    ../../components/position/PositionComponent.cpp
     ../../components/hitbox/HitBoxComponent.cpp
     ../../components/music/MusicComponent.cpp
     ../../components/sound/SoundComponent.cpp
     ../../components/input/InputComponent.cpp
     ../../components/velocity/VelocityComponent.cpp
     ../../components/transform/TransformComponent.cpp
-    ../../components/background/BackgroundComponent.cpp
-    ../../components/scroll/ScrollComponent.cpp
     ../../components/health/HealthComponent.cpp
     ../../components/damage/DamageComponent.cpp
     ../../components/parent/ParentComponent.cpp
+    ../../components/type/TypeComponent.cpp
+    ../../components/cooldown/CooldownComponent.cpp
+    ../../components/size/SizeComponent.cpp
+    ../../components/ai/AIComponent.cpp
     ../../entity/Entity.cpp
 )
 

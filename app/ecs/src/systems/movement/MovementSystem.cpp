@@ -19,30 +19,54 @@
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be updated.
  */
-std::vector<std::string> ECS_system::MovementSystem::update(
+void ECS_system::MovementSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::string> msgToSend) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
+{
+  // lock the entity mutex
+  std::lock_guard<std::mutex> lock(entityMutex);
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<
-           component::TransformComponent, component::VelocityComponent,
-           component::PositionComponent>(entities)) {
+           component::TransformComponent, component::VelocityComponent>(
+           entities))
+  {
     component::TransformComponent *transform =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
     component::VelocityComponent *velocity =
         _componentManager.getComponent<component::VelocityComponent>(
             entity->getID());
-    component::PositionComponent *position =
-        _componentManager.getComponent<component::PositionComponent>(
-            entity->getID());
     component::TypeComponent *type =
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
 
-    float newX = position->getX() + velocity->getActualVelocity().x * deltaTime;
-    float newY = position->getY() + velocity->getActualVelocity().y * deltaTime;
+    if (!transform || !velocity || !type)
+      return;
 
-    if (type->getType() == "player") {
+    float newX = transform->getPosition().first +
+                 velocity->getActualVelocity().first * deltaTime;
+    float newY = transform->getPosition().second +
+                 velocity->getActualVelocity().second * deltaTime;
+
+    if (type->getType() == component::Type::BACKGROUND)
+    {
+      component::SizeComponent *size =
+          _componentManager.getComponent<component::SizeComponent>(
+              entity->getID());
+
+      if (!size)
+        return;
+      if (newX < -size->getSize().first)
+        newX = size->getSize().first - 1;
+      if (newX > size->getSize().first)
+        newX = -size->getSize().first + 1;
+      if (newY < -size->getSize().second)
+        newY = size->getSize().second - 1;
+      if (newY > size->getSize().second)
+        newY = -size->getSize().second + 1;
+    }
+    else if (type->getType() == component::Type::PLAYER)
+    {
       if (newX < 0)
         newX = 0;
       if (newX > 1920)
@@ -51,19 +75,28 @@ std::vector<std::string> ECS_system::MovementSystem::update(
         newY = 0;
       if (newY > 1080)
         newY = 1080;
-    } else if (type->getType() == "projectile") {
+    }
+    else if (type->getType() == component::Type::ENEMY_PROJECTILE ||
+             type->getType() == component::Type::PLAYER_PROJECTILE)
+    {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
-        _entityManager.removeEntity(entity->getID());
+        entity->setCommunication(entity::EntityCommunication::DELETE);
+    }
+    float subPreviousX = transform->getPreviousPosition().first - newX;
+    float subPreviousY = transform->getPreviousPosition().second - newY;
+    if (subPreviousX > 5 || subPreviousX < -5 || subPreviousY > 5 ||
+        subPreviousY < -5)
+    {
+      transform->setCommunication(component::ComponentCommunication::UPDATE);
+      transform->setPreviousPosition({newX, newY});
     }
     transform->setPosition({newX, newY});
-    position->setX(newX);
-    position->setY(newY);
   }
-  return msgToSend;
 }
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
+             entity::EntityManager &entityManager)
+{
   return new ECS_system::MovementSystem(componentManager, entityManager);
 }

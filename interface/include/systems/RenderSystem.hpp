@@ -7,12 +7,14 @@
 
 #pragma once
 
-#include <components/BackgroundComponent.hpp>
 #include <components/HitBoxComponent.hpp>
-#include <components/PositionComponent.hpp>
+#include <components/SizeComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
 #include <components/TransformComponent.hpp>
+#include <components/SizeComponent.hpp>
+#include <components/TypeComponent.hpp>
+
 #include <r-type/ASystem.hpp>
 
 namespace ECS_system {
@@ -36,10 +38,10 @@ public:
 
   // bool getGameClosed() const { return _gameClosed; }
 
-  std::vector<std::string>
+  void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend) override;
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) override;
 
   /**
    * @brief Initializes the render system.

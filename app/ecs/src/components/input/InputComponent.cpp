@@ -31,10 +31,21 @@ component::InputComponent::getBoundKey(const std::string &action) const {
  */
 bool component::InputComponent::isActionActive(
     const std::string &action) const {
-  auto key = getBoundKey(action);
+  sf::Keyboard::Key key = getBoundKey(action);
 
   if (key != sf::Keyboard::Unknown) {
     return sf::Keyboard::isKeyPressed(key);
   }
   return false;
 }
+
+/**
+ * @brief Retrieves the key bindings for all actions.
+ *
+ * @return A map of all key bindings, where the key is the action and the value
+ * is the key bound to that action.
+ */
+std::unordered_map<std::string, sf::Keyboard::Key> component::InputComponent::getKeyBindings() const {
+  return _keyBindings;
+}
+

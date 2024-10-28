@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: github.repository == 'JsuisSayker/R-Type'
+    if: github.repository == 'arthurgauffre/R-Type'
     steps:
       - uses: actions/checkout@v4
         with:

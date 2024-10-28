@@ -17,16 +17,18 @@ add_custom_target(copy_systems ALL
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_input_system.so
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_movement_system>
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_movement_system.so
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_background_system>
-            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_background_system.so
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_health_system>
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_health_system.so
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_weapon_system>
-            ${LIB_SERVER_SYSTEMS_DESTINATION}/r-type_weapon_system.so
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_weapon_system.so
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_client_system>
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_client_system.so
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_server_system>
             ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_server_system.so
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_cooldown_system>
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_cooldown_system.so
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:r-type_ai_system>
+            ${LIB_CLIENT_SYSTEMS_DESTINATION}/r-type_ai_system.so
 )
 
-add_dependencies(copy_systems r-type_audio_system r-type_render_system r-type_collision_system r-type_input_system r-type_movement_system r-type_background_system r-type_health_system r-type_server_system)
+add_dependencies(copy_systems r-type_audio_system r-type_render_system r-type_collision_system r-type_input_system r-type_movement_system r-type_health_system r-type_server_system r-type_cooldown_system r-type_weapon_system r-type_client_system)

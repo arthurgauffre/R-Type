@@ -16,9 +16,10 @@ int main(void) {
     component::ComponentManager &componentManager = *core->getComponentManager();
     entity::EntityManager &entityManager = *core->getEntityManager();
 
+    core->getSystemManager()->addSystem(componentManager, entityManager, "movement");
     core->getSystemManager()->addSystem(componentManager, entityManager, "render");
+    core->getSystemManager()->addSystem(componentManager, entityManager, "input");
     core->getSystemManager()->addSystem(componentManager, entityManager, "client");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "background");
 
     core->run();
   return 0;

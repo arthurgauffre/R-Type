@@ -16,64 +16,91 @@
 #include <NetworkMessageFactory.hpp>
 #include <NetworkMessagesCommunication.hpp>
 #include <r-type/ASystem.hpp>
+#include <mutex>
+#include <thread>
+#include <future>
+#include <queue>
 
-namespace rtype {
-namespace network {
-class ClientSystem : virtual public rtype::network::AClient<NetworkMessages>, virtual public ECS_system::ASystem {
-public:
-  ClientSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager) : AClient(), ASystem(componentManager, entityManager), _componentManager(componentManager), _entityManager(entityManager) {
-      Connect("127.0.0.1", 60000);
-  }
+namespace rtype
+{
+  namespace network
+  {
+    class ClientSystem : virtual public rtype::network::AClient<NetworkMessages>, virtual public ECS_system::ASystem
+    {
+    public:
+      ClientSystem(component::ComponentManager &componentManager,
+                   entity::EntityManager &entityManager) : AClient(), ASystem(componentManager, entityManager), _componentManager(componentManager), _entityManager(entityManager)
+      {
+        Connect("127.0.0.1", 60000);
+        startMessageProcessing();
+      }
 
-  void PingServer() {
-    rtype::network::Message<NetworkMessages> message;
-    message.header.id = NetworkMessages::ServerPing;
-    PositionComponent pos = {1.0f, 5.0f};
-    // Serialize PositionComponent into bytes
-    std::vector<uint8_t> posBytes(reinterpret_cast<uint8_t *>(&pos),
-                                  reinterpret_cast<uint8_t *>(&pos) +
-                                      sizeof(PositionComponent));
-    message.body.insert(message.body.end(), posBytes.begin(), posBytes.end());
-    std::chrono::system_clock::time_point timeNow =
-        std::chrono::system_clock::now();
+      ~ClientSystem()
+      {
+        stopMessageProcessing();
+      }
 
-    message << timeNow;
+      void PingServer()
+      {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::ServerPing;
+        std::chrono::system_clock::time_point timeNow =
+            std::chrono::system_clock::now();
 
-    Send(message);
-    std::cout << "Message sent : " << message << std::endl;
-  }
+        message << timeNow;
 
-  void SendMessageToAllClients() {
-    rtype::network::Message<NetworkMessages> message;
-    message.header.id = NetworkMessages::MessageAll;
+        Send(message);
+        std::cout << "Message sent : " << message << std::endl;
+      }
 
-    Send(message);
-  }
+      void SendMessageToAllClients()
+      {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::MessageAll;
 
-  void handdleMessage(rtype::network::Message<NetworkMessages> &msg);
+        Send(message);
+      }
 
-  std::string GetTexturePath(TexturePath texture);
+      void startMessageProcessing();
+      void stopMessageProcessing();
+      void enqueueMessage(Message<NetworkMessages> msg);
 
-  KeyAction getAction(std::string action);
+      void handleMessage(rtype::network::Message<NetworkMessages> &msg);
 
-  virtual void Disconnect() {}
+      std::string GetTexturePath(TexturePath texture);
 
-  void initialize() override{};
-  void handleComponents() override{};
+      NetworkMessages getAction(std::string action);
 
-  std::vector<std::string>
-  update(float deltaTime,
-         std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend) override;
+      std::string getStringAction(BindAction action);
 
-private:
-  uint8_t entityID = 0;
-  NetworkMessageFactory _networkMessageFactory;
-  component::ComponentManager &_componentManager;
-  entity::EntityManager &_entityManager;
-};
-} // namespace network
+      sf::Keyboard::Key getKey(KeyBoard key);
+
+      component::Type getTypedEntity(EntityType type);
+
+      virtual void Disconnect() {}
+
+      void initialize() override {};
+      void handleComponents() override {};
+
+      void
+      update(float deltaTime,
+             std::vector<std::shared_ptr<entity::IEntity>> entities,
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) override;
+
+    private:
+      uint8_t entityID = 0;
+      NetworkMessageFactory _networkMessageFactory;
+      component::ComponentManager &_componentManager;
+      entity::EntityManager &_entityManager;
+
+      std::mutex *_entityMutex;
+      std::queue<Message<NetworkMessages>> messageQueue;
+      std::mutex queueMutex;                  // Mutex for queue access
+      std::condition_variable queueCondition; // Condition variable to notify threads
+      bool processingMessages;                // Flag to control threads
+      std::vector<std::thread> workerThreads;
+    };
+  } // namespace network
 } // namespace rtype
 
 #endif /* !CLIENT_HPP_ */

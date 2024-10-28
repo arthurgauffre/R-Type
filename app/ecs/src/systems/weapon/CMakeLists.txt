@@ -4,7 +4,6 @@ add_library(r-type_weapon_system SHARED
     ../../components/parent/ParentComponent.cpp
     ../../components/weapon/WeaponComponent.cpp
     ../../components/cooldown/CooldownComponent.cpp
-    ../../components/position/PositionComponent.cpp
     ../../components/velocity/VelocityComponent.cpp
     ../../components/texture/TextureComponent.cpp
     ../../components/type/TypeComponent.cpp

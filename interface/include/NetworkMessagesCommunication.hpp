@@ -29,9 +29,12 @@ enum class NetworkMessages : uint32_t {
   createSound,
   createSprite,
   createTransform,
-  createBackground,
-  createScroll,
   createParent,
+  createInput,
+  createCooldown,
+  createType,
+  createSize,
+  createAI,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -42,9 +45,12 @@ enum class NetworkMessages : uint32_t {
   updateSound,
   updateSprite,
   updateTransform,
-  updateBackground,
-  updateScroll,
   updateParent,
+  updateInput,
+  updateType,
+  updateSize,
+  updateCooldown,
+  updateAI,
   deleteTexture,
   deletePosition,
   deleteVelocity,
@@ -55,10 +61,36 @@ enum class NetworkMessages : uint32_t {
   deleteSound,
   deleteSprite,
   deleteTransform,
-  deleteBackground,
-  deleteScroll,
   deleteParent,
-  AcknowledgeMessage
+  deleteInput,
+  deleteCooldown,
+  deleteType,
+  deleteSize,
+  deleteAI,
+  moveUp,
+  moveDown,
+  moveLeft,
+  moveRight,
+  shoot,
+  none,
+};
+
+enum class EntityType : uint32_t {
+  Player,
+  Enemy,
+  Weapon,
+  Projectile,
+  Player_projectile,
+  Enemy_projectile,
+  Background,
+  Unknown,
+};
+
+enum class AIType : uint32_t {
+  Linear,
+  Sinusoidal,
+  Circular,
+  Unknown,
 };
 
 enum class TexturePath : uint32_t {
@@ -68,12 +100,42 @@ enum class TexturePath : uint32_t {
   Background,
 };
 
-enum class KeyAction : uint32_t {
-  moveUp,
-  moveDown,
-  moveLeft,
-  moveRight,
-  shoot,
+enum class BindAction : uint32_t {
+  MoveUp,
+  MoveDown,
+  MoveLeft,
+  MoveRight,
+  Shoot,
+};
+
+enum class KeyBoard : uint32_t {
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+  J,
+  K,
+  L,
+  M,
+  N,
+  O,
+  P,
+  Q,
+  R,
+  S,
+  T,
+  U,
+  V,
+  W,
+  X,
+  Y,
+  Z,
+  Space,
 };
 
 struct TextureComponent {
@@ -84,23 +146,15 @@ struct EntityId {
   size_t id;
 };
 
-struct PositionComponent {
-  float x;
-  float y;
-};
-
 struct VelocityComponent {
   float x;
   float y;
+  float actualX;
+  float actualY;
 };
 
 struct ParentComponent {
   uint32_t parentID;
-};
-
-struct ScrollComponent {
-  float x;
-  float y;
 };
 
 struct HealthComponent {
@@ -134,10 +188,29 @@ struct TransformComponent {
   float y;
   float scaleX;
   float scaleY;
+  float rotation;
 };
 
-struct BackgroundComponent {
-  TexturePath texturePath;
+struct CoolDownComponent {
+  float cooldown;
+  float timeRemaining;
+};
+
+struct TypeComponent {
+  EntityType type;
+};
+
+struct SizeComponent {
   float x;
   float y;
+};
+
+struct AIComponent {
+  AIType type;
+  float elapsedTime;
+};
+
+struct BindKey {
+  KeyBoard key;
+  BindAction action;
 };

@@ -27,25 +27,134 @@ namespace rtype
         return "app/assets/sprites/plane.png";
       }
       break;
-        // case TexturePath::Enemy:
-        // return "assets/enemy.png";
+      case TexturePath::Enemy:
+      {
+        return "app/assets/sprites/enemy.png";
+      }
+      break;
+      case TexturePath::Bullet:
+      {
+        return "app/assets/sprites/projectile.gif";
+      }
       }
       return "";
     }
 
-    KeyAction ClientSystem::getAction(std::string action)
+    NetworkMessages ClientSystem::getAction(std::string action)
     {
-      if (action == "moveUp")
-        return KeyAction::moveUp;
-      if (action == "moveDown")
-        return KeyAction::moveDown;
-      if (action == "moveLeft")
-        return KeyAction::moveLeft;
-      if (action == "moveRight")
-        return KeyAction::moveRight;
-      if (action == "shoot")
-        return KeyAction::shoot;
-      return KeyAction::moveUp;
+      if (action == "MoveUp")
+        return NetworkMessages::moveUp;
+      if (action == "MoveDown")
+        return NetworkMessages::moveDown;
+      if (action == "MoveLeft")
+        return NetworkMessages::moveLeft;
+      if (action == "MoveRight")
+        return NetworkMessages::moveRight;
+      if (action == "Shoot")
+        return NetworkMessages::shoot;
+      return NetworkMessages::none;
+    }
+
+    std::string ClientSystem::getStringAction(BindAction action)
+    {
+      switch (action)
+      {
+      case BindAction::MoveUp:
+        return "MoveUp";
+      case BindAction::MoveDown:
+        return "MoveDown";
+      case BindAction::MoveLeft:
+        return "MoveLeft";
+      case BindAction::MoveRight:
+        return "MoveRight";
+      case BindAction::Shoot:
+        return "Shoot";
+      }
+      return "";
+    }
+
+    sf::Keyboard::Key ClientSystem::getKey(KeyBoard key)
+    {
+      switch (key)
+      {
+      case KeyBoard::A:
+        return sf::Keyboard::A;
+      case KeyBoard::B:
+        return sf::Keyboard::B;
+      case KeyBoard::C:
+        return sf::Keyboard::C;
+      case KeyBoard::D:
+        return sf::Keyboard::D;
+      case KeyBoard::E:
+        return sf::Keyboard::E;
+      case KeyBoard::F:
+        return sf::Keyboard::F;
+      case KeyBoard::G:
+        return sf::Keyboard::G;
+      case KeyBoard::H:
+        return sf::Keyboard::H;
+      case KeyBoard::I:
+        return sf::Keyboard::I;
+      case KeyBoard::J:
+        return sf::Keyboard::J;
+      case KeyBoard::K:
+        return sf::Keyboard::K;
+      case KeyBoard::L:
+        return sf::Keyboard::L;
+      case KeyBoard::M:
+        return sf::Keyboard::M;
+      case KeyBoard::N:
+        return sf::Keyboard::N;
+      case KeyBoard::O:
+        return sf::Keyboard::O;
+      case KeyBoard::P:
+        return sf::Keyboard::P;
+      case KeyBoard::Q:
+        return sf::Keyboard::Q;
+      case KeyBoard::R:
+        return sf::Keyboard::R;
+      case KeyBoard::S:
+        return sf::Keyboard::S;
+      case KeyBoard::T:
+        return sf::Keyboard::T;
+      case KeyBoard::U:
+        return sf::Keyboard::U;
+      case KeyBoard::V:
+        return sf::Keyboard::V;
+      case KeyBoard::W:
+        return sf::Keyboard::W;
+      case KeyBoard::X:
+        return sf::Keyboard::X;
+      case KeyBoard::Y:
+        return sf::Keyboard::Y;
+      case KeyBoard::Z:
+        return sf::Keyboard::Z;
+      case KeyBoard::Space:
+        return sf::Keyboard::Space;
+      }
+      return sf::Keyboard::Unknown;
+    }
+
+    component::Type ClientSystem::getTypedEntity(EntityType type)
+    {
+      switch (type)
+      {
+      case EntityType::Player:
+        return component::Type::PLAYER;
+      case EntityType::Enemy:
+        return component::Type::ENEMY;
+      case EntityType::Background:
+        return component::Type::BACKGROUND;
+      case EntityType::Player_projectile:
+        return component::Type::PLAYER_PROJECTILE;
+      case EntityType::Enemy_projectile:
+        return component::Type::ENEMY_PROJECTILE;
+      case EntityType::Projectile:
+        return component::Type::PROJECTILE;
+      case EntityType::Weapon:
+        return component::Type::WEAPON;
+      }
+      return component::Type::UNKNOWN;
     }
 
     rtype::network::Message<NetworkMessages> CreateAcknowledgementMessage()
@@ -58,8 +167,10 @@ namespace rtype
       return message;
     }
 
-    void ClientSystem::handdleMessage(rtype::network::Message<NetworkMessages> &msg)
+    void ClientSystem::handleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
+      std::lock_guard<std::mutex> lock(*_entityMutex);
+
       switch (msg.header.id)
       {
       case NetworkMessages::ServerAcceptance:
@@ -98,17 +209,14 @@ namespace rtype
       {
       }
       break;
-        case NetworkMessages::createEntity: {
-          std::cout << "Entity created" << std::endl;
-          EntityId entity;
-          std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
+      case NetworkMessages::createEntity:
+      {
+        // std::cout << "Entity created" << std::endl;
+        EntityId entity;
+        std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
 
           std::cout << "Entity id: " << entity.id << std::endl;
           _entityManager.createEntity(entity.id);
-          rtype::network::Message<NetworkMessages> ackMessage =
-              CreateAcknowledgementMessage();
-          Send(ackMessage);
-
         } break;
         case NetworkMessages::deleteEntity: {
           std::cout << "Entity destroyed" << std::endl;
@@ -441,25 +549,97 @@ namespace rtype
       }
     }
 
-    std::vector<std::string> ClientSystem::update(float deltaTime,
-                                                  std::vector<std::shared_ptr<entity::IEntity>> entities,
-                                                  std::vector<std::string> msgToSend)
+    void ClientSystem::update(float deltaTime,
+                              std::vector<std::shared_ptr<entity::IEntity>> entities,
+                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
     {
+      _entityMutex = &entityMutex;
+      std::lock_guard<std::mutex> lock(*_entityMutex);
       if (IsConnected())
       {
         if (!GetIncomingMessages().empty())
         {
-          std::cout << "Incoming" << std::endl;
-          rtype::network::Message<NetworkMessages> msg =
-              GetIncomingMessages().popFront().message;
-          handdleMessage(msg);
+          while (!GetIncomingMessages().empty())
+          {
+            // std::cout << "Incoming" << std::endl;
+            // std::cout << "Size of incoming messages: " << GetIncomingMessages().queueSize() << std::endl;
+            rtype::network::Message<NetworkMessages> msg =
+                GetIncomingMessages().popFront().message;
+            enqueueMessage(msg);
+          }
         }
       }
       else
       {
         std::cout << "Server Down" << std::endl;
       }
-      return msgToSend;
+      while (!msgToSend.empty())
+      {
+        // popfront the first message in the queue
+        std::string msg = msgToSend.front().first;
+        EntityId id = {msgToSend.front().second};
+        msgToSend.erase(msgToSend.begin());
+        rtype::network::Message<NetworkMessages> message;
+        NetworkMessages action = getAction(msg);
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&id),
+                                         reinterpret_cast<uint8_t *>(&id) +
+                                             sizeof(EntityId));
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
+        if (action != NetworkMessages::none)
+        {
+          message.header.id = action;
+          std::chrono::system_clock::time_point timeNow =
+              std::chrono::system_clock::now();
+          message << timeNow;
+          Send(message);
+        }
+      }
+    }
+
+    void ClientSystem::startMessageProcessing()
+    {
+      processingMessages = true;
+      // Launch worker threads
+      for (int i = 0; i < std::thread::hardware_concurrency(); ++i)
+      {
+        workerThreads.emplace_back([this]()
+                                   {
+            while (processingMessages) {
+                std::unique_lock<std::mutex> lock(queueMutex);
+                queueCondition.wait(lock, [this] { return !messageQueue.empty() || !processingMessages; });
+                if (!processingMessages) break;
+                auto msg = std::move(messageQueue.front());
+                messageQueue.pop();
+                lock.unlock();
+                handleMessage(msg); // Process message
+            } });
+      }
+    }
+
+    // Stop processing and join threads
+    void ClientSystem::stopMessageProcessing()
+{
+    {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        processingMessages = false;
+    }
+    queueCondition.notify_all();
+    for (auto &thread : workerThreads) {
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+    workerThreads.clear();
+}
+
+    void ClientSystem::enqueueMessage(Message<NetworkMessages> msg)
+    {
+      {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        messageQueue.push(std::move(msg));
+      }
+      queueCondition.notify_one();
     }
 
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,

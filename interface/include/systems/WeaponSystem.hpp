@@ -13,7 +13,6 @@
 #include <components/DamageComponent.hpp>
 #include <components/HitBoxComponent.hpp>
 #include <components/ParentComponent.hpp>
-#include <components/PositionComponent.hpp>
 #include <components/SoundComponent.hpp>
 #include <components/SpriteComponent.hpp>
 #include <components/TextureComponent.hpp>
@@ -27,29 +26,22 @@
 
 namespace ECS_system {
 
-/* typedef struct WeaponSystemData {
-  int damage;
-  float velocity;
-  sf::Vector2f position;
-  std::string texturePath;
-  sf::Vector2f spriteSize;
-} WeaponSystemData; */
-
 class WeaponSystem : virtual public ASystem {
 public:
   WeaponSystem(component::ComponentManager &componentManager,
                entity::EntityManager &entityManager);
   ~WeaponSystem();
 
-  std::vector<std::string>
+  void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend) override;
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) override;
   void initialize() override {}
   void handleComponents() override {}
 
 private:
   void createProjectile(uint32_t parentID, std::string texturePath,
-                        sf::Vector2f velocity, sf::Vector2f scale, int damage);
+                        std::pair<float, float> velocity,
+                        std::pair<float, float> scale, int damage);
 };
 } // namespace ECS_system

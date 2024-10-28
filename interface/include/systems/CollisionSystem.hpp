@@ -9,7 +9,7 @@
 
 #include <components/HealthComponent.hpp>
 #include <components/HitBoxComponent.hpp>
-#include <components/PositionComponent.hpp>
+#include <components/TransformComponent.hpp>
 #include <components/TypeComponent.hpp>
 #include <r-type/ASystem.hpp>
 
@@ -46,10 +46,10 @@ public:
    * @param entities A vector of shared pointers to the entities that need to be
    * updated.
    */
-  std::vector<std::string>
+  void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::string> msgToSend) override;
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) override;
 
   /**
    * @brief Initializes the collision system.

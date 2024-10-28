@@ -7,18 +7,19 @@ Welcome to the **Game Engine** documentation! This guide will explain how to use
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
-2. [Creating Entities](#creating-entities)
-3. [Adding Components to Entities](#adding-components-to-entities)
-   - [PositionComponent](#positioncomponent)
+2. [Diagram](#diagram)
+3. [Creating Entities](#creating-entities)
+4. [Adding Components to Entities](#adding-components-to-entities)
+   - [TransformComponent](#TransformComponent)
    - [VelocityComponent](#velocitycomponent)
    - [SpriteComponent](#spritecomponent)
-4. [Working with Systems](#working-with-systems)
+5. [Working with Systems](#working-with-systems)
    - [MovementSystem](#movementsystem)
    - [InputSystem](#inputsystem)
-5. [Running the Game Loop](#running-the-game-loop)
-6. [Customizing Keybinds](#customizing-keybinds)
-7. [Handling Sound and Music](#handling-sound-and-music)
-8. [Conclusion](#conclusion)
+6. [Running the Game Loop](#running-the-game-loop)
+7. [Customizing Keybinds](#customizing-keybinds)
+8. [Handling Sound and Music](#handling-sound-and-music)
+9. [Conclusion](#conclusion)
 
 ---
 
@@ -33,6 +34,74 @@ To get started with the game engine, you will need:
 Once everything is set up, you can start creating entities, adding components, and using systems to build your game.
 
 ---
+
+## Diagram
+
+```mermaid
+graph TD;
+    A[Entity] -->|Possesses| B[AComponent]
+    A[Entity] -->|Possesses| C[BComponent]
+    A[Entity] -->|Possesses| D[CComponent]
+
+    B -->|Used by| E[ASystem]
+    C -->|Used by| E[ASystem]
+    D -->|Used by| F[BSystem]
+
+    E[ASystem] -->|Updates| A[Entity]
+    F[BSystem] -->|Updates| A[Entity]
+
+    subgraph "ECS"
+        direction TB
+        A
+        B
+        C
+        D
+        E
+        F
+    end
+
+style A fill:#8b008b,stroke:#333,stroke-width:2px;
+style B fill:#b8860b,stroke:#333,stroke-width:2px;
+style C fill:#b8860b,stroke:#333,stroke-width:2px;
+style D fill:#b8860b,stroke:#333,stroke-width:2px;
+style E fill:#228b22,stroke:#333,stroke-width:2px;
+style F fill:#228b22,stroke:#333,stroke-width:2px;
+```
+
+### Diagram Description
+
+The diagram illustrates the fundamental structure and relationships within the Entity-Component-System (ECS) architecture
+
+#### Components of the Diagram:
+
+**Entity**:
+
+- Represented as a central node labeled "Entity".
+- An entity is an object within the game or application. It acts as a container that can hold various components, allowing for flexible composition.
+- An entity itself doesn't contain behavior; it merely serves as a unique identifier for a collection of components.
+
+**Component**:
+
+- The diagram shows multiple components connected to the entity, such as `B[Component]`, `C[Component]`, and `D[Component]`.
+- Components are data structures that hold specific attributes or functionalities. Examples include:
+  - **TransformComponent**: Stores position, rotation, and scale data.
+  - **HealthComponent**: Holds health-related data.
+  - **SpriteComponent**: Contains graphical information.
+- Each entity can possess one or more components, allowing for varied and complex behavior.
+
+**System**:
+
+- Shown as nodes `E[System]` and `F[System]`, these represent the logic that operates on entities possessing certain components.
+- Systems are responsible for updating and processing entities based on the components they contain. For example:
+  - **RenderSystem**: Updates the visual representation of entities with graphical components.
+  - **PhysicsSystem**: Handles the movement and interactions of entities with physics-related components.
+- Systems act on groups of entities, typically during a game loop or an update cycle.
+
+**Relationships**:
+
+- **Possesses**: Arrows pointing from the entity to the components indicate that an entity can possess multiple components. This shows the composition relationship.
+- **Used by**: Arrows from the components to the systems indicate that systems utilize these components to perform their logic. For instance, a `RenderSystem` uses `SpriteComponent` to render the visual representation of entities.
+- **Updates**: Arrows from systems back to the entity indicate that systems update the state of entities based on their components. This bidirectional relationship signifies that entities are continuously modified during gameplay.
 
 ## Creating Entities
 
@@ -51,12 +120,12 @@ Each entity has a unique ID and can hold multiple components.
 
 Components define the properties of an entity, such as its position, velocity, and appearance. Below are examples of how to add different components to an entity.
 
-### PositionComponent
+### TransformComponent
 
-The `PositionComponent` defines the X and Y coordinates of an entity in the game world.
+The `Transform` defines the X and Y coordinates of an entity in the game world.
 
 ```cpp
-_componentManager.addComponent<component::PositionComponent>(player->getId(), 100.0f, 200.0f);
+_componentManager.addComponent<component::TransformComponent>(player->getId(), 100.0f, 200.0f);
 ```
 
 ### VelocityComponent
@@ -84,7 +153,7 @@ Systems are responsible for updating entities that have certain components. The 
 
 ### MovementSystem
 
-The `MovementSystem` handles the movement of entities with a `PositionComponent` and `VelocityComponent`. To ensure entities move as expected, the system is updated on each frame.
+The `MovementSystem` handles the movement of entities with a `TransformComponent` and `VelocityComponent`. To ensure entities move as expected, the system is updated on each frame.
 
 ```cpp
 _movementSystem.update(deltaTime, _entityManager.getEntities());
@@ -111,7 +180,6 @@ void game::GameLoop::run()
     {
         processEvents();
         update();
-        render();
     }
 }
 

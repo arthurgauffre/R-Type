@@ -11,6 +11,7 @@
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
 #include <unordered_map>
+#include <algorithm>
 #include <vector>
 
 namespace component {
@@ -140,7 +141,30 @@ public:
     return result;
   }
 
-  // void update(float deltaTime);
+  /**
+   * @brief Removes all components associated with the specified entity.
+   *
+   * This function removes all components associated with the specified entity
+   * from the internal component container.
+   *
+   * @param entityID The ID of the entity whose components are to be removed.
+   */
+  void removeAllComponents(uint32_t entityID) { _components.erase(entityID); }
+
+  template <typename T>
+  void removeComponent(uint32_t entityID) {
+    auto it = _components.find(entityID);
+    if (it == _components.end())
+      return;
+
+    auto &entityComponents = it->second;
+    entityComponents.erase(
+        std::remove_if(entityComponents.begin(), entityComponents.end(),
+                       [](const std::unique_ptr<IComponent> &component) {
+                         return dynamic_cast<T *>(component.get());
+                       }),
+        entityComponents.end());
+  }
 
 private:
   /**

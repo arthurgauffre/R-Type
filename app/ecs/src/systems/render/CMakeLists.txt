@@ -5,10 +5,10 @@ add_library(r-type_render_system SHARED
     RenderSystem.cpp
     ../../components/sprite/SpriteComponent.cpp
     ../../components/texture/TextureComponent.cpp
-    ../../components/position/PositionComponent.cpp
-    ../../components/background/BackgroundComponent.cpp
     ../../components/transform/TransformComponent.cpp
     ../../components/hitbox/HitBoxComponent.cpp
+    ../../components/size/SizeComponent.cpp
+    ../../components/type/TypeComponent.cpp
 )
 
 # Specify the SFML include directory

@@ -7,11 +7,34 @@
 
 #pragma once
 
-class AIComponent {
-public:
-  AIComponent();
-  ~AIComponent();
+#include <r-type/AComponent.hpp>
 
-protected:
-private:
-};
+namespace component
+{
+
+  enum class AIType
+  {
+    LINEAR,
+    SINUSOIDAL,
+    CIRCULAR,
+    UNKNOWN,
+  };
+  class AIComponent : public AComponent
+  {
+  public:
+    AIComponent(uint32_t entityID, AIType type);
+    ~AIComponent();
+
+    AIType getType();
+    void setType(AIType type);
+
+    float getElapsedTime();
+    void setElapsedTime(float elapsedTime);
+
+    void update(AIType type, float elapsedTime);
+
+  private:
+    AIType _type;
+    float _elapsedTime;
+  };
+}

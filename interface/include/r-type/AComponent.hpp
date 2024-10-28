@@ -66,6 +66,15 @@ public:
    */
   ComponentCommunication getCommunication() const override { return _communication; }
 
+  /**
+   * @brief Sets the communication status of the component.
+   *
+   * This method is used to set the communication status of the component.
+   *
+   * @param communication The new communication status of the component.
+   */
+  void setCommunication(ComponentCommunication communication) override { _communication = communication; }
+
 protected:
   uint32_t id;   // Id of the associated entity
   bool isActive; // State of the component
