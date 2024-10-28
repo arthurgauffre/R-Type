@@ -38,6 +38,8 @@ namespace rtype
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {
         Start();
+        for (int i = 0; i < 4; i++)
+          _playerConnected.push_back(false);
       }
 
       ~ServerSystem() { Stop(); };
@@ -53,6 +55,11 @@ namespace rtype
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
+        for (int i = 0; i < 4 && i < deqConnections.size(); i++)
+        {
+          if (!deqConnections[i]->IsConnected())
+            _playerConnected[i] = true;
+        }
         this->ServerUpdate(100, false);
         sendAllEntitiesUpdateOrCreateToAllClient(nullptr);
         while (!_msgReceived.empty())
@@ -198,8 +205,15 @@ namespace rtype
                                                                actualId++);
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
-              sendAllEntitiesToClient(deqConnections.back());
-              _msgReceived.emplace_back(std::make_pair("clientConnection", 0));
+              int numPlayer = 0;
+              for (int i = 0; i < 4; i++) {
+                if (_playerConnected[i] == true)
+                  numPlayer++;
+                else
+                  break;
+              }
+              sendAllEntitiesToClient(deqConnections.back(), numPlayer);
+              _msgReceived.emplace_back(std::make_pair("clientConnection", numPlayer));
             } else {
               std::cout << "Connection denied" << std::endl;
             }
@@ -319,29 +333,35 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            for (int i = 0; i < 4 && i < deqConnections.size(); i++)
             {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), clientToIgnore);
-              for (auto &bind : component->getKeyBindings())
+              if (deqConnections[i]->GetId() == component->getNumClient())
               {
-                BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
-                SendMessageToAllClients(networkMessageFactory.updateInputMsg(entity->getID(), input), clientToIgnore);
+                if (component->getCommunication() == component::ComponentCommunication::CREATE)
+                {
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), deqConnections[i]);
+                  for (auto &bind : component->getKeyBindings())
+                  {
+                    BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                    SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
+                  }
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+                {
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  for (auto &bind : component->getKeyBindings())
+                  {
+                    BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                    SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
+                  }
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+                {
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  SendMessageToClient(networkMessageFactory.deleteInputMsg(entity->getID()), deqConnections[i]);
+                }
               }
-            }
-            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
-            {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              for (auto &bind : component->getKeyBindings())
-              {
-                BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
-                SendMessageToAllClients(networkMessageFactory.updateInputMsg(entity->getID(), input), clientToIgnore);
-              }
-            }
-            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
-            {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.deleteInputMsg(entity->getID()), clientToIgnore);
             }
           }
           if (_componentManager.getComponent<component::TypeComponent>(entity->getID()))
@@ -411,7 +431,7 @@ namespace rtype
         }
       }
 
-      void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client)
+      void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client, int numPlayer)
       {
         if (client->IsConnected() == false)
         {
@@ -504,11 +524,14 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
-            for (auto &bind : component->getKeyBindings())
+            if (numPlayer == component->getNumClient())
             {
-              BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
-              SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), client);
+              SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
+              for (auto &bind : component->getKeyBindings())
+              {
+                BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), client);
+              }
             }
           }
           if (_componentManager.getComponent<component::TypeComponent>(entity->getID()))
@@ -741,6 +764,7 @@ namespace rtype
       std::vector<std::pair<std::string, size_t>> _msgReceived;
 
     private:
+      std::vector<bool> _playerConnected;
       std::vector<std::shared_ptr<entity::IEntity>> _playerEntities;
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
