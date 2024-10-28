@@ -9,6 +9,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include <IGraphic.hpp>
+#include <AGraphic.hpp>
 
 class SfmlGraphic : public AGraphic {
 private:
@@ -93,7 +95,6 @@ public:
         }
     }
 
-    
     void render() override {
         window.clear();
         for (auto& spritePair : sfSprites) {
