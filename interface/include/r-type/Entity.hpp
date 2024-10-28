@@ -5,13 +5,16 @@
 ** Entity
 */
 
+#ifndef ENTITY_HPP
+#define ENTITY_HPP
+
 #pragma once
 
 #include <memory>
 #include <r-type/IEntity.hpp>
 
 namespace entity {
-class Entity : virtual public IEntity {
+class DLL_EXPORT Entity : virtual public IEntity {
 public:
   /**
    * @brief Constructs an Entity object with a specified ID and sets it as
@@ -84,3 +87,5 @@ protected:
   bool isActive;
 };
 } // namespace entity
+
+#endif

@@ -23,8 +23,8 @@ namespace component
      * @param velocity The initial velocity of the entity.
      */
     VelocityComponent(uint32_t entityID,
-                      std::pair<float, float> velocity = {0, 0},
-                      std::pair<float, float> actualVelocity = {0, 0});
+                      std::pair<float, float> velocity = {0.0f, 0.0f},
+                      std::pair<float, float> actualVelocity = {0.0f, 0.0f});
 
     /**
      * @brief Default destructor for the VelocityComponent class.

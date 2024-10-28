@@ -21,7 +21,7 @@ if (WIN32)
 endif()
 
 if (UNIX)
-# Detect the current Linux distribution using /etc/os-release
+    # Detect the current Linux distribution using /etc/os-release
     execute_process(
         COMMAND uname -s
         OUTPUT_VARIABLE OS_NAME
@@ -50,7 +50,6 @@ if (UNIX)
 
     # Output the detected package manager
     message(STATUS "Detected Linux distribution: ${DISTRO}")
-    message(STATUS "Using package manager: ${PACKAGE_MANAGER}")
 
     # Add the install of the SFML library
     if (NOT EXISTS "/usr/include/SFML")
@@ -79,6 +78,7 @@ endif()
 
 
 
+include_directories(${CMAKE_SOURCE_DIR}/3rd_party_lib/asio/asio/include)
 
 
 # Add the interface to the project
@@ -86,6 +86,7 @@ add_subdirectory(interface)
 add_subdirectory(app/ecs)
 add_subdirectory(app/server)
 add_subdirectory(app/client)
+
 
 # Link the interface to the executables
 # target_link_libraries(r-type_client r-type_interfaces)

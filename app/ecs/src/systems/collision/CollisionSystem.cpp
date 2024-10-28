@@ -19,7 +19,8 @@
  * @return true if the hitboxes are colliding, false otherwise.
  */
 bool ECS_system::CollisionSystem::isColliding(
-    component::HitBoxComponent *hitbox1, component::HitBoxComponent *hitbox2) {
+    component::HitBoxComponent *hitbox1, component::HitBoxComponent *hitbox2)
+{
   component::TransformComponent *pos1 =
       _componentManager.getComponent<component::TransformComponent>(
           hitbox1->getEntityID());
@@ -50,7 +51,8 @@ bool ECS_system::CollisionSystem::isColliding(
  * @param hitbox2 A shared pointer to the second entity's HitBoxComponent.
  */
 void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
-                                                  entity::IEntity *entity2) {
+                                                  entity::IEntity *entity2)
+{
   component::Type type1 =
       _componentManager
           .getComponent<component::TypeComponent>(entity1->getID())
@@ -60,31 +62,41 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
           .getComponent<component::TypeComponent>(entity2->getID())
           ->getType();
 
-  if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY) {
+  if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY)
+  {
     _componentManager
         .getComponent<component::HealthComponent>(entity1->getID())
         ->setHealth(0);
-  } else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER) {
+  }
+  else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER)
+  {
     _componentManager
         .getComponent<component::HealthComponent>(entity2->getID())
         ->setHealth(0);
   }
 
-  if (type1 == component::Type::PLAYER_PROJECTILE && type2 == component::Type::ENEMY) {
+  if (type1 == component::Type::PLAYER_PROJECTILE && type2 == component::Type::ENEMY)
+  {
     _componentManager
         .getComponent<component::HealthComponent>(entity2->getID())
         ->setHealth(0);
-  } else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER_PROJECTILE) {
+  }
+  else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER_PROJECTILE)
+  {
     _componentManager
         .getComponent<component::HealthComponent>(entity1->getID())
         ->setHealth(0);
   }
 
-  if (type1 == component::Type::ENEMY_PROJECTILE && type2 == component::Type::PLAYER) {
+  if (type1 == component::Type::ENEMY_PROJECTILE && type2 == component::Type::PLAYER)
+  {
+    std::cout << "Collision between " << std::endl;
     _componentManager
         .getComponent<component::HealthComponent>(entity2->getID())
         ->setHealth(0);
-  } else if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY_PROJECTILE) {
+  }
+  else if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY_PROJECTILE)
+  {
     _componentManager
         .getComponent<component::HealthComponent>(entity1->getID())
         ->setHealth(0);
@@ -105,15 +117,18 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
  */
 void ECS_system::CollisionSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) {
-  for (auto &entity : entities) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
+{
+  for (auto &entity : entities)
+  {
     component::HitBoxComponent *hitbox1 =
         _componentManager.getComponent<component::HitBoxComponent>(
             entity->getID());
 
     if (hitbox1 == nullptr)
       continue;
-    for (auto &entity2 : entities) {
+    for (auto &entity2 : entities)
+    {
       component::HitBoxComponent *hitbox2 =
           _componentManager.getComponent<component::HitBoxComponent>(
               entity2->getID());
@@ -130,6 +145,7 @@ void ECS_system::CollisionSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
+             entity::EntityManager &entityManager)
+{
   return new ECS_system::CollisionSystem(componentManager, entityManager);
 }
