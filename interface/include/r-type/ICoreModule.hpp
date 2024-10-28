@@ -13,7 +13,6 @@
 
 #ifdef _WIN32
 #include <tchar.h>
-#define NOMINMAX
 #include <windows.h>
 #else
 #include <dirent.h>
