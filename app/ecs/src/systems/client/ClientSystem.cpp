@@ -355,8 +355,11 @@ namespace rtype
       {
         // std::cout << "Input component created" << std::endl;
         EntityId id;
+        InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        _componentManager.addComponent<component::InputComponent>(id.id);
+        std::memcpy(&input, msg.body.data() + sizeof(EntityId),
+                    sizeof(InputComponent));
+        _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
       }
       break;
       case NetworkMessages::updateInput:

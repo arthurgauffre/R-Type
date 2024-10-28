@@ -322,7 +322,7 @@ namespace rtype
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createInputMsg(entity->getID()), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), clientToIgnore);
               for (auto &bind : component->getKeyBindings())
               {
                 BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
@@ -404,91 +404,6 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteAIMsg(entity->getID()), clientToIgnore);
             }
           }
-          // if (_componentManager.getComponent<component::WeaponComponent>(entity->getID()))
-          // {
-          //   component::WeaponComponent *component =
-          //       _componentManager.getComponent<component::WeaponComponent>(entity->getID());
-          //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //     component->setCommunication(component::ComponentCommunication::NONE);
-          //     SendMessageToAllClients(networkMessageFactory.createWeaponMsg(entity->getID(), component->getWeaponID(), component->getIsFiring(), component->getFireRate()), clientToIgnore);
-          //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //     component->setCommunication(component::ComponentCommunication::NONE);
-          //     SendMessageToAllClients(networkMessageFactory.updateWeaponMsg(entity->getID(), component->getWeaponID(), component->getIsFiring(), component->getFireRate()), clientToIgnore);
-          //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //     component->setCommunication(component::ComponentCommunication::NONE);
-          //     SendMessageToAllClients(networkMessageFactory.deleteWeaponMsg(entity->getID()), clientToIgnore);
-          //   }
-          // }
-          //   if (_componentManager.getComponent<component::ScrollComponent>(entity->getID()))
-          //   {
-          //     component::ScrollComponent *component =
-          //         _componentManager.getComponent<component::ScrollComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createScrollMsg(entity->getID(), component->getScrollSpeed().x, component->getScrollSpeed().y), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateScrollMsg(entity->getID(), component->getScrollSpeed().x, component->getScrollSpeed().y), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteScrollMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
-          //   if (_componentManager.getComponent<component::HealthComponent>(entity->getID()))
-          //   {
-          //     component::HealthComponent *component =
-          //         _componentManager.getComponent<component::HealthComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createHealthMsg(entity->getID(), component->getHealth()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateHealthMsg(entity->getID(), component->getHealth()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteHealthMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
-          //   if (_componentManager.getComponent<component::DamageComponent>(entity->getID()))
-          //   {
-          //     component::DamageComponent *component =
-          //         _componentManager.getComponent<component::DamageComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createDamageMsg(entity->getID(), component->getDamage()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateDamageMsg(entity->getID(), component->getDamage()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteDamageMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
-          //   if (_componentManager.getComponent<component::HitBoxComponent>(entity->getID()))
-          //   {
-          //     component::HitBoxComponent *component =
-          //         _componentManager.getComponent<component::HitBoxComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createHitboxMsg(entity->getID(), component->getHeight(), component->getWidth()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateHitboxMsg(entity->getID(), component->getHeight(), component->getWidth()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteHitboxMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
-          //   // if
-          //   // (_coreModule.get()->getComponentManager()->getComponent<component::MusicComponent>(entity->getID()))
-          //   //   SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(),
-          //   //   dynamic_cast<component::MusicComponent
-          //   //   *>(component.get())->musicPath), client);
-          //   // if
-          //   // (_coreModule.get()->getComponentManager()->getComponent<component::SoundComponent>(entity->getID()))
-          //   //   SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(),
-          //   //   dynamic_cast<component::SoundComponent
-          //   //   *>(component.get())->soundPath), client);
-          //   if (_componentManager.getComponent<component::ParentComponent>(entity->getID()))
-          //   {
-          //     component::ParentComponent *component =
-          //         _componentManager.getComponent<component::ParentComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createParentMsg(entity->getID(), component->getParentID()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateParentMsg(entity->getID(), component->getParentID()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteParentMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
         }
         if (transform)
         {
@@ -577,16 +492,6 @@ namespace rtype
                     entity->getID(), component->getHeight(), component->getWidth()),
                 client);
           }
-          // if
-          // (_coreModule.get()->getComponentManager()->getComponent<component::MusicComponent>(entity->getID()))
-          //   SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(),
-          //   dynamic_cast<component::MusicComponent
-          //   *>(component.get())->musicPath), client);
-          // if
-          // (_coreModule.get()->getComponentManager()->getComponent<component::SoundComponent>(entity->getID()))
-          //   SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(),
-          //   dynamic_cast<component::SoundComponent
-          //   *>(component.get())->soundPath), client);
           if (_componentManager.getComponent<component::ParentComponent>(entity->getID()))
           {
             component::ParentComponent *component =
@@ -599,7 +504,7 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID()), client);
+            SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
             for (auto &bind : component->getKeyBindings())
             {
               BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
@@ -836,6 +741,7 @@ namespace rtype
       std::vector<std::pair<std::string, size_t>> _msgReceived;
 
     private:
+      std::vector<std::shared_ptr<entity::IEntity>> _playerEntities;
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
       sf::Clock frequencyClock;

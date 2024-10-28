@@ -265,16 +265,22 @@ public:
         return message;
     }
 
-    rtype::network::Message<NetworkMessages> createInputMsg(size_t id)
+    rtype::network::Message<NetworkMessages> createInputMsg(size_t id, int numClient)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createInput;
         EntityId entity = {id};
+        InputComponent input = {numClient};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
+        std::vector<uint8_t> inputBytes(reinterpret_cast<uint8_t *>(&input),
+                                            reinterpret_cast<uint8_t *>(&input) +
+                                                sizeof(InputComponent));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
+        message.body.insert(message.body.end(), inputBytes.begin(),
+                            inputBytes.end());
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;

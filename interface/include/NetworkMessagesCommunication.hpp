@@ -210,6 +210,10 @@ struct AIComponent {
   float elapsedTime;
 };
 
+struct InputComponent {
+  int numClient;
+};
+
 struct BindKey {
   KeyBoard key;
   BindAction action;

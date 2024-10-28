@@ -122,7 +122,7 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath);
     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
-        entityID);
+        entityID, 0);
     _coreModule->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
         ->bindAction("MoveLeft", sf::Keyboard::Q);
