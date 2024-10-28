@@ -18,22 +18,23 @@
 
 #include <cstdint>
 
-namespace entity
-{
-  enum DLL_EXPORT class EntityCommunication
-  {
-    NONE,
-    CREATE,
-    UPDATE,
-    DELETE,
-  };
-  class DLL_EXPORT IEntity
-  {
-  public:
-    /**
-     * @brief Virtual destructor for the IEntity class.
-     */
-    virtual ~IEntity() {};
+namespace entity {
+enum class EntityCommunication {
+  NONE,
+  CREATE,
+  UPDATE,
+  DELETE,
+};
+class IEntity {
+public:
+  /**
+   * @brief Default constructor for the IEntity class.
+   */
+  IEntity() = default;
+  /**
+   * @brief Virtual destructor for the IEntity class.
+   */
+  virtual ~IEntity() = default;
 
     /**
      * @brief Get the unique identifier of the entity.
@@ -88,5 +89,5 @@ namespace entity
 
   protected:
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
-  };
+};
 } // namespace entity

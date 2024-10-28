@@ -7,17 +7,26 @@
 
 #pragma once
 
-#include <memory>
 #include <r-type/IComponent.hpp>
 #include <r-type/IEntity.hpp>
+
+#include <memory>
 #include <unordered_map>
 #include <algorithm>
 #include <vector>
 
+namespace entity {
+    class IEntity;
+}
+
+namespace component {
+    class IComponent;
+}
 namespace component {
 class ComponentManager {
 public:
   ComponentManager();
+  ~ComponentManager() = default;
   /**
    * @brief Adds a new component of type T to the specified entity.
    *

@@ -5,9 +5,6 @@
 ** ClientSystem
 */
 
-#ifndef CLIENT_HPP_
-#define CLIENT_HPP_
-
 #pragma once
 
 #include <r-type/AClient.hpp>
@@ -102,5 +99,3 @@ namespace rtype
     };
   } // namespace network
 } // namespace rtype
-
-#endif /* !CLIENT_HPP_ */

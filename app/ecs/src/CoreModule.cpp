@@ -78,7 +78,9 @@ rtype::CoreModule::getSystemManager() const {
  */
 void rtype::CoreModule::update() {
   float deltatime = clock.restart().asSeconds();
+  _entityMutex.lock();
   auto entities = this->getEntityManager()->getEntities();
+  _entityMutex.unlock();
   this->getSystemManager()->update(deltatime, entities, msgToSend, this->msgReceived, _entityMutex);
 }
 
