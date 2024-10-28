@@ -53,6 +53,9 @@ void ECS_system::HealthSystem::update(
     component::HealthComponent *healthComponent =
         _componentManager.getComponent<component::HealthComponent>(
             entity->getID());
+    if (!healthComponent)
+      continue;
+
     healthComponent->setHealth(healthComponent->getHealth() -
                                healthComponent->getDamageIncoming());
     healthComponent->setDamageIncoming(0);

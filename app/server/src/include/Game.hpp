@@ -9,6 +9,8 @@
 
 #include <CoreModule.hpp>
 
+#include <random>
+
 class Game
 {
 public:
@@ -39,6 +41,9 @@ public:
 
 protected:
 private:
+    int _waveNumber;
     std::shared_ptr<rtype::CoreModule> _coreModule;
     sf::Clock inputClock;
+    sf::Clock waveClock;
+    float _spawnInterval;
 };

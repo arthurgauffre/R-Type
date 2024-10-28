@@ -26,11 +26,11 @@ namespace ECS_system
                 continue;
             if (aiComponent->getType() == component::AIType::LINEAR)
             {
-                velocityComponent->setActualVelocityX(velocityComponent->getActualVelocity().first);
+                velocityComponent->setActualVelocityX(velocityComponent->getVelocity().first);
             }
             else if (aiComponent->getType() == component::AIType::SINUSOIDAL)
             {
-                float horizontalSpeed = velocityComponent->getActualVelocity().first;
+                float horizontalSpeed = velocityComponent->getVelocity().first;
 
                 float amplitude = 100.0f;
                 float frequency = 2.0f;

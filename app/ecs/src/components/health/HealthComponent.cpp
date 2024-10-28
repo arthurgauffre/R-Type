@@ -16,6 +16,7 @@
 component::HealthComponent::HealthComponent(uint32_t entityID, int health)
     : AComponent(entityID) {
   this->_health = health;
+  this->_damageIncoming = 0;
   this->_communication = ComponentCommunication::SERVERONLY;
 }
 

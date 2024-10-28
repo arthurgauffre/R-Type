@@ -62,13 +62,11 @@ void ECS_system::GameSystem::update(
       _enemyCount++;
   }
 
-  std::cout << "Player count: " << _playerCount << std::endl;
-
   if (_playerCount == 0)
-    throw rtype::GameLoosed("Game Over");
+    std::cout << "You Loose" << std::endl;
 
   if (_enemyCount == 0)
-    throw rtype::GameWon("You Win");
+    std::cout << "You Win" << std::endl;
 }
 
 extern "C" ECS_system::ISystem *
