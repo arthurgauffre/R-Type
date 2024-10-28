@@ -26,8 +26,8 @@ public:
    * all components.
    */
   AudioSystem(component::ComponentManager &componentManager,
-              entity::EntityManager &entityManager)
-      : ASystem(componentManager, entityManager) {}
+              entity::EntityManager &entityManager, IGraphic &graphic)
+      : ASystem(componentManager, entityManager, graphic) {}
 
   /**
    * @brief Destroys the AudioSystem object.

@@ -13,6 +13,7 @@
 #include <memory>
 #include <r-type/IEntity.hpp>
 #include <vector>
+#include <r-type/IGraphic.hpp>
 
 #ifdef _WIN32
 #define EXPORT_API extern "C" __declspec(dllexport)
@@ -24,8 +25,8 @@ namespace ECS_system {
 class ISystem {
 public:
   ISystem(component::ComponentManager &componentManager,
-          entity::EntityManager &entityManager)
-      : _componentManager(componentManager), _entityManager(entityManager) {}
+          entity::EntityManager &entityManager, IGraphic &graphic)
+      : _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic) {}
   /*
   ** @brief Initializes the system.
   */
@@ -65,5 +66,6 @@ public:
 protected:
   component::ComponentManager &_componentManager;
   entity::EntityManager &_entityManager;
+  IGraphic &_graphic;
 };
 } // namespace ECS_system

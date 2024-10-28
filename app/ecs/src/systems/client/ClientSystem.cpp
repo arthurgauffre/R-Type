@@ -605,9 +605,9 @@ namespace rtype
     }
 
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
-                                                 entity::EntityManager &entityManager)
+                                                 entity::EntityManager &entityManager, IGraphic &graphic)
     {
-      return new rtype::network::ClientSystem(componentManager, entityManager);
+      return new rtype::network::ClientSystem(componentManager, entityManager, graphic);
     }
   } // namespace network
 } // namespace rtype

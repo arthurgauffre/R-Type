@@ -16,13 +16,14 @@
 #include <NetworkMessageFactory.hpp>
 #include <NetworkMessagesCommunication.hpp>
 #include <r-type/ASystem.hpp>
+#include <r-type/IGraphic.hpp>
 
 namespace rtype {
 namespace network {
 class ClientSystem : virtual public rtype::network::AClient<NetworkMessages>, virtual public ECS_system::ASystem {
 public:
   ClientSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager) : AClient(), ASystem(componentManager, entityManager), _componentManager(componentManager), _entityManager(entityManager) {
+                   entity::EntityManager &entityManager, IGraphic &graphic) : AClient(), ASystem(componentManager, entityManager, graphic), _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic) {
       Connect("127.0.0.1", 60000);
   }
 
@@ -72,6 +73,7 @@ private:
   NetworkMessageFactory _networkMessageFactory;
   component::ComponentManager &_componentManager;
   entity::EntityManager &_entityManager;
+  IGraphic &_graphic;
 };
 } // namespace network
 } // namespace rtype

@@ -20,7 +20,7 @@ ECS_system::RenderSystem::RenderSystem(
     component::ComponentManager &componentManager,
     entity::EntityManager &entityManager,
     IGraphic &graphic)
-    : ASystem(componentManager, entityManager), _graphic(graphic) {}
+    : ASystem(componentManager, entityManager, graphic) {}
 
 
 /**
@@ -43,7 +43,6 @@ void ECS_system::RenderSystem::update(
 
   _graphic.clear();
 
-  // Dessiner les entités de type "BACKGROUND"
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::SpriteComponent, component::TransformComponent,
                       component::TextureComponent, component::SizeComponent,
@@ -53,12 +52,12 @@ void ECS_system::RenderSystem::update(
         ->getType() != component::Type::BACKGROUND)
       continue;
 
-    // Récupération des composants nécessaires
+  
     auto spriteComponent = _componentManager.getComponent<component::SpriteComponent>(entity->getID());
     auto textureComponent = _componentManager.getComponent<component::TextureComponent>(entity->getID());
     auto transformComponent = _componentManager.getComponent<component::TransformComponent>(entity->getID());
 
-    // Mise à jour du sprite
+  
     uint32_t spriteId = spriteComponent->getSpriteId();
     _graphic.setTexture(spriteId, textureComponent->getTextureId());
     _graphic.setPosition(spriteId, transformComponent->getPosition().first, transformComponent->getPosition().second);
@@ -66,7 +65,7 @@ void ECS_system::RenderSystem::update(
     _graphic.drawSprite(spriteId);
   }
 
-  // Dessiner les autres entités
+  
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
                       component::TextureComponent, component::TypeComponent>(entities)) {
@@ -91,11 +90,10 @@ void ECS_system::RenderSystem::update(
 
   _graphic.display();
 
-  // Gérer les événements via IGraphic
   _graphic.handleEvents();
 }
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::RenderSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, IGraphic &graphic) {
+  return new ECS_system::RenderSystem(componentManager, entityManager, graphic);
 }

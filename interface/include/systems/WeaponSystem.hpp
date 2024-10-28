@@ -8,7 +8,6 @@
 #pragma once
 
 #include <r-type/ASystem.hpp>
-
 #include <components/CooldownComponent.hpp>
 #include <components/DamageComponent.hpp>
 #include <components/HitBoxComponent.hpp>
@@ -29,13 +28,15 @@ namespace ECS_system {
 class WeaponSystem : virtual public ASystem {
 public:
   WeaponSystem(component::ComponentManager &componentManager,
-               entity::EntityManager &entityManager);
+               entity::EntityManager &entityManager,
+               IGraphic &graphic);
   ~WeaponSystem();
 
-  void
-  update(float deltaTime,
-         std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived) override;
+  void update(float deltaTime,
+              std::vector<std::shared_ptr<entity::IEntity>> entities,
+              std::vector<std::pair<std::string, size_t>> &msgToSend,
+              std::vector<std::pair<std::string, size_t>> &msgReceived) override;
+
   void initialize() override {}
   void handleComponents() override {}
 
@@ -43,5 +44,7 @@ private:
   void createProjectile(uint32_t parentID, std::string texturePath,
                         std::pair<float, float> velocity,
                         std::pair<float, float> scale, int damage);
+
 };
+
 } // namespace ECS_system

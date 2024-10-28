@@ -15,7 +15,7 @@ namespace ECS_system {
 class HealthSystem : virtual public ASystem {
 public:
   HealthSystem(component::ComponentManager &componentManager,
-               entity::EntityManager &entityManager);
+               entity::EntityManager &entityManager, IGraphic &graphic);
   ~HealthSystem();
 
   void

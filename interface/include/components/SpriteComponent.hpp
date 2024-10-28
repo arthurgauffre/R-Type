@@ -9,7 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
-#include <IGraphic.hpp>
+#include <r-type/AGraphic.hpp>
 
 namespace component {
 class SpriteComponent : public AComponent {

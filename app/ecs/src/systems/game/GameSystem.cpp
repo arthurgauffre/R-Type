@@ -15,8 +15,8 @@
  */
 ECS_system::GameSystem::GameSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager) {}
+    entity::EntityManager &entityManager, IGraphic &graphic)
+    : ASystem(componentManager, entityManager, graphic) {}
 
 /**
  * @brief Destructor for the GameSystem class.
@@ -70,6 +70,6 @@ void ECS_system::GameSystem::update(
 
 extern "C" ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::GameSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, IGraphic &graphic) {
+  return new ECS_system::GameSystem(componentManager, entityManager, graphic);
 }

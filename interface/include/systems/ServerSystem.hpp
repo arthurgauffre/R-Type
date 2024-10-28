@@ -30,11 +30,11 @@ namespace rtype
     {
     public:
       ServerSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager)
+                   entity::EntityManager &entityManager, IGraphic &graphic)
           : rtype::network::IServer<NetworkMessages>(), ECS_system::ASystem(
                                                             componentManager,
                                                             entityManager),
-            _componentManager(componentManager), _entityManager(entityManager), asioSocket(asioContext,
+            _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic), asioSocket(asioContext,
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {
         Start();
@@ -823,7 +823,9 @@ namespace rtype
     private:
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
+      IGraphic &_graphic;
       sf::Clock frequencyClock;
+
     };
   } // namespace network
 } // namespace rtype

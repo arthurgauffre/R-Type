@@ -16,6 +16,7 @@
 
 #include <r-type/ASystem.hpp>
 #include <r-type/IGraphic.hpp>
+#include <r-type/AGraphic.hpp>
 
 namespace ECS_system {
 class RenderSystem : virtual public ASystem {
@@ -37,8 +38,9 @@ public:
               std::vector<std::shared_ptr<entity::IEntity>> entities,
               std::vector<std::pair<std::string, size_t>> &msgToSend,
               std::vector<std::pair<std::string, size_t>> &msgReceived) override;
+  void initialize() override {}
+  void handleComponents() override {}
 
 private:
-  IGraphic &_graphic;
 };
 } // namespace ECS_system

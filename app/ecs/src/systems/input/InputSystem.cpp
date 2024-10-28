@@ -56,6 +56,6 @@ void ECS_system::InputSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::InputSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, IGraphic &graphic) {
+  return new ECS_system::InputSystem(componentManager, entityManager, graphic);
 }

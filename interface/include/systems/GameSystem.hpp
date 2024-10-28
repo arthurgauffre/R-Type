@@ -16,7 +16,7 @@ namespace ECS_system {
 class GameSystem : virtual public ASystem {
 public:
   GameSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager);
+             entity::EntityManager &entityManager, IGraphic &graphic);
   ~GameSystem();
 
   void update(float deltaTime,

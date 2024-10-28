@@ -9,7 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
-#include <IGraphic.hpp>
+#include <r-type/AGraphic.hpp>
 
 namespace component {
 class TextureComponent : public AComponent {
@@ -42,4 +42,4 @@ private:
   IGraphic& _graphic;
   std::string _path;
 };
-} 
+}
