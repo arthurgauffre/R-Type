@@ -29,8 +29,6 @@ public:
   virtual ~AGraphic() {}
   virtual bool loadTexture(uint32_t textureId, const std::string& path) override = 0;
   virtual void setPosition(uint32_t spriteId, float x, float y) override = 0;
-  //virtual void update(float deltaTime) override = 0;
-  virtual int setSprite() override = 0;
   virtual void handleEvents() override = 0;
   virtual bool isWindowOpen() const override = 0;
   virtual void clear ()  override = 0 ;
@@ -39,7 +37,6 @@ public:
   virtual void setRotation(uint32_t SpriteId, float rotation)  override = 0;
   virtual void setScale(uint32_t SpriteId, float s1, float s2)  override = 0;
   virtual void updateTexture(uint32_t textureId, const std::string& path) = 0;
-  virtual void updateSprite(uint32_t spriteId, float x, float y) = 0;
 
 };
 

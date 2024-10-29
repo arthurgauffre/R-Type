@@ -8,12 +8,12 @@
 #ifndef SFMLGRAPHIC_HPP_
 #define SFMLGRAPHIC_HPP_
 
-#include "AGraphic.hpp"
+#include <r-type/IGraphic.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
-#include <IGraphic.hpp>
-#include <AGraphic.hpp>
+
+
 
 class SfmlGraphic : public AGraphic {
     public:
@@ -34,7 +34,6 @@ class SfmlGraphic : public AGraphic {
         uint32_t createSprite() override;
         void setTexture(uint32_t spriteId, uint32_t textureId) override;
         void setPosition(uint32_t spriteId, float x, float y) override;
-
         std::pair<float, float> getTextureSize(uint32_t textureId) const override;
         bool isWindowOpen() const override;
 
@@ -44,9 +43,7 @@ class SfmlGraphic : public AGraphic {
         std::map<uint32_t, sf::Sprite> sfSprites;
         std::map<uint32_t, sf::SoundBuffer> sfSoundBuffers;
         std::map<uint32_t, sf::Sound> sfSounds;
-        sf::Event event;
-
-    
+        sf::Event event;  
 };
 
 #endif /* !SFMLGRAPHIC_HPP_ */
