@@ -10,6 +10,10 @@
 
 ECS_system::SystemManager::SystemManager() {}
 
+ECS_system::SystemManager::~SystemManager() {
+  _systems.clear();
+}
+
 /**
  * @brief Updates all systems managed by the SystemManager.
  *
@@ -22,7 +26,7 @@ ECS_system::SystemManager::SystemManager() {}
  */
 void ECS_system::SystemManager::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
   for (auto &system : _systems) {
     system->update(deltaTime, entities,
                                msgToSend, msgReceived, entityMutex); // Each system updates itself because

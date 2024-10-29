@@ -6,7 +6,21 @@
 */
 
 #include <CoreModule.hpp>
-// #include <Error.hpp>
+#include <signal.h>
+#include <atomic>
+#include <iostream>
+
+std::atomic<bool> keepRunning(true);
+
+/**
+ * @brief signal handler for SIGINT
+ *
+ * @param signum
+ */
+void signalHandler(int signum) {
+    std::cout << "\nInterrupt signal (" << signum << ") received. Stopping...\n";
+    keepRunning = false; // Set flag to false to stop the loop
+}
 
 /**
  * @brief Construct a new rtype::Core Module::Core Module object
@@ -85,7 +99,14 @@ void rtype::CoreModule::update() {
 }
 
 void rtype::CoreModule::run() {
+  signal(SIGINT, signalHandler);
   while (1) {
     this->update();
+    if (!keepRunning) {
+      std::cout << "Exiting..." << std::endl;
+      msgToSend.push_back(std::make_pair("exit", 0));
+      break;
+    }
   }
+  this->update();
 }

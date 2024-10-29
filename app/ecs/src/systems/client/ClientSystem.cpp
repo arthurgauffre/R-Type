@@ -52,6 +52,8 @@ namespace rtype
         return NetworkMessages::moveRight;
       if (action == "Shoot")
         return NetworkMessages::shoot;
+      if (action == "exit")
+        return NetworkMessages::ClientDisconnection;
       return NetworkMessages::none;
     }
 
@@ -211,7 +213,7 @@ namespace rtype
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::acknowledgementMesage;
         Send(message);
-        std::cout << "Create component ack message sent" << std::endl;
+        // std::cout << "Create component ack message sent" << std::endl;
 
       }
       break;
@@ -364,8 +366,12 @@ namespace rtype
       {
         std::cout << "Input component created" << std::endl;
         EntityId id;
+        InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        _componentManager.addComponent<component::InputComponent>(id.id);
+        // _componentManager.addComponent<component::InputComponent>(id.id);
+        std::memcpy(&input, msg.body.data() + sizeof(EntityId),
+                    sizeof(InputComponent));
+        _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
 
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::acknowledgementMesage;
@@ -580,7 +586,7 @@ namespace rtype
 
     void ClientSystem::update(float deltaTime,
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
-                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
+                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
     {
       _entityMutex = &entityMutex;
       std::lock_guard<std::mutex> lock(*_entityMutex);
@@ -620,9 +626,9 @@ namespace rtype
           message.header.id = action;
           std::cout << "Action sent : ";
           if (action == NetworkMessages::moveUp)
-            std::cout << "moveUp";
+            std::cout << "moveUp" << id.id << std::endl;
           else if (action == NetworkMessages::moveDown)
-            std::cout << "moveDown";
+            std::cout << "moveDown" << id.id << std::endl;
           else if (action == NetworkMessages::moveLeft)
             std::cout << "moveLeft";
           else if (action == NetworkMessages::moveRight)

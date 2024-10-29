@@ -39,6 +39,8 @@ namespace rtype
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {
         Start();
+        for (int i = 0; i < 4; i++)
+          _playerConnected.push_back(std::make_pair(false, -1));
       }
 
       ~ServerSystem() { Stop(); };
@@ -50,7 +52,7 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
@@ -74,7 +76,7 @@ namespace rtype
         {
         case NetworkMessages::ClientConnection:
         {
-          std::cout << "Client connected : " << client->GetId() << std::endl;
+          std::cout << "Client Connected : " << client->GetId() << std::endl;
         }
         break;
         case NetworkMessages::MessageAll:
@@ -99,7 +101,7 @@ namespace rtype
           // status = ServerStatus::SERVER_RECEIVING;
           if (!queueOfAckMessages.empty()) {
             queueOfAckMessages.pop_back();
-            std::cout << "Acknowledgement message received" << std::endl;
+            // std::cout << "Acknowledgement message received" << std::endl;
           }
 
         }
@@ -115,17 +117,33 @@ namespace rtype
           std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
           rtype::network::Message<NetworkMessages> &message)
       {
+        // print witch client send the message
+        // std::cout << "Client " << client->GetId() << " send a message" << std::endl;
         // std::cout << "Handling input message" << std::endl;
         switch (message.header.id)
         {
+        case NetworkMessages::ClientDisconnection: {
+          int numPlayer = 0;
+          for (int i = 0; i < 4; i++) {
+            if (_playerConnected[i].second == client->GetId())
+            {
+              numPlayer = i;
+              _playerConnected[i].first = false;
+              _playerConnected[i].second = -1;
+              break;
+            }
+          }
+          _msgReceived.emplace_back(std::make_pair("clientDisconnection", std::make_pair(numPlayer, client->GetId())));
+          // deqConnections.erase(std::remove(deqConnections.begin(), deqConnections.end(), client), deqConnections.end());
+        }
+        break;
         case NetworkMessages::moveUp:
         {
           status = ServerStatus::SERVER_RECEIVING;
 
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveUp", entity.id));
-          std::cout << "Move up" << std::endl;
+          _msgReceived.emplace_back(std::make_pair("moveUp", std::make_pair(entity.id, client->GetId())));
         }
         break;
         case NetworkMessages::moveDown:
@@ -134,8 +152,7 @@ namespace rtype
 
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveDown", entity.id));
-          std::cout << "Move down" << std::endl;
+          _msgReceived.emplace_back(std::make_pair("moveDown", std::make_pair(entity.id, client->GetId())));
         }
         break;
         case NetworkMessages::moveLeft:
@@ -144,8 +161,7 @@ namespace rtype
 
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveLeft", entity.id));
-          std::cout << "Move left" << std::endl;
+          _msgReceived.emplace_back(std::make_pair("moveLeft", std::make_pair(entity.id, client->GetId())));
         }
         break;
         case NetworkMessages::moveRight:
@@ -154,8 +170,7 @@ namespace rtype
 
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveRight", entity.id));
-          std::cout << "Move right" << std::endl;
+          _msgReceived.emplace_back(std::make_pair("moveRight", std::make_pair(entity.id, client->GetId())));
         }
         break;
         case NetworkMessages::shoot:
@@ -164,8 +179,7 @@ namespace rtype
 
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("shoot", entity.id));
-          std::cout << "Shoot" << std::endl;
+          _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entity.id, client->GetId())));
         }
         break;
         default:
@@ -226,8 +240,17 @@ namespace rtype
                                                                actualId++);
               std::cout << "[" << deqConnections.back()->GetId()
                         << "] Connection approved" << std::endl;
-              sendAllEntitiesToClient(deqConnections.back());
-              _msgReceived.emplace_back(std::make_pair("clientConnection", deqConnections.back()->GetId()));
+              int numPlayer = 0;
+              for (int i = 0; i < 4; i++) {
+                if (_playerConnected[i].first == true)
+                  numPlayer++;
+                else
+                  break;
+              }
+              _playerConnected[numPlayer].first = true;
+              _playerConnected[numPlayer].second = deqConnections.back()->GetId();
+              sendAllEntitiesToClient(deqConnections.back(), deqConnections.back()->GetId());
+              _msgReceived.emplace_back(std::make_pair("clientConnection", std::make_pair(numPlayer, deqConnections.back()->GetId())));
             } else {
               std::cout << "Connection denied" << std::endl;
             }
@@ -357,43 +380,49 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            if (component->getCommunication() == component::ComponentCommunication::CREATE)
-            {
-              std::cout << "ON CREATE" << std::endl;
-
-              queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
-
-
-              component->setCommunication(component::ComponentCommunication::STANDBY);
-              std::cout << "SENDING INPUT MSG TO ALL CLIENTS" << std::endl;
-              SendMessageToAllClients(networkMessageFactory.createInputMsg(entity->getID()), clientToIgnore);
-            }
-            else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
-            {
-              if (queueOfAckMessages.empty()) {
-                component->setCommunication(component::ComponentCommunication::NONE);
-                for (auto &bind : component->getKeyBindings())
-                {
-                  BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
-                  SendMessageToAllClients(networkMessageFactory.updateInputMsg(entity->getID(), input), clientToIgnore);
-                }
-                return;
-              }
-            }
-            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
-            {
-              component->setCommunication(component::ComponentCommunication::NONE);
-              for (auto &bind : component->getKeyBindings())
+            for (int i = 0; i < deqConnections.size(); i++) {
+              if (deqConnections[i]->GetId() == component->getNumClient())
               {
-                BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
-                SendMessageToAllClients(networkMessageFactory.updateInputMsg(entity->getID(), input), clientToIgnore);
+
+                if (component->getCommunication() == component::ComponentCommunication::CREATE)
+                {
+                  std::cout << "ON CREATE" << std::endl;
+
+                  queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
+
+
+                  component->setCommunication(component::ComponentCommunication::STANDBY);
+                  std::cout << "SENDING INPUT MSG TO ALL CLIENTS" << std::endl;
+                  SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), deqConnections[i]);
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
+                {
+                  if (queueOfAckMessages.empty()) {
+                    component->setCommunication(component::ComponentCommunication::NONE);
+                    for (auto &bind : component->getKeyBindings())
+                    {
+                      BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                      SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
+                    }
+                    return;
+                  }
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+                {
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  for (auto &bind : component->getKeyBindings())
+                  {
+                    BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                    SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
+                  }
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+                {
+                  status = ServerStatus::SERVER_RECEIVING;
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  SendMessageToClient(networkMessageFactory.deleteInputMsg(entity->getID()), deqConnections[i]);
+                }
               }
-            }
-            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
-            {
-              status = ServerStatus::SERVER_RECEIVING;
-              component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.deleteInputMsg(entity->getID()), clientToIgnore);
             }
           }
           if (_componentManager.getComponent<component::TypeComponent>(entity->getID()))
@@ -459,91 +488,6 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteAIMsg(entity->getID()), clientToIgnore);
             }
           }
-          // if (_componentManager.getComponent<component::WeaponComponent>(entity->getID()))
-          // {
-          //   component::WeaponComponent *component =
-          //       _componentManager.getComponent<component::WeaponComponent>(entity->getID());
-          //   if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //     component->setCommunication(component::ComponentCommunication::NONE);
-          //     SendMessageToAllClients(networkMessageFactory.createWeaponMsg(entity->getID(), component->getWeaponID(), component->getIsFiring(), component->getFireRate()), clientToIgnore);
-          //   } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //     component->setCommunication(component::ComponentCommunication::NONE);
-          //     SendMessageToAllClients(networkMessageFactory.updateWeaponMsg(entity->getID(), component->getWeaponID(), component->getIsFiring(), component->getFireRate()), clientToIgnore);
-          //   } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //     component->setCommunication(component::ComponentCommunication::NONE);
-          //     SendMessageToAllClients(networkMessageFactory.deleteWeaponMsg(entity->getID()), clientToIgnore);
-          //   }
-          // }
-          //   if (_componentManager.getComponent<component::ScrollComponent>(entity->getID()))
-          //   {
-          //     component::ScrollComponent *component =
-          //         _componentManager.getComponent<component::ScrollComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createScrollMsg(entity->getID(), component->getScrollSpeed().x, component->getScrollSpeed().y), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateScrollMsg(entity->getID(), component->getScrollSpeed().x, component->getScrollSpeed().y), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteScrollMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
-          //   if (_componentManager.getComponent<component::HealthComponent>(entity->getID()))
-          //   {
-          //     component::HealthComponent *component =
-          //         _componentManager.getComponent<component::HealthComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createHealthMsg(entity->getID(), component->getHealth()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateHealthMsg(entity->getID(), component->getHealth()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteHealthMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
-          //   if (_componentManager.getComponent<component::DamageComponent>(entity->getID()))
-          //   {
-          //     component::DamageComponent *component =
-          //         _componentManager.getComponent<component::DamageComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createDamageMsg(entity->getID(), component->getDamage()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateDamageMsg(entity->getID(), component->getDamage()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteDamageMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
-          //   if (_componentManager.getComponent<component::HitBoxComponent>(entity->getID()))
-          //   {
-          //     component::HitBoxComponent *component =
-          //         _componentManager.getComponent<component::HitBoxComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createHitboxMsg(entity->getID(), component->getHeight(), component->getWidth()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateHitboxMsg(entity->getID(), component->getHeight(), component->getWidth()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteHitboxMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
-          //   // if
-          //   // (_coreModule.get()->getComponentManager()->getComponent<component::MusicComponent>(entity->getID()))
-          //   //   SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(),
-          //   //   dynamic_cast<component::MusicComponent
-          //   //   *>(component.get())->musicPath), client);
-          //   // if
-          //   // (_coreModule.get()->getComponentManager()->getComponent<component::SoundComponent>(entity->getID()))
-          //   //   SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(),
-          //   //   dynamic_cast<component::SoundComponent
-          //   //   *>(component.get())->soundPath), client);
-          //   if (_componentManager.getComponent<component::ParentComponent>(entity->getID()))
-          //   {
-          //     component::ParentComponent *component =
-          //         _componentManager.getComponent<component::ParentComponent>(entity->getID());
-          //     if (component->getCommunication() == component::ComponentCommunication::CREATE) {
-          //       SendMessageToAllClients(networkMessageFactory.createParentMsg(entity->getID(), component->getParentID()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::UPDATE) {
-          //       SendMessageToAllClients(networkMessageFactory.updateParentMsg(entity->getID(), component->getParentID()), clientToIgnore);
-          //     } else if (component->getCommunication() == component::ComponentCommunication::DELETE) {
-          //       SendMessageToAllClients(networkMessageFactory.deleteParentMsg(entity->getID()), clientToIgnore);
-          //     }
-          //   }
         }
         if (transform)
         {
@@ -551,7 +495,7 @@ namespace rtype
         }
       }
 
-      void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client)
+      void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client, int numClient)
       {
         if (client->IsConnected() == false)
         {
@@ -632,16 +576,6 @@ namespace rtype
                     entity->getID(), component->getHeight(), component->getWidth()),
                 client);
           }
-          // if
-          // (_coreModule.get()->getComponentManager()->getComponent<component::MusicComponent>(entity->getID()))
-          //   SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(),
-          //   dynamic_cast<component::MusicComponent
-          //   *>(component.get())->musicPath), client);
-          // if
-          // (_coreModule.get()->getComponentManager()->getComponent<component::SoundComponent>(entity->getID()))
-          //   SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(),
-          //   dynamic_cast<component::SoundComponent
-          //   *>(component.get())->soundPath), client);
           if (_componentManager.getComponent<component::ParentComponent>(entity->getID()))
           {
             component::ParentComponent *component =
@@ -654,11 +588,14 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID()), client);
-            for (auto &bind : component->getKeyBindings())
+            if (numClient == component->getNumClient())
             {
-              BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
-              SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), client);
+              SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
+              for (auto &bind : component->getKeyBindings())
+              {
+                BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), client);
+              }
             }
           }
           if (_componentManager.getComponent<component::TypeComponent>(entity->getID()))
@@ -903,9 +840,10 @@ namespace rtype
       std::vector<ServerStatus> queueOfAckMessages;
       // int nbOfAckMessages = 0;
 
-      std::vector<std::pair<std::string, size_t>> _msgReceived;
+      std::vector<std::pair<std::string, std::pair<size_t, size_t>>> _msgReceived;
 
     private:
+      std::vector<std::pair<bool, int>> _playerConnected;
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
       sf::Clock frequencyClock;

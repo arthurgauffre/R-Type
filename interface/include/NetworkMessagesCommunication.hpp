@@ -16,6 +16,7 @@ enum class NetworkMessages : uint32_t {
   MessageAll,
   ServerMessage,
   ClientConnection,
+  ClientDisconnection,
   createEntity,
   deleteEntity,
   updateEntity,
@@ -209,6 +210,10 @@ struct SizeComponent {
 struct AIComponent {
   AIType type;
   float elapsedTime;
+};
+
+struct InputComponent {
+  int numClient;
 };
 
 struct BindKey {

@@ -43,7 +43,7 @@ ECS_system::GameSystem::~GameSystem() {}
  * @throws rtype::GameWon If there are no enemies left in the game.
  */
 void ECS_system::GameSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
   int _playerCount = 0;
   int _enemyCount = 0;
 
@@ -62,13 +62,11 @@ void ECS_system::GameSystem::update(
       _enemyCount++;
   }
 
-  std::cout << "Player count: " << _playerCount << std::endl;
-
   if (_playerCount == 0)
-    throw rtype::GameLoosed("Game Over");
+    std::cout << "You Loose" << std::endl;
 
   if (_enemyCount == 0)
-    throw rtype::GameWon("You Win");
+    std::cout << "You Win" << std::endl;
 }
 
 extern "C" ECS_system::ISystem *

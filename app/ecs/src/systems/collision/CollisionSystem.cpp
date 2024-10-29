@@ -77,29 +77,48 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
 
   if (type1 == component::Type::PLAYER_PROJECTILE && type2 == component::Type::ENEMY)
   {
-    _componentManager
-        .getComponent<component::HealthComponent>(entity2->getID())
-        ->setHealth(0);
+    int damage = _componentManager.getComponent<component::DamageComponent>(entity1->getID())->getDamage();
+    if (!damage)
+      damage = 10;
+    component::HealthComponent *health = _componentManager
+                                             .getComponent<component::HealthComponent>(entity2->getID());
+    health->setDamageIncoming(damage);
+
+    entity1->setCommunication(entity::EntityCommunication::DELETE);
   }
   else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER_PROJECTILE)
   {
-    _componentManager
-        .getComponent<component::HealthComponent>(entity1->getID())
-        ->setHealth(0);
+    int damage = _componentManager.getComponent<component::DamageComponent>(entity2->getID())->getDamage();
+    if (!damage)
+      damage = 10;
+    component::HealthComponent *health = _componentManager
+                                             .getComponent<component::HealthComponent>(entity1->getID());
+    health->setDamageIncoming(damage);
+
+    entity2->setCommunication(entity::EntityCommunication::DELETE);
   }
 
   if (type1 == component::Type::ENEMY_PROJECTILE && type2 == component::Type::PLAYER)
   {
-    std::cout << "Collision between " << std::endl;
-    _componentManager
-        .getComponent<component::HealthComponent>(entity2->getID())
-        ->setHealth(0);
+    int damage = _componentManager.getComponent<component::DamageComponent>(entity1->getID())->getDamage();
+    if (!damage)
+      damage = 10;
+    component::HealthComponent *health = _componentManager
+                                             .getComponent<component::HealthComponent>(entity2->getID());
+    health->setDamageIncoming(damage);
+
+    entity1->setCommunication(entity::EntityCommunication::DELETE);
   }
   else if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY_PROJECTILE)
   {
-    _componentManager
-        .getComponent<component::HealthComponent>(entity1->getID())
-        ->setHealth(0);
+    int damage = _componentManager.getComponent<component::DamageComponent>(entity2->getID())->getDamage();
+    if (!damage)
+      damage = 10;
+    component::HealthComponent *health = _componentManager
+                                             .getComponent<component::HealthComponent>(entity1->getID());
+    health->setDamageIncoming(damage);
+
+    entity2->setCommunication(entity::EntityCommunication::DELETE);
   }
 }
 
@@ -117,7 +136,7 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
  */
 void ECS_system::CollisionSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
 {
   for (auto &entity : entities)
   {
