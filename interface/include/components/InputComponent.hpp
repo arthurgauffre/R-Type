@@ -16,7 +16,7 @@
 namespace component {
 class InputComponent : public AComponent {
 public:
-  InputComponent(uint32_t entityID) : AComponent(entityID){};
+  InputComponent(uint32_t entityID, int numClient) : AComponent(entityID), _numClient(numClient) {};
 
   /**
    * @brief Destroy the InputComponent object.
@@ -34,7 +34,7 @@ public:
    * @param key The key from the keyboard to bind to this action.
    */
   void bindAction(const std::string &action, sf::Keyboard::Key key) {
-    // std::cout << "Binding action " << action << " to key " << key << std::endl;
+    std::cout << "Binding action " << action << " to key " << key << std::endl;
     _keyBindings[action] = key;
   }
 
@@ -44,6 +44,8 @@ public:
 
   std::unordered_map<std::string, sf::Keyboard::Key> getKeyBindings() const;
 
+  int getNumClient() const { return _numClient; }
+
 private:
   /**
    * @brief Stores key bindings for various actions.
@@ -52,5 +54,7 @@ private:
    * value is the key from the keyboard associated with that action.
    */
   std::unordered_map<std::string, sf::Keyboard::Key> _keyBindings;
+
+  int _numClient = 0;
 };
 } // namespace component

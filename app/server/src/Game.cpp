@@ -30,6 +30,8 @@ entity::IEntity *Game::createWeapon(uint32_t parentID,
         weapon->getID(), parentID);
     _coreModule->getComponentManager()->addComponent<component::CooldownComponent>(
         weapon->getID(), cooldown);
+    _coreModule->getComponentManager()->addComponent<component::DamageComponent>(
+        weapon->getID(), damage);
 
     return weapon;
 }
@@ -75,7 +77,7 @@ entity::IEntity *Game::createBackground(std::string texturePath,
     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(
         background2->getID(), component::Type::BACKGROUND);
     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
-        background2->getID(), std::pair<float, float>(size.first, 0));
+        background2->getID(), std::pair<float, float>(size.first - 20, 0));
     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
         background2->getID(), speed, speed);
     _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
@@ -106,11 +108,11 @@ entity::IEntity *
 Game::createPlayer(uint32_t entityID, std::string texturePath,
                    std::pair<float, float> position,
                    std::pair<float, float> velocity,
-                   std::pair<float, float> scale, int health)
+                   std::pair<float, float> scale, int health, int numClient)
 {
     auto player = _coreModule->getEntityManager()->createEntity(entityID);
 
-    auto weapon = createWeapon(entityID, component::Type::WEAPON, 15, 0.5);
+    auto weapon = createWeapon(entityID, component::Type::WEAPON, 50, 0.5);
 
     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), false, 500);
@@ -122,7 +124,7 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath);
     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
-        entityID);
+        entityID, numClient);
     _coreModule->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
         ->bindAction("MoveLeft", sf::Keyboard::Q);
@@ -158,7 +160,7 @@ entity::IEntity *Game::createEnemy(
 {
     auto enemy = _coreModule->getEntityManager()->createEntity(entityID);
 
-    auto weapon = createWeapon(entityID, component::Type::WEAPON, 15, 2);
+    auto weapon = createWeapon(entityID, component::Type::WEAPON, damage, 2);
 
     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), true, -500);
@@ -175,13 +177,11 @@ entity::IEntity *Game::createEnemy(
 
     _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
         entityID, health);
-    _coreModule->getComponentManager()->addComponent<component::DamageComponent>(
-        entityID, damage);
     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
         entityID, texture->getTexture().getSize().x * scale.first,
         texture->getTexture().getSize().y * scale.second);
     _coreModule->getComponentManager()->addComponent<component::AIComponent>(
-        entityID, component::AIType::LINEAR);
+        entityID, component::AIType::SINUSOIDAL);
 
     return enemy;
 }
@@ -222,8 +222,8 @@ void Game::init()
     this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
                       "app/assets/sprites/enemy.png",
                       std::pair<float, float>(1800.0f, 0.0f),
-                      std::pair<float, float>(0.0f, 0.0f),
-                      std::pair<float, float>(0.2f, 0.2f), 1, 100);
+                      std::pair<float, float>(-200.0f, 0.0f),
+                      std::pair<float, float>(0.2f, 0.2f), 100, 100);
 
     component::ComponentManager &componentManager = *_coreModule->getComponentManager();
 
@@ -241,29 +241,51 @@ void Game::init()
                                                "ai");
     _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
                                                "collision");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                                  "health");
+    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+    //                                            "health");
+    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+    //                                            "game");
+    this->_spawnInterval = 5;
+    this->_waveNumber = 10;
 }
 
-void Game::handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived)
+void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
 {
     std::string msg = msgReceived.front().first;
-    size_t id = msgReceived.front().second;
+    size_t id = msgReceived.front().second.first;
+    int numClient = msgReceived.front().second.second;
     msgReceived.erase(msgReceived.begin());
     if (msg == "clientConnection")
     {
         entity::IEntity *entity = createPlayer(_coreModule->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
                                                std::pair<float, float>(100.0f, 100.0f),
                                                std::pair<float, float>(500.0f, 500.0f),
-                                               std::pair<float, float>(0.25f, 0.25f), 1);
+                                               std::pair<float, float>(0.10f, 0.10f), 100, numClient);
+        _players[numClient] = entity;
         std::cout << "Client connected : " << id << std::endl;
+    }
+    if (msg == "clientDisconnection")
+    {
+        std::cout << "Client disconnected : " << numClient << std::endl;
+        if (_players.find(numClient) != _players.end())
+        {
+            _players[numClient]->setCommunication(entity::EntityCommunication::DELETE);
+            _players.erase(numClient);
+        }
+    }
+    // std::cout << "numClient: " << numClient << std::endl;
+    if (_players.find(numClient) == _players.end()) {
+        std::cout << "Player not found" << std::endl;
+        return;
+    }
+    if (_players[numClient]->getID() != id) {
+        std::cout << "Player ID not matching" << std::endl;
+        return;
     }
     if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")
         moveEntity(msg, id);
     if (msg == "shoot")
-    {
         shootEntity(id);
-    }
 }
 
 void Game::shootEntity(size_t id)
@@ -316,12 +338,33 @@ void Game::resetInput()
     }
 }
 
+float getRandomPosition()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0, 1080);
+    return dis(gen);
+}
+
 void Game::run()
 {
     inputClock.restart();
+    waveClock.restart();
     while (1)
     {
         _coreModule->update();
+        if (_waveNumber != 0 && waveClock.getElapsedTime().asSeconds() > _spawnInterval)
+        {
+            float randomPosition = getRandomPosition();
+
+            this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+                              "app/assets/sprites/enemy.png",
+                              std::pair<float, float>(1920.0f, randomPosition),
+                              std::pair<float, float>(-200.0f, 0.0f),
+                              std::pair<float, float>(0.2f, 0.2f), 100, 100);
+            _waveNumber--;
+            waveClock.restart();
+        }
         if (!_coreModule->msgReceived.empty())
         {
             // std::cout << "msgReceivedSize: " << _coreModule->msgReceived.size() << std::endl;

@@ -52,6 +52,8 @@ namespace rtype
         return NetworkMessages::moveRight;
       if (action == "Shoot")
         return NetworkMessages::shoot;
+      if (action == "exit")
+        return NetworkMessages::ClientDisconnection;
       return NetworkMessages::none;
     }
 
@@ -211,10 +213,10 @@ namespace rtype
       break;
       case NetworkMessages::deleteEntity:
       {
-        std::cout << "Entity destroyed" << std::endl;
+        // std::cout << "Entity destroyed" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
-        std::cout << "Entity id: " << entity.id << std::endl;
+        // std::cout << "Entity id: " << entity.id << std::endl;
         _componentManager.removeAllComponents(entity.id);
         _entityManager.removeEntity(entity.id);
       }
@@ -353,15 +355,18 @@ namespace rtype
       // break;
       case NetworkMessages::createInput:
       {
-        // std::cout << "Input component created" << std::endl;
+        std::cout << "Input component created" << std::endl;
         EntityId id;
+        InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        _componentManager.addComponent<component::InputComponent>(id.id);
+        std::memcpy(&input, msg.body.data() + sizeof(EntityId),
+                    sizeof(InputComponent));
+        _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
       }
       break;
       case NetworkMessages::updateInput:
       {
-        // std::cout << "Input component updated" << std::endl;
+        std::cout << "Input component updated" << std::endl;
         BindKey input;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -566,7 +571,7 @@ namespace rtype
 
     void ClientSystem::update(float deltaTime,
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
-                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
+                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
     {
       _entityMutex = &entityMutex;
       std::lock_guard<std::mutex> lock(*_entityMutex);

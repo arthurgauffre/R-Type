@@ -5,9 +5,6 @@
 ** ClientSystem
 */
 
-#ifndef CLIENT_HPP_
-#define CLIENT_HPP_
-
 #pragma once
 
 #include <r-type/AClient.hpp>
@@ -85,7 +82,7 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex) override;
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) override;
 
     private:
       uint8_t entityID = 0;
@@ -102,5 +99,3 @@ namespace rtype
     };
   } // namespace network
 } // namespace rtype
-
-#endif /* !CLIENT_HPP_ */

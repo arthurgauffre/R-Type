@@ -57,14 +57,14 @@ public:
   bool getActive() const override;
 
   /**
-   * @brief 
-   * 
+   * @brief
+   *
    */
   EntityCommunication getCommunication() const override;
 
   /**
-   * @brief 
-   * 
+   * @brief
+   *
    */
   void setCommunication(EntityCommunication communication) override;
 

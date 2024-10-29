@@ -29,7 +29,7 @@ public:
           asio::ip::udp::endpoint(asio::ip::address::from_string(host), port);
       asio::ip::udp::socket socket(
           asioContext, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0));
-      connection = std::make_unique<NetworkConnection<T>>(
+      connection = std::make_shared<NetworkConnection<T>>(
           NetworkConnection<T>::actualOwner::CLIENT, asioContext,
           std::move(socket), std::move(remoteEndpoint),
           queueOfincomingMessages);
@@ -50,7 +50,7 @@ public:
     asioContext.stop();
     if (contextThread.joinable())
       contextThread.join();
-    connection.release();
+    connection.reset();
   }
 
   bool IsConnected() {
@@ -76,7 +76,7 @@ public:
 protected:
   asio::io_context asioContext;
   std::thread contextThread;
-  std::unique_ptr<rtype::network::NetworkConnection<T>> connection;
+  std::shared_ptr<rtype::network::NetworkConnection<T>> connection;
 
 private:
   ServerQueue<OwnedMessage<T>> queueOfincomingMessages;

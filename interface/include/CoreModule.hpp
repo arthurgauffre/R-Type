@@ -68,7 +68,7 @@ public:
   std::shared_ptr<component::ComponentManager> getComponentManager() const;
   std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
-  std::vector<std::pair<std::string, size_t>> msgReceived;
+  std::vector<std::pair<std::string, std::pair<size_t, size_t>>> msgReceived;
   std::vector<std::pair<std::string, size_t>> msgToSend;
   sf::Clock clock;
   std::mutex _entityMutex;
@@ -115,15 +115,16 @@ public:
                   << " Error: " << GetLastError() << std::endl;
 #else
         std::cerr << dlerror()
-                  << std::endl; // Print the dynamic loader error message
+                  << std::endl;
 #endif
-        exit(1); // Exit if symbol resolution fails
+        exit(1);
       }
 
       FuncPtr createFunc = reinterpret_cast<FuncPtr>(
-          sym); // Cast to correct function pointer type
-      return createFunc(
-          std::forward<Args>(args)...); // Call function and return the pointer
+          sym);
+      ECS_system::ISystem *system = createFunc(
+          std::forward<Args>(args)...);
+      return system;
     }
 
     void DLunloader() {

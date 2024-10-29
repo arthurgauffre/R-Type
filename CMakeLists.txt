@@ -13,6 +13,7 @@ set(CMAKE_BUILD_TYPE Debug) # set build type to Debug
 
 if (WIN32)
     # Windows-specific settings
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive")
     # Set the vcpkg toolchain file first
     set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
     # Add the install of the SFML library

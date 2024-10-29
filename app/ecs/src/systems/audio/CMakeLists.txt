@@ -1,3 +1,5 @@
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 add_library(r-type_audio_system SHARED
     AudioSystem.cpp
     ../../components/music/MusicComponent.cpp

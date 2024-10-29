@@ -1,3 +1,5 @@
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 add_library(r-type_health_system SHARED
     HealthSystem.cpp
     ../../components/health/HealthComponent.cpp
