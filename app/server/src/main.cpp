@@ -13,6 +13,7 @@ int main(void)
 {
   std::shared_ptr<rtype::CoreModule> coreModule =
       std::make_shared<rtype::CoreModule>();
+  
   Game game(coreModule);
   game.init();
   game.run();

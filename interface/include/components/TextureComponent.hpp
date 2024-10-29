@@ -32,9 +32,15 @@ public:
   uint32_t getTextureId() const { return _textureId; }
   std::string getPath() const { return _path; }
 
+
   void update(const std::string& path) {
       _path = path;
       _graphic.loadTexture(_textureId, path);
+  }
+
+  std::pair<float, float> getTextureSize()
+  {
+    return _graphic.getTextureSize(_textureId);
   }
 
 private:

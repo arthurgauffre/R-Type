@@ -9,10 +9,11 @@
 
 #include <CoreModule.hpp>
 
+
 class Game
 {
 public:
-    Game(std::shared_ptr<rtype::CoreModule> coreModule);
+    Game(std::shared_ptr<rtype::CoreModule> coreModule, IGraphic& graphic);
     ~Game();
 
     entity::IEntity *createBackground(std::string texturePath,
@@ -41,4 +42,5 @@ protected:
 private:
     std::shared_ptr<rtype::CoreModule> _coreModule;
     sf::Clock inputClock;
+    IGraphic &_graphic;
 };

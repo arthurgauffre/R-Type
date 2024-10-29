@@ -15,6 +15,7 @@
 #include <r-type/Entity.hpp>
 #include <r-type/ICoreModule.hpp>
 #include <r-type/ISystem.hpp>
+#include <r-type/IGraphic.hpp>
 #include <vector>
 
 #include <components/DamageComponent.hpp>

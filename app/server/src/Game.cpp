@@ -5,9 +5,12 @@
 ** Game
 */
 
-#include "include/Game.hpp"
 
-Game::Game(std::shared_ptr<rtype::CoreModule> coreModule) : _coreModule(coreModule)
+#include "include/Game.hpp"
+#include <r-type/IGraphic.hpp>
+#include <SfmlGraphic.hpp>
+
+Game::Game(std::shared_ptr<rtype::CoreModule> coreModule, IGraphic& graphic) : _coreModule(coreModule), _graphic(graphic)
 {
 }
 
@@ -65,9 +68,9 @@ entity::IEntity *Game::createBackground(std::string texturePath,
   _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
       background1->getID(), speed, speed);
   _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-      background1->getID(), texturePath);
+      background1->getID(), texturePath, _graphic);
   _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-      background1->getID(), 0, 0);
+      background1->getID(), 0, 0, _graphic);
   _coreModule->getComponentManager()->addComponent<component::SizeComponent>(
       background1->getID(), size);
 
@@ -144,8 +147,8 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
     _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
         entityID, health);
     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-        entityID, texture->getTexture().getSize().x * scale.first,
-        texture->getTexture().getSize().y * scale.second);
+        entityID, texture->getTextureSize().first * scale.first,
+        texture->getTextureSize().second * scale.second);
 
     return player;
 }
@@ -177,8 +180,8 @@ entity::IEntity *Game::createEnemy(
     _coreModule->getComponentManager()->addComponent<component::DamageComponent>(
         entityID, damage);
     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-        entityID, texture->getTexture().getSize().x * scale.first,
-        texture->getTexture().getSize().y * scale.second);
+        entityID, texture->getTextureSize().first * scale.first,
+        texture->getTextureSize().second * scale.second);
 
     return enemy;
 }
