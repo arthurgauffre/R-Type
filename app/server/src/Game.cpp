@@ -108,7 +108,7 @@ entity::IEntity *
 Game::createPlayer(uint32_t entityID, std::string texturePath,
                    std::pair<float, float> position,
                    std::pair<float, float> velocity,
-                   std::pair<float, float> scale, int health)
+                   std::pair<float, float> scale, int health, int numClient)
 {
     auto player = _coreModule->getEntityManager()->createEntity(entityID);
 
@@ -124,7 +124,7 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath);
     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
-        entityID, 0);
+        entityID, numClient);
     _coreModule->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
         ->bindAction("MoveLeft", sf::Keyboard::Q);
@@ -249,18 +249,29 @@ void Game::init()
     this->_waveNumber = 10;
 }
 
-void Game::handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived)
+void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
 {
     std::string msg = msgReceived.front().first;
-    size_t id = msgReceived.front().second;
+    size_t id = msgReceived.front().second.first;
+    int numClient = msgReceived.front().second.second;
     msgReceived.erase(msgReceived.begin());
     if (msg == "clientConnection")
     {
         entity::IEntity *entity = createPlayer(_coreModule->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
                                                std::pair<float, float>(100.0f, 100.0f),
                                                std::pair<float, float>(500.0f, 500.0f),
-                                               std::pair<float, float>(0.10f, 0.10f), 100);
+                                               std::pair<float, float>(0.10f, 0.10f), 100, numClient);
+        _players[id] = entity;
         std::cout << "Client connected : " << id << std::endl;
+    }
+    // std::cout << "numClient: " << numClient << std::endl;
+    if (_players.find(numClient) == _players.end()) {
+        // std::cout << "P,layer not found" << std::endl;
+        return;
+    }
+    if (_players[numClient]->getID() != id) {
+        // std::cout << "Player ID not matching" << std::endl;
+        return;
     }
     if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")
         moveEntity(msg, id);

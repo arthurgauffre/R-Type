@@ -23,7 +23,7 @@ public:
     entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
                                   std::pair<float, float> position,
                                   std::pair<float, float> velocity,
-                                  std::pair<float, float> scale, int health);
+                                  std::pair<float, float> scale, int health, int numClient);
     entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
                                  std::pair<float, float> position,
                                  std::pair<float, float> velocity,
@@ -37,7 +37,7 @@ public:
     void resetInput();
     void moveEntity(std::string msg, size_t id);
     void shootEntity(size_t id);
-    void handdleReceivedMessage(std::vector<std::pair<std::string, size_t>> &msgReceived);
+    void handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived);
 
 protected:
 private:
@@ -45,5 +45,6 @@ private:
     std::shared_ptr<rtype::CoreModule> _coreModule;
     sf::Clock inputClock;
     sf::Clock waveClock;
+    std::unordered_map<size_t, entity::IEntity *> _players;
     float _spawnInterval;
 };

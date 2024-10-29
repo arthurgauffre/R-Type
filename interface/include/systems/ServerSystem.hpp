@@ -51,7 +51,7 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, size_t>> &msgReceived, std::mutex &entityMutex)
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
@@ -111,6 +111,8 @@ namespace rtype
           std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
           rtype::network::Message<NetworkMessages> &message)
       {
+        // print witch client send the message
+        // std::cout << "Client " << client->GetId() << " send a message" << std::endl;
         // std::cout << "Handling input message" << std::endl;
         switch (message.header.id)
         {
@@ -118,35 +120,35 @@ namespace rtype
         {
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveUp", entity.id));
+          _msgReceived.emplace_back(std::make_pair("moveUp", std::make_pair(entity.id, client->GetId())));
         }
         break;
         case NetworkMessages::moveDown:
         {
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveDown", entity.id));
+          _msgReceived.emplace_back(std::make_pair("moveDown", std::make_pair(entity.id, client->GetId())));
         }
         break;
         case NetworkMessages::moveLeft:
         {
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveLeft", entity.id));
+          _msgReceived.emplace_back(std::make_pair("moveLeft", std::make_pair(entity.id, client->GetId())));
         }
         break;
         case NetworkMessages::moveRight:
         {
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveRight", entity.id));
+          _msgReceived.emplace_back(std::make_pair("moveRight", std::make_pair(entity.id, client->GetId())));
         }
         break;
         case NetworkMessages::shoot:
         {
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("shoot", entity.id));
+          _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entity.id, client->GetId())));
         }
         break;
         default:
@@ -215,8 +217,9 @@ namespace rtype
                 else
                   break;
               }
+              _playerConnected[numPlayer] = true;
               sendAllEntitiesToClient(deqConnections.back(), numPlayer);
-              _msgReceived.emplace_back(std::make_pair("clientConnection", numPlayer));
+              _msgReceived.emplace_back(std::make_pair("clientConnection", std::make_pair(numPlayer, deqConnections.back()->GetId())));
             } else {
               std::cout << "Connection denied" << std::endl;
             }
@@ -527,6 +530,7 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
+            std::cout << "numPlayer = " << numPlayer << " component->getNumClient() = " << component->getNumClient() << std::endl;
             if (numPlayer == component->getNumClient())
             {
               SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
@@ -764,7 +768,7 @@ namespace rtype
       std::array<char, 1024> bufferOfIncomingMessages;
       uint32_t actualId = 0;
 
-      std::vector<std::pair<std::string, size_t>> _msgReceived;
+      std::vector<std::pair<std::string, std::pair<size_t, size_t>>> _msgReceived;
 
     private:
       std::vector<bool> _playerConnected;

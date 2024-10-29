@@ -68,7 +68,7 @@ public:
   std::shared_ptr<component::ComponentManager> getComponentManager() const;
   std::shared_ptr<ECS_system::SystemManager> getSystemManager() const;
 
-  std::vector<std::pair<std::string, size_t>> msgReceived;
+  std::vector<std::pair<std::string, std::pair<size_t, size_t>>> msgReceived;
   std::vector<std::pair<std::string, size_t>> msgToSend;
   sf::Clock clock;
   std::mutex _entityMutex;
