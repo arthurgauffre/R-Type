@@ -10,6 +10,10 @@
 
 ECS_system::SystemManager::SystemManager() {}
 
+ECS_system::SystemManager::~SystemManager() {
+  _systems.clear();
+}
+
 /**
  * @brief Updates all systems managed by the SystemManager.
  *

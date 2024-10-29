@@ -241,10 +241,10 @@ void Game::init()
                                                "ai");
     _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
                                                "collision");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "health");
-    _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "game");
+    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+    //                                            "health");
+    // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
+    //                                            "game");
     this->_spawnInterval = 5;
     this->_waveNumber = 10;
 }

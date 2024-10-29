@@ -211,10 +211,10 @@ namespace rtype
       break;
       case NetworkMessages::deleteEntity:
       {
-        std::cout << "Entity destroyed" << std::endl;
+        // std::cout << "Entity destroyed" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
-        std::cout << "Entity id: " << entity.id << std::endl;
+        // std::cout << "Entity id: " << entity.id << std::endl;
         _componentManager.removeAllComponents(entity.id);
         _entityManager.removeEntity(entity.id);
       }
@@ -353,7 +353,7 @@ namespace rtype
       // break;
       case NetworkMessages::createInput:
       {
-        // std::cout << "Input component created" << std::endl;
+        std::cout << "Input component created" << std::endl;
         EntityId id;
         InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -364,7 +364,7 @@ namespace rtype
       break;
       case NetworkMessages::updateInput:
       {
-        // std::cout << "Input component updated" << std::endl;
+        std::cout << "Input component updated" << std::endl;
         BindKey input;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));

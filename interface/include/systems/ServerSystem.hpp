@@ -55,11 +55,14 @@ namespace rtype
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
-        for (int i = 0; i < 4 && i < deqConnections.size(); i++)
-        {
-          if (!deqConnections[i]->IsConnected())
-            _playerConnected[i] = true;
-        }
+        // std::cout << "deqConnections.size() = " << deqConnections.size() << std::endl;
+        // for (int i = 0; i < 4 && i < deqConnections.size(); i++)
+        // {
+        //   if (!deqConnections[i]->IsConnected()) {
+        //     _playerConnected[i] = false;
+        //     std::cout << "Player " << i << " disconnected" << std::endl;
+        //   }
+        // }
         this->ServerUpdate(100, false);
         sendAllEntitiesUpdateOrCreateToAllClient(nullptr);
         while (!_msgReceived.empty())

@@ -24,7 +24,7 @@ public:
   /**
    * @brief Destroys the SystemManager object.
    */
-  ~SystemManager() = default;
+  ~SystemManager();
 
   /**
    * @brief Adds a new system to the manager.
