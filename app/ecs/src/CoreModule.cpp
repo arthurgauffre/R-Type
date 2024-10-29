@@ -14,8 +14,8 @@ std::atomic<bool> keepRunning(true);
 
 /**
  * @brief signal handler for SIGINT
- * 
- * @param signum 
+ *
+ * @param signum
  */
 void signalHandler(int signum) {
     std::cout << "\nInterrupt signal (" << signum << ") received. Stopping...\n";
@@ -95,9 +95,6 @@ void rtype::CoreModule::update() {
   _entityMutex.lock();
   auto entities = this->getEntityManager()->getEntities();
   _entityMutex.unlock();
-  if (msgToSend.size() > 0) {
-    std::cout << "msgToSend: " << msgToSend.back().first << std::endl;
-  }
   this->getSystemManager()->update(deltatime, entities, msgToSend, this->msgReceived, _entityMutex);
 }
 

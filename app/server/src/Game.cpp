@@ -219,11 +219,11 @@ void Game::init()
     this->createBackground("app/assets/images/city_background.png",
                            std::pair<float, float>(-100.0f, 0.0f),
                            std::pair<float, float>(4448.0f, 1200.0f));
-    this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-                      "app/assets/sprites/enemy.png",
-                      std::pair<float, float>(1800.0f, 0.0f),
-                      std::pair<float, float>(-200.0f, 0.0f),
-                      std::pair<float, float>(0.2f, 0.2f), 100, 100);
+    // this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
+    //                   "app/assets/sprites/enemy.png",
+    //                   std::pair<float, float>(1800.0f, 0.0f),
+    //                   std::pair<float, float>(-200.0f, 0.0f),
+    //                   std::pair<float, float>(0.2f, 0.2f), 100, 100);
 
     component::ComponentManager &componentManager = *_coreModule->getComponentManager();
 
@@ -255,6 +255,7 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     size_t id = msgReceived.front().second.first;
     int numClient = msgReceived.front().second.second;
     msgReceived.erase(msgReceived.begin());
+    // std::cout << "Message received in game :" << msg << std::endl;
     if (msg == "clientConnection")
     {
         entity::IEntity *entity = createPlayer(_coreModule->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",

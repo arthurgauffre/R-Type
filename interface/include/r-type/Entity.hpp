@@ -87,5 +87,4 @@ protected:
   bool isActive;
 };
 } // namespace entity
-
-#endif
+#endif // ENTITY_HPP

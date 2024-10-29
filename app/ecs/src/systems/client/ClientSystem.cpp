@@ -209,6 +209,12 @@ namespace rtype
 
         // std::cout << "Entity id: " << entity.id << std::endl;
         _entityManager.createEntity(entity.id);
+        // Send acknowledgement message
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
+        // std::cout << "Create component ack message sent" << std::endl;
+
       }
       break;
       case NetworkMessages::deleteEntity:
@@ -219,6 +225,9 @@ namespace rtype
         // std::cout << "Entity id: " << entity.id << std::endl;
         _componentManager.removeAllComponents(entity.id);
         _entityManager.removeEntity(entity.id);
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
       }
       break;
       case NetworkMessages::createSprite:
@@ -359,9 +368,15 @@ namespace rtype
         EntityId id;
         InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        // _componentManager.addComponent<component::InputComponent>(id.id);
         std::memcpy(&input, msg.body.data() + sizeof(EntityId),
                     sizeof(InputComponent));
         _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
+
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
+        std::cout << "Input component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateInput:
@@ -609,6 +624,20 @@ namespace rtype
         if (action != NetworkMessages::none)
         {
           message.header.id = action;
+          std::cout << "Action sent : ";
+          if (action == NetworkMessages::moveUp)
+            std::cout << "moveUp" << id.id << std::endl;
+          else if (action == NetworkMessages::moveDown)
+            std::cout << "moveDown" << id.id << std::endl;
+          else if (action == NetworkMessages::moveLeft)
+            std::cout << "moveLeft";
+          else if (action == NetworkMessages::moveRight)
+            std::cout << "moveRight";
+          else if (action == NetworkMessages::shoot)
+            std::cout << "shoot";
+          else
+            std::cout << "none";
+          std::cout << std::endl;
           std::chrono::system_clock::time_point timeNow =
               std::chrono::system_clock::now();
           message << timeNow;

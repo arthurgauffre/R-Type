@@ -198,7 +198,7 @@ jobs:
             touch .nojekyll  # Disable Jekyll to enable support for files and directories starting with underscore
             git add --all
             git commit -m "Deploy Doxygen documentation to GitHub Pages"
-            git push https://x-access-token:${GITHUB_TOKEN}@github.com/JsuisSayker/R-Type.git gh-pages --force
+            git push https://x-access-token:${GITHUB_TOKEN}@github.com/arthurgauffre/R-Type.git gh-pages --force
           else
             echo "No documentation generated. Skipping deployment."
           fi
