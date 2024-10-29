@@ -1,3 +1,5 @@
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 add_library(r-type_ai_system SHARED
     AISystem.cpp
     ../../components/ai/AIComponent.cpp

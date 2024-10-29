@@ -1,4 +1,5 @@
-# Include the SFML package
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
 add_library(r-type_movement_system SHARED
@@ -9,10 +10,8 @@ add_library(r-type_movement_system SHARED
     ../../components/size/SizeComponent.cpp
 )
 
-# Specify the SFML include directory
 target_include_directories(r-type_movement_system PRIVATE ${SFML_INCLUDE_DIR})
 
-# Link the SFML library
 target_link_libraries(
     r-type_movement_system
     r-type_interfaces

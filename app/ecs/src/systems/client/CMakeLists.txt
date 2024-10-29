@@ -1,3 +1,5 @@
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 add_library(r-type_client_system SHARED
     ClientSystem.cpp
     ../../managers/system/SystemManager.cpp
