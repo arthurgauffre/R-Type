@@ -16,7 +16,7 @@ namespace entity {
  *
  * @param id The unique identifier for the entity.
  */
-entity::Entity::Entity(uint32_t id) : id(id), isActive(true) {}
+Entity::Entity(uint32_t id) : id(id), isActive(true) {}
 
 /**
  * @brief Destructor for the Entity class.
@@ -26,14 +26,14 @@ entity::Entity::Entity(uint32_t id) : id(id), isActive(true) {}
  * destructor, meaning it will automatically handle the destruction
  * of member variables and base class subobjects.
  */
-entity::Entity::~Entity() = default;
+Entity::~Entity() = default;
 
 /**
  * @brief Retrieves the unique identifier of the entity.
  *
  * @return uint32_t The unique identifier of the entity.
  */
-uint32_t entity::Entity::getID() const { return id; }
+uint32_t Entity::getID() const { return id; }
 
 /**
  * @brief Sets the active state of the entity.
@@ -44,7 +44,7 @@ uint32_t entity::Entity::getID() const { return id; }
  *               If true, the entity is set to active. If false, the entity is
  * set to inactive.
  */
-void entity::Entity::setActive(bool active) { isActive = active; }
+void Entity::setActive(bool active) { isActive = active; }
 
 /**
  * @brief Checks if the entity is active.
@@ -53,9 +53,9 @@ void entity::Entity::setActive(bool active) { isActive = active; }
  *
  * @return true if the entity is active, false otherwise.
  */
-bool entity::Entity::getActive() const { return isActive; }
+bool Entity::getActive() const { return isActive; }
 
-EntityCommunication entity::Entity::getCommunication() const { return communicationStatus; }
+EntityCommunication Entity::getCommunication() const { return communicationStatus; }
 
-void entity::Entity::setCommunication(EntityCommunication communication) { communicationStatus = communication; }
+void Entity::setCommunication(EntityCommunication communication) { communicationStatus = communication; }
 } // namespace entity

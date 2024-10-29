@@ -80,7 +80,7 @@ void ECS_system::MovementSystem::update(
              type->getType() == component::Type::PLAYER_PROJECTILE)
     {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
-        entity->setCommunication(entity::EntityCommunication::DELETE);
+        entity->setCommunication(entity::EntityCommunication::DESTROY);
     }
     float subPreviousX = transform->getPreviousPosition().first - newX;
     float subPreviousY = transform->getPreviousPosition().second - newY;

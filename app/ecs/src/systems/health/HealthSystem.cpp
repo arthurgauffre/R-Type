@@ -60,7 +60,7 @@ void ECS_system::HealthSystem::update(
                                healthComponent->getDamageIncoming());
     healthComponent->setDamageIncoming(0);
     if (healthComponent->getHealth() <= 0) {
-      entity->setCommunication(entity::EntityCommunication::DELETE);
+      entity->setCommunication(entity::EntityCommunication::DESTROY);
     }
   }
 }

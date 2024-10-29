@@ -145,7 +145,7 @@ struct TextureComponent {
 };
 
 struct EntityId {
-  size_t id;
+  uint32_t id;
 };
 
 struct VelocityComponent {

@@ -612,7 +612,7 @@ namespace rtype
       {
         // popfront the first message in the queue
         std::string msg = msgToSend.front().first;
-        EntityId id = {msgToSend.front().second};
+        EntityId id = {static_cast<uint32_t>(msgToSend.front().second)};
         msgToSend.erase(msgToSend.begin());
         rtype::network::Message<NetworkMessages> message;
         NetworkMessages action = getAction(msg);
@@ -650,7 +650,7 @@ namespace rtype
     {
       processingMessages = true;
       // Launch worker threads
-      for (int i = 0; i < std::thread::hardware_concurrency(); ++i)
+      for (size_t i = 0; i < std::thread::hardware_concurrency(); ++i)
       {
         workerThreads.emplace_back([this]()
                                    {

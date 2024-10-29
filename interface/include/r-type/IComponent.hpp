@@ -14,7 +14,7 @@ enum class ComponentCommunication {
   NONE,
   CREATE,
   UPDATE,
-  DELETE,
+  DESTROY,
   SERVERONLY,
   CLIENTONLY,
   STANDBY,

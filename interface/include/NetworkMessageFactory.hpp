@@ -14,7 +14,7 @@
 class NetworkMessageFactory
 {
 public:
-    rtype::network::Message<NetworkMessages> createEntityMsg(size_t id)
+    rtype::network::Message<NetworkMessages> createEntityMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createEntity;
@@ -29,7 +29,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateEntityMsg(size_t id)
+    rtype::network::Message<NetworkMessages> updateEntityMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteEntity;
@@ -45,7 +45,7 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages>
-    createTextureMsg(size_t id, TexturePath texturePath)
+    createTextureMsg(uint32_t id, TexturePath texturePath)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createTexture;
@@ -66,7 +66,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createVelocityMsg(size_t id, float x,
+    rtype::network::Message<NetworkMessages> createVelocityMsg(uint32_t id, float x,
                                                                float y, float actualX, float actualY)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -88,7 +88,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createHealthMsg(size_t id,
+    rtype::network::Message<NetworkMessages> createHealthMsg(uint32_t id,
                                                              int health)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -111,7 +111,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createDamageMsg(size_t id,
+    rtype::network::Message<NetworkMessages> createDamageMsg(uint32_t id,
                                                              int damage)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -134,7 +134,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createHitboxMsg(size_t id, float x,
+    rtype::network::Message<NetworkMessages> createHitboxMsg(uint32_t id, float x,
                                                              float y)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -157,7 +157,7 @@ public:
         return message;
     }
     //   rtype::network::Message<NetworkMessages>
-    //   createMusicMsg(size_t id, std::string musicPath) {
+    //   createMusicMsg(uint32_t id, std::string musicPath) {
     //     rtype::network::Message<NetworkMessages> message;
     //     message.header.id = NetworkMessages::createMusic;
     //     EntityId entity = {id};
@@ -178,7 +178,7 @@ public:
     //     return message;
     //   }
     //   rtype::network::Message<NetworkMessages>
-    //   createSoundMsg(size_t id, std::string soundPath) {
+    //   createSoundMsg(uint32_t id, std::string soundPath) {
     //     rtype::network::Message<NetworkMessages> message;
     //     message.header.id = NetworkMessages::createSound;
     //     EntityId entity = {id};
@@ -198,7 +198,7 @@ public:
     //     message << timeNow;
     //     return message;
     //   }
-    rtype::network::Message<NetworkMessages> createSpriteMsg(size_t id, float x,
+    rtype::network::Message<NetworkMessages> createSpriteMsg(uint32_t id, float x,
                                                              float y)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -221,7 +221,7 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages>
-    createTransformMsg(size_t id, float x, float y, float scaleX, float scaleY, float rotation)
+    createTransformMsg(uint32_t id, float x, float y, float scaleX, float scaleY, float rotation)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createTransform;
@@ -242,7 +242,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createParentMsg(size_t id,
+    rtype::network::Message<NetworkMessages> createParentMsg(uint32_t id,
                                                              uint32_t parentID)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -265,7 +265,7 @@ public:
         return message;
     }
 
-    rtype::network::Message<NetworkMessages> createInputMsg(size_t id, int numClient)
+    rtype::network::Message<NetworkMessages> createInputMsg(uint32_t id, int numClient)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createInput;
@@ -286,7 +286,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createTypeMsg(size_t id,
+    rtype::network::Message<NetworkMessages> createTypeMsg(uint32_t id,
                                                           EntityType type)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -308,7 +308,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createCooldownMsg(size_t id,
+    rtype::network::Message<NetworkMessages> createCooldownMsg(uint32_t id,
                                                               float cooldown,
                                                               float timeRemaining)
     {
@@ -332,7 +332,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateTypeMsg(size_t id,
+    rtype::network::Message<NetworkMessages> updateTypeMsg(uint32_t id,
                                                           EntityType type)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -354,7 +354,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateCooldownMsg(size_t id,
+    rtype::network::Message<NetworkMessages> updateCooldownMsg(uint32_t id,
                                                               float cooldown,
                                                               float timeRemaining)
     {
@@ -379,7 +379,7 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages>
-    updateTextureMsg(size_t id, TexturePath texturePath)
+    updateTextureMsg(uint32_t id, TexturePath texturePath)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateTexture;
@@ -400,7 +400,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateVelocityMsg(size_t id, float x,
+    rtype::network::Message<NetworkMessages> updateVelocityMsg(uint32_t id, float x,
                                                                float y, float actualX, float actualY)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -422,7 +422,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateHealthMsg(size_t id,
+    rtype::network::Message<NetworkMessages> updateHealthMsg(uint32_t id,
                                                              int health)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -445,7 +445,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateDamageMsg(size_t id,
+    rtype::network::Message<NetworkMessages> updateDamageMsg(uint32_t id,
                                                              int damage)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -468,7 +468,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateHitboxMsg(size_t id, float x,
+    rtype::network::Message<NetworkMessages> updateHitboxMsg(uint32_t id, float x,
                                                              float y)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -491,7 +491,7 @@ public:
         return message;
     }
     //   rtype::network::Message<NetworkMessages>
-    //   updateMusicMsg(size_t id, std::string musicPath) {
+    //   updateMusicMsg(uint32_t id, std::string musicPath) {
     //     rtype::network::Message<NetworkMessages> message;
     //     message.header.id = NetworkMessages::updateMusic;
     //     EntityId entity = {id};
@@ -532,7 +532,7 @@ public:
     //     message << timeNow;
     //     return message;
     //   }
-    rtype::network::Message<NetworkMessages> updateSpriteMsg(size_t id, float x,
+    rtype::network::Message<NetworkMessages> updateSpriteMsg(uint32_t id, float x,
                                                              float y)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -555,7 +555,7 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages>
-    updateTransformMsg(size_t id, float x, float y, float scaleX, float scaleY, float rotation)
+    updateTransformMsg(uint32_t id, float x, float y, float scaleX, float scaleY, float rotation)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateTransform;
@@ -576,7 +576,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateParentMsg(size_t id,
+    rtype::network::Message<NetworkMessages> updateParentMsg(uint32_t id,
                                                              uint32_t parentID)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -599,7 +599,7 @@ public:
         return message;
     }
 
-    rtype::network::Message<NetworkMessages> updateInputMsg(size_t id,
+    rtype::network::Message<NetworkMessages> updateInputMsg(uint32_t id,
                                                             BindKey bind)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -622,7 +622,7 @@ public:
         return message;
     }
 
-    rtype::network::Message<NetworkMessages> deleteEntityMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteEntityMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteEntity;
@@ -637,7 +637,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteTextureMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteTextureMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteTexture;
@@ -652,7 +652,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deletePositionMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deletePositionMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deletePosition;
@@ -667,7 +667,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteVelocityMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteVelocityMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteVelocity;
@@ -682,7 +682,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteHealthMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteHealthMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteHealth;
@@ -697,7 +697,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteDamageMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteDamageMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteDamage;
@@ -712,7 +712,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteHitboxMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteHitboxMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteHitbox;
@@ -727,7 +727,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteMusicMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteMusicMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteMusic;
@@ -742,7 +742,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteSoundMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteSoundMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteSound;
@@ -757,7 +757,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteSpriteMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteSpriteMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteSprite;
@@ -772,7 +772,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteTransformMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteTransformMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteTransform;
@@ -787,7 +787,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteParentMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteParentMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteParent;
@@ -803,7 +803,7 @@ public:
         return message;
     }
 
-    rtype::network::Message<NetworkMessages> deleteInputMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteInputMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteInput;
@@ -818,7 +818,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteTypeMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteTypeMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteType;
@@ -833,7 +833,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteCooldownMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteCooldownMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteCooldown;
@@ -848,7 +848,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createSizeMsg(size_t id, float x,
+    rtype::network::Message<NetworkMessages> createSizeMsg(uint32_t id, float x,
                                                           float y)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -870,7 +870,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateSizeMsg(size_t id, float x,
+    rtype::network::Message<NetworkMessages> updateSizeMsg(uint32_t id, float x,
                                                           float y)
     {
         rtype::network::Message<NetworkMessages> message;
@@ -892,7 +892,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteSizeMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteSizeMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteSize;
@@ -907,7 +907,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> createAIMsg(size_t id, AIType type)
+    rtype::network::Message<NetworkMessages> createAIMsg(uint32_t id, AIType type)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createAI;
@@ -928,7 +928,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateAIMsg(size_t id, AIType type)
+    rtype::network::Message<NetworkMessages> updateAIMsg(uint32_t id, AIType type)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateAI;
@@ -949,7 +949,7 @@ public:
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> deleteAIMsg(size_t id)
+    rtype::network::Message<NetworkMessages> deleteAIMsg(uint32_t id)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteAI;

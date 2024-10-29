@@ -14,7 +14,7 @@
 #include <r-type/IEntity.hpp>
 
 namespace entity {
-class DLL_EXPORT Entity : virtual public IEntity {
+class Entity : virtual public IEntity {
 public:
   /**
    * @brief Constructs an Entity object with a specified ID and sets it as

@@ -84,7 +84,7 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
                                              .getComponent<component::HealthComponent>(entity2->getID());
     health->setDamageIncoming(damage);
 
-    entity1->setCommunication(entity::EntityCommunication::DELETE);
+    entity1->setCommunication(entity::EntityCommunication::DESTROY);
   }
   else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER_PROJECTILE)
   {
@@ -95,7 +95,7 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
                                              .getComponent<component::HealthComponent>(entity1->getID());
     health->setDamageIncoming(damage);
 
-    entity2->setCommunication(entity::EntityCommunication::DELETE);
+    entity2->setCommunication(entity::EntityCommunication::DESTROY);
   }
 
   if (type1 == component::Type::ENEMY_PROJECTILE && type2 == component::Type::PLAYER)
@@ -107,7 +107,7 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
                                              .getComponent<component::HealthComponent>(entity2->getID());
     health->setDamageIncoming(damage);
 
-    entity1->setCommunication(entity::EntityCommunication::DELETE);
+    entity1->setCommunication(entity::EntityCommunication::DESTROY);
   }
   else if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY_PROJECTILE)
   {
@@ -118,7 +118,7 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
                                              .getComponent<component::HealthComponent>(entity1->getID());
     health->setDamageIncoming(damage);
 
-    entity2->setCommunication(entity::EntityCommunication::DELETE);
+    entity2->setCommunication(entity::EntityCommunication::DESTROY);
   }
 }
 

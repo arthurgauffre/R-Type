@@ -51,7 +51,7 @@ template <typename T> struct Message {
     size_t i = message.body.size();
     message.body.resize(message.body.size() + sizeof(DataType));
     std::memcpy(message.body.data() + i, &data, sizeof(DataType));
-    message.header.size = message.size();
+    message.header.size = static_cast<uint32_t>(message.size());
     return message;
   }
 
@@ -63,7 +63,7 @@ template <typename T> struct Message {
     size_t i = message.body.size() - sizeof(DataType);
     std::memcpy(&data, message.body.data() + i, sizeof(DataType));
     message.body.resize(i);
-    message.header.size = message.size();
+    message.header.size = static_cast<uint32_t>(message.size());
     return message;
   }
 };

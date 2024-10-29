@@ -6,35 +6,39 @@
 */
 
 #pragma once
+
 #ifdef _WIN32
-#ifdef BUILD_DLL
-#define DLL_EXPORT __declspec(dllexport)
+    #ifdef BUILD_DLL
+        #define DLL_EXPORT __declspec(dllexport)
+    #else
+        #define DLL_EXPORT __declspec(dllimport)
+    #endif
 #else
-#define DLL_EXPORT __declspec(dllimport)
-#endif
-#else
-#define DLL_EXPORT
+    #define DLL_EXPORT
 #endif
 
 #include <cstdint>
 
 namespace entity {
 enum class EntityCommunication {
-  NONE,
-  CREATE,
-  UPDATE,
-  DELETE,
+    NONE,
+    CREATE,
+    UPDATE,
+    DESTROY,
 };
-class IEntity {
+
+// Ajout du mot-clé DLL_EXPORT ici 
+class DLL_EXPORT IEntity {
 public:
-  /**
-   * @brief Default constructor for the IEntity class.
-   */
-  IEntity() = default;
-  /**
-   * @brief Virtual destructor for the IEntity class.
-   */
-  virtual ~IEntity() = default;
+    /**
+     * @brief Default constructor for the IEntity class.
+     */
+    IEntity() = default;
+
+    /**
+     * @brief Virtual destructor for the IEntity class.
+     */
+    virtual ~IEntity() = default;
 
     /**
      * @brief Get the unique identifier of the entity.
@@ -87,7 +91,7 @@ public:
      */
     virtual void setCommunication(EntityCommunication status) = 0;
 
-  protected:
+protected:
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
 };
 } // namespace entity
