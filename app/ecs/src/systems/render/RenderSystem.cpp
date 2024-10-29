@@ -36,7 +36,7 @@ ECS_system::RenderSystem::RenderSystem(
  */
 void ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, entity::SceneStatus &sceneStatus) {
   _window.clear();
 
   // lock the entity mutex
@@ -45,6 +45,8 @@ void ECS_system::RenderSystem::update(
                       component::SpriteComponent, component::TransformComponent,
                       component::TextureComponent, component::SizeComponent,
                       component::SpriteComponent>(entities)) {
+     if (entity->getSceneStatus() != sceneStatus)
+      continue;
      if (entity.get()->getActive() == false ||
         _componentManager
                 .getComponent<component::TypeComponent>(entity.get()->getID())

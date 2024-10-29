@@ -68,6 +68,18 @@ public:
    */
   void setCommunication(EntityCommunication communication) override;
 
+  /**
+   * @brief
+   *
+   */
+  SceneStatus getSceneStatus() const override;
+
+  /**
+   * @brief
+   *
+   */
+  void setSceneStatus(SceneStatus status) override;
+
 protected:
   /**
    * @brief Unique identifier for the entity.

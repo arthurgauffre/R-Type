@@ -29,7 +29,7 @@ void ECS_system::SystemManager::update(
     std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
   for (auto &system : _systems) {
     system->update(deltaTime, entities,
-                               msgToSend, msgReceived, entityMutex); // Each system updates itself because
+                               msgToSend, msgReceived, entityMutex, _sceneStatus); // Each system updates itself because
                                            // each system has its own logic
   }
 }

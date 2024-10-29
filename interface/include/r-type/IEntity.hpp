@@ -25,6 +25,12 @@ enum class EntityCommunication {
   UPDATE,
   DELETE,
 };
+
+enum class SceneStatus {
+  NONE,
+  GAME,
+  MENU,
+};
 class IEntity {
 public:
   /**
@@ -87,7 +93,27 @@ public:
      */
     virtual void setCommunication(EntityCommunication status) = 0;
 
+    /**
+     * @brief Retrieves the scene status of the entity.
+     *
+     * This method is used to determine the current scene status of the entity.
+     *
+     * @return SceneStatus The current scene status of the entity.
+     */
+    virtual SceneStatus getSceneStatus() const = 0;
+
+    /**
+     * @brief Sets the scene status of the entity.
+     *
+     * This method is used to set the scene status of the entity to the specified
+     * value.
+     *
+     * @param status The new scene status for the entity.
+     */
+    virtual void setSceneStatus(SceneStatus status) = 0;
+
   protected:
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
+    SceneStatus sceneStatus{SceneStatus::GAME};
 };
 } // namespace entity

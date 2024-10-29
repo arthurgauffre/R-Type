@@ -79,12 +79,14 @@ void ECS_system::WeaponSystem::createProjectile(
 }
 
 void ECS_system::WeaponSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, entity::SceneStatus &sceneStatus)
 {
     for (auto &entity :
          _componentManager.getEntitiesWithComponents<component::WeaponComponent>(
              entities))
     {
+        if (entity->getSceneStatus() != sceneStatus)
+            continue;
         component::WeaponComponent *weaponComponent =
             _componentManager.getComponent<component::WeaponComponent>(
                 entity->getID());
