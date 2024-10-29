@@ -16,6 +16,7 @@ enum class NetworkMessages : uint32_t {
   MessageAll,
   ServerMessage,
   ClientConnection,
+  ClientDisconnection,
   createEntity,
   deleteEntity,
   updateEntity,

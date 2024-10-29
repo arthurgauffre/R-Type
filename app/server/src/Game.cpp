@@ -261,24 +261,31 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
                                                std::pair<float, float>(100.0f, 100.0f),
                                                std::pair<float, float>(500.0f, 500.0f),
                                                std::pair<float, float>(0.10f, 0.10f), 100, numClient);
-        _players[id] = entity;
+        _players[numClient] = entity;
         std::cout << "Client connected : " << id << std::endl;
+    }
+    if (msg == "clientDisconnection")
+    {
+        std::cout << "Client disconnected : " << numClient << std::endl;
+        if (_players.find(numClient) != _players.end())
+        {
+            _players[numClient]->setCommunication(entity::EntityCommunication::DELETE);
+            _players.erase(numClient);
+        }
     }
     // std::cout << "numClient: " << numClient << std::endl;
     if (_players.find(numClient) == _players.end()) {
-        // std::cout << "P,layer not found" << std::endl;
+        std::cout << "Player not found" << std::endl;
         return;
     }
     if (_players[numClient]->getID() != id) {
-        // std::cout << "Player ID not matching" << std::endl;
+        std::cout << "Player ID not matching" << std::endl;
         return;
     }
     if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")
         moveEntity(msg, id);
     if (msg == "shoot")
-    {
         shootEntity(id);
-    }
 }
 
 void Game::shootEntity(size_t id)

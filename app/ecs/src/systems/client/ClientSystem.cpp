@@ -52,6 +52,8 @@ namespace rtype
         return NetworkMessages::moveRight;
       if (action == "Shoot")
         return NetworkMessages::shoot;
+      if (action == "exit")
+        return NetworkMessages::ClientDisconnection;
       return NetworkMessages::none;
     }
 

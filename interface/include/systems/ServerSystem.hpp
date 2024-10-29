@@ -39,7 +39,7 @@ namespace rtype
       {
         Start();
         for (int i = 0; i < 4; i++)
-          _playerConnected.push_back(false);
+          _playerConnected.push_back(std::make_pair(false, -1));
       }
 
       ~ServerSystem() { Stop(); };
@@ -83,7 +83,7 @@ namespace rtype
         {
         case NetworkMessages::ClientConnection:
         {
-          std::cout << "Client connected : " << client->GetId() << std::endl;
+          std::cout << "Client Connected : " << client->GetId() << std::endl;
         }
         break;
         case NetworkMessages::MessageAll:
@@ -116,6 +116,21 @@ namespace rtype
         // std::cout << "Handling input message" << std::endl;
         switch (message.header.id)
         {
+        case NetworkMessages::ClientDisconnection: {
+          int numPlayer = 0;
+          for (int i = 0; i < 4; i++) {
+            if (_playerConnected[i].second == client->GetId())
+            {
+              numPlayer = i;
+              _playerConnected[i].first = false;
+              _playerConnected[i].second = -1;
+              break;
+            }
+          }
+          _msgReceived.emplace_back(std::make_pair("clientDisconnection", std::make_pair(numPlayer, client->GetId())));
+          // deqConnections.erase(std::remove(deqConnections.begin(), deqConnections.end(), client), deqConnections.end());
+        }
+        break;
         case NetworkMessages::moveUp:
         {
           EntityId entity;
@@ -212,13 +227,14 @@ namespace rtype
                         << "] Connection approved" << std::endl;
               int numPlayer = 0;
               for (int i = 0; i < 4; i++) {
-                if (_playerConnected[i] == true)
+                if (_playerConnected[i].first == true)
                   numPlayer++;
                 else
                   break;
               }
-              _playerConnected[numPlayer] = true;
-              sendAllEntitiesToClient(deqConnections.back(), numPlayer);
+              _playerConnected[numPlayer].first = true;
+              _playerConnected[numPlayer].second = deqConnections.back()->GetId();
+              sendAllEntitiesToClient(deqConnections.back(), deqConnections.back()->GetId());
               _msgReceived.emplace_back(std::make_pair("clientConnection", std::make_pair(numPlayer, deqConnections.back()->GetId())));
             } else {
               std::cout << "Connection denied" << std::endl;
@@ -339,7 +355,7 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            for (int i = 0; i < 4 && i < deqConnections.size(); i++)
+            for (int i = 0; i < deqConnections.size(); i++)
             {
               if (deqConnections[i]->GetId() == component->getNumClient())
               {
@@ -437,7 +453,7 @@ namespace rtype
         }
       }
 
-      void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client, int numPlayer)
+      void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client, int numClient)
       {
         if (client->IsConnected() == false)
         {
@@ -530,8 +546,7 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            std::cout << "numPlayer = " << numPlayer << " component->getNumClient() = " << component->getNumClient() << std::endl;
-            if (numPlayer == component->getNumClient())
+            if (numClient == component->getNumClient())
             {
               SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
               for (auto &bind : component->getKeyBindings())
@@ -771,8 +786,7 @@ namespace rtype
       std::vector<std::pair<std::string, std::pair<size_t, size_t>>> _msgReceived;
 
     private:
-      std::vector<bool> _playerConnected;
-      std::vector<std::shared_ptr<entity::IEntity>> _playerEntities;
+      std::vector<std::pair<bool, int>> _playerConnected;
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
       sf::Clock frequencyClock;
