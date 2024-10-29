@@ -211,6 +211,8 @@ namespace rtype
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::acknowledgementMesage;
         Send(message);
+        std::cout << "Create component ack message sent" << std::endl;
+
       }
       break;
       case NetworkMessages::deleteEntity:
@@ -360,7 +362,7 @@ namespace rtype
       // break;
       case NetworkMessages::createInput:
       {
-        // std::cout << "Input component created" << std::endl;
+        std::cout << "Input component created" << std::endl;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         _componentManager.addComponent<component::InputComponent>(id.id);
@@ -368,11 +370,12 @@ namespace rtype
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::acknowledgementMesage;
         Send(message);
+        std::cout << "Input component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateInput:
       {
-        // std::cout << "Input component updated" << std::endl;
+        std::cout << "Input component updated" << std::endl;
         BindKey input;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));

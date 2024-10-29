@@ -17,6 +17,7 @@ enum class ComponentCommunication {
   DELETE,
   SERVERONLY,
   CLIENTONLY,
+  STANDBY,
 };
 
 class IComponent {
