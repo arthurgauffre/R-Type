@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** Arcade
 ** File description:
-** CoreModule
+** RtypeEngine
 */
 
 #ifndef COREMODULE_HPP_
@@ -13,7 +13,7 @@
 #include <limits.h>
 #include <memory>
 #include <r-type/Entity.hpp>
-#include <r-type/ICoreModule.hpp>
+#include <r-type/IRtypeEngine.hpp>
 #include <r-type/ISystem.hpp>
 #include <vector>
 
@@ -41,10 +41,10 @@
 #include <systems/RenderSystem.hpp>
 
 namespace rtype {
-class CoreModule : virtual public ICoreModule {
+class RtypeEngine : virtual public IRtypeEngine {
 public:
-  CoreModule();
-  ~CoreModule();
+  RtypeEngine();
+  ~RtypeEngine();
 
   entity::IEntity *createBackground(std::string texturePath,
                                     std::pair<float, float> speed,

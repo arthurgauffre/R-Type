@@ -8,7 +8,7 @@
 #pragma once
 
 #include <r-type/AClient.hpp>
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkMessageFactory.hpp>
 #include <NetworkMessagesCommunication.hpp>

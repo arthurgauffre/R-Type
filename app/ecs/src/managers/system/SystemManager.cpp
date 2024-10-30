@@ -5,7 +5,7 @@
 ** SystemManager
 */
 
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <managers/SystemManager.hpp>
 
 ECS_system::SystemManager::SystemManager() {}
@@ -50,9 +50,9 @@ void ECS_system::SystemManager::addSystem(
     component::ComponentManager &componentManager,
     entity::EntityManager &entityManager, std::string systemName) {
   std::shared_ptr<
-      rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
+      rtype::RtypeEngine::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
       systemLoader = std::make_shared<
-          rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
+          rtype::RtypeEngine::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
           "lib/systems/r-type_" + systemName + "_system.so");
 
   // check if the systemLoader is not null

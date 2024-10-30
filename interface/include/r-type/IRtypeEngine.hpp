@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** Arcade
 ** File description:
-** ICoreModule
+** IRtypeEngine
 */
 
 #ifndef ICOREMODULE_HPP_
@@ -27,10 +27,10 @@
 #include <r-type/IEntity.hpp>
 
 namespace rtype {
-class ICoreModule {
+class IRtypeEngine {
 public:
-  ICoreModule(){};
-  virtual ~ICoreModule(){};
+  IRtypeEngine(){};
+  virtual ~IRtypeEngine(){};
 
   virtual std::shared_ptr<entity::EntityManager> getEntityManager() const = 0;
   virtual std::shared_ptr<component::ComponentManager>

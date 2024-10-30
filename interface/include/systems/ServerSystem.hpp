@@ -11,7 +11,7 @@
 #pragma once
 
 #include <r-type/IServer.hpp>
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <NetworkMessagesCommunication.hpp>
 #include <NetworkMessageFactory.hpp>
 #include <NetworkConnection.hpp>

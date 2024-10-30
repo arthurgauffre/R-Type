@@ -7,7 +7,7 @@
 
 #include "include/Game.hpp"
 
-Game::Game(std::shared_ptr<rtype::CoreModule> coreModule) : _coreModule(coreModule)
+Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _coreModule(coreModule)
 {
 }
 

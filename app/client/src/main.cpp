@@ -5,12 +5,12 @@
 ** main
 */
 
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <memory>
 
 int main(void) {
 
-    std::shared_ptr<rtype::CoreModule> core = std::make_shared<rtype::CoreModule>();
+    std::shared_ptr<rtype::RtypeEngine> core = std::make_shared<rtype::RtypeEngine>();
 
     // load all systems
     component::ComponentManager &componentManager = *core->getComponentManager();

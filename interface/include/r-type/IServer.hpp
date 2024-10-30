@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <NetworkConnection.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkingCommon.hpp>

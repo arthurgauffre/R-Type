@@ -7,14 +7,14 @@
 
 #pragma once
 
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 
 #include <random>
 
 class Game
 {
 public:
-    Game(std::shared_ptr<rtype::CoreModule> coreModule);
+    Game(std::shared_ptr<rtype::RtypeEngine> coreModule);
     ~Game();
 
     entity::IEntity *createBackground(std::string texturePath,
@@ -42,7 +42,7 @@ public:
 protected:
 private:
     int _waveNumber;
-    std::shared_ptr<rtype::CoreModule> _coreModule;
+    std::shared_ptr<rtype::RtypeEngine> _coreModule;
     sf::Clock inputClock;
     sf::Clock waveClock;
     std::unordered_map<size_t, entity::IEntity *> _players;

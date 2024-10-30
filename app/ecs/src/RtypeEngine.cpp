@@ -2,10 +2,10 @@
 ** EPITECH PROJECT, 2024
 ** Arcade
 ** File description:
-** CoreModule
+** RtypeEngine
 */
 
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <signal.h>
 #include <atomic>
 #include <iostream>
@@ -26,7 +26,7 @@ void signalHandler(int signum) {
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::CoreModule() {
+rtype::RtypeEngine::RtypeEngine() {
   this->_componentManager = std::make_shared<component::ComponentManager>();
   this->_systemManager = std::make_shared<ECS_system::SystemManager>();
   this->_entityManager = std::make_shared<entity::EntityManager>();
@@ -36,20 +36,20 @@ rtype::CoreModule::CoreModule() {
  * @brief Destroy the rtype::Core Module::Core Module object
  *
  */
-rtype::CoreModule::~CoreModule() {}
+rtype::RtypeEngine::~RtypeEngine() {}
 
 /**
  * @brief Retrieves the entity manager.
  *
  * This function returns a shared pointer to the EntityManager associated with
- * the CoreModule. The EntityManager is responsible for managing the entities
+ * the RtypeEngine. The EntityManager is responsible for managing the entities
  * within the application.
  *
  * @return std::shared_ptr<entity::EntityManager> A shared pointer to the
  * EntityManager.
  */
 std::shared_ptr<entity::EntityManager>
-rtype::CoreModule::getEntityManager() const {
+rtype::RtypeEngine::getEntityManager() const {
   return this->_entityManager;
 }
 
@@ -57,14 +57,14 @@ rtype::CoreModule::getEntityManager() const {
  * @brief Retrieves the component manager.
  *
  * This function returns a shared pointer to the component manager associated
- * with the CoreModule. The component manager is responsible for managing
+ * with the RtypeEngine. The component manager is responsible for managing
  * various components within the module.
  *
  * @return std::shared_ptr<component::ComponentManager> Shared pointer to the
  * component manager.
  */
 std::shared_ptr<component::ComponentManager>
-rtype::CoreModule::getComponentManager() const {
+rtype::RtypeEngine::getComponentManager() const {
   return this->_componentManager;
 }
 
@@ -72,14 +72,14 @@ rtype::CoreModule::getComponentManager() const {
  * @brief Retrieves the SystemManager instance.
  *
  * This function returns a shared pointer to the SystemManager instance
- * associated with the CoreModule. The SystemManager is responsible for
+ * associated with the RtypeEngine. The SystemManager is responsible for
  * managing the various systems within the ECS (Entity Component System).
  *
  * @return std::shared_ptr<ECS_system::SystemManager> A shared pointer to the
  * SystemManager instance.
  */
 std::shared_ptr<ECS_system::SystemManager>
-rtype::CoreModule::getSystemManager() const {
+rtype::RtypeEngine::getSystemManager() const {
   return this->_systemManager;
 }
 
@@ -90,7 +90,7 @@ rtype::CoreModule::getSystemManager() const {
  * with the elapsed time since the last update and the current entities from
  * the entity manager.
  */
-void rtype::CoreModule::update() {
+void rtype::RtypeEngine::update() {
   float deltatime = clock.restart().asSeconds();
   _entityMutex.lock();
   auto entities = this->getEntityManager()->getEntities();
@@ -98,7 +98,7 @@ void rtype::CoreModule::update() {
   this->getSystemManager()->update(deltatime, entities, msgToSend, this->msgReceived, _entityMutex);
 }
 
-void rtype::CoreModule::run() {
+void rtype::RtypeEngine::run() {
   signal(SIGINT, signalHandler);
   while (1) {
     this->update();
