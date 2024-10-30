@@ -46,6 +46,8 @@ public:
 
   int getNumClient() const { return _numClient; }
 
+  std::unordered_map<std::string, sf::Keyboard::Key> &getKeyBindings() { return _keyBindings; }
+
 private:
   /**
    * @brief Stores key bindings for various actions.

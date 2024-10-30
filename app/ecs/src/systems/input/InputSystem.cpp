@@ -35,26 +35,14 @@ void ECS_system::InputSystem::update(
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(
             entity.get()->getID());
-    if (inputComponent->isActionActive("MoveUp"))
-      msgToSend.emplace_back("MoveUp", entity->getID());
-    if (inputComponent->isActionActive("MoveDown"))
-      msgToSend.emplace_back("MoveDown", entity->getID());
-    if (inputComponent->isActionActive("MoveLeft"))
-      msgToSend.emplace_back("MoveLeft", entity->getID());
-    if (inputComponent->isActionActive("MoveRight"))
-      msgToSend.emplace_back("MoveRight", entity->getID());
-            entity->getID();
-    if (inputComponent->isActionActive("Shoot"))
-      msgToSend.emplace_back("Shoot", entity->getID());
+
+    for (auto &action : inputComponent->getKeyBindings()) {
+      if (inputComponent->isActionActive(action.first)) {
+        msgToSend.emplace_back(action.first, entity->getID());
+      }
+    }
     if (!inputComponent)
       return;
-    // component::WeaponComponent *weaponComponent =
-    //     _componentManager.getComponent<component::WeaponComponent>(
-    //         entity->getID());
-    // if (!weaponComponent)
-    //   return msgToSend;
-
-    // weaponComponent->setIsFiring(true);
   }
 }
 
