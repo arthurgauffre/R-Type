@@ -178,19 +178,7 @@ namespace rtype
           _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entityId, client->GetId())));
         }
         break;
-        }
-      }
-
-      void handleInputMessage(
-          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
-          rtype::network::Message<NetworkMessages> &message)
-      {
-        // print witch client send the message
-        // std::cout << "Client " << client->GetId() << " send a message" << std::endl;
-        // std::cout << "Handling input message" << std::endl;
-        switch (message.header.id)
-        {
-        case NetworkMessages::ClientDisconnection:
+        case Action::EXIT:
         {
           int numPlayer = 0;
           for (int i = 0; i < 4; i++)
@@ -207,6 +195,18 @@ namespace rtype
           // deqConnections.erase(std::remove(deqConnections.begin(), deqConnections.end(), client), deqConnections.end());
         }
         break;
+        }
+      }
+
+      void handleInputMessage(
+          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
+          rtype::network::Message<NetworkMessages> &message)
+      {
+        // print witch client send the message
+        // std::cout << "Client " << client->GetId() << " send a message" << std::endl;
+        // std::cout << "Handling input message" << std::endl;
+        switch (message.header.id)
+        {
         case NetworkMessages::action:
         {
           ActionMsg action;
