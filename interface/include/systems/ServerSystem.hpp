@@ -52,10 +52,16 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, entity::SceneStatus &sceneStatus)
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus)
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
+        while (!msgToSend.empty())
+        {
+          std::pair<std::string, size_t> msg = msgToSend.front();
+          msgToSend.erase(msgToSend.begin());
+          handleMsgToSend(msg);
+        }
         sendAllEntitiesUpdateOrCreateToAllClient(nullptr);
         this->ServerUpdate(100, false);
         while (!_msgReceived.empty())
@@ -822,6 +828,12 @@ namespace rtype
         if (type == component::AIType::CIRCULAR)
           return AIType::Circular;
         return AIType::Unknown;
+      }
+
+      void handleMsgToSend(std::pair<std::string, size_t> msgToSend) {
+        std::cout << "Handling message to send" << std::endl;
+        if (msgToSend.first == "Menu")
+          SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;

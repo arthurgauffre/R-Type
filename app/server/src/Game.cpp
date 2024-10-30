@@ -263,6 +263,7 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
                                                std::pair<float, float>(500.0f, 500.0f),
                                                std::pair<float, float>(0.10f, 0.10f), 100, numClient);
         _players[numClient] = entity;
+        _coreModule->msgToSend.push_back(std::pair<std::string, size_t>("Menu", numClient));
         std::cout << "Client connected : " << id << std::endl;
     }
     if (msg == "clientDisconnection")

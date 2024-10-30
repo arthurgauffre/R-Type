@@ -26,10 +26,11 @@ namespace rtype
     {
     public:
       ClientSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager) : AClient(), ASystem(componentManager, entityManager), _componentManager(componentManager), _entityManager(entityManager)
+                   entity::EntityManager &entityManager) : AClient(), ASystem(componentManager, entityManager), _componentManager(componentManager), _entityManager(entityManager), _entityMutex(nullptr)
       {
         Connect("127.0.0.1", 60000);
         startMessageProcessing();
+        _sceneStatus = std::make_shared<entity::SceneStatus>(entity::SceneStatus::MENU);
       }
 
       ~ClientSystem()
@@ -82,7 +83,10 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, entity::SceneStatus &sceneStatus) override;
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus) override;
+
+    protected:
+      std::shared_ptr<entity::SceneStatus> _sceneStatus;
 
     private:
       uint8_t entityID = 0;

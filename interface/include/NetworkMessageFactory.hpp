@@ -964,4 +964,14 @@ public:
         message << timeNow;
         return message;
     }
+    rtype::network::Message<NetworkMessages> createMenuMsg()
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::menu;
+        std::cout << "create menu" << std::endl;
+        std::chrono::system_clock::time_point timeNow =
+            std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
 };

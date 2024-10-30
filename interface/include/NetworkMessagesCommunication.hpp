@@ -75,6 +75,7 @@ enum class NetworkMessages : uint32_t {
   shoot,
   acknowledgementMesage,
   none,
+  menu,
 };
 
 enum class EntityType : uint32_t {

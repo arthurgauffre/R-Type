@@ -11,13 +11,13 @@ namespace ECS_system
 {
     void AISytem::update(float deltaTime,
                          std::vector<std::shared_ptr<entity::IEntity>> entities,
-                         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, entity::SceneStatus &sceneStatus)
+                         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus)
     {
         // lock the entity mutex
         std::lock_guard<std::mutex> lock(entityMutex);
         for (auto &entity : entities)
         {
-            if (entity->getSceneStatus() != sceneStatus)
+            if (entity->getSceneStatus() != *sceneStatus)
                 continue;
             component::TypeComponent *typeComponent = _componentManager.getComponent<component::TypeComponent>(entity->getID());
             component::AIComponent *aiComponent = _componentManager.getComponent<component::AIComponent>(entity->getID());

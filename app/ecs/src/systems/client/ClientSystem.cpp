@@ -201,6 +201,10 @@ namespace rtype
       {
       }
       break;
+      case NetworkMessages::menu:
+      {
+        _sceneStatus = std::make_shared<entity::SceneStatus>(entity::SceneStatus::MENU);
+      }
       case NetworkMessages::createEntity:
       {
         // std::cout << "Entity created" << std::endl;
@@ -586,7 +590,7 @@ namespace rtype
 
     void ClientSystem::update(float deltaTime,
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
-                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, entity::SceneStatus &sceneStatus)
+                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus)
     {
       _entityMutex = &entityMutex;
       std::lock_guard<std::mutex> lock(*_entityMutex);
@@ -624,26 +628,27 @@ namespace rtype
         if (action != NetworkMessages::none)
         {
           message.header.id = action;
-          std::cout << "Action sent : ";
-          if (action == NetworkMessages::moveUp)
-            std::cout << "moveUp" << id.id << std::endl;
-          else if (action == NetworkMessages::moveDown)
-            std::cout << "moveDown" << id.id << std::endl;
-          else if (action == NetworkMessages::moveLeft)
-            std::cout << "moveLeft";
-          else if (action == NetworkMessages::moveRight)
-            std::cout << "moveRight";
-          else if (action == NetworkMessages::shoot)
-            std::cout << "shoot";
-          else
-            std::cout << "none";
-          std::cout << std::endl;
+          // std::cout << "Action sent : ";
+          // if (action == NetworkMessages::moveUp)
+          //   std::cout << "moveUp" << id.id << std::endl;
+          // else if (action == NetworkMessages::moveDown)
+          //   std::cout << "moveDown" << id.id << std::endl;
+          // else if (action == NetworkMessages::moveLeft)
+          //   std::cout << "moveLeft";
+          // else if (action == NetworkMessages::moveRight)
+          //   std::cout << "moveRight";
+          // else if (action == NetworkMessages::shoot)
+          //   std::cout << "shoot";
+          // else
+          //   std::cout << "none";
+          // std::cout << std::endl;
           std::chrono::system_clock::time_point timeNow =
               std::chrono::system_clock::now();
           message << timeNow;
           Send(message);
         }
       }
+      sceneStatus = _sceneStatus;
     }
 
     void ClientSystem::startMessageProcessing()

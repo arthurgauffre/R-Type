@@ -56,7 +56,7 @@ private:
    * system is uniquely owned and properly destroyed when no longer needed.
    */
   std::vector<std::shared_ptr<ISystem>> _systems;
-  entity::SceneStatus _sceneStatus = entity::SceneStatus::GAME;
+  std::shared_ptr<entity::SceneStatus> _sceneStatus = std::make_shared<entity::SceneStatus>(entity::SceneStatus::MENU);
 
 };
 } // namespace ECS_system
