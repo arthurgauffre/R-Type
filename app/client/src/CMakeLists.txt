@@ -1,13 +1,6 @@
 # add_executable(r-type_client
 #     main.cpp
 # )
-find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
-
-if(SFML_FOUND)
-    message(STATUS "SFML found: ${SFML_DIR}")
-else()
-    message(FATAL_ERROR "SFML not found")
-endif()
 
 add_executable(r-type_client
     main.cpp

@@ -1,7 +1,5 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
-
 add_library(r-type_server_system SHARED
     ServerSystem.cpp
     ../../managers/system/SystemManager.cpp

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Include the SFML package
-find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
 project(R-TypeInterfaces
         VERSION 1.0

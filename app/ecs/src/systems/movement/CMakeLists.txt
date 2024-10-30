@@ -1,7 +1,5 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
-
 add_library(r-type_movement_system SHARED
     MovementSystem.cpp
     ../../components/transform/TransformComponent.cpp

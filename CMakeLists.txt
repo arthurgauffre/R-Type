@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.11)
 
 project(R-Type
     VERSION 0.1
@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_BUILD_TYPE Debug) # set build type to Debug
 
+set(CMAKE_PREFIX_PATH "C:/vcpkg/installed/x64-windows")
+
 if (WIN32)
     # Windows-specific settings
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive")
@@ -18,7 +20,7 @@ if (WIN32)
     set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
     # Add the install of the SFML library
     execute_process(COMMAND vcpkg integrate install)
-    execute_process(COMMAND vcpkg install sfml)
+    execute_process(COMMAND vcpkg install)
 endif()
 
 if (UNIX)
@@ -64,15 +66,6 @@ endif()
 # Add the debug flag for GCC
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
-endif()
-
-# Find SFML using vcpkg
-find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
-
-if(SFML_FOUND)
-    message(STATUS "SFML found: ${SFML_DIR}")
-else()
-    message(FATAL_ERROR "SFML not found")
 endif()
 
 # Add the executables for the project

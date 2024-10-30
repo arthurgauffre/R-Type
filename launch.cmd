@@ -1,106 +1,106 @@
 @echo off
 setlocal
 
-:: Set variables
+:: Definir les variables
 set rtypeClientBinary=r-type_client.exe
 set rtypeServerBinary=r-type_server.exe
 set buildDirectory=build
 set libDirectory=lib
 
-:: Clean function
+echo Initialisation du script...
+
+:: Gerer les arguments
+echo [DEBUG] Arguments reçus : %*
+if "%~1"=="" (
+    echo [DEBUG] Aucune option specifiee, compilation par defaut...
+    call :compile
+    goto :eof
+) else (
+    echo [DEBUG] Argument reçu : %1
+)
+
+if /I "%~1"=="help" (
+    echo Utilisation : %~n0 [Options]
+    echo.
+    echo Options :
+    echo   none      Compile le serveur et le client R-Type.
+    echo   re        Recompile le projet a partir de zero (fclean inclus).
+    echo   clean     Supprime tous les fichiers de post-compilation (binaires...).
+    echo   fclean    Supprime tous les fichiers de compilation et post-compilation (binaires, dossier build, fichiers .dll,...).
+    pause
+    goto :eof
+) else if /I "%~1"=="clean" (
+    call :clean
+    echo [DEBUG] Fonction clean appelee.
+    goto :eof  :: Ajout de goto pour eviter d'executer d'autres blocs
+) else if /I "%~1"=="fclean" (
+    call :fclean
+    echo [DEBUG] Fonction fclean appelee.
+    goto :eof  :: Ajout de goto pour eviter d'executer d'autres blocs
+) else if /I "%~1"=="re" (
+    echo [DEBUG] Fonction re appelee, nettoyage et compilation...
+    call :fclean
+    call :compile
+    echo [DEBUG] Fonction compile appelee après fclean.
+    goto :eof  :: Ajout de goto pour eviter d'executer d'autres blocs
+) else (
+    echo Option invalide : %1
+    pause
+    goto :eof  :: Ajout de goto pour eviter d'executer d'autres blocs
+)
+
+:: Fonction clean
 :clean
+echo [DEBUG] Entree dans la fonction clean
+echo Suppression des fichiers de build...
 del /Q %rtypeClientBinary% 2>nul
 del /Q %rtypeServerBinary% 2>nul
 del /Q %buildDirectory%\%rtypeClientBinary% 2>nul
 del /Q %buildDirectory%\%rtypeServerBinary% 2>nul
+echo Fin de la suppression des fichiers de build.
 goto :eof
 
-:: Fclean function
+:: Fonction fclean
 :fclean
+echo [DEBUG] Entree dans la fonction fclean
+echo Suppression complète des fichiers et du dossier de build...
 call :clean
 rmdir /S /Q %buildDirectory% 2>nul
 del /Q %libDirectory%\client_systems\*.dll 2>nul
 del /Q %libDirectory%\shared_systems\*.dll 2>nul
 del /Q %libDirectory%\server_systems\*.dll 2>nul
 del /Q %libDirectory%\shared_entity\*.dll 2>nul
+echo Fin de la suppression complète.
 goto :eof
 
-:: Functions Declarations
-:whichCMake
-	cmake --version || EXIT /B 1
-EXIT /B 0
-
-:whichMinGW
-	g++ --version || EXIT /B 1
-EXIT /B 0
-
-:whichVisualStudio
-    if EXIST "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.exe" (
-        EXIT /B 0
-    ) else (
-        EXIT /B 1
-    )
-EXIT /B 0
-
-
-:: Check for MinGW
-CALL :whichMinGW
-SET MinGWPath=%ERRORLEVEL%
-if %MinGWPath%==1 (
-    echo Please install MinGW first
-    EXIT /B 1
-) else (
-    echo MinGW is installed
+:: Fonction compile
+:compile
+echo [DEBUG] Entree dans la fonction compile
+echo Mise a jour des sous-modules Git...
+git submodule update --init --recursive
+if errorlevel 1 (
+    echo Erreur lors de la mise a jour des sous-modules Git.
+    pause
+    goto :eof
 )
 
-:: Check for CMake
-CALL :whichCMake
-SET cmakePath=%ERRORLEVEL%
-if %cmakePath%==1 (
-    echo Please install cmake first
-    EXIT /B 1
-) else (
-    echo CMake is installed
+echo Execution de CMake...
+cmake -B %buildDirectory% -S .
+if errorlevel 1 (
+    echo Erreur lors de l'execution de CMake.
+    pause
+    goto :eof
 )
 
-
-:: Check for Visual Studio
-CALL :whichVisualStudio
-SET VisualStudioPath=%ERRORLEVEL%
-if %VisualStudioPath%==1 (
-    echo Please install "Visual Studio 2022" first
-    EXIT /B 1
-) else (
-    echo Visual Studio is installed
+echo Construction du projet avec CMake...
+cmake --build %buildDirectory% -- /p:VcpkgEnableManifest=true
+if errorlevel 1 (
+    echo Erreur lors de la construction avec CMake.
+    pause
+    goto :eof
 )
+echo Compilation terminee.
+goto :eof
 
-:: Argument handling
-set args=%*
-if not "%args%"=="" (
-    if not "%args:help=%"=="%args%" (
-        echo Usage: %~n0 [Options]
-        echo Options:
-        echo   none      Compile R-Type server and client.
-        echo   re        Recompile the project from scratch. Use the fclean option.
-        echo   clean     Remove all post-compilation files (binaries...).
-        echo   fclean    Remove all post-compilation and compilation files (binaries, build dir, .dll files,...).
-        exit /b 0
-    )
-)
-
-
-:: Execute commands based on arguments
-if "%args%"=="clean" (
-    call :clean
-) else if "%args%"=="fclean" (
-    call :fclean
-) else if "%args%"=="re" (
-    call :fclean
-    cmake -B %buildDirectory% -S .
-    cmake --build %buildDirectory% -- /maxcpucount
-) else (
-    cmake -B %buildDirectory% -S .
-    cmake --build %buildDirectory% -- /maxcpucount
-)
-
+echo [DEBUG] Fin du script.
 endlocal
