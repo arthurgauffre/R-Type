@@ -72,13 +72,13 @@ public:
    * @brief
    *
    */
-  SceneStatus getSceneStatus() const override;
+  Scene getSceneStatus() const override;
 
   /**
    * @brief
    *
    */
-  void setSceneStatus(SceneStatus status) override;
+  void setSceneStatus(Scene status) override;
 
 protected:
   /**

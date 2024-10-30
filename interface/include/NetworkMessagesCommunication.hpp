@@ -8,6 +8,8 @@
 #pragma once
 
 #include <cstdint>
+#include <graphics/Color.hpp>
+#include <r-type/Enum.hpp>
 
 enum class NetworkMessages : uint32_t {
   ServerAcceptance,
@@ -36,6 +38,7 @@ enum class NetworkMessages : uint32_t {
   createType,
   createSize,
   createAI,
+  createRectangleShape,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -52,6 +55,7 @@ enum class NetworkMessages : uint32_t {
   updateSize,
   updateCooldown,
   updateAI,
+  updateRectangleShape,
   deleteTexture,
   deletePosition,
   deleteVelocity,
@@ -68,6 +72,7 @@ enum class NetworkMessages : uint32_t {
   deleteType,
   deleteSize,
   deleteAI,
+  deleteRectangleShape,
   moveUp,
   moveDown,
   moveLeft,
@@ -149,6 +154,10 @@ struct EntityId {
   size_t id;
 };
 
+struct SceneStatus {
+  Scene scene;
+};
+
 struct VelocityComponent {
   float x;
   float y;
@@ -215,6 +224,14 @@ struct AIComponent {
 
 struct InputComponent {
   int numClient;
+};
+
+struct RectangleShapeComponent {
+  float x;
+  float y;
+  float width;
+  float height;
+  RColor color;
 };
 
 struct BindKey {

@@ -30,7 +30,7 @@ namespace rtype
       {
         Connect("127.0.0.1", 60000);
         startMessageProcessing();
-        _sceneStatus = std::make_shared<entity::SceneStatus>(entity::SceneStatus::MENU);
+        _sceneStatus = std::make_shared<Scene>(Scene::MENU);
       }
 
       ~ClientSystem()
@@ -83,10 +83,10 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus) override;
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) override;
 
     protected:
-      std::shared_ptr<entity::SceneStatus> _sceneStatus;
+      std::shared_ptr<Scene> _sceneStatus;
 
     private:
       uint8_t entityID = 0;

@@ -11,7 +11,30 @@
 #pragma once
 
 #include <r-type/IServer.hpp>
-#include <RtypeEngine.hpp>
+
+#include <components/DamageComponent.hpp>
+#include <components/HealthComponent.hpp>
+#include <components/HitBoxComponent.hpp>
+#include <components/InputComponent.hpp>
+#include <components/MusicComponent.hpp>
+#include <components/ParentComponent.hpp>
+#include <components/SizeComponent.hpp>
+#include <components/SoundComponent.hpp>
+#include <components/SpriteComponent.hpp>
+#include <components/TextureComponent.hpp>
+#include <components/TransformComponent.hpp>
+#include <components/TypeComponent.hpp>
+#include <components/VelocityComponent.hpp>
+#include <components/WeaponComponent.hpp>
+#include <components/CooldownComponent.hpp>
+#include <components/SizeComponent.hpp>
+#include <components/AIComponent.hpp>
+#include <components/RectangleShapeComponent.hpp>
+
+#include <managers/ComponentManager.hpp>
+#include <managers/EntityManager.hpp>
+#include <managers/SystemManager.hpp>
+
 #include <NetworkMessagesCommunication.hpp>
 #include <NetworkMessageFactory.hpp>
 #include <NetworkConnection.hpp>
@@ -52,7 +75,7 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus)
+             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
@@ -277,12 +300,12 @@ namespace rtype
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
 
-            SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID()), clientToIgnore);
+            SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
           else if (entity->getCommunication() == entity::EntityCommunication::UPDATE)
           {
-            SendMessageToAllClients(networkMessageFactory.updateEntityMsg(entity->getID()), clientToIgnore);
+            SendMessageToAllClients(networkMessageFactory.updateEntityMsg(entity->getID(), entity->getSceneStatus()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
@@ -494,6 +517,27 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteAIMsg(entity->getID()), clientToIgnore);
             }
           }
+          if (_componentManager.getComponent<component::RectangleShapeComponent>(entity->getID()))
+          {
+            component::RectangleShapeComponent *component =
+                _componentManager.getComponent<component::RectangleShapeComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              status = ServerStatus::WAITING_FOR_MESSAGE;
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.createRectangleShapeMsg(entity->getID(), component->getX(), component->getY(), component->getHeight(), component->getWidth(), component->getColor()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.updateRectangleShapeMsg(entity->getID(), component->getX(), component->getY(), component->getHeight(), component->getWidth(), component->getColor()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteRectangleShapeMsg(entity->getID()), clientToIgnore);
+            }
+          }
         }
         if (transform)
         {
@@ -514,7 +558,7 @@ namespace rtype
         for (auto &entity : _entityManager.getEntities())
         {
           SendMessageToClient(
-              networkMessageFactory.createEntityMsg(entity->getID()), client);
+              networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus()), client);
           if (_componentManager.getComponent<component::SpriteComponent>(entity->getID()))
           {
             component::SpriteComponent *component =
@@ -626,6 +670,14 @@ namespace rtype
                 _componentManager.getComponent<component::SizeComponent>(entity->getID());
             SendMessageToClient(networkMessageFactory.createSizeMsg(
                                     entity->getID(), component->getSize().first, component->getSize().second),
+                                client);
+          }
+          if (_componentManager.getComponent<component::RectangleShapeComponent>(entity->getID()))
+          {
+            component::RectangleShapeComponent *component =
+                _componentManager.getComponent<component::RectangleShapeComponent>(entity->getID());
+            SendMessageToClient(networkMessageFactory.createRectangleShapeMsg(
+                                    entity->getID(), component->getX(), component->getY(), component->getWidth(), component->getHeight(), component->getColor()),
                                 client);
           }
         }

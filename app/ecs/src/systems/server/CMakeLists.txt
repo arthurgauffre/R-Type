@@ -22,6 +22,7 @@ add_library(r-type_server_system SHARED
     ../../components/cooldown/CooldownComponent.cpp
     ../../components/size/SizeComponent.cpp
     ../../components/ai/AIComponent.cpp
+    ../../components/rectangle/RectangleShapeComponent.cpp
     ../../entity/Entity.cpp
 )
 

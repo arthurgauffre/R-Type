@@ -37,7 +37,7 @@ ECS_system::RenderSystem::RenderSystem(
  */
 void ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus) {
+    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) {
   _graphic->windowClear();
 
   // lock the entity mutex
@@ -114,8 +114,43 @@ void ECS_system::RenderSystem::update(
 
     _graphic->drawSprite(spriteComponent->getSpriteId());
   }
-  _graphic->windowDisplay();
 
+  for (auto &entity : _componentManager.getEntitiesWithComponents<
+                      component::RectangleShapeComponent,
+                      component::TransformComponent>(entities)) {
+    if (entity->getSceneStatus() != *sceneStatus)
+      continue;
+
+    if (entity.get()->getActive() == false)
+      continue;
+    component::RectangleShapeComponent *rectangleShapeComponent =
+        _componentManager.getComponent<component::RectangleShapeComponent>(
+            entity.get()->getID());
+    component::TransformComponent *transformComponent =
+        _componentManager.getComponent<component::TransformComponent>(
+            entity.get()->getID());
+
+    std::pair<float, float> Position = {transformComponent->getPosition().first,
+                               transformComponent->getPosition().second};
+
+    std::pair<float, float> Size = {rectangleShapeComponent->getWidth(),
+                            rectangleShapeComponent->getHeight()};
+
+    _graphic->setRectangleShapePosition(Position.first, Position.second,
+                                       rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeSize(Size.first, Size.second,
+                                  rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeRotation(transformComponent->getRotation(),
+                                      rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeFillColor(rectangleShapeComponent->getColor().r,
+                                       rectangleShapeComponent->getColor().g,
+                                       rectangleShapeComponent->getColor().b,
+                                       rectangleShapeComponent->getColor().a,
+                                      rectangleShapeComponent->getRectangleShapeId());
+
+    _graphic->drawRectangleShape(rectangleShapeComponent->getRectangleShapeId());
+  }
+  _graphic->windowDisplay();
   _graphic->eventHandler();
 }
 

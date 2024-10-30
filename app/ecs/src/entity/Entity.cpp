@@ -59,7 +59,7 @@ EntityCommunication entity::Entity::getCommunication() const { return communicat
 
 void entity::Entity::setCommunication(EntityCommunication communication) { communicationStatus = communication; }
 
-SceneStatus entity::Entity::getSceneStatus() const { return sceneStatus; }
+Scene entity::Entity::getSceneStatus() const { return sceneStatus; }
 
-void entity::Entity::setSceneStatus(SceneStatus status) { sceneStatus = status; }
+void entity::Entity::setSceneStatus(Scene status) { sceneStatus = status; }
 } // namespace entity

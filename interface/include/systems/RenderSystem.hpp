@@ -14,6 +14,7 @@
 #include <components/TransformComponent.hpp>
 #include <components/SizeComponent.hpp>
 #include <components/TypeComponent.hpp>
+#include <components/RectangleShapeComponent.hpp>
 
 #include <r-type/ASystem.hpp>
 
@@ -41,7 +42,7 @@ public:
   void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus) override;
+         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) override;
 
   /**
    * @brief Initializes the render system.

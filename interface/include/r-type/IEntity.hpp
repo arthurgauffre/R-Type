@@ -17,6 +17,7 @@
 #endif
 
 #include <cstdint>
+#include <r-type/Enum.hpp>
 
 namespace entity {
 enum class EntityCommunication {
@@ -24,12 +25,6 @@ enum class EntityCommunication {
   CREATE,
   UPDATE,
   DELETE,
-};
-
-enum class SceneStatus {
-  NONE,
-  GAME,
-  MENU,
 };
 class IEntity {
 public:
@@ -98,9 +93,9 @@ public:
      *
      * This method is used to determine the current scene status of the entity.
      *
-     * @return SceneStatus The current scene status of the entity.
+     * @return Scene The current scene status of the entity.
      */
-    virtual SceneStatus getSceneStatus() const = 0;
+    virtual Scene getSceneStatus() const = 0;
 
     /**
      * @brief Sets the scene status of the entity.
@@ -110,10 +105,10 @@ public:
      *
      * @param status The new scene status for the entity.
      */
-    virtual void setSceneStatus(SceneStatus status) = 0;
+    virtual void setSceneStatus(Scene status) = 0;
 
   protected:
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
-    SceneStatus sceneStatus{SceneStatus::GAME};
+    Scene sceneStatus{Scene::GAME};
 };
 } // namespace entity

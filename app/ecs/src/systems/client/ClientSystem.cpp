@@ -203,16 +203,22 @@ namespace rtype
       break;
       case NetworkMessages::menu:
       {
-        _sceneStatus = std::make_shared<entity::SceneStatus>(entity::SceneStatus::MENU);
+        _sceneStatus = std::make_shared<Scene>(Scene::MENU);
       }
       case NetworkMessages::createEntity:
       {
         // std::cout << "Entity created" << std::endl;
-        EntityId entity;
-        std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
+        EntityId entityId;
+        SceneStatus scene;
+        std::memcpy(&entityId, msg.body.data(), sizeof(EntityId));
+        if (_entityManager.getEntities().size() + 10000 < entityId.id)
+          return;
+        std::memcpy(&scene, msg.body.data() + sizeof(EntityId),
+                    sizeof(SceneStatus));
 
         // std::cout << "Entity id: " << entity.id << std::endl;
-        _entityManager.createEntity(entity.id);
+        entity::IEntity *entity = _entityManager.createEntity(entityId.id);
+        entity->setSceneStatus(scene.scene);
         // Send acknowledgement message
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::acknowledgementMesage;
@@ -221,6 +227,25 @@ namespace rtype
 
       }
       break;
+      case NetworkMessages::updateEntity:
+      {
+        // std::cout << "Entity updated" << std::endl;
+        EntityId entityId;
+        SceneStatus scene;
+        std::memcpy(&entityId, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&scene, msg.body.data() + sizeof(EntityId),
+                    sizeof(SceneStatus));
+        // std::cout << "Entity id: " << entity.id << std::endl;
+        entity::IEntity *entity = _entityManager.getEntityByID(entityId.id);
+        if (entity == nullptr)
+          return;
+        entity->setSceneStatus(scene.scene);
+        // Send acknowledgement message
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
+        // std::cout << "Update component ack message sent" << std::endl;
+      }
       case NetworkMessages::deleteEntity:
       {
         // std::cout << "Entity destroyed" << std::endl;
@@ -342,30 +367,6 @@ namespace rtype
             .addComponent<component::HitBoxComponent>(id.id, hitbox.x, hitbox.y);
       }
       break;
-      // case NetworkMessages::createMusic:
-      // {
-      //   std::cout << "Music component created" << std::endl;
-      //   MusicComponent music;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&music, msg.body.data() + sizeof(EntityId),
-      //               sizeof(MusicComponent));
-      //   std::cout << "Music: " << music.musicPath << std::endl;
-      // }
-      // break;
-      // case NetworkMessages::createSound:
-      // {
-      //   std::cout << "Sound component created" << std::endl;
-      //   SoundComponent sound;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&sound, msg.body.data() + sizeof(EntityId),
-      //               sizeof(SoundComponent));
-      //   std::cout << "Sound: " << sound.soundPath << std::endl;
-      //   _coreModule.get()->getComponentManager()->addComponent<component::SoundComponent>(id.id,
-      //   sound.soundPath);
-      // }
-      // break;
       case NetworkMessages::createInput:
       {
         std::cout << "Input component created" << std::endl;
@@ -560,6 +561,32 @@ namespace rtype
             .updateComponent<component::SizeComponent>(id.id, std::make_pair(size.x, size.y));
       }
       break;
+      case NetworkMessages::createRectangleShape:
+      {
+        // std::cout << "RectangleShape component created" << std::endl;
+        RectangleShapeComponent rectangleShape;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&rectangleShape, msg.body.data() + sizeof(EntityId),
+                    sizeof(RectangleShapeComponent));
+        // std::cout << "RectangleShape: " << rectangleShape.x << " " << rectangleShape.y << " " << rectangleShape.width << " " << rectangleShape.height << std::endl;
+        _componentManager
+            .addComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
+      }
+      break;
+      case NetworkMessages::updateRectangleShape:
+      {
+        // std::cout << "RectangleShape component updated" << std::endl;
+        RectangleShapeComponent rectangleShape;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&rectangleShape, msg.body.data() + sizeof(EntityId),
+                    sizeof(RectangleShapeComponent));
+        // std::cout << "RectangleShape: " << rectangleShape.x << " " << rectangleShape.y << " " << rectangleShape.width << " " << rectangleShape.height << std::endl;
+        _componentManager
+            .updateComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
+      }
+      break;
         // break;
         // case NetworkMessages::updateMusic:
         // {
@@ -590,7 +617,7 @@ namespace rtype
 
     void ClientSystem::update(float deltaTime,
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
-                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus)
+                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
     {
       _entityMutex = &entityMutex;
       std::lock_guard<std::mutex> lock(*_entityMutex);

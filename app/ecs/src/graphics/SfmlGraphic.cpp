@@ -42,6 +42,15 @@ size_t SfmlGraphic::createTexture(std::string path)
     return id;
 }
 
+size_t SfmlGraphic::createRectangleShape(float x, float y)
+{
+    size_t id = _rectangleShapesId.size();
+    _rectangleShapesId.push_back(id);
+    _rectangleShapes[id] = sf::RectangleShape();
+    _rectangleShapes[id].setSize(sf::Vector2f(x, y));
+    return id;
+}
+
 void SfmlGraphic::setSpriteTexture(size_t spriteId, size_t textureId)
 {
     _sprites[spriteId].setTexture(_textures[textureId]);
@@ -62,6 +71,26 @@ void SfmlGraphic::setSpriteRotation(float angle, size_t id)
     _sprites[id].setRotation(angle);
 }
 
+void SfmlGraphic::setRectangleShapePosition(float x, float y, size_t id)
+{
+    _rectangleShapes[id].setPosition(x, y);
+}
+
+void SfmlGraphic::setRectangleShapeSize(float x, float y, size_t id)
+{
+    _rectangleShapes[id].setSize(sf::Vector2f(x, y));
+}
+
+void SfmlGraphic::setRectangleShapeRotation(float angle, size_t id)
+{
+    _rectangleShapes[id].setRotation(angle);
+}
+
+void SfmlGraphic::setRectangleShapeFillColor(int r, int g, int b, int a, size_t id)
+{
+    _rectangleShapes[id].setFillColor(sf::Color(r, g, b, a));
+}
+
 std::pair<float, float> SfmlGraphic::getTextureSize(size_t id)
 {
     return std::make_pair(_textures[id].getSize().x, _textures[id].getSize().y);
@@ -72,13 +101,16 @@ void SfmlGraphic::drawSprite(size_t id)
     _window.draw(_sprites[id]);
 }
 
+void SfmlGraphic::drawRectangleShape(size_t id)
+{
+    _window.draw(_rectangleShapes[id]);
+}
+
 void SfmlGraphic::eventHandler()
 {
-    sf::Event event;
-
-    while (_window.pollEvent(event))
+    while (_window.pollEvent(_event))
     {
-        if (event.type == sf::Event::Closed)
+        if (_event.type == sf::Event::Closed)
             _window.close();
     }
 }

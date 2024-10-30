@@ -34,6 +34,7 @@
 #include <components/CooldownComponent.hpp>
 #include <components/SizeComponent.hpp>
 #include <components/AIComponent.hpp>
+#include <components/RectangleShapeComponent.hpp>
 
 #include <r-type/IGraphic.hpp>
 
@@ -42,21 +43,6 @@ class RtypeEngine : virtual public IRtypeEngine {
 public:
   RtypeEngine(std::string graphicName);
   ~RtypeEngine();
-
-  entity::IEntity *createBackground(std::string texturePath,
-                                    std::pair<float, float> speed,
-                                    std::pair<float, float> size);
-  entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
-                                std::pair<float, float> position,
-                                std::pair<float, float> velocity,
-                                std::pair<float, float> scale, int health);
-  entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
-                               std::pair<float, float> position,
-                               std::pair<float, float> velocity,
-                               std::pair<float, float> scale, int health,
-                               int damage);
-  entity::IEntity *createWeapon(uint32_t parentID, std::string type, int damage,
-                                float cooldown);
 
   void update();
   void run();

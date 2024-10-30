@@ -21,6 +21,7 @@ add_executable(r-type_server
     ../../ecs/src/components/weapon/WeaponComponent.cpp
     ../../ecs/src/components/size/SizeComponent.cpp
     ../../ecs/src/components/ai/AIComponent.cpp
+    ../../ecs/src/components/rectangle/RectangleShapeComponent.cpp
     ../../ecs/src/entity/Entity.cpp
 )
 

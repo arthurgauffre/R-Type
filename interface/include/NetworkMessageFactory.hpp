@@ -14,31 +14,43 @@
 class NetworkMessageFactory
 {
 public:
-    rtype::network::Message<NetworkMessages> createEntityMsg(size_t id)
+    rtype::network::Message<NetworkMessages> createEntityMsg(size_t id, Scene scene)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createEntity;
         EntityId entity = {id};
+        SceneStatus sceneStatus = {scene};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
+        std::vector<uint8_t> sceneBytes(reinterpret_cast<uint8_t *>(&sceneStatus),
+                                        reinterpret_cast<uint8_t *>(&sceneStatus) +
+                                            sizeof(SceneStatus));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
+        message.body.insert(message.body.end(), sceneBytes.begin(),
+                            sceneBytes.end());
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateEntityMsg(size_t id)
+    rtype::network::Message<NetworkMessages> updateEntityMsg(size_t id, Scene scene)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteEntity;
         EntityId entity = {id};
+        SceneStatus sceneStatus = {scene};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
+        std::vector<uint8_t> sceneBytes(reinterpret_cast<uint8_t *>(&sceneStatus),
+                                        reinterpret_cast<uint8_t *>(&sceneStatus) +
+                                            sizeof(SceneStatus));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
+        message.body.insert(message.body.end(), sceneBytes.begin(),
+                            sceneBytes.end());
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
@@ -61,6 +73,52 @@ public:
                             entityBytes.end());
         message.body.insert(message.body.end(), textureBytes.begin(),
                             textureBytes.end());
+        std::chrono::system_clock::time_point timeNow =
+            std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> createRectangleShapeMsg(
+        size_t id, float x, float y, float width, float height, RColor color)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::createRectangleShape;
+        EntityId entity = {id};
+        RectangleShapeComponent rectangleShape = {x, y, width, height, color};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) +
+                                             sizeof(EntityId));
+        std::vector<uint8_t> rectangleShapeBytes(
+            reinterpret_cast<uint8_t *>(&rectangleShape),
+            reinterpret_cast<uint8_t *>(&rectangleShape) +
+                sizeof(RectangleShapeComponent));
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
+        message.body.insert(message.body.end(), rectangleShapeBytes.begin(),
+                            rectangleShapeBytes.end());
+        std::chrono::system_clock::time_point timeNow =
+            std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> updateRectangleShapeMsg(
+        size_t id, float x, float y, float width, float height, RColor color)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::updateRectangleShape;
+        EntityId entity = {id};
+        RectangleShapeComponent rectangleShape = {x, y, width, height, color};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) +
+                                             sizeof(EntityId));
+        std::vector<uint8_t> rectangleShapeBytes(
+            reinterpret_cast<uint8_t *>(&rectangleShape),
+            reinterpret_cast<uint8_t *>(&rectangleShape) +
+                sizeof(RectangleShapeComponent));
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
+        message.body.insert(message.body.end(), rectangleShapeBytes.begin(),
+                            rectangleShapeBytes.end());
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
@@ -156,48 +214,6 @@ public:
         message << timeNow;
         return message;
     }
-    //   rtype::network::Message<NetworkMessages>
-    //   createMusicMsg(size_t id, std::string musicPath) {
-    //     rtype::network::Message<NetworkMessages> message;
-    //     message.header.id = NetworkMessages::createMusic;
-    //     EntityId entity = {id};
-    //     MusicComponent music = {musicPath};
-    //     std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
-    //                                      reinterpret_cast<uint8_t *>(&entity) +
-    //                                          sizeof(EntityId));
-    //     std::vector<uint8_t> musicBytes(reinterpret_cast<uint8_t *>(&music),
-    //                                     reinterpret_cast<uint8_t *>(&music) +
-    //                                         sizeof(MusicComponent));
-    //     message.body.insert(message.body.end(), entityBytes.begin(),
-    //                         entityBytes.end());
-    //     message.body.insert(message.body.end(), musicBytes.begin(),
-    //                         musicBytes.end());
-    //     std::chrono::system_clock::time_point timeNow =
-    //         std::chrono::system_clock::now();
-    //     message << timeNow;
-    //     return message;
-    //   }
-    //   rtype::network::Message<NetworkMessages>
-    //   createSoundMsg(size_t id, std::string soundPath) {
-    //     rtype::network::Message<NetworkMessages> message;
-    //     message.header.id = NetworkMessages::createSound;
-    //     EntityId entity = {id};
-    //     SoundComponent sound = {soundPath};
-    //     std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
-    //                                      reinterpret_cast<uint8_t *>(&entity) +
-    //                                          sizeof(EntityId));
-    //     std::vector<uint8_t> soundBytes(reinterpret_cast<uint8_t *>(&sound),
-    //                                     reinterpret_cast<uint8_t *>(&sound) +
-    //                                         sizeof(SoundComponent));
-    //     message.body.insert(message.body.end(), entityBytes.begin(),
-    //                         entityBytes.end());
-    //     message.body.insert(message.body.end(), soundBytes.begin(),
-    //                         soundBytes.end());
-    //     std::chrono::system_clock::time_point timeNow =
-    //         std::chrono::system_clock::now();
-    //     message << timeNow;
-    //     return message;
-    //   }
     rtype::network::Message<NetworkMessages> createSpriteMsg(size_t id, float x,
                                                              float y)
     {
@@ -490,48 +506,6 @@ public:
         message << timeNow;
         return message;
     }
-    //   rtype::network::Message<NetworkMessages>
-    //   updateMusicMsg(size_t id, std::string musicPath) {
-    //     rtype::network::Message<NetworkMessages> message;
-    //     message.header.id = NetworkMessages::updateMusic;
-    //     EntityId entity = {id};
-    //     MusicComponent music = {musicPath};
-    //     std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
-    //                                      reinterpret_cast<uint8_t *>(&entity) +
-    //                                          sizeof(EntityId));
-    //     std::vector<uint8_t> musicBytes(reinterpret_cast<uint8_t *>(&music),
-    //                                     reinterpret_cast<uint8_t *>(&music) +
-    //                                         sizeof(MusicComponent));
-    //     message.body.insert(message.body.end(), musicBytes.begin(),
-    //                         musicBytes.end());
-    //     message.body.insert(message.body.end(), musicBytes.begin(),
-    //                         musicBytes.end());
-    //     std::chrono::system_clock::time_point timeNow =
-    //         std::chrono::system_clock::now();
-    //     message << timeNow;
-    //     return message;
-    //   }
-    //   rtype::network::Message<NetworkMessages>
-    //   updateSoundMsg(std::string soundPath) {
-    //     rtype::network::Message<NetworkMessages> message;
-    //     message.header.id = NetworkMessages::updateSound;
-    //     EntityId entity = {0};
-    //     SoundComponent sound = {soundPath};
-    //     std::vector<uint8_t> EntityBytes(reinterpret_cast<uint8_t *>(&entity),
-    //                                     reinterpret_cast<uint8_t *>(&entity) +
-    //                                         sizeof(EntityId));
-    //     std::vector<uint8_t> soundBytes(reinterpret_cast<uint8_t *>(&sound),
-    //                                     reinterpret_cast<uint8_t *>(&sound) +
-    //                                         sizeof(SoundComponent));
-    //     message.body.insert(message.body.end(), EntityBytes.begin(),
-    //                         EntityBytes.end());
-    //     message.body.insert(message.body.end(), soundBytes.begin(),
-    //                         soundBytes.end());
-    //     std::chrono::system_clock::time_point timeNow =
-    //         std::chrono::system_clock::now();
-    //     message << timeNow;
-    //     return message;
-    //   }
     rtype::network::Message<NetworkMessages> updateSpriteMsg(size_t id, float x,
                                                              float y)
     {
@@ -971,6 +945,20 @@ public:
         std::cout << "create menu" << std::endl;
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> deleteRectangleShapeMsg(size_t id)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::deleteRectangleShape;
+        EntityId entity = {id};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) +
+                                             sizeof(EntityId));
+        message.body.insert(message.body.end(), entityBytes.begin(),
+                            entityBytes.end());
+        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
         message << timeNow;
         return message;
     }
