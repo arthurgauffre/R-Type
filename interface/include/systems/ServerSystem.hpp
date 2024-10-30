@@ -30,6 +30,7 @@
 #include <components/SizeComponent.hpp>
 #include <components/AIComponent.hpp>
 #include <components/RectangleShapeComponent.hpp>
+#include <components/OnClickComponent.hpp>
 
 #include <managers/ComponentManager.hpp>
 #include <managers/EntityManager.hpp>
@@ -542,6 +543,44 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteRectangleShapeMsg(entity->getID()), clientToIgnore);
             }
           }
+          if (_componentManager.getComponent<component::OnClickComponent>(entity->getID()))
+          {
+            component::OnClickComponent *component =
+                _componentManager.getComponent<component::OnClickComponent>(entity->getID());
+            for (int i = 0; i < deqConnections.size(); i++)
+            {
+              if (deqConnections[i]->GetId() == component->getNumClient())
+              {
+                if (component->getCommunication() == component::ComponentCommunication::CREATE)
+                {
+                  queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
+
+                  component->setCommunication(component::ComponentCommunication::STANDBY);
+                  SendMessageToClient(networkMessageFactory.createOnClickMsg(entity->getID(), component->getNumClient(), component->getAction()), deqConnections[i]);
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
+                {
+                  if (queueOfAckMessages.empty())
+                  {
+                    component->setCommunication(component::ComponentCommunication::NONE);
+                    SendMessageToClient(networkMessageFactory.updateOnClickMsg(entity->getID(), component->getAction()), deqConnections[i]);
+                    return;
+                  }
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+                {
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  SendMessageToClient(networkMessageFactory.updateOnClickMsg(entity->getID(), component->getAction()), deqConnections[i]);
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+                {
+                  status = ServerStatus::SERVER_RECEIVING;
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  SendMessageToClient(networkMessageFactory.deleteOnClickMsg(entity->getID()), deqConnections[i]);
+                }
+              }
+            }
+          }
         }
         if (transform)
         {
@@ -683,6 +722,15 @@ namespace rtype
             SendMessageToClient(networkMessageFactory.createRectangleShapeMsg(
                                     entity->getID(), component->getX(), component->getY(), component->getWidth(), component->getHeight(), component->getColor()),
                                 client);
+          }
+          if (_componentManager.getComponent<component::OnClickComponent>(entity->getID()))
+          {
+            component::OnClickComponent *component =
+                _componentManager.getComponent<component::OnClickComponent>(entity->getID());
+            if (numClient == component->getNumClient())
+            {
+              SendMessageToClient(networkMessageFactory.createOnClickMsg(entity->getID(), component->getNumClient(), component->getAction()), client);
+            }
           }
         }
       }

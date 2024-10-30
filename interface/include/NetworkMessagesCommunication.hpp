@@ -39,6 +39,7 @@ enum class NetworkMessages : uint32_t {
   createSize,
   createAI,
   createRectangleShape,
+  createOnCLick,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -56,6 +57,7 @@ enum class NetworkMessages : uint32_t {
   updateCooldown,
   updateAI,
   updateRectangleShape,
+  updateOnClick,
   deleteTexture,
   deletePosition,
   deleteVelocity,
@@ -73,6 +75,7 @@ enum class NetworkMessages : uint32_t {
   deleteSize,
   deleteAI,
   deleteRectangleShape,
+  deleteOnClick,
   acknowledgementMesage,
   menu,
   action,
@@ -138,8 +141,9 @@ struct TextureComponent {
   TexturePath texturePath;
 };
 
-struct ActionMsg {
+struct OnClickComponent {
   Action action;
+  int numClient;
 };
 
 struct EntityId {
@@ -228,5 +232,9 @@ struct RectangleShapeComponent {
 
 struct BindKey {
   KeyBoard key;
+  Action action;
+};
+
+struct ActionMsg {
   Action action;
 };

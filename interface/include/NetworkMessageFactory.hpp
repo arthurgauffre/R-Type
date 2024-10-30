@@ -962,4 +962,48 @@ public:
         message << timeNow;
         return message;
     }
+    rtype::network::Message<NetworkMessages> createOnClickMsg(size_t id, int numClient, Action action)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::createOnCLick;
+        EntityId entity = {id};
+        OnClickComponent onClick = {action, numClient};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) + sizeof(EntityId));
+        std::vector<uint8_t> onClickBytes(reinterpret_cast<uint8_t *>(&onClick),
+                                          reinterpret_cast<uint8_t *>(&onClick) + sizeof(OnClickComponent));
+        message.body.insert(message.body.end(), entityBytes.begin(), entityBytes.end());
+        message.body.insert(message.body.end(), onClickBytes.begin(), onClickBytes.end());
+        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> updateOnClickMsg(size_t id, Action action)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::updateOnClick;
+        EntityId entity = {id};
+        ActionMsg onClick = {action};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) + sizeof(EntityId));
+        std::vector<uint8_t> onClickBytes(reinterpret_cast<uint8_t *>(&onClick),
+                                          reinterpret_cast<uint8_t *>(&onClick) + sizeof(ActionMsg));
+        message.body.insert(message.body.end(), entityBytes.begin(), entityBytes.end());
+        message.body.insert(message.body.end(), onClickBytes.begin(), onClickBytes.end());
+        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> deleteOnClickMsg(size_t id)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::deleteOnClick;
+        EntityId entity = {id};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) + sizeof(EntityId));
+        message.body.insert(message.body.end(), entityBytes.begin(), entityBytes.end());
+        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
 };

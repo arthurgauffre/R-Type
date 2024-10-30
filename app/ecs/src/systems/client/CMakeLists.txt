@@ -20,6 +20,7 @@ add_library(r-type_client_system SHARED
     ../../components/cooldown/CooldownComponent.cpp
     ../../components/size/SizeComponent.cpp
     ../../components/rectangle/RectangleShapeComponent.cpp
+    ../../components/onclick/OnClickComponent.cpp
     ../../entity/Entity.cpp
 )
 

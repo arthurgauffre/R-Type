@@ -400,22 +400,6 @@ namespace rtype
                                                          sprite.y, _graphic);
       }
       break;
-      // case NetworkMessages::updateTexture:
-      // {
-      //   std::cout << "Texture component updated" << std::endl;
-      //   TextureComponent texture;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&texture, msg.body.data() + sizeof(EntityId),
-      //               sizeof(TextureComponent));
-      //   std::cout << "Texture: " << GetTexturePath(texture.texturePath)
-      //             << std::endl;
-      //   _coreModule.get()
-      //       ->getComponentManager()
-      //       ->updateComponent<component::TextureComponent>(
-      //           id.id, GetTexturePath(texture.texturePath));
-      // }
-      // break;
       case NetworkMessages::updateTransform:
       {
         // std::cout << "Transform component updated" << std::endl;
@@ -552,31 +536,22 @@ namespace rtype
             .updateComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
       }
       break;
-        // break;
-        // case NetworkMessages::updateMusic:
-        // {
-        //   std::cout << "Music component updated" << std::endl;
-        //   MusicComponent music;
-        //   EntityId id;
-        //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        //   std::memcpy(&music, msg.body.data() + sizeof(EntityId),
-        //               sizeof(MusicComponent));
-        //   std::cout << "Music: " << music.musicPath << std::endl;
-        // }
-        // break;
-        // case NetworkMessages::updateSound:
-        // {
-        //   std::cout << "Sound component updated" << std::endl;
-        //   SoundComponent sound;
-        //   EntityId id;
-        //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        //   std::memcpy(&sound, msg.body.data() + sizeof(EntityId),
-        //               sizeof(SoundComponent));
-        //   std::cout << "Sound: " << sound.soundPath << std::endl;
-        //   _coreModule.get()->getComponentManager()->updateComponent<component::SoundComponent>(id.id,
-        //   sound.soundPath);
-        // }
-        // break;
+      case NetworkMessages::createOnCLick:
+      {
+        // create On click same as input
+        std::cout << "OnCLick component created" << std::endl;
+        EntityId id;
+        OnClickComponent onClick;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&onClick, msg.body.data() + sizeof(EntityId),
+                    sizeof(OnClickComponent));
+        _componentManager
+            .addComponent<component::OnClickComponent>(id.id, onClick.action, onClick.numClient);
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
+      }
+      break;
       }
     }
 

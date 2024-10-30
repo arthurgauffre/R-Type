@@ -35,6 +35,7 @@
 #include <components/SizeComponent.hpp>
 #include <components/AIComponent.hpp>
 #include <components/RectangleShapeComponent.hpp>
+#include <components/OnClickComponent.hpp>
 
 #include <r-type/IGraphic.hpp>
 

@@ -23,6 +23,7 @@ add_library(r-type_server_system SHARED
     ../../components/size/SizeComponent.cpp
     ../../components/ai/AIComponent.cpp
     ../../components/rectangle/RectangleShapeComponent.cpp
+    ../../components/onclick/OnClickComponent.cpp
     ../../entity/Entity.cpp
 )
 

@@ -186,12 +186,13 @@ entity::IEntity *Game::createEnemy(
     return enemy;
 }
 
-entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size)
+entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient)
 {
     entity::IEntity *button = _engine->getEntityManager()->createEntity(entityID);
 
     _engine->getComponentManager()->addComponent<component::RectangleShapeComponent>(entityID, position, size, color, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(entityID, position, std::pair<float, float>(1, 1));
+    _engine->getComponentManager()->addComponent<component::OnClickComponent>(entityID, action, numClient);
 
     return button;
 }
@@ -199,7 +200,7 @@ entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<f
 void Game::createMenu()
 {
     std::cout << "Creating menu" << std::endl;
-    entity::IEntity *button = createButton(_engine->getEntityManager()->generateEntityID(), RColor{255, 255, 255, 255}, std::pair<float, float>(100.0f, 100.0f), std::pair<float, float>(100.0f, 100.0f));
+    entity::IEntity *button = createButton(_engine->getEntityManager()->generateEntityID(), RColor{255, 255, 255, 255}, std::pair<float, float>(100.0f, 100.0f), std::pair<float, float>(100.0f, 100.0f), Action::START, 0);
     button->setSceneStatus(Scene::MENU);
 }
 

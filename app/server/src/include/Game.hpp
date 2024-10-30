@@ -31,7 +31,7 @@ public:
                                  int damage);
     entity::IEntity *createWeapon(uint32_t parentID, component::Type type, int damage,
                                   float cooldown);
-    entity::IEntity *createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size);
+    entity::IEntity *createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient);
 
     void createMenu();
 
