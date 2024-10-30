@@ -14,14 +14,10 @@
 #include <iostream>
 
 
-
 class SfmlGraphic : public AGraphic {
     public:
-        SfmlGraphic() 
-        : window(sf::VideoMode(800, 600), "R-TYpe") {}  
-    
+        SfmlGraphic(): window(sf::VideoMode(800, 600), "R-Type") {}  
         ~SfmlGraphic() {}
-
         void clear() override;
         void drawSprite(uint32_t SpriteId) override;
         void setRotation(uint32_t SpriteId, float rotation) override;
@@ -34,7 +30,7 @@ class SfmlGraphic : public AGraphic {
         uint32_t createSprite() override;
         void setTexture(uint32_t spriteId, uint32_t textureId) override;
         void setPosition(uint32_t spriteId, float x, float y) override;
-        std::pair<float, float> getTextureSize(uint32_t textureId) const override;
+        std::pair<float, float> getTextureSize(uint32_t textureId) override;
         bool isWindowOpen() const override;
 
     private:

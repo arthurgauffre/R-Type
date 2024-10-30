@@ -5,14 +5,12 @@
 ** SfmlGraphic
 */
 
-#include "AGraphic.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
-#include <IGraphic.hpp>
-#include <AGraphic.hpp>
+#include <r-type/IGraphic.hpp>
+#include <r-type/AGraphic.hpp>
 #include <SfmlGraphic.hpp>
-
 
 void SfmlGraphic::clear() {
     window.clear();
@@ -99,7 +97,7 @@ bool SfmlGraphic::isWindowOpen() const  {
     return window.isOpen();
 }
 
-std::pair<float, float> getTextureSize(uint32_t textureId) {
+std::pair<float, float> SfmlGraphic::getTextureSize(uint32_t textureId) {
     const auto& texture = sfTextures.at(textureId);
     auto size = texture.getSize();
     return {static_cast<float>(size.x), static_cast<float>(size.y)};

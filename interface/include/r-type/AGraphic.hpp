@@ -39,6 +39,7 @@ public:
   virtual void updateTexture(uint32_t textureId, const std::string& path) override = 0;
   virtual uint32_t createTexture() override = 0;
   virtual uint32_t createSprite() override = 0;
+  std::pair<float, float> getTextureSize(uint32_t textureId) override = 0;
 };
 
 #endif // AGRAPHIC_HPP

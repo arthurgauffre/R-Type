@@ -1,4 +1,5 @@
 add_subdirectory(src/systems)
+add_subdirectory(src/graphic)
 
 set(LIB_DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 set(LIB_CLIENT_SYSTEMS_DESTINATION ${LIB_DESTINATION}/client_systems)
