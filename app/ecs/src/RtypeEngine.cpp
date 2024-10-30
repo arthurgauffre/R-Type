@@ -26,7 +26,18 @@ void signalHandler(int signum) {
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::RtypeEngine::RtypeEngine() {
+rtype::RtypeEngine::RtypeEngine(std::string graphicName) {
+  std::shared_ptr<
+      rtype::RtypeEngine::DLLoader<std::shared_ptr<IGraphic>>>
+      graphicLoader = std::make_shared<
+          rtype::RtypeEngine::DLLoader<std::shared_ptr<IGraphic>>>(
+          "lib/graphics/r-type_" + graphicName + "_graphic.so");
+  if (!graphicLoader) {
+    std::cerr << "Error: cannot load graphic library" << std::endl;
+    exit(84);
+  }
+  this->_graphic = std::shared_ptr<IGraphic>(graphicLoader->getGraphic(
+          "createGraphic"));
   this->_componentManager = std::make_shared<component::ComponentManager>();
   this->_systemManager = std::make_shared<ECS_system::SystemManager>();
   this->_entityManager = std::make_shared<entity::EntityManager>();

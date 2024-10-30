@@ -22,8 +22,8 @@ public:
    * components.
    */
   ASystem(component::ComponentManager &componentManager,
-          entity::EntityManager &entityManager)
-      : ISystem(componentManager, entityManager) {}
+          entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+      : ISystem(componentManager, entityManager, graphic) {}
 
   /**
    * @brief Virtual destructor for the ASystem class.

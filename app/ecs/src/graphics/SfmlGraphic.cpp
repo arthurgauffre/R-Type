@@ -24,3 +24,8 @@ size_t SfmlGraphic::createSpirit()
 {
     return 0;
 }
+
+EXPORT_API IGraphic *createGraphic()
+{
+    return new SfmlGraphic();
+}

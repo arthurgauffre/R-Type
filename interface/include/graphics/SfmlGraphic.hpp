@@ -8,9 +8,9 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <r-type/IGraphic.hpp>
+#include <r-type/AGraphic.hpp>
 
-class SfmlGraphic: virtual public IGraphic {
+class SfmlGraphic : virtual public AGraphic {
     public:
         SfmlGraphic();
         ~SfmlGraphic();

@@ -12,6 +12,7 @@
 #include <managers/EntityManager.hpp>
 #include <memory>
 #include <r-type/IEntity.hpp>
+#include <r-type/IGraphic.hpp>
 #include <vector>
 #include <mutex>
 
@@ -25,8 +26,8 @@ namespace ECS_system {
 class ISystem {
 public:
   ISystem(component::ComponentManager &componentManager,
-          entity::EntityManager &entityManager)
-      : _componentManager(componentManager), _entityManager(entityManager) {}
+          entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+      : _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic) {}
   /*
   ** @brief Initializes the system.
   */
@@ -66,5 +67,6 @@ public:
 protected:
   component::ComponentManager &_componentManager;
   entity::EntityManager &_entityManager;
+  std::shared_ptr<IGraphic> _graphic;
 };
 } // namespace ECS_system

@@ -48,7 +48,7 @@ void ECS_system::SystemManager::update(
  */
 void ECS_system::SystemManager::addSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager, std::string systemName) {
+    entity::EntityManager &entityManager, std::string systemName, std::shared_ptr<IGraphic> graphic) {
   std::shared_ptr<
       rtype::RtypeEngine::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
       systemLoader = std::make_shared<
@@ -64,7 +64,7 @@ void ECS_system::SystemManager::addSystem(
   // Wrap the returned raw pointer in a shared_ptr
   std::shared_ptr<ECS_system::ISystem> system =
       std::shared_ptr<ECS_system::ISystem>(systemLoader->getSystem(
-          "createSystem", componentManager, entityManager));
+          "createSystem", componentManager, entityManager, graphic));
 
   // check if the system is not null
   if (!system) {

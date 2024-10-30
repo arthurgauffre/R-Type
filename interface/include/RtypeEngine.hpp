@@ -35,15 +35,12 @@
 #include <components/SizeComponent.hpp>
 #include <components/AIComponent.hpp>
 
-#include <systems/AudioSystem.hpp>
-#include <systems/GameSystem.hpp>
-#include <systems/HealthSystem.hpp>
-#include <systems/RenderSystem.hpp>
+#include <r-type/IGraphic.hpp>
 
 namespace rtype {
 class RtypeEngine : virtual public IRtypeEngine {
 public:
-  RtypeEngine();
+  RtypeEngine(std::string graphicName);
   ~RtypeEngine();
 
   entity::IEntity *createBackground(std::string texturePath,
@@ -72,7 +69,7 @@ public:
   std::vector<std::pair<std::string, size_t>> msgToSend;
   sf::Clock clock;
   std::mutex _entityMutex;
-  
+  std::shared_ptr<IGraphic> _graphic;
 
   template <typename T> class DLLoader {
   public:
@@ -125,6 +122,34 @@ public:
       ECS_system::ISystem *system = createFunc(
           std::forward<Args>(args)...);
       return system;
+    }
+
+    IGraphic *getGraphic(const std::string &funcName) {
+      using FuncPtr =
+          IGraphic *(*)(); // Function pointer type
+      void *sym;
+
+#ifdef _WIN32
+      sym = GetProcAddress(static_cast<HMODULE>(handle), funcName.c_str());
+#else
+      sym = dlsym(handle, funcName.c_str());
+#endif
+
+      if (!sym) {
+#ifdef _WIN32
+        std::cerr << "Error getting symbol: " << funcName
+                  << " Error: " << GetLastError() << std::endl;
+#else
+        std::cerr << dlerror()
+                  << std::endl;
+#endif
+        exit(1);
+      }
+
+      FuncPtr createFunc = reinterpret_cast<FuncPtr>(
+          sym);
+      IGraphic *graphic = createFunc();
+      return graphic;
     }
 
     void DLunloader() {

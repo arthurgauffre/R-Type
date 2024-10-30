@@ -10,8 +10,8 @@
 
 ECS_system::WeaponSystem::WeaponSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+    : ASystem(componentManager, entityManager, graphic) {}
 
 ECS_system::WeaponSystem::~WeaponSystem() {}
 
@@ -136,7 +136,7 @@ void ECS_system::WeaponSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
 {
-    return new ECS_system::WeaponSystem(componentManager, entityManager);
+    return new ECS_system::WeaponSystem(componentManager, entityManager, graphic);
 }

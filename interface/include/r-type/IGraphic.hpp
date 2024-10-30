@@ -7,13 +7,19 @@
 
 #pragma once
 
+#ifdef _WIN32
+#define EXPORT_API extern "C" __declspec(dllexport)
+#else
+#define EXPORT_API extern "C"
+#endif
+
 #include <iostream>
 #include <unordered_map>
 
 class IGraphic {
     public:
-        IGraphic();
-        ~IGraphic();
+        IGraphic(){};
+        virtual ~IGraphic() = default;
 
         virtual void createWindow(int x, int y, std::string name) = 0;
         virtual size_t createSpirit() = 0;

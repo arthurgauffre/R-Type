@@ -10,17 +10,17 @@
 
 int main(void) {
 
-    std::shared_ptr<rtype::RtypeEngine> core = std::make_shared<rtype::RtypeEngine>();
+    std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
 
     // load all systems
-    component::ComponentManager &componentManager = *core->getComponentManager();
-    entity::EntityManager &entityManager = *core->getEntityManager();
+    component::ComponentManager &componentManager = *engine->getComponentManager();
+    entity::EntityManager &entityManager = *engine->getEntityManager();
 
-    core->getSystemManager()->addSystem(componentManager, entityManager, "movement");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "render");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "input");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "client");
+    engine->getSystemManager()->addSystem(componentManager, entityManager, "movement", engine->_graphic);
+    engine->getSystemManager()->addSystem(componentManager, entityManager, "render", engine->_graphic);
+    engine->getSystemManager()->addSystem(componentManager, entityManager, "input", engine->_graphic);
+    engine->getSystemManager()->addSystem(componentManager, entityManager, "client", engine->_graphic);
 
-    core->run();
+    engine->run();
   return 0;
 }

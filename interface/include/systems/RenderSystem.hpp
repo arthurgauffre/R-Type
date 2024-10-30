@@ -29,7 +29,7 @@ public:
    * take place.
    */
   RenderSystem(component::ComponentManager &componentManager,
-               entity::EntityManager &entityManager);
+               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic);
 
   /**
    * @brief Destroy the RenderSystem object.

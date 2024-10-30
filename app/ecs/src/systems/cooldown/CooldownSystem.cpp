@@ -17,8 +17,8 @@
  */
 ECS_system::CooldownSystem::CooldownSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+    : ASystem(componentManager, entityManager, graphic) {}
 
 /**
  * @brief Destructor for the CooldownSystem class.
@@ -57,6 +57,6 @@ void ECS_system::CooldownSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::CooldownSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic) {
+  return new ECS_system::CooldownSystem(componentManager, entityManager, graphic);
 }

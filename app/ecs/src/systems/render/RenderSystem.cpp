@@ -18,8 +18,8 @@
  */
 ECS_system::RenderSystem::RenderSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager),
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+    : ASystem(componentManager, entityManager, graphic),
       _window(sf::VideoMode(1920, 1080), "R-Type"), _event(sf::Event()) {}
 
 /**
@@ -122,6 +122,6 @@ void ECS_system::RenderSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::RenderSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic) {
+  return new ECS_system::RenderSystem(componentManager, entityManager, graphic);
 }

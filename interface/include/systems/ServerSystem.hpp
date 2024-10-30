@@ -31,10 +31,10 @@ namespace rtype
     {
     public:
       ServerSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager)
+                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
           : rtype::network::IServer<NetworkMessages>(), ECS_system::ASystem(
                                                             componentManager,
-                                                            entityManager),
+                                                            entityManager, graphic),
             _componentManager(componentManager), _entityManager(entityManager), asioSocket(asioContext,
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {

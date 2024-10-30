@@ -28,8 +28,8 @@ public:
    * components.
    */
   CollisionSystem(component::ComponentManager &componentManager,
-                  entity::EntityManager &entityManager)
-      : ASystem(componentManager, entityManager) {}
+                  entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+      : ASystem(componentManager, entityManager, graphic) {}
 
   /**
    * @brief Destroys the CollisionSystem object.

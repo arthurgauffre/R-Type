@@ -11,9 +11,9 @@
 
 int main(void)
 {
-  std::shared_ptr<rtype::RtypeEngine> coreModule =
-      std::make_shared<rtype::RtypeEngine>();
-  Game game(coreModule);
+  std::shared_ptr<rtype::RtypeEngine> engine =
+      std::make_shared<rtype::RtypeEngine>("sfml");
+  Game game(engine);
   game.init();
   game.run();
   return 0;

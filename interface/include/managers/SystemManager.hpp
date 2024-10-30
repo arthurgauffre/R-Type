@@ -39,7 +39,7 @@ public:
    * @return T* A pointer to the newly created system.
    */
   void addSystem(component::ComponentManager &componentManager,
-                 entity::EntityManager &entityManager, std::string systemName);
+                 entity::EntityManager &entityManager, std::string systemName, std::shared_ptr<IGraphic> graphic);
 
   void
   update(float deltaTime,

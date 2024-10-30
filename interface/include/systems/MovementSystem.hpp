@@ -28,8 +28,8 @@ public:
    *                         all components in the ECS.
    */
   MovementSystem(component::ComponentManager &componentManager,
-                 entity::EntityManager &entityManager)
-      : ASystem(componentManager, entityManager) {}
+                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+      : ASystem(componentManager, entityManager, graphic) {}
 
   /**
    * @brief Default destructor for the MovementSystem class.
