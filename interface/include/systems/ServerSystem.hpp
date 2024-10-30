@@ -33,7 +33,7 @@ namespace rtype
                    entity::EntityManager &entityManager, IGraphic &graphic)
           : rtype::network::IServer<NetworkMessages>(), ECS_system::ASystem(
                                                             componentManager,
-                                                            entityManager),
+                                                            entityManager, graphic),
             _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic), asioSocket(asioContext,
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {

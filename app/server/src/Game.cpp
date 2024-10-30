@@ -81,9 +81,9 @@ entity::IEntity *Game::createBackground(std::string texturePath,
   _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
       background2->getID(), speed, speed);
   _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-      background2->getID(), texturePath);
+      background2->getID(), texturePath, _graphic);
   _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-      background2->getID(), size.first, 0);
+      background2->getID(), size.first, 0, _graphic);
   _coreModule->getComponentManager()->addComponent<component::SizeComponent>(
       background2->getID(), size);
 
@@ -119,10 +119,10 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                                component::Type::PLAYER);
     _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second);
+        entityID, position.first, position.second, _graphic);
     auto texture =
         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-            entityID, texturePath);
+            entityID, texturePath, _graphic);
     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
         entityID);
     _coreModule->getComponentManager()
@@ -166,10 +166,10 @@ entity::IEntity *Game::createEnemy(
         entityID, weapon->getID(), true, -500);
     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID, component::Type::ENEMY);
     _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second);
+        entityID, position.first, position.second, _graphic);
     auto texture =
         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-            entityID, texturePath);
+            entityID, texturePath, _graphic);
     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, velocity);
     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(

@@ -226,7 +226,7 @@ namespace rtype
                     sizeof(SpriteComponent));
         // std::cout << "Sprite: " << sprite.x << " " << sprite.y << std::endl;
         _componentManager
-            .addComponent<component::SpriteComponent>(id.id, sprite.x, sprite.y);
+            .addComponent<component::SpriteComponent>(id.id, sprite.x, sprite.y, _graphic);
       }
       break;
       case NetworkMessages::createTexture:
@@ -239,7 +239,7 @@ namespace rtype
                     sizeof(TextureComponent));
         _componentManager
             .addComponent<component::TextureComponent>(
-                id.id, GetTexturePath(texture.texturePath));
+                id.id, GetTexturePath(texture.texturePath), _graphic);
       }
       break;
       case NetworkMessages::createTransform:

@@ -20,12 +20,12 @@ class SfmlGraphic : public AGraphic {
         SfmlGraphic() 
         : window(sf::VideoMode(800, 600), "R-TYpe") {}  
     
-        virtual ~SfmlGraphic();
+        ~SfmlGraphic() {}
 
         void clear() override;
         void drawSprite(uint32_t SpriteId) override;
         void setRotation(uint32_t SpriteId, float rotation) override;
-        void setScale(uint32_t SpriteId, float s1, float s2);
+        void setScale(uint32_t SpriteId, float s1, float s2) override;
         void display() override;
         void handleEvents() override;
         bool loadTexture(uint32_t textureId, const std::string& path) override;;

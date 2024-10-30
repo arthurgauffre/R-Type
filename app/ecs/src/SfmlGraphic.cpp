@@ -13,6 +13,7 @@
 #include <AGraphic.hpp>
 #include <SfmlGraphic.hpp>
 
+
 void SfmlGraphic::clear() {
     window.clear();
 }

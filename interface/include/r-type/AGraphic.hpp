@@ -36,8 +36,9 @@ public:
   virtual void drawSprite(uint32_t SpriteId)  override = 0;
   virtual void setRotation(uint32_t SpriteId, float rotation)  override = 0;
   virtual void setScale(uint32_t SpriteId, float s1, float s2)  override = 0;
-  virtual void updateTexture(uint32_t textureId, const std::string& path) = 0;
-
+  virtual void updateTexture(uint32_t textureId, const std::string& path) override = 0;
+  virtual uint32_t createTexture() override = 0;
+  virtual uint32_t createSprite() override = 0;
 };
 
 #endif // AGRAPHIC_HPP
