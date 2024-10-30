@@ -97,7 +97,7 @@ public:
 
     ~DLLoader() {}
     template <typename... Args>
-    ECS_system::ISystem *getInstance(const std::string &funcName,
+    ECS_system::ISystem *getSystem(const std::string &funcName,
                                      Args &&...args) {
       using FuncPtr =
           ECS_system::ISystem *(*)(Args...); // Function pointer type

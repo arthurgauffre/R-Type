@@ -53,7 +53,7 @@ void ECS_system::SystemManager::addSystem(
       rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
       systemLoader = std::make_shared<
           rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-          "lib/client_systems/r-type_" + systemName + "_system.so");
+          "lib/systems/r-type_" + systemName + "_system.so");
 
   // check if the systemLoader is not null
   if (!systemLoader) {
@@ -63,7 +63,7 @@ void ECS_system::SystemManager::addSystem(
 
   // Wrap the returned raw pointer in a shared_ptr
   std::shared_ptr<ECS_system::ISystem> system =
-      std::shared_ptr<ECS_system::ISystem>(systemLoader->getInstance(
+      std::shared_ptr<ECS_system::ISystem>(systemLoader->getSystem(
           "createSystem", componentManager, entityManager));
 
   // check if the system is not null
