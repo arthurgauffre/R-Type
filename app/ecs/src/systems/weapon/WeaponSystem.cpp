@@ -38,40 +38,33 @@ void ECS_system::WeaponSystem::createProjectile(
     _componentManager.addComponent<component::VelocityComponent>(
         projectileID, velocity, velocity);
     component::TextureComponent *texture = _componentManager.addComponent<component::TextureComponent>(
-        projectileID, texturePath);
+        projectileID, texturePath, _graphic);
     _componentManager.addComponent<component::HitBoxComponent>(
-        projectileID, texture->getTexture().getSize().x,
-        texture->getTexture().getSize().y);
+        projectileID, _graphic->getTextureSize(texture->getTexture()).first,
+        _graphic->getTextureSize(texture->getTexture()).second);
 
     component::TransformComponent *transformPlayer =
         _componentManager.getComponent<component::TransformComponent>(parentID);
     component::TextureComponent *textureP =
         _componentManager.getComponent<component::TextureComponent>(parentID);
-    const sf::Texture *texturePlayer = &textureP->getTexture();
-
-    if (!texturePlayer)
-    {
-        std::cout << "Error: Player transform or texture not found" << std::endl;
-        return;
-    }
 
     std::pair<float, float> position = {
         transformPlayer->getPosition().first +
-            texturePlayer->getSize().x * transformPlayer->getScale().first,
+            _graphic->getTextureSize(textureP->getTexture()).first * transformPlayer->getScale().first,
         transformPlayer->getPosition().second +
-            (texturePlayer->getSize().y * transformPlayer->getScale().second) /
+            (_graphic->getTextureSize(textureP->getTexture()).second * transformPlayer->getScale().second) /
                 2};
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
             ->getType() == component::Type::ENEMY)
         position.first -=
-            texturePlayer->getSize().x * transformPlayer->getScale().first;
+            _graphic->getTextureSize(textureP->getTexture()).first * transformPlayer->getScale().first;
 
     component::TransformComponent *transformComponent =
         _componentManager.addComponent<component::TransformComponent>(
             projectileID, position, scale);
     _componentManager.addComponent<component::SpriteComponent>(
-        projectileID, position.first, position.second);
+        projectileID, position.first, position.second, _graphic);
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
             ->getType() == component::Type::ENEMY)

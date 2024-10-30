@@ -19,8 +19,9 @@
 ECS_system::RenderSystem::RenderSystem(
     component::ComponentManager &componentManager,
     entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
-    : ASystem(componentManager, entityManager, graphic),
-      _window(sf::VideoMode(1920, 1080), "R-Type"), _event(sf::Event()) {}
+    : ASystem(componentManager, entityManager, graphic) {
+        _graphic->createWindow(1920, 1080, "R-Type");
+    }
 
 /**
  * @brief Updates the render system by drawing all entities with the appropriate
@@ -37,7 +38,7 @@ ECS_system::RenderSystem::RenderSystem(
 void ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<entity::SceneStatus> &sceneStatus) {
-  _window.clear();
+  _graphic->windowClear();
 
   // lock the entity mutex
   std::lock_guard<std::mutex> lock(entityMutex);
@@ -65,15 +66,15 @@ void ECS_system::RenderSystem::update(
         _componentManager.getComponent<component::SizeComponent>(
             entity->getID());
 
-    sf::Vector2f position = {transformComponent->getPosition().first,
+    std::pair<float, float> position = {transformComponent->getPosition().first,
                              transformComponent->getPosition().second};
-    sf::Sprite sprite = spriteComponent->getSprite();
-    sf::Texture backgroundTexture = textureComponent->getTexture();
+    size_t sprite = spriteComponent->getSpriteId();
+    size_t backgroundTexture = textureComponent->getTexture();
 
-    sprite.setTexture(backgroundTexture);
-    sprite.setPosition(position);
+    _graphic->setSpriteTexture(sprite, backgroundTexture);
+    _graphic->setSpritePosition(position.first, position.second, sprite);
 
-    _window.draw(sprite);
+    _graphic->drawSprite(sprite);
   }
 
   for (auto &entity : _componentManager.getEntitiesWithComponents<
@@ -96,28 +97,26 @@ void ECS_system::RenderSystem::update(
         _componentManager.getComponent<component::TextureComponent>(
             entity.get()->getID());
 
-    sf::Vector2f SfPosition = {transformComponent->getPosition().first,
+    std::pair<float, float> Position = {transformComponent->getPosition().first,
                                transformComponent->getPosition().second};
 
-    sf::Vector2f SfScale = {transformComponent->getScale().first,
+    std::pair<float, float> Scale = {transformComponent->getScale().first,
                             transformComponent->getScale().second};
 
-    spriteComponent->getSprite().setTexture(textureComponent->getTexture());
-    spriteComponent->getSprite().setPosition(SfPosition);
-    spriteComponent->getSprite().setRotation(transformComponent->getRotation());
-    spriteComponent->getSprite().setScale(SfScale);
+    _graphic->setSpriteTexture(spriteComponent->getSpriteId(),
+                               textureComponent->getTexture());
+    _graphic->setSpritePosition(Position.first, Position.second,
+                                spriteComponent->getSpriteId());
+    _graphic->setSpriteRotation(transformComponent->getRotation(),
+                                spriteComponent->getSpriteId());
+    _graphic->setSpriteScale(Scale.first, Scale.second,
+                             spriteComponent->getSpriteId());
 
-    _window.draw(spriteComponent->getSprite());
+    _graphic->drawSprite(spriteComponent->getSpriteId());
   }
-  _window.display();
+  _graphic->windowDisplay();
 
-  // sf event
-  while (_window.pollEvent(_event)) {
-    if (_event.type == sf::Event::Closed) {
-      _window.close();
-      // this->_gameClosed = true;
-    }
-  }
+  _graphic->eventHandler();
 }
 
 EXPORT_API ECS_system::ISystem *

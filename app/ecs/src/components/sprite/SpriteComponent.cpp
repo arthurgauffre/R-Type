@@ -6,10 +6,10 @@
 */
 
 #include <components/SpriteComponent.hpp>
+#include <memory>
 
-void component::SpriteComponent::update(float x, float y) {
+void component::SpriteComponent::update(float x, float y, std::shared_ptr<IGraphic> graphic) {
   _x = x;
   _y = y;
-  _sprite.setPosition(x, y);
-  // Update the component
+  graphic->setSpritePosition(x, y, _spriteId);
 }

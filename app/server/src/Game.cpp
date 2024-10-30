@@ -68,9 +68,9 @@ entity::IEntity *Game::createBackground(std::string texturePath,
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         background1->getID(), speed, speed);
     _engine->getComponentManager()->addComponent<component::TextureComponent>(
-        background1->getID(), texturePath);
+        background1->getID(), texturePath, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        background1->getID(), 0, 0);
+        background1->getID(), 0, 0, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SizeComponent>(
         background1->getID(), size);
 
@@ -81,9 +81,9 @@ entity::IEntity *Game::createBackground(std::string texturePath,
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         background2->getID(), speed, speed);
     _engine->getComponentManager()->addComponent<component::TextureComponent>(
-        background2->getID(), texturePath);
+        background2->getID(), texturePath, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        background2->getID(), size.first, 0);
+        background2->getID(), size.first, 0, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SizeComponent>(
         background2->getID(), size);
 
@@ -119,10 +119,10 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                                component::Type::PLAYER);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second);
+        entityID, position.first, position.second, _engine->_graphic);
     auto texture =
         _engine->getComponentManager()->addComponent<component::TextureComponent>(
-            entityID, texturePath);
+            entityID, texturePath, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::InputComponent>(
         entityID, numClient);
     _engine->getComponentManager()
@@ -147,8 +147,8 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
     _engine->getComponentManager()->addComponent<component::HealthComponent>(
         entityID, health);
     _engine->getComponentManager()->addComponent<component::HitBoxComponent>(
-        entityID, texture->getTexture().getSize().x * scale.first,
-        texture->getTexture().getSize().y * scale.second);
+        entityID, _engine->_graphic->getTextureSize(texture->getTexture()).first * scale.first,
+        _engine->_graphic->getTextureSize(texture->getTexture()).second * scale.second);
 
     return player;
 }
@@ -166,10 +166,10 @@ entity::IEntity *Game::createEnemy(
         entityID, weapon->getID(), true, -500);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, component::Type::ENEMY);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second);
+        entityID, position.first, position.second, _engine->_graphic);
     auto texture =
         _engine->getComponentManager()->addComponent<component::TextureComponent>(
-            entityID, texturePath);
+            entityID, texturePath, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, velocity);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
@@ -178,8 +178,8 @@ entity::IEntity *Game::createEnemy(
     _engine->getComponentManager()->addComponent<component::HealthComponent>(
         entityID, health);
     _engine->getComponentManager()->addComponent<component::HitBoxComponent>(
-        entityID, texture->getTexture().getSize().x * scale.first,
-        texture->getTexture().getSize().y * scale.second);
+        entityID, _engine->_graphic->getTextureSize(texture->getTexture()).first * scale.first,
+        _engine->_graphic->getTextureSize(texture->getTexture()).second * scale.second);
     _engine->getComponentManager()->addComponent<component::AIComponent>(
         entityID, component::AIType::SINUSOIDAL);
 

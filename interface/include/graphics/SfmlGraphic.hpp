@@ -16,8 +16,23 @@ class SfmlGraphic : virtual public AGraphic {
         ~SfmlGraphic();
 
         void createWindow(int x, int y, std::string name) override;
-        size_t createSpirit() override;
+        size_t createSprite() override;
+        size_t createTexture(std::string path) override;
 
+        void setSpriteTexture(size_t spriteId, size_t textureId) override;
+        void setSpritePosition(float x, float y, size_t id) override;
+        void setSpriteScale(float x, float y, size_t id) override;
+        void setSpriteRotation(float angle, size_t id) override;
+
+        std::pair<float, float> getTextureSize(size_t id) override;
+
+        void drawSprite(size_t id) override;
+
+        void eventHandler() override;
+
+        void windowDisplay() override;
+        void windowClear() override;
+        void windowClose() override;
     protected:
     private:
         sf::RenderWindow _window;

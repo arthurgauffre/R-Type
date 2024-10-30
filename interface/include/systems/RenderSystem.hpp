@@ -60,9 +60,5 @@ public:
    */
   void handleComponents() override{};
 
-private:
-  sf::RenderWindow _window;
-  sf::Event _event;
-  // bool _gameClosed = false;
 };
 } // namespace ECS_system
