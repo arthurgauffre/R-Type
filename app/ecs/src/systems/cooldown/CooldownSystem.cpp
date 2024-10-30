@@ -40,7 +40,7 @@ ECS_system::CooldownSystem::~CooldownSystem() {}
  * @param entities A vector of shared pointers to entities to be updated.
  */
 void ECS_system::CooldownSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) {
   for (auto &entity :
        _componentManager
            .getEntitiesWithComponents<component::CooldownComponent>(entities)) {

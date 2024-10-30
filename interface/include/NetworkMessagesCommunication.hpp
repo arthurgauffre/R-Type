@@ -73,14 +73,10 @@ enum class NetworkMessages : uint32_t {
   deleteSize,
   deleteAI,
   deleteRectangleShape,
-  moveUp,
-  moveDown,
-  moveLeft,
-  moveRight,
-  shoot,
   acknowledgementMesage,
-  none,
   menu,
+  action,
+  none,
 };
 
 enum class EntityType : uint32_t {
@@ -106,14 +102,6 @@ enum class TexturePath : uint32_t {
   Enemy,
   Bullet,
   Background,
-};
-
-enum class BindAction : uint32_t {
-  MoveUp,
-  MoveDown,
-  MoveLeft,
-  MoveRight,
-  Shoot,
 };
 
 enum class KeyBoard : uint32_t {
@@ -148,6 +136,10 @@ enum class KeyBoard : uint32_t {
 
 struct TextureComponent {
   TexturePath texturePath;
+};
+
+struct ActionMsg {
+  Action action;
 };
 
 struct EntityId {
@@ -236,5 +228,5 @@ struct RectangleShapeComponent {
 
 struct BindKey {
   KeyBoard key;
-  BindAction action;
+  Action action;
 };

@@ -115,7 +115,7 @@ void rtype::RtypeEngine::run() {
     this->update();
     if (!keepRunning) {
       std::cout << "Exiting..." << std::endl;
-      msgToSend.push_back(std::make_pair("exit", 0));
+      msgToSend.push_back(std::make_pair(Action::EXIT, 0));
       break;
     }
   }

@@ -127,19 +127,19 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
         entityID, numClient);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("MoveLeft", sf::Keyboard::Q);
+        ->bindAction(Action::MOVE_LEFT, sf::Keyboard::Q);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("MoveRight", sf::Keyboard::D);
+        ->bindAction(Action::MOVE_RIGHT, sf::Keyboard::D);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("MoveUp", sf::Keyboard::Z);
+        ->bindAction(Action::MOVE_UP, sf::Keyboard::Z);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("MoveDown", sf::Keyboard::S);
+        ->bindAction(Action::MOVE_DOWN, sf::Keyboard::S);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("Shoot", sf::Keyboard::Space);
+        ->bindAction(Action::SHOOT, sf::Keyboard::Space);
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, velocity);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
@@ -281,7 +281,7 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
                                                std::pair<float, float>(500.0f, 500.0f),
                                                std::pair<float, float>(0.10f, 0.10f), 100, numClient);
         _players[numClient] = entity;
-        _engine->msgToSend.push_back(std::pair<std::string, size_t>("Menu", numClient));
+        _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, numClient));
         std::cout << "Client connected : " << id << std::endl;
     }
     if (msg == "clientDisconnection")

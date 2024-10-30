@@ -40,41 +40,6 @@ namespace rtype
       return "";
     }
 
-    NetworkMessages ClientSystem::getAction(std::string action)
-    {
-      if (action == "MoveUp")
-        return NetworkMessages::moveUp;
-      if (action == "MoveDown")
-        return NetworkMessages::moveDown;
-      if (action == "MoveLeft")
-        return NetworkMessages::moveLeft;
-      if (action == "MoveRight")
-        return NetworkMessages::moveRight;
-      if (action == "Shoot")
-        return NetworkMessages::shoot;
-      if (action == "exit")
-        return NetworkMessages::ClientDisconnection;
-      return NetworkMessages::none;
-    }
-
-    std::string ClientSystem::getStringAction(BindAction action)
-    {
-      switch (action)
-      {
-      case BindAction::MoveUp:
-        return "MoveUp";
-      case BindAction::MoveDown:
-        return "MoveDown";
-      case BindAction::MoveLeft:
-        return "MoveLeft";
-      case BindAction::MoveRight:
-        return "MoveRight";
-      case BindAction::Shoot:
-        return "Shoot";
-      }
-      return "";
-    }
-
     sf::Keyboard::Key ClientSystem::getKey(KeyBoard key)
     {
       switch (key)
@@ -393,7 +358,7 @@ namespace rtype
         std::memcpy(&input, msg.body.data() + sizeof(EntityId),
                     sizeof(BindKey));
         _componentManager
-            .updateComponent<component::InputComponent>(id.id, getStringAction(input.action),
+            .updateComponent<component::InputComponent>(id.id, input.action,
                                                         getKey(input.key));
       }
       break;
@@ -617,7 +582,7 @@ namespace rtype
 
     void ClientSystem::update(float deltaTime,
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
-                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
+                              std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
     {
       _entityMutex = &entityMutex;
       std::lock_guard<std::mutex> lock(*_entityMutex);
@@ -642,33 +607,25 @@ namespace rtype
       while (!msgToSend.empty())
       {
         // popfront the first message in the queue
-        std::string msg = msgToSend.front().first;
+        Action msg = msgToSend.front().first;
         EntityId id = {msgToSend.front().second};
+        ActionMsg actionMsg = {msg};
         msgToSend.erase(msgToSend.begin());
         rtype::network::Message<NetworkMessages> message;
-        NetworkMessages action = getAction(msg);
+        NetworkMessages action = NetworkMessages::action;
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&id),
                                          reinterpret_cast<uint8_t *>(&id) +
                                              sizeof(EntityId));
+        std::vector<uint8_t> actionBytes(reinterpret_cast<uint8_t *>(&actionMsg),
+                                         reinterpret_cast<uint8_t *>(&actionMsg) +
+                                             sizeof(ActionMsg));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
+        message.body.insert(message.body.end(), actionBytes.begin(),
+                            actionBytes.end());
         if (action != NetworkMessages::none)
         {
           message.header.id = action;
-          // std::cout << "Action sent : ";
-          // if (action == NetworkMessages::moveUp)
-          //   std::cout << "moveUp" << id.id << std::endl;
-          // else if (action == NetworkMessages::moveDown)
-          //   std::cout << "moveDown" << id.id << std::endl;
-          // else if (action == NetworkMessages::moveLeft)
-          //   std::cout << "moveLeft";
-          // else if (action == NetworkMessages::moveRight)
-          //   std::cout << "moveRight";
-          // else if (action == NetworkMessages::shoot)
-          //   std::cout << "shoot";
-          // else
-          //   std::cout << "none";
-          // std::cout << std::endl;
           std::chrono::system_clock::time_point timeNow =
               std::chrono::system_clock::now();
           message << timeNow;

@@ -67,10 +67,6 @@ namespace rtype
 
       std::string GetTexturePath(TexturePath texture);
 
-      NetworkMessages getAction(std::string action);
-
-      std::string getStringAction(BindAction action);
-
       sf::Keyboard::Key getKey(KeyBoard key);
 
       component::Type getTypedEntity(EntityType type);
@@ -83,7 +79,7 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) override;
+             std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) override;
 
     protected:
       std::shared_ptr<Scene> _sceneStatus;

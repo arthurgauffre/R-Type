@@ -75,13 +75,13 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
+             std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
       {
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
         while (!msgToSend.empty())
         {
-          std::pair<std::string, size_t> msg = msgToSend.front();
+          std::pair<Action, size_t> msg = msgToSend.front();
           msgToSend.erase(msgToSend.begin());
           handleMsgToSend(msg);
         }
@@ -128,17 +128,55 @@ namespace rtype
           // extract the content of the body's message
 
           // status = ServerStatus::SERVER_RECEIVING;
-          if (!queueOfAckMessages.empty()) {
+          if (!queueOfAckMessages.empty())
+          {
             queueOfAckMessages.pop_back();
             // std::cout << "Acknowledgement message received" << std::endl;
           }
-
         }
         break;
         default:
         {
           handleInputMessage(client, message);
         }
+        }
+      }
+
+      void handleActionMessage(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
+                               Action action, size_t entityId)
+      {
+        switch (action)
+        {
+        case Action::MOVE_UP:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("moveUp", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::MOVE_DOWN:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("moveDown", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::MOVE_LEFT:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("moveLeft", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::MOVE_RIGHT:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("moveRight", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::SHOOT:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entityId, client->GetId())));
+        }
+        break;
         }
       }
 
@@ -151,9 +189,11 @@ namespace rtype
         // std::cout << "Handling input message" << std::endl;
         switch (message.header.id)
         {
-        case NetworkMessages::ClientDisconnection: {
+        case NetworkMessages::ClientDisconnection:
+        {
           int numPlayer = 0;
-          for (int i = 0; i < 4; i++) {
+          for (int i = 0; i < 4; i++)
+          {
             if (_playerConnected[i].second == client->GetId())
             {
               numPlayer = i;
@@ -166,49 +206,14 @@ namespace rtype
           // deqConnections.erase(std::remove(deqConnections.begin(), deqConnections.end(), client), deqConnections.end());
         }
         break;
-        case NetworkMessages::moveUp:
+        case NetworkMessages::action:
         {
-          status = ServerStatus::SERVER_RECEIVING;
-
+          ActionMsg action;
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveUp", std::make_pair(entity.id, client->GetId())));
-        }
-        break;
-        case NetworkMessages::moveDown:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
-
-          EntityId entity;
-          std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveDown", std::make_pair(entity.id, client->GetId())));
-        }
-        break;
-        case NetworkMessages::moveLeft:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
-
-          EntityId entity;
-          std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveLeft", std::make_pair(entity.id, client->GetId())));
-        }
-        break;
-        case NetworkMessages::moveRight:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
-
-          EntityId entity;
-          std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveRight", std::make_pair(entity.id, client->GetId())));
-        }
-        break;
-        case NetworkMessages::shoot:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
-
-          EntityId entity;
-          std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entity.id, client->GetId())));
+          std::memcpy(&action, message.body.data() + sizeof(EntityId),
+                      sizeof(ActionMsg));
+          handleActionMessage(client, action.action, entity.id);
         }
         break;
         default:
@@ -299,7 +304,6 @@ namespace rtype
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-
             SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
@@ -312,7 +316,6 @@ namespace rtype
           {
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
-
 
             // entity->setCommunication(entity::EntityCommunication::NONE);
             SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
@@ -409,7 +412,8 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            for (int i = 0; i < deqConnections.size(); i++) {
+            for (int i = 0; i < deqConnections.size(); i++)
+            {
               if (deqConnections[i]->GetId() == component->getNumClient())
               {
 
@@ -419,18 +423,18 @@ namespace rtype
 
                   queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-
                   component->setCommunication(component::ComponentCommunication::STANDBY);
                   std::cout << "SENDING INPUT MSG TO ALL CLIENTS" << std::endl;
                   SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), deqConnections[i]);
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
                 {
-                  if (queueOfAckMessages.empty()) {
+                  if (queueOfAckMessages.empty())
+                  {
                     component->setCommunication(component::ComponentCommunication::NONE);
                     for (auto &bind : component->getKeyBindings())
                     {
-                      BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                      BindKey input = {getKeyBind(bind.second), bind.first};
                       SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
                     }
                     return;
@@ -441,7 +445,7 @@ namespace rtype
                   component->setCommunication(component::ComponentCommunication::NONE);
                   for (auto &bind : component->getKeyBindings())
                   {
-                    BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                    BindKey input = {getKeyBind(bind.second), bind.first};
                     SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
                   }
                 }
@@ -643,7 +647,7 @@ namespace rtype
               SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
               for (auto &bind : component->getKeyBindings())
               {
-                BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                BindKey input = {getKeyBind(bind.second), bind.first};
                 SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), client);
               }
             }
@@ -738,7 +742,8 @@ namespace rtype
         {
           if (client && client->IsConnected())
           {
-            if (client != clientToIgnore) {
+            if (client != clientToIgnore)
+            {
               client->Send(message);
             }
           }
@@ -765,11 +770,14 @@ namespace rtype
         while (messageCount < maxMessages && !incomingMessages.empty())
         {
           // auto message = incomingMessages.popFront();
-          if (queueOfAckMessages.size() >= 0){
+          if (queueOfAckMessages.size() >= 0)
+          {
             auto message = incomingMessages.popFront();
             OnMessageReceived(message.remoteConnection, message.message);
             // auto toto = queueOfAckMessages.pop_front();
-          } else {
+          }
+          else
+          {
             auto message = incomingMessages.popFront();
             OnMessageReceived(message.remoteConnection, message.message);
           }
@@ -837,21 +845,6 @@ namespace rtype
         return KeyBoard::Z;
       }
 
-      BindAction getStringAction(std::string action)
-      {
-        if (action == "MoveUp")
-          return BindAction::MoveUp;
-        if (action == "MoveDown")
-          return BindAction::MoveDown;
-        if (action == "MoveLeft")
-          return BindAction::MoveLeft;
-        if (action == "MoveRight")
-          return BindAction::MoveRight;
-        if (action == "Shoot")
-          return BindAction::Shoot;
-        return BindAction::MoveUp;
-      }
-
       EntityType getEntityType(component::Type type)
       {
         if (type == component::Type::PLAYER)
@@ -882,9 +875,10 @@ namespace rtype
         return AIType::Unknown;
       }
 
-      void handleMsgToSend(std::pair<std::string, size_t> msgToSend) {
+      void handleMsgToSend(std::pair<Action, size_t> msgToSend)
+      {
         std::cout << "Handling message to send" << std::endl;
-        if (msgToSend.first == "Menu")
+        if (msgToSend.first == Action::MENU)
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
       }
 
