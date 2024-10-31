@@ -21,11 +21,7 @@ public:
 
     entity::IEntity *createBackground();
     entity::IEntity *createPlayer(int numClient);
-    entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
-                                 std::pair<float, float> position,
-                                 std::pair<float, float> velocity,
-                                 std::pair<float, float> scale, int health,
-                                 int damage);
+    entity::IEntity *createEnemy();
     entity::IEntity *createWeapon(uint32_t parentID, component::Type type, int damage,
                                   float cooldown);
 
@@ -52,6 +48,6 @@ private:
     sf::Clock inputClock;
     sf::Clock waveClock;
     std::unordered_map<size_t, entity::IEntity *> _players;
-    float _spawnInterval;
+    float _waveInterval;
     nlohmann::json _config;
 };

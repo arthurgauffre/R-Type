@@ -15,11 +15,19 @@ Game::~Game()
 {
 }
 
+float getRandomPosition()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0, 1080);
+    return dis(gen);
+}
+
 entity::IEntity *Game::createWeapon(uint32_t parentID,
                                     component::Type type, int damage,
                                     float cooldown)
 {
-    auto weapon = _coreModule->getEntityManager()->createEntity(
+    entity::IEntity *weapon = _coreModule->getEntityManager()->createEntity(
         _coreModule->getEntityManager()->generateEntityID());
 
     // _coreModule->getComponentManager()->addComponent<component::SoundComponent>(
@@ -164,21 +172,36 @@ Game::createPlayer(int numClient)
     return player;
 }
 
-entity::IEntity *Game::createEnemy(
-    uint32_t entityID, std::string texturePath,
-    std::pair<float, float> position, std::pair<float, float> velocity,
-    std::pair<float, float> scale, int health, int damage)
+entity::IEntity *Game::createEnemy()
 {
-    auto enemy = _coreModule->getEntityManager()->createEntity(entityID);
+    nlohmann::json config = this->getConfig();
+    std::string texturePath = config["enemy"]["path"];
+    int damage = config["enemy"]["damage"];
+    std::pair<float, float> velocity = std::pair<float, float>(config["enemy"]["velocity"]["x"], config["enemy"]["velocity"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(config["enemy"]["scale"]["x"], config["enemy"]["scale"]["y"]);
+    auto positionInput = config["enemy"]["position"];
+    int health = config["enemy"]["health"];
+    std::pair<float, float> position;
 
-    auto weapon = createWeapon(entityID, component::Type::WEAPON, damage, 2);
+    if (positionInput["x"] == "random")
+        position.first = getRandomPosition();
+    else
+        position.first = positionInput["x"];
+    if (positionInput["y"] == "random")
+        position.second = getRandomPosition();
+    else
+        position.second = positionInput["y"];
+
+    uint32_t entityID = _coreModule->getEntityManager()->generateEntityID();
+    entity::IEntity *enemy = _coreModule->getEntityManager()->createEntity(entityID);
+    entity::IEntity *weapon = createWeapon(entityID, component::Type::WEAPON, damage, 2);
 
     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), true, -500);
     _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID, component::Type::ENEMY);
     _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second);
-    auto texture =
+    component::TextureComponent *texture =
         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath);
     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
@@ -296,8 +319,10 @@ void Game::init()
     //                                            "health");
     // _coreModule->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "game");
-    this->_spawnInterval = 5;
-    this->_waveNumber = 10;
+    int waveInterval = this->getConfig()["waveInterval"];
+    int waveNumber = this->getConfig()["waveNumber"];
+    this->_waveInterval = waveInterval;
+    this->_waveNumber = waveNumber;
 }
 
 void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
@@ -322,11 +347,13 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
         }
     }
     // std::cout << "numClient: " << numClient << std::endl;
-    if (_players.find(numClient) == _players.end()) {
+    if (_players.find(numClient) == _players.end())
+    {
         std::cout << "Player not found" << std::endl;
         return;
     }
-    if (_players[numClient]->getID() != id) {
+    if (_players[numClient]->getID() != id)
+    {
         std::cout << "Player ID not matching" << std::endl;
         return;
     }
@@ -386,14 +413,6 @@ void Game::resetInput()
     }
 }
 
-float getRandomPosition()
-{
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0, 1080);
-    return dis(gen);
-}
-
 void Game::run()
 {
     inputClock.restart();
@@ -401,15 +420,9 @@ void Game::run()
     while (1)
     {
         _coreModule->update();
-        if (_waveNumber != 0 && waveClock.getElapsedTime().asSeconds() > _spawnInterval)
+        if (_waveNumber != 0 && waveClock.getElapsedTime().asSeconds() > _waveInterval)
         {
-            float randomPosition = getRandomPosition();
-
-            this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-                              "app/assets/sprites/enemy.png",
-                              std::pair<float, float>(1920.0f, randomPosition),
-                              std::pair<float, float>(-200.0f, 0.0f),
-                              std::pair<float, float>(0.2f, 0.2f), 100, 100);
+            this->createEnemy();
             _waveNumber--;
             waveClock.restart();
         }
