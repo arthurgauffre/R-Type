@@ -21,6 +21,7 @@ enum class Type {
   ENEMY_PROJECTILE,
   BACKGROUND,
   UNKNOWN,
+  STRUCTURE,
 };
 class TypeComponent : public AComponent {
 public:

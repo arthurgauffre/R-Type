@@ -36,6 +36,12 @@ namespace rtype
       {
         return "app/assets/sprites/projectile.gif";
       }
+      break;
+      case TexturePath::Block:
+      {
+        TexturePath::Block;
+        return "app/assets/sprites/block.png";
+      }
       }
       return "";
     }

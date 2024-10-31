@@ -100,6 +100,7 @@ enum class TexturePath : uint32_t {
   Enemy,
   Bullet,
   Background,
+  Block,
 };
 
 enum class BindAction : uint32_t {

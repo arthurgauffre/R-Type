@@ -186,6 +186,30 @@ entity::IEntity *Game::createEnemy(
     return enemy;
 }
 
+entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePath,
+                                       std::pair<float, float> position,
+                                       std::pair<float, float> scale)
+{
+    entity::IEntity *structure = _coreModule->getEntityManager()->createEntity(entityID);
+
+    _coreModule->getComponentManager()->addComponent<component::TypeComponent>(
+        entityID, component::Type::STRUCTURE);
+    _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
+        entityID, position.first, position.second);
+    component::TextureComponent *texture =
+        _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
+            entityID, texturePath);
+    _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
+        entityID, position, scale);
+    _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
+        entityID, texture->getTexture().getSize().x * scale.first,
+        texture->getTexture().getSize().y * scale.second);
+    _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+        entityID, std::pair<float, float>(-200.0f, 0.0f), std::pair<float, float>(-200.0f, 0.0f));
+
+    return structure;
+}
+
 /**
  * @brief Initializes the core module of the R-Type game.
  *
@@ -219,11 +243,11 @@ void Game::init()
     this->createBackground("app/assets/images/city_background.png",
                            std::pair<float, float>(-100.0f, 0.0f),
                            std::pair<float, float>(4448.0f, 1200.0f));
-    // this->createEnemy(_coreModule->getEntityManager()->generateEntityID(),
-    //                   "app/assets/sprites/enemy.png",
-    //                   std::pair<float, float>(1800.0f, 0.0f),
-    //                   std::pair<float, float>(-200.0f, 0.0f),
-    //                   std::pair<float, float>(0.2f, 0.2f), 100, 100);
+
+    this->createStructure(_coreModule->getEntityManager()->generateEntityID(),
+                          "app/assets/sprites/block.png",
+                          std::pair<float, float>(1920.0f, 0.0f),
+                          std::pair<float, float>(0.5f, 0.5f));
 
     component::ComponentManager &componentManager = *_coreModule->getComponentManager();
 

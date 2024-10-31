@@ -761,6 +761,8 @@ namespace rtype
           return TexturePath::Background;
         if (texture == "app/assets/sprites/projectile.gif")
           return TexturePath::Bullet;
+        if (texture == "app/assets/sprites/block.png")
+          return TexturePath::Block;
         return TexturePath::Player;
       }
 

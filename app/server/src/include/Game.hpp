@@ -32,6 +32,10 @@ public:
     entity::IEntity *createWeapon(uint32_t parentID, component::Type type, int damage,
                                   float cooldown);
 
+    entity::IEntity *createStructure(uint32_t entityID, std::string texturePath,
+                                     std::pair<float, float> position,
+                                     std::pair<float, float> scale);    
+
     void init();
     void run();
     void resetInput();
