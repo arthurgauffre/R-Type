@@ -12,6 +12,7 @@
 #include <components/TransformComponent.hpp>
 #include <components/TypeComponent.hpp>
 #include <components/DamageComponent.hpp>
+#include <components/VelocityComponent.hpp>
 #include <r-type/ASystem.hpp>
 
 #include <iostream>

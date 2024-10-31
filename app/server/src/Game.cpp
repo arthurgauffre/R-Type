@@ -188,7 +188,7 @@ entity::IEntity *Game::createEnemy(
 
 entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePath,
                                        std::pair<float, float> position,
-                                       std::pair<float, float> scale)
+                                       std::pair<float, float> scale, int health)
 {
     entity::IEntity *structure = _coreModule->getEntityManager()->createEntity(entityID);
 
@@ -206,6 +206,8 @@ entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePat
         texture->getTexture().getSize().y * scale.second);
     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, std::pair<float, float>(-200.0f, 0.0f), std::pair<float, float>(-200.0f, 0.0f));
+    _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
+        entityID, health);
 
     return structure;
 }
@@ -247,7 +249,7 @@ void Game::init()
     this->createStructure(_coreModule->getEntityManager()->generateEntityID(),
                           "app/assets/sprites/block.png",
                           std::pair<float, float>(1920.0f, 0.0f),
-                          std::pair<float, float>(0.5f, 0.5f));
+                          std::pair<float, float>(0.5f, 0.5f), 50);
 
     component::ComponentManager &componentManager = *_coreModule->getComponentManager();
 

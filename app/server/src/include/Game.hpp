@@ -34,7 +34,7 @@ public:
 
     entity::IEntity *createStructure(uint32_t entityID, std::string texturePath,
                                      std::pair<float, float> position,
-                                     std::pair<float, float> scale);    
+                                     std::pair<float, float> scale, int health);
 
     void init();
     void run();
