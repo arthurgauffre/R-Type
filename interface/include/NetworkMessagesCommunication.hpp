@@ -78,6 +78,7 @@ enum class NetworkMessages : uint32_t {
   deleteOnClick,
   acknowledgementMesage,
   menu,
+  game,
   action,
   none,
 };

@@ -170,6 +170,11 @@ namespace rtype
       {
         _sceneStatus = std::make_shared<Scene>(Scene::MENU);
       }
+      break;
+      case NetworkMessages::game:
+      {
+        _sceneStatus = std::make_shared<Scene>(Scene::GAME);
+      }
       case NetworkMessages::createEntity:
       {
         // std::cout << "Entity created" << std::endl;

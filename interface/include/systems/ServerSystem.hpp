@@ -175,12 +175,13 @@ namespace rtype
         case Action::SHOOT:
         {
           status = ServerStatus::SERVER_RECEIVING;
+          std::cout << "shoot" << std::endl;
           _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::PLAY:
         {
-          std::cout << "Client " << client->GetId() << " wants to play" << std::endl;
+          _msgReceived.emplace_back(std::make_pair("play", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::EXIT:
@@ -946,6 +947,12 @@ namespace rtype
         std::cout << "Handling message to send" << std::endl;
         if (msgToSend.first == Action::MENU)
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
+        else if (msgToSend.first == Action::GAME)
+          SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
+        // else if (msgToSend.first == Action::SETTINGS)
+          // SendMessageToClient(networkMessageFactory.createSettingsMsg(), deqConnections[msgToSend.second]);
+        // else if (msgToSend.first == Action::EXIT)
+          // SendMessageToClient(networkMessageFactory.createExitMsg(), deqConnections[msgToSend.second]);
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;

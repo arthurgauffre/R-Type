@@ -949,6 +949,16 @@ public:
         message << timeNow;
         return message;
     }
+    rtype::network::Message<NetworkMessages> createGameMsg()
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::game;
+        std::cout << "create game" << std::endl;
+        std::chrono::system_clock::time_point timeNow =
+            std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
     rtype::network::Message<NetworkMessages> deleteRectangleShapeMsg(size_t id)
     {
         rtype::network::Message<NetworkMessages> message;

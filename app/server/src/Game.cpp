@@ -236,11 +236,11 @@ void Game::init()
     this->createBackground("app/assets/images/city_background.png",
                            std::pair<float, float>(-100.0f, 0.0f),
                            std::pair<float, float>(4448.0f, 1200.0f));
-    // this->createEnemy(_engine->getEntityManager()->generateEntityID(),
-    //                   "app/assets/sprites/enemy.png",
-    //                   std::pair<float, float>(1800.0f, 0.0f),
-    //                   std::pair<float, float>(-200.0f, 0.0f),
-    //                   std::pair<float, float>(0.2f, 0.2f), 100, 100);
+    this->createEnemy(_engine->getEntityManager()->generateEntityID(),
+                      "app/assets/sprites/enemy.png",
+                      std::pair<float, float>(1800.0f, 0.0f),
+                      std::pair<float, float>(-200.0f, 0.0f),
+                      std::pair<float, float>(0.2f, 0.2f), 100, 100);
 
     component::ComponentManager &componentManager = *_engine->getComponentManager();
 
@@ -275,12 +275,8 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     // std::cout << "Message received in game :" << msg << std::endl;
     if (msg == "clientConnection")
     {
-        entity::IEntity *entity = createPlayer(_engine->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
-                                               std::pair<float, float>(100.0f, 100.0f),
-                                               std::pair<float, float>(500.0f, 500.0f),
-                                               std::pair<float, float>(0.10f, 0.10f), 100, numClient);
-        _players[numClient] = entity;
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, numClient));
+        _playersScenes[numClient] = Scene::MENU;
         createMenu(numClient);
         std::cout << "Client connected : " << id << std::endl;
     }
@@ -292,6 +288,17 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
             _players[numClient]->setCommunication(entity::EntityCommunication::DELETE);
             _players.erase(numClient);
         }
+    }
+    if (msg == "play") {
+        if (_playersScenes[numClient] == Scene::GAME)
+            return;
+        entity::IEntity *entity = createPlayer(_engine->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
+                                               std::pair<float, float>(100.0f, 100.0f),
+                                               std::pair<float, float>(500.0f, 500.0f),
+                                               std::pair<float, float>(0.10f, 0.10f), 100, numClient);
+        _players[numClient] = entity;
+        _playersScenes[numClient] = Scene::GAME;
+        _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::GAME, numClient));
     }
     // std::cout << "numClient: " << numClient << std::endl;
     if (_players.find(numClient) == _players.end()) {

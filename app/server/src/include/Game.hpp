@@ -49,5 +49,6 @@ private:
     sf::Clock inputClock;
     sf::Clock waveClock;
     std::unordered_map<size_t, entity::IEntity *> _players;
+    std::unordered_map<size_t, Scene> _playersScenes;
     float _spawnInterval;
 };

@@ -35,6 +35,8 @@ namespace ECS_system {
                     msgToSend.push_back(std::make_pair(onClick->getAction(), entity->getID()));
                 }
             }
+            if (onClick->getClicked())
+                onClick->setClicked(false);
         }
     }
 }
