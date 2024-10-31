@@ -49,10 +49,13 @@ entity::IEntity *Game::createWeapon(uint32_t parentID,
  * @param size The size of the background entity.
  * @return A pointer to the created background entity.
  */
-entity::IEntity *Game::createBackground(std::string texturePath,
-                                        std::pair<float, float> speed,
-                                        std::pair<float, float> size)
+entity::IEntity *Game::createBackground()
 {
+    nlohmann::json config = this->getConfig();
+    std::string texturePath = config["background"]["path"];
+    std::pair<float, float> speed = std::pair<float, float>(config["background"]["speed"]["x"], config["background"]["speed"]["y"]);
+    std::pair<float, float> size = std::pair<float, float>(config["background"]["size"]["width"], config["background"]["size"]["height"]);
+
     entity::IEntity *background1 = _coreModule->getEntityManager()->createEntity(
         _coreModule->getEntityManager()->generateEntityID());
 
@@ -105,14 +108,22 @@ entity::IEntity *Game::createBackground(std::string texturePath,
  * @return A pointer to the created player entity.
  */
 entity::IEntity *
-Game::createPlayer(uint32_t entityID, std::string texturePath,
-                   std::pair<float, float> position,
-                   std::pair<float, float> velocity,
-                   std::pair<float, float> scale, int health, int numClient)
+Game::createPlayer(int numClient)
 {
-    auto player = _coreModule->getEntityManager()->createEntity(entityID);
+    nlohmann::json config = this->getConfig();
+    uint32_t entityID = _coreModule->getEntityManager()->generateEntityID();
+    std::string texturePath = config["player"]["path"];
+    std::pair<float, float> position = std::pair<float, float>(config["player"]["position"]["x"], config["player"]["position"]["y"]);
+    std::pair<float, float> velocity = std::pair<float, float>(config["player"]["velocity"]["x"], config["player"]["velocity"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(config["player"]["scale"]["x"], config["player"]["scale"]["y"]);
+    int health = config["player"]["health"];
 
-    auto weapon = createWeapon(entityID, component::Type::WEAPON, 50, 0.5);
+    int weaponDamage = config["player"]["weapon"]["damage"];
+    float weaponCooldown = config["player"]["weapon"]["cooldown"];
+
+    entity::IEntity *player = _coreModule->getEntityManager()->createEntity(entityID);
+
+    entity::IEntity *weapon = createWeapon(entityID, component::Type::WEAPON, weaponDamage, weaponCooldown);
 
     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), false, 500);
@@ -120,7 +131,7 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
                                                                                component::Type::PLAYER);
     _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second);
-    auto texture =
+    component::TextureComponent *texture =
         _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath);
     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
@@ -212,6 +223,20 @@ entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePat
     return structure;
 }
 
+nlohmann::json Game::fillConfigJson(const std::string &path)
+{
+    std::ifstream file(path);
+
+    if (!file.is_open())
+        throw std::runtime_error("Failed to open file: " + path);
+
+    nlohmann::json json;
+
+    file >> json;
+
+    return json;
+}
+
 /**
  * @brief Initializes the core module of the R-Type game.
  *
@@ -242,9 +267,9 @@ entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePat
  */
 void Game::init()
 {
-    this->createBackground("app/assets/images/city_background.png",
-                           std::pair<float, float>(-100.0f, 0.0f),
-                           std::pair<float, float>(4448.0f, 1200.0f));
+    this->setConfig(this->fillConfigJson("configs/config1.json"));
+
+    this->createBackground();
 
     this->createStructure(_coreModule->getEntityManager()->generateEntityID(),
                           "app/assets/sprites/block.png",
@@ -281,13 +306,9 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     size_t id = msgReceived.front().second.first;
     int numClient = msgReceived.front().second.second;
     msgReceived.erase(msgReceived.begin());
-    // std::cout << "Message received in game :" << msg << std::endl;
     if (msg == "clientConnection")
     {
-        entity::IEntity *entity = createPlayer(_coreModule->getEntityManager()->generateEntityID(), "app/assets/sprites/plane.png",
-                                               std::pair<float, float>(100.0f, 100.0f),
-                                               std::pair<float, float>(500.0f, 500.0f),
-                                               std::pair<float, float>(0.10f, 0.10f), 100, numClient);
+        entity::IEntity *entity = createPlayer(numClient);
         _players[numClient] = entity;
         std::cout << "Client connected : " << id << std::endl;
     }

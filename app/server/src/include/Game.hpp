@@ -8,6 +8,8 @@
 #pragma once
 
 #include <CoreModule.hpp>
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 #include <random>
 
@@ -17,13 +19,8 @@ public:
     Game(std::shared_ptr<rtype::CoreModule> coreModule);
     ~Game();
 
-    entity::IEntity *createBackground(std::string texturePath,
-                                      std::pair<float, float> speed,
-                                      std::pair<float, float> size);
-    entity::IEntity *createPlayer(uint32_t entityID, std::string texturePath,
-                                  std::pair<float, float> position,
-                                  std::pair<float, float> velocity,
-                                  std::pair<float, float> scale, int health, int numClient);
+    entity::IEntity *createBackground();
+    entity::IEntity *createPlayer(int numClient);
     entity::IEntity *createEnemy(uint32_t entityID, std::string texturePath,
                                  std::pair<float, float> position,
                                  std::pair<float, float> velocity,
@@ -43,6 +40,11 @@ public:
     void shootEntity(size_t id);
     void handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived);
 
+    nlohmann::json fillConfigJson(const std::string &path);
+
+    void setConfig(nlohmann::json config) { _config = config; }
+    nlohmann::json getConfig() { return _config; }
+
 protected:
 private:
     int _waveNumber;
@@ -51,4 +53,5 @@ private:
     sf::Clock waveClock;
     std::unordered_map<size_t, entity::IEntity *> _players;
     float _spawnInterval;
+    nlohmann::json _config;
 };
