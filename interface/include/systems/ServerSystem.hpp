@@ -78,6 +78,7 @@ namespace rtype
              std::vector<std::shared_ptr<entity::IEntity>> entities,
              std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
       {
+        *sceneStatus = Scene::GAME;
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
         while (!msgToSend.empty())
@@ -175,7 +176,7 @@ namespace rtype
         case Action::SHOOT:
         {
           status = ServerStatus::SERVER_RECEIVING;
-          std::cout << "shoot" << std::endl;
+          // std::cout << "shoot" << std::endl;
           _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entityId, client->GetId())));
         }
         break;
