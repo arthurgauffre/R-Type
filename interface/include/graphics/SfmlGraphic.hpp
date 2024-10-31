@@ -37,6 +37,9 @@ class SfmlGraphic : virtual public AGraphic {
 
         void eventHandler() override;
 
+        bool isMousePressed() override;
+        std::pair<float, float> getMousePosition() override;
+
         void windowDisplay() override;
         void windowClear() override;
         void windowClose() override;

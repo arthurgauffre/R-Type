@@ -173,16 +173,16 @@ namespace rtype
       case NetworkMessages::createEntity:
       {
         // std::cout << "Entity created" << std::endl;
-        EntityId entityId;
+        EntityStruct entityId;
         SceneStatus scene;
-        std::memcpy(&entityId, msg.body.data(), sizeof(EntityId));
-        if (_entityManager.getEntities().size() + 10000 < entityId.id)
+        if (msg.body.size() < sizeof(EntityStruct) + sizeof(SceneStatus))
           return;
-        std::memcpy(&scene, msg.body.data() + sizeof(EntityId),
+        std::memcpy(&entityId, msg.body.data(), sizeof(EntityStruct));
+        if (_entityManager.getEntities().size() + 100 < entityId.id)
+          return;
+        std::memcpy(&scene, msg.body.data() + sizeof(EntityStruct),
                     sizeof(SceneStatus));
-
-        // std::cout << "Entity id: " << entity.id << std::endl;
-        entity::IEntity *entity = _entityManager.createEntity(entityId.id);
+        entity::IEntity *entity = _entityManager.createEntity(entityId.id, entityId.numClient);
         entity->setSceneStatus(scene.scene);
         // Send acknowledgement message
         rtype::network::Message<NetworkMessages> message;
@@ -195,10 +195,10 @@ namespace rtype
       case NetworkMessages::updateEntity:
       {
         // std::cout << "Entity updated" << std::endl;
-        EntityId entityId;
+        EntityStruct entityId;
         SceneStatus scene;
-        std::memcpy(&entityId, msg.body.data(), sizeof(EntityId));
-        std::memcpy(&scene, msg.body.data() + sizeof(EntityId),
+        std::memcpy(&entityId, msg.body.data(), sizeof(EntityStruct));
+        std::memcpy(&scene, msg.body.data() + sizeof(EntityStruct),
                     sizeof(SceneStatus));
         // std::cout << "Entity id: " << entity.id << std::endl;
         entity::IEntity *entity = _entityManager.getEntityByID(entityId.id);
@@ -260,6 +260,7 @@ namespace rtype
                     sizeof(TransformComponent));
         // std::cout << "Transform: " << transform.x << " " << transform.y << " "
         //           << transform.scaleX << " " << transform.scaleY << " " << transform.rotation << std::endl;
+        // std::cout << "transform with id " << id.id << std::endl;
         _componentManager
             .addComponent<component::TransformComponent>(
                 id.id, std::make_pair(transform.x, transform.y),
@@ -518,6 +519,7 @@ namespace rtype
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&rectangleShape, msg.body.data() + sizeof(EntityId),
                     sizeof(RectangleShapeComponent));
+        // std::cout << "rectangle with id " << id.id << std::endl;
         // std::cout << "RectangleShape: " << rectangleShape.x << " " << rectangleShape.y << " " << rectangleShape.width << " " << rectangleShape.height << std::endl;
         _componentManager
             .addComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
@@ -539,12 +541,13 @@ namespace rtype
       case NetworkMessages::createOnCLick:
       {
         // create On click same as input
-        std::cout << "OnCLick component created" << std::endl;
+        // std::cout << "OnCLick component created" << std::endl;
         EntityId id;
         OnClickComponent onClick;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&onClick, msg.body.data() + sizeof(EntityId),
                     sizeof(OnClickComponent));
+        // std::cout << "onClick with id " << id.id << std::endl;
         _componentManager
             .addComponent<component::OnClickComponent>(id.id, onClick.action, onClick.numClient);
         rtype::network::Message<NetworkMessages> message;

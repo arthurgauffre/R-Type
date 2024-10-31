@@ -22,7 +22,7 @@ void ECS_system::WeaponSystem::createProjectile(
 {
     // std::cout << "Creating projectile" << std::endl;
     uint32_t projectileID = _entityManager.generateEntityID();
-    entity::IEntity *projectile = _entityManager.createEntity(projectileID);
+    entity::IEntity *projectile = _entityManager.createEntity(projectileID, -1);
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
             ->getType() == component::Type::PLAYER)

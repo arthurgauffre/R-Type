@@ -16,7 +16,7 @@ namespace entity {
  *
  * @param id The unique identifier for the entity.
  */
-entity::Entity::Entity(uint32_t id) : id(id), isActive(true) {}
+entity::Entity::Entity(uint32_t id, int numClt) : id(id), isActive(true), numClient(numClt) {}
 
 /**
  * @brief Destructor for the Entity class.
@@ -62,4 +62,8 @@ void entity::Entity::setCommunication(EntityCommunication communication) { commu
 Scene entity::Entity::getSceneStatus() const { return sceneStatus; }
 
 void entity::Entity::setSceneStatus(Scene status) { sceneStatus = status; }
+
+int entity::Entity::getNumClient() const { return numClient; }
+
+void entity::Entity::setNumClient(int num) { numClient = num; }
 } // namespace entity

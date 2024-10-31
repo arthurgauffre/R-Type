@@ -43,8 +43,8 @@ entity::IEntity *entity::EntityManager::getEntityByID(uint32_t id) const {
  * @param id The unique identifier for the new entity.
  * @return A pointer to the newly created entity.
  */
-entity::IEntity *entity::EntityManager::createEntity(uint32_t id) {
-  _entities.push_back(std::make_unique<entity::Entity>(id));
+entity::IEntity *entity::EntityManager::createEntity(uint32_t id, int numClt) {
+  _entities.push_back(std::make_unique<entity::Entity>(id, numClt));
   return _entities.back().get();
 }
 

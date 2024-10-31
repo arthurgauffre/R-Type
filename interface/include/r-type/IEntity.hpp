@@ -107,6 +107,26 @@ public:
      */
     virtual void setSceneStatus(Scene status) = 0;
 
+    /**
+     * @brief Retrieves the number of the client associated with the entity.
+     *
+     * This method is used to determine the number of the client associated with
+     * the entity.
+     *
+     * @return int The number of the client associated with the entity.
+     */
+    virtual int getNumClient() const = 0;
+
+    /**
+     * @brief Sets the number of the client associated with the entity.
+     *
+     * This method is used to set the number of the client associated with the
+     * entity to the specified value.
+     *
+     * @param numClient The new number of the client associated with the entity.
+     */
+    virtual void setNumClient(int numClient) = 0;
+
   protected:
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
     Scene sceneStatus{Scene::GAME};

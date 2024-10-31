@@ -9,11 +9,6 @@
 
 namespace component
 {
-    void OnClickComponent::onClick()
-    {
-        _clicked = true;
-    }
-
     void OnClickComponent::update(Action action)
     {
         _action = action;

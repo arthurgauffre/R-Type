@@ -115,6 +115,17 @@ void SfmlGraphic::eventHandler()
     }
 }
 
+bool SfmlGraphic::isMousePressed()
+{
+    return sf::Mouse::isButtonPressed(sf::Mouse::Left);
+}
+
+std::pair<float, float> SfmlGraphic::getMousePosition()
+{
+    sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
+    return std::make_pair(mousePosition.x, mousePosition.y);
+}
+
 void SfmlGraphic::windowDisplay()
 {
     _window.display();

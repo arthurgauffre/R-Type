@@ -33,7 +33,7 @@ public:
                                   float cooldown);
     entity::IEntity *createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient);
 
-    void createMenu();
+    void createMenu(int numClient);
 
     void init();
     void run();

@@ -14,7 +14,7 @@
 #include <r-type/IEntity.hpp>
 
 namespace entity {
-class DLL_EXPORT Entity : virtual public IEntity {
+class DLL_EXPORT  Entity : virtual public IEntity {
 public:
   /**
    * @brief Constructs an Entity object with a specified ID and sets it as
@@ -22,7 +22,7 @@ public:
    *
    * @param id The unique identifier for the entity.
    */
-  Entity(uint32_t id);
+  Entity(uint32_t id, int numClt);
 
   /**
    * @brief Destroy the Entity object.
@@ -80,6 +80,18 @@ public:
    */
   void setSceneStatus(Scene status) override;
 
+  /**
+   * @brief
+   *
+   */
+  void setNumClient(int numClient) override;
+
+  /**
+   * @brief
+   *
+   */
+  int getNumClient() const override;
+
 protected:
   /**
    * @brief Unique identifier for the entity.
@@ -97,6 +109,8 @@ protected:
    * false, the entity is inactive.
    */
   bool isActive;
+
+  int numClient{-1};
 };
 } // namespace entity
 #endif // ENTITY_HPP

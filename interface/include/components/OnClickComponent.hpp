@@ -24,7 +24,7 @@ namespace component
         Action getAction() const { return _action; }
         int getNumClient() const { return _numClient; }
         
-        void onClick();
+        void setClicked(bool clicked) { _clicked = clicked; }
         void update(Action action);
 
     protected:

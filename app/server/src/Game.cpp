@@ -20,7 +20,7 @@ entity::IEntity *Game::createWeapon(uint32_t parentID,
                                     float cooldown)
 {
     auto weapon = _engine->getEntityManager()->createEntity(
-        _engine->getEntityManager()->generateEntityID());
+        _engine->getEntityManager()->generateEntityID(), -1);
 
     // _engine->getComponentManager()->addComponent<component::SoundComponent>(
     //     weapon->getID(), "app/assets/musics/blaster.wav");
@@ -54,10 +54,10 @@ entity::IEntity *Game::createBackground(std::string texturePath,
                                         std::pair<float, float> size)
 {
     entity::IEntity *background1 = _engine->getEntityManager()->createEntity(
-        _engine->getEntityManager()->generateEntityID());
+        _engine->getEntityManager()->generateEntityID(), -1);
 
     entity::IEntity *background2 = _engine->getEntityManager()->createEntity(
-        _engine->getEntityManager()->generateEntityID());
+        _engine->getEntityManager()->generateEntityID(), -1);
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         background1->getID(), component::Type::BACKGROUND);
@@ -110,7 +110,7 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
                    std::pair<float, float> velocity,
                    std::pair<float, float> scale, int health, int numClient)
 {
-    auto player = _engine->getEntityManager()->createEntity(entityID);
+    auto player = _engine->getEntityManager()->createEntity(entityID, -1);
 
     auto weapon = createWeapon(entityID, component::Type::WEAPON, 50, 0.5);
 
@@ -158,7 +158,7 @@ entity::IEntity *Game::createEnemy(
     std::pair<float, float> position, std::pair<float, float> velocity,
     std::pair<float, float> scale, int health, int damage)
 {
-    auto enemy = _engine->getEntityManager()->createEntity(entityID);
+    auto enemy = _engine->getEntityManager()->createEntity(entityID, -1);
 
     auto weapon = createWeapon(entityID, component::Type::WEAPON, damage, 2);
 
@@ -188,7 +188,7 @@ entity::IEntity *Game::createEnemy(
 
 entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient)
 {
-    entity::IEntity *button = _engine->getEntityManager()->createEntity(entityID);
+    entity::IEntity *button = _engine->getEntityManager()->createEntity(entityID, numClient);
 
     _engine->getComponentManager()->addComponent<component::RectangleShapeComponent>(entityID, position, size, color, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(entityID, position, std::pair<float, float>(1, 1));
@@ -197,10 +197,9 @@ entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<f
     return button;
 }
 
-void Game::createMenu()
+void Game::createMenu(int numClient)
 {
-    std::cout << "Creating menu" << std::endl;
-    entity::IEntity *button = createButton(_engine->getEntityManager()->generateEntityID(), RColor{255, 255, 255, 255}, std::pair<float, float>(100.0f, 100.0f), std::pair<float, float>(100.0f, 100.0f), Action::START, 0);
+    entity::IEntity *button = createButton(_engine->getEntityManager()->generateEntityID(), RColor{255, 255, 255, 255}, std::pair<float, float>(100.0f, 100.0f), std::pair<float, float>(100.0f, 100.0f), Action::PLAY, numClient);
     button->setSceneStatus(Scene::MENU);
 }
 
@@ -234,7 +233,6 @@ void Game::createMenu()
  */
 void Game::init()
 {
-    this->createMenu();
     this->createBackground("app/assets/images/city_background.png",
                            std::pair<float, float>(-100.0f, 0.0f),
                            std::pair<float, float>(4448.0f, 1200.0f));
@@ -283,6 +281,7 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
                                                std::pair<float, float>(0.10f, 0.10f), 100, numClient);
         _players[numClient] = entity;
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, numClient));
+        createMenu(numClient);
         std::cout << "Client connected : " << id << std::endl;
     }
     if (msg == "clientDisconnection")

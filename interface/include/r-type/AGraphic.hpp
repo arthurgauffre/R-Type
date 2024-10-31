@@ -36,6 +36,9 @@ class AGraphic: virtual public IGraphic {
 
         virtual void eventHandler() = 0;
 
+        virtual bool isMousePressed() = 0;
+        virtual std::pair<float, float> getMousePosition() = 0;
+
         virtual void windowDisplay() = 0;
         virtual void windowClear() = 0;
         virtual void windowClose() = 0;

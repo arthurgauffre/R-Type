@@ -24,7 +24,7 @@ enum class Action: uint32_t {
     MOVE_RIGHT,
     SHOOT,
     MENU,
-    START,
+    PLAY,
     EXIT,
     NONE,
 };

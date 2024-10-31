@@ -14,15 +14,15 @@
 class NetworkMessageFactory
 {
 public:
-    rtype::network::Message<NetworkMessages> createEntityMsg(size_t id, Scene scene)
+    rtype::network::Message<NetworkMessages> createEntityMsg(size_t id, Scene scene, int numClient)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createEntity;
-        EntityId entity = {id};
+        EntityStruct entity = {id, numClient};
         SceneStatus sceneStatus = {scene};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
-                                             sizeof(EntityId));
+                                             sizeof(EntityStruct));
         std::vector<uint8_t> sceneBytes(reinterpret_cast<uint8_t *>(&sceneStatus),
                                         reinterpret_cast<uint8_t *>(&sceneStatus) +
                                             sizeof(SceneStatus));
@@ -33,17 +33,18 @@ public:
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
+        // std::cout << "entity send with bodySize :" << message.body.size() << std::endl;
         return message;
     }
-    rtype::network::Message<NetworkMessages> updateEntityMsg(size_t id, Scene scene)
+    rtype::network::Message<NetworkMessages> updateEntityMsg(size_t id, Scene scene, int numClient)
     {
         rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::deleteEntity;
-        EntityId entity = {id};
+        message.header.id = NetworkMessages::updateEntity;
+        EntityStruct entity = {id, numClient};
         SceneStatus sceneStatus = {scene};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
-                                             sizeof(EntityId));
+                                             sizeof(EntityStruct));
         std::vector<uint8_t> sceneBytes(reinterpret_cast<uint8_t *>(&sceneStatus),
                                         reinterpret_cast<uint8_t *>(&sceneStatus) +
                                             sizeof(SceneStatus));

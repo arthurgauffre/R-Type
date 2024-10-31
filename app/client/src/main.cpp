@@ -16,8 +16,9 @@ int main(void) {
     component::ComponentManager &componentManager = *engine->getComponentManager();
     entity::EntityManager &entityManager = *engine->getEntityManager();
 
-    engine->getSystemManager()->addSystem(componentManager, entityManager, "movement", engine->_graphic);
     engine->getSystemManager()->addSystem(componentManager, entityManager, "render", engine->_graphic);
+    engine->getSystemManager()->addSystem(componentManager, entityManager, "movement", engine->_graphic);
+    engine->getSystemManager()->addSystem(componentManager, entityManager, "button", engine->_graphic);
     engine->getSystemManager()->addSystem(componentManager, entityManager, "input", engine->_graphic);
     engine->getSystemManager()->addSystem(componentManager, entityManager, "client", engine->_graphic);
 

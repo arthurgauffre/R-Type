@@ -146,6 +146,11 @@ struct OnClickComponent {
   int numClient;
 };
 
+struct EntityStruct {
+  size_t id;
+  int numClient;
+};
+
 struct EntityId {
   size_t id;
 };

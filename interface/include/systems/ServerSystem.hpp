@@ -178,6 +178,11 @@ namespace rtype
           _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entityId, client->GetId())));
         }
         break;
+        case Action::PLAY:
+        {
+          std::cout << "Client " << client->GetId() << " wants to play" << std::endl;
+        }
+        break;
         case Action::EXIT:
         {
           int numPlayer = 0;
@@ -305,12 +310,21 @@ namespace rtype
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-            SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus()), clientToIgnore);
+            if (entity->getNumClient() != -1) {
+              for (int i = 0; i < deqConnections.size(); i++) {
+                if (i == entity->getNumClient())
+                  SendMessageToClient(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), deqConnections[i]);
+              }
+            } else
+              SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
           else if (entity->getCommunication() == entity::EntityCommunication::UPDATE)
           {
-            SendMessageToAllClients(networkMessageFactory.updateEntityMsg(entity->getID(), entity->getSceneStatus()), clientToIgnore);
+            if (entity->getNumClient() != -1)
+              SendMessageToClient(networkMessageFactory.updateEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), clientToIgnore);
+            else
+              SendMessageToAllClients(networkMessageFactory.updateEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
@@ -318,8 +332,10 @@ namespace rtype
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-            // entity->setCommunication(entity::EntityCommunication::NONE);
-            SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
+            if (entity->getNumClient() != -1)
+              SendMessageToClient(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
+            else
+              SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
             _componentManager.removeAllComponents(entity->getID());
             _entityManager.removeEntity(entity->getID());
             return;
@@ -600,8 +616,10 @@ namespace rtype
         }
         for (auto &entity : _entityManager.getEntities())
         {
+          if (entity->getNumClient() != -1 && entity->getNumClient() != numClient)
+            continue;
           SendMessageToClient(
-              networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus()), client);
+              networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), client);
           if (_componentManager.getComponent<component::SpriteComponent>(entity->getID()))
           {
             component::SpriteComponent *component =

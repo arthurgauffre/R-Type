@@ -30,6 +30,8 @@ add_executable(r-type_client
     ../../ecs/src/components/cooldown/CooldownComponent.cpp
     ../../ecs/src/components/parent/ParentComponent.cpp
     ../../ecs/src/components/size/SizeComponent.cpp
+    ../../ecs/src/components/onclick/OnClickComponent.cpp
+    ../../ecs/src/components/rectangle/RectangleShapeComponent.cpp
     ../../ecs/src/entity/Entity.cpp
 )
 
