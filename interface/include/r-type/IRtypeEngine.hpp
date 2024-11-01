@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** Arcade
+** R-Type
 ** File description:
 ** IRtypeEngine
 */
@@ -16,7 +16,7 @@
 #include <windows.h>
 #else
 #include <dirent.h>
-#include <dlfcn.h> // For POSIX dynamic linking
+#include <dlfcn.h>
 #include <unistd.h>
 #endif
 
