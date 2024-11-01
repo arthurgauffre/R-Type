@@ -25,12 +25,12 @@ void ECS_system::WeaponSystem::createProjectile(
     entity::IEntity *projectile = _entityManager.createEntity(projectileID, -1);
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
-            ->getType() == component::Type::PLAYER)
+            ->getType() == Type::PLAYER)
         _componentManager.addComponent<component::TypeComponent>(
-            projectileID, component::Type::PLAYER_PROJECTILE);
+            projectileID, Type::PLAYER_PROJECTILE);
     else
         _componentManager.addComponent<component::TypeComponent>(projectileID,
-                                                                 component::Type::ENEMY_PROJECTILE);
+                                                                 Type::ENEMY_PROJECTILE);
     _componentManager.addComponent<component::DamageComponent>(projectileID,
                                                                damage);
     _componentManager.addComponent<component::ParentComponent>(projectileID,
@@ -56,7 +56,7 @@ void ECS_system::WeaponSystem::createProjectile(
                 2};
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
-            ->getType() == component::Type::ENEMY)
+            ->getType() == Type::ENEMY)
         position.first -=
             _graphic->getTextureSize(textureP->getTexture()).first * transformPlayer->getScale().first;
 
@@ -67,7 +67,7 @@ void ECS_system::WeaponSystem::createProjectile(
         projectileID, position.first, position.second, _graphic);
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
-            ->getType() == component::Type::ENEMY)
+            ->getType() == Type::ENEMY)
         transformComponent->setRotation(180);
 }
 
@@ -86,7 +86,7 @@ void ECS_system::WeaponSystem::update(
         component::CooldownComponent *cooldownComponent =
             _componentManager.getComponent<component::CooldownComponent>(
                 weaponComponent->getWeaponEntityID());
-        component::Type entityType =
+        Type entityType =
             _componentManager
                 .getComponent<component::TypeComponent>(entity->getID())
                 ->getType();
@@ -101,7 +101,7 @@ void ECS_system::WeaponSystem::update(
             cooldownComponent->getTimeRemaining() > 0)
             weaponComponent->setIsFiring(false);
 
-        if (cooldownComponent->getTimeRemaining() <= 0 && entityType == component::Type::ENEMY)
+        if (cooldownComponent->getTimeRemaining() <= 0 && entityType == Type::ENEMY)
             weaponComponent->setIsFiring(true);
 
         float weaponVelocity = weaponComponent->getVelocity();
@@ -115,7 +115,7 @@ void ECS_system::WeaponSystem::update(
 
             cooldownComponent->setTimeRemaining(cooldownComponent->getCooldown());
 
-            if (entityType == component::Type::PLAYER)
+            if (entityType == Type::PLAYER)
             {
                 // _componentManager
                 //     .getComponent<component::SoundComponent>(

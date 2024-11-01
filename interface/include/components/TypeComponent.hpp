@@ -12,17 +12,6 @@
 #include <iostream>
 
 namespace component {
-enum class Type {
-  PLAYER,
-  ENEMY,
-  WEAPON,
-  PROJECTILE,
-  PLAYER_PROJECTILE,
-  ENEMY_PROJECTILE,
-  BACKGROUND,
-  UNKNOWN,
-  STRUCTURE,
-};
 class TypeComponent : public AComponent {
 public:
   TypeComponent(uint32_t entityID, Type type);

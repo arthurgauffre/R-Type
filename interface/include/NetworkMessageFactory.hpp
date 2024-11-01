@@ -304,7 +304,7 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> createTypeMsg(size_t id,
-                                                          EntityType type)
+                                                          Type type)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createType;
@@ -350,7 +350,7 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> updateTypeMsg(size_t id,
-                                                          EntityType type)
+                                                          Type type)
     {
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateType;

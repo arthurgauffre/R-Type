@@ -11,57 +11,6 @@ namespace rtype
 {
   namespace network
   {
-
-    // merge it with server
-    // std::string ClientSystem::GetTexturePath(TexturePath texture)
-    // {
-    //   switch (texture)
-    //   {
-    //   case TexturePath::Background:
-    //   {
-    //     return "app/assets/images/city_background.png";
-    //   }
-    //   break;
-    //   case TexturePath::Player:
-    //   {
-    //     return "app/assets/sprites/plane.png";
-    //   }
-    //   break;
-    //   case TexturePath::Enemy:
-    //   {
-    //     return "app/assets/sprites/enemy.png";
-    //   }
-    //   break;
-    //   case TexturePath::Bullet:
-    //   {
-    //     return "app/assets/sprites/projectile.gif";
-    //   }
-    //   }
-    //   return "";
-    // }
-
-    component::Type ClientSystem::getTypedEntity(EntityType type)
-    {
-      switch (type)
-      {
-      case EntityType::Player:
-        return component::Type::PLAYER;
-      case EntityType::Enemy:
-        return component::Type::ENEMY;
-      case EntityType::Background:
-        return component::Type::BACKGROUND;
-      case EntityType::Player_projectile:
-        return component::Type::PLAYER_PROJECTILE;
-      case EntityType::Enemy_projectile:
-        return component::Type::ENEMY_PROJECTILE;
-      case EntityType::Projectile:
-        return component::Type::PROJECTILE;
-      case EntityType::Weapon:
-        return component::Type::WEAPON;
-      }
-      return component::Type::UNKNOWN;
-    }
-
     void ClientSystem::handleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
       std::lock_guard<std::mutex> lock(*_entityMutex);
@@ -319,7 +268,7 @@ namespace rtype
         std::memcpy(&type, msg.body.data() + sizeof(EntityId),
                     sizeof(TypeComponent));
         _componentManager
-            .addComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
+            .addComponent<component::TypeComponent>(id.id, type.type);
       }
       break;
       case NetworkMessages::updateType:
@@ -331,7 +280,7 @@ namespace rtype
         std::memcpy(&type, msg.body.data() + sizeof(EntityId),
                     sizeof(TypeComponent));
         _componentManager
-            .updateComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
+            .updateComponent<component::TypeComponent>(id.id, type.type);
       }
       break;
       case NetworkMessages::updateSprite:

@@ -50,7 +50,7 @@ void ECS_system::MovementSystem::update(
     float newY = transform->getPosition().second +
                  velocity->getActualVelocity().second * deltaTime;
 
-    if (type->getType() == component::Type::BACKGROUND)
+    if (type->getType() == Type::BACKGROUND)
     {
       component::SizeComponent *size =
           _componentManager.getComponent<component::SizeComponent>(
@@ -67,7 +67,7 @@ void ECS_system::MovementSystem::update(
       if (newY > size->getSize().second)
         newY = -size->getSize().second + 1;
     }
-    else if (type->getType() == component::Type::PLAYER)
+    else if (type->getType() == Type::PLAYER)
     {
       if (newX < 0)
         newX = 0;
@@ -78,8 +78,8 @@ void ECS_system::MovementSystem::update(
       if (newY > 1080)
         newY = 1080;
     }
-    else if (type->getType() == component::Type::ENEMY_PROJECTILE ||
-             type->getType() == component::Type::PLAYER_PROJECTILE)
+    else if (type->getType() == Type::ENEMY_PROJECTILE ||
+             type->getType() == Type::PLAYER_PROJECTILE)
     {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
         entity->setCommunication(entity::EntityCommunication::DELETE);

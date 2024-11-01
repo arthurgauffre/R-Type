@@ -498,12 +498,12 @@ namespace rtype
             {
               status = ServerStatus::WAITING_FOR_MESSAGE;
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createTypeMsg(entity->getID(), getEntityType(component->getType())), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createTypeMsg(entity->getID(), component->getType()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateTypeMsg(entity->getID(), getEntityType(component->getType())), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateTypeMsg(entity->getID(), component->getType()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -787,7 +787,7 @@ namespace rtype
             component::TypeComponent *component =
                 _componentManager.getComponent<component::TypeComponent>(entity->getID());
             SendMessageToClient(networkMessageFactory.createTypeMsg(
-                                    entity->getID(), getEntityType(component->getType())),
+                                    entity->getID(), component->getType()),
                                 client);
           }
           if (_componentManager.getComponent<component::AIComponent>(entity->getID()))
@@ -932,60 +932,6 @@ namespace rtype
 
       virtual void OnClientValidated(std::shared_ptr<NetworkConnection<T>> client)
       {
-      }
-
-      // std::string GetTexturePath(TexturePath texture)
-      // {
-      //   switch (texture)
-      //   {
-      //   case TexturePath::Background:
-      //   {
-      //     return "app/assets/images/city_background.png";
-      //   }
-      //   break;
-      //   case TexturePath::Player:
-      //   {
-      //     return "app/assets/sprites/plane.png";
-      //   }
-      //   break;
-      //   case TexturePath::Enemy:
-      //   {
-      //     return "assets/enemy.png";
-      //   }
-      //   }
-      //   return "";
-      // }
-
-      // TexturePath GetEnumTexturePath(std::string texture)
-      // {
-      //   if (texture == "app/assets/sprites/plane.png")
-      //     return TexturePath::Player;
-      //   if (texture == "app/assets/sprites/enemy.png")
-      //     return TexturePath::Enemy;
-      //   if (texture == "app/assets/images/city_background.png")
-      //     return TexturePath::Background;
-      //   if (texture == "app/assets/sprites/projectile.gif")
-      //     return TexturePath::Bullet;
-      //   return TexturePath::Player;
-      // }
-
-      EntityType getEntityType(component::Type type)
-      {
-        if (type == component::Type::PLAYER)
-          return EntityType::Player;
-        if (type == component::Type::ENEMY)
-          return EntityType::Enemy;
-        if (type == component::Type::BACKGROUND)
-          return EntityType::Background;
-        if (type == component::Type::PLAYER_PROJECTILE)
-          return EntityType::Player_projectile;
-        if (type == component::Type::ENEMY_PROJECTILE)
-          return EntityType::Enemy_projectile;
-        if (type == component::Type::PROJECTILE)
-          return EntityType::Projectile;
-        if (type == component::Type::WEAPON)
-          return EntityType::Weapon;
-        return EntityType::Unknown;
       }
 
       AIType getAIType(component::AIType type)

@@ -48,6 +48,18 @@ enum class TextString: uint32_t {
     Unknown,
 };
 
+enum class Type {
+  PLAYER,
+  ENEMY,
+  WEAPON,
+  PROJECTILE,
+  PLAYER_PROJECTILE,
+  ENEMY_PROJECTILE,
+  BACKGROUND,
+  UNKNOWN,
+  STRUCTURE,
+};
+
 enum class KeyBoard : uint32_t {
   A,
   B,

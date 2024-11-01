@@ -24,7 +24,7 @@ namespace ECS_system
             component::VelocityComponent *velocityComponent = _componentManager.getComponent<component::VelocityComponent>(entity->getID());
             if (!typeComponent || !aiComponent || !velocityComponent)
                 continue;
-            if (typeComponent->getType() != component::Type::ENEMY)
+            if (typeComponent->getType() != Type::ENEMY)
                 continue;
             if (aiComponent->getType() == component::AIType::LINEAR)
             {

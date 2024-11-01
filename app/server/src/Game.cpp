@@ -24,7 +24,7 @@ float getRandomPosition()
 }
 
 entity::IEntity *Game::createWeapon(uint32_t parentID,
-                                    component::Type type, int damage,
+                                    Type type, int damage,
                                     float cooldown)
 {
     auto weapon = _engine->getEntityManager()->createEntity(
@@ -74,7 +74,7 @@ entity::IEntity *Game::createBackground()
         _engine->getEntityManager()->generateEntityID(), -1);
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
-        background1->getID(), component::Type::BACKGROUND);
+        background1->getID(), Type::BACKGROUND);
     _engine->getComponentManager()->addComponent<component::MusicComponent>(
         background1->getID(), "app/assets/musics/testSong.wav");
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
@@ -89,7 +89,7 @@ entity::IEntity *Game::createBackground()
         background1->getID(), size);
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
-        background2->getID(), component::Type::BACKGROUND);
+        background2->getID(), Type::BACKGROUND);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
         background2->getID(), std::pair<float, float>(size.first - 20, 0));
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
@@ -154,12 +154,12 @@ entity::IEntity *Game::createPlayer(int numClient)
 
     entity::IEntity *player = _engine->getEntityManager()->createEntity(entityID, -1);
 
-    entity::IEntity *weapon = createWeapon(entityID, component::Type::WEAPON, weaponDamage, weaponCooldown);
+    entity::IEntity *weapon = createWeapon(entityID, Type::WEAPON, weaponDamage, weaponCooldown);
 
     _engine->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), false, 500);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
-                                                                               component::Type::PLAYER);
+                                                                               Type::PLAYER);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second, _engine->_graphic);
     component::TextureComponent *texture =
@@ -218,7 +218,7 @@ entity::IEntity *Game::createEnemy()
 
     uint32_t entityID = _engine->getEntityManager()->generateEntityID();
     entity::IEntity *enemy = _engine->getEntityManager()->createEntity(entityID, -1);
-    entity::IEntity *weapon = createWeapon(entityID, component::Type::WEAPON, damage, 2);
+    entity::IEntity *weapon = createWeapon(entityID, Type::WEAPON, damage, 2);
 
     if (iaType == "random")
     {
@@ -241,7 +241,7 @@ entity::IEntity *Game::createEnemy()
 
     _engine->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), true, -500);
-    _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, component::Type::ENEMY);
+    _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, Type::ENEMY);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second, _engine->_graphic);
     component::TextureComponent *texture =
@@ -286,7 +286,7 @@ entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePat
     entity::IEntity *structure = _engine->getEntityManager()->createEntity(entityID, -1);
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
-        entityID, component::Type::STRUCTURE);
+        entityID, Type::STRUCTURE);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second, _engine->_graphic);
     component::TextureComponent *texture =

@@ -54,7 +54,7 @@ void ECS_system::RenderSystem::update(
     if (entity.get()->getActive() == false ||
         _componentManager
                 .getComponent<component::TypeComponent>(entity.get()->getID())
-                ->getType() != component::Type::BACKGROUND)
+                ->getType() != Type::BACKGROUND)
       continue;
     component::SpriteComponent *spriteComponent =
         _componentManager.getComponent<component::SpriteComponent>(
@@ -89,7 +89,7 @@ void ECS_system::RenderSystem::update(
     if (entity.get()->getActive() == false ||
         _componentManager
                 .getComponent<component::TypeComponent>(entity.get()->getID())
-                ->getType() == component::Type::BACKGROUND)
+                ->getType() == Type::BACKGROUND)
       continue;
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(

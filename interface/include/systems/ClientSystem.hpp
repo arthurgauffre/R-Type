@@ -67,8 +67,6 @@ namespace rtype
 
       std::string GetTexturePath(TexturePath texture);
 
-      component::Type getTypedEntity(EntityType type);
-
       virtual void Disconnect() {}
 
       void initialize() override {};

@@ -53,29 +53,29 @@ bool ECS_system::CollisionSystem::isColliding(
 void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
                                                   entity::IEntity *entity2)
 {
-  component::Type type1 =
+  Type type1 =
       _componentManager
           .getComponent<component::TypeComponent>(entity1->getID())
           ->getType();
-  component::Type type2 =
+  Type type2 =
       _componentManager
           .getComponent<component::TypeComponent>(entity2->getID())
           ->getType();
 
-  if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY)
+  if (type1 == Type::PLAYER && type2 == Type::ENEMY)
   {
     _componentManager
         .getComponent<component::HealthComponent>(entity1->getID())
         ->setHealth(0);
   }
-  else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER)
+  else if (type1 == Type::ENEMY && type2 == Type::PLAYER)
   {
     _componentManager
         .getComponent<component::HealthComponent>(entity2->getID())
         ->setHealth(0);
   }
 
-  if (type1 == component::Type::PLAYER_PROJECTILE && type2 == component::Type::ENEMY)
+  if (type1 == Type::PLAYER_PROJECTILE && type2 == Type::ENEMY)
   {
     int damage = _componentManager.getComponent<component::DamageComponent>(entity1->getID())->getDamage();
     if (!damage)
@@ -86,7 +86,7 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
 
     entity1->setCommunication(entity::EntityCommunication::DELETE);
   }
-  else if (type1 == component::Type::ENEMY && type2 == component::Type::PLAYER_PROJECTILE)
+  else if (type1 == Type::ENEMY && type2 == Type::PLAYER_PROJECTILE)
   {
     int damage = _componentManager.getComponent<component::DamageComponent>(entity2->getID())->getDamage();
     if (!damage)
@@ -98,7 +98,7 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
     entity2->setCommunication(entity::EntityCommunication::DELETE);
   }
 
-  if (type1 == component::Type::ENEMY_PROJECTILE && type2 == component::Type::PLAYER)
+  if (type1 == Type::ENEMY_PROJECTILE && type2 == Type::PLAYER)
   {
     int damage = _componentManager.getComponent<component::DamageComponent>(entity1->getID())->getDamage();
     if (!damage)
@@ -109,7 +109,7 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
 
     entity1->setCommunication(entity::EntityCommunication::DELETE);
   }
-  else if (type1 == component::Type::PLAYER && type2 == component::Type::ENEMY_PROJECTILE)
+  else if (type1 == Type::PLAYER && type2 == Type::ENEMY_PROJECTILE)
   {
     int damage = _componentManager.getComponent<component::DamageComponent>(entity2->getID())->getDamage();
     if (!damage)
@@ -121,9 +121,9 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
     entity2->setCommunication(entity::EntityCommunication::DELETE);
   }
 
-  if (type1 == component::Type::PLAYER && type2 == component::Type::STRUCTURE)
+  if (type1 == Type::PLAYER && type2 == Type::STRUCTURE)
     std::cout << "Player collided with structure" << std::endl;
-  else if (type1 == component::Type::STRUCTURE && type2 == component::Type::PLAYER)
+  else if (type1 == Type::STRUCTURE && type2 == Type::PLAYER)
     std::cout << "Structure collided with player" << std::endl;
 }
 

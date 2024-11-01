@@ -86,17 +86,6 @@ enum class NetworkMessages : uint32_t {
   none,
 };
 
-enum class EntityType : uint32_t {
-  Player,
-  Enemy,
-  Weapon,
-  Projectile,
-  Player_projectile,
-  Enemy_projectile,
-  Background,
-  Unknown,
-};
-
 enum class AIType : uint32_t {
   Linear,
   Sinusoidal,
@@ -186,7 +175,7 @@ struct CoolDownComponent {
 };
 
 struct TypeComponent {
-  EntityType type;
+  Type type;
 };
 
 struct SizeComponent {
