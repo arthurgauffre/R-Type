@@ -60,7 +60,7 @@ entity::IEntity *Game::createBackground()
 {
     nlohmann::json config = this->getConfig();
 
-    if(config.contains("background") == false)
+    if (config.contains("background") == false)
         return nullptr;
 
     std::string texturePath = config["background"]["path"];
@@ -331,14 +331,21 @@ nlohmann::json Game::fillConfigJson(const std::string &path)
  */
 void Game::init()
 {
-    this->setConfig(this->fillConfigJson("configs/config1.json"));
+    try
+    {
+        this->setConfig(this->fillConfigJson("configs/config1.json"));
 
-    this->createBackground();
+        this->createBackground();
 
-    this->createStructure(_coreModule->getEntityManager()->generateEntityID(),
-                          "app/assets/sprites/block.png",
-                          std::pair<float, float>(1920.0f, 0.0f),
-                          std::pair<float, float>(0.5f, 0.5f), 50);
+        this->createStructure(_coreModule->getEntityManager()->generateEntityID(),
+                              "app/assets/sprites/block.png",
+                              std::pair<float, float>(1920.0f, 0.0f),
+                              std::pair<float, float>(0.5f, 0.5f), 50);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 
     component::ComponentManager &componentManager = *_coreModule->getComponentManager();
 
