@@ -279,10 +279,12 @@ void Game::createMenu(int numClient)
     entity::IEntity *buttonProtanopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 20.0f), std::pair<float, float>(70.0f, 300.0f), Action::PROTANOPIA, numClient, "Protanopia");
     entity::IEntity *buttonDeuteranopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 110.0f), std::pair<float, float>(70.0f, 300.0f), Action::DEUTERANOPIA, numClient, "Deuteranopia");
     entity::IEntity *buttonTritanopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 200.0f), std::pair<float, float>(70.0f, 300.0f), Action::TRITANOPIA, numClient, "Tritanopia");
+    entity::IEntity *buttonClearFilter = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 290.0f), std::pair<float, float>(70.0f, 300.0f), Action::CLEARFILTER, numClient, "Clear Filter");
     buttonPlay->setSceneStatus(Scene::MENU);
     buttonProtanopia->setSceneStatus(Scene::MENU);
     buttonDeuteranopia->setSceneStatus(Scene::MENU);
     buttonTritanopia->setSceneStatus(Scene::MENU);
+    buttonClearFilter->setSceneStatus(Scene::MENU);
 }
 
 entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePath,
@@ -365,6 +367,7 @@ void Game::init()
   stringCom.textString[TextString::Protanopia] = "Protanopia";
   stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
   stringCom.textString[TextString::Tritanopia] = "Tritanopia";
+  stringCom.textString[TextString::ClearFilter] = "Clear Filter";
 
     try
     {
@@ -488,15 +491,23 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
         }
         _playersFilters[numClient] = std::pair<entity::IEntity *, std::string>(addFilter("tritanopia", numClient), "tritanopia");
     }
+    if (msg == "clearFilter")
+    {
+        if (_playersFilters.find(numClient) != _playersFilters.end())
+        {
+            _playersFilters[numClient].first->setCommunication(entity::EntityCommunication::DELETE);
+            _playersFilters.erase(numClient);
+        }
+    }
     // std::cout << "numClient: " << numClient << std::endl;
     if (_players.find(numClient) == _players.end())
     {
-        std::cout << "Player not found" << std::endl;
+        // std::cout << "Player not found" << std::endl;
         return;
     }
     if (_players[numClient]->getID() != id)
     {
-        std::cout << "Player ID not matching" << std::endl;
+        // std::cout << "Player ID not matching" << std::endl;
         return;
     }
     if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")

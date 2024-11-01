@@ -20,6 +20,7 @@ int main(void)
   stringCom.textString[TextString::Protanopia] = "Protanopia";
   stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
   stringCom.textString[TextString::Tritanopia] = "Tritanopia";
+  stringCom.textString[TextString::ClearFilter] = "Clear Filter";
 
   std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
 

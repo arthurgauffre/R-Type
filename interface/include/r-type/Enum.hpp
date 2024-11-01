@@ -32,6 +32,7 @@ enum class Action : uint32_t
     PROTANOPIA,
     DEUTERANOPIA,
     TRITANOPIA,
+    CLEARFILTER,
     EXIT,
     NONE,
 };
@@ -65,6 +66,7 @@ enum class TextString : uint32_t
     Protanopia,
     Deuteranopia,
     Tritanopia,
+    ClearFilter,
     Unknown,
 };
 

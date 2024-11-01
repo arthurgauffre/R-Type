@@ -202,6 +202,11 @@ namespace rtype
           _msgReceived.emplace_back(std::make_pair("tritanopia", std::make_pair(entityId, client->GetId())));
         }
         break;
+        case Action::CLEARFILTER:
+        {
+          _msgReceived.emplace_back(std::make_pair("clearFilter", std::make_pair(entityId, client->GetId())));
+        }
+        break;
         case Action::EXIT:
         {
           int numPlayer = 0;
