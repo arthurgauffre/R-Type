@@ -10,6 +10,10 @@
 Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
 {
     _isStarted = false;
+    _structureCreated = false;
+    _waveNumber = 0;
+    _waveInterval = 0;
+    _spawnInterval = 0;
 }
 
 Game::~Game()
@@ -286,21 +290,16 @@ void Game::createMenu(int numClient)
     buttonClearFilter->setSceneStatus(Scene::MENU);
 }
 
-entity::IEntity *Game::createStructure()
+entity::IEntity *Game::createStructure(const nlohmann::json &structure)
 {
-    nlohmann::json config = this->getConfig();
-
-    if (config.contains("structure") == false)
-        return nullptr;
-
-    std::string texturePath = config["structure"]["path"];
-    std::pair<float, float> position = std::pair<float, float>(config["structure"]["position"]["x"], config["structure"]["position"]["y"]);
-    std::pair<float, float> scale = std::pair<float, float>(config["structure"]["scale"]["x"], config["structure"]["scale"]["y"]);
-    int health = config["structure"]["health"];
+    std::string texturePath = structure["path"];
+    std::pair<float, float> position = std::pair<float, float>(structure["position"]["x"], structure["position"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(structure["scale"]["x"], structure["scale"]["y"]);
+    int health = structure["health"];
 
     uint32_t entityID = _engine->getEntityManager()->generateEntityID();
 
-    entity::IEntity *structure = _engine->getEntityManager()->createEntity(entityID, -1);
+    entity::IEntity *structureEntity = _engine->getEntityManager()->createEntity(entityID, -1);
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         entityID, Type::STRUCTURE);
@@ -319,7 +318,7 @@ entity::IEntity *Game::createStructure()
     _engine->getComponentManager()->addComponent<component::HealthComponent>(
         entityID, health);
 
-    return structure;
+    return structureEntity;
 }
 
 nlohmann::json Game::fillConfigJson(const std::string &path)
@@ -602,24 +601,29 @@ void Game::run()
             if (config.contains("enemy") && config["enemy"].is_array())
             {
                 for (const auto &enemy : config["enemy"])
-                {
                     this->createEnemy(enemy);
-                }
             }
             else
-            {
                 std::cerr << "Warning: 'enemy' not found or is not an array in config." << std::endl;
-            }
 
             _waveNumber--;
             _waveClock.restart();
         }
 
-        // if (_spawnClock.getElapsedTime().asSeconds() > _spawnInterval && _isStarted)
-        // {
-        //     this->createStructure();
-        //     _spawnClock.restart();
-        // }
+        if (!_structureCreated)
+        {
+            const auto &config = getConfig();
+
+            if (config.contains("structure") && config["structure"].is_array())
+            {
+                for (const auto &structure : config["structure"])
+                    this->createStructure(structure);
+            }
+            else
+                std::cerr << "Warning: 'structure' not found or is not an array in config." << std::endl;
+
+            _structureCreated = true;
+        }
 
         if (!_engine->msgReceived.empty())
         {

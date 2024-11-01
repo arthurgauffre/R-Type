@@ -44,22 +44,40 @@
     }
   },
 
-  "structure": {
-    "path": "app/assets/sprites/block.png",
-    "health": 100,
-    "position": {
-      "x": 100,
-      "y": 100
+  "structure": [
+    {
+      "path": "app/assets/sprites/block.png",
+      "health": 100,
+      "position": {
+        "x": 1920,
+        "y": 0
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
     },
-    "velocity": {
-      "x": 500,
-      "y": 500
-    },
-    "scale": {
-      "x": 0.1,
-      "y": 0.1
+    {
+      "path": "app/assets/sprites/block.png",
+      "health": 100,
+      "position": {
+        "x": 1920,
+        "y": 1000
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
     }
-  },
+  ],
 
   "enemy": [
     {

@@ -28,7 +28,7 @@ public:
 
     void createMenu(int numClient);
 
-    entity::IEntity *createStructure();
+    entity::IEntity *createStructure(const nlohmann::json &structure);
 
     void init();
     void run();
@@ -59,4 +59,5 @@ private:
     float _waveInterval;
     nlohmann::json _config;
     bool _isStarted;
+    bool _structureCreated;
 };
