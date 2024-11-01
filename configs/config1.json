@@ -1,0 +1,84 @@
+{
+  "waveNumber": 10,
+  "waveInterval": 5,
+
+  "background": {
+    "path": "app/assets/images/city_background.png",
+    "velocity": {
+        "x": -100,
+        "y": 0
+    },
+    "size": {
+        "width": 4448,
+        "height": 1200
+    }
+  },
+
+  "player": {
+    "path": "app/assets/sprites/plane.png",
+    "health": 100,
+    "position": {
+        "x": 100,
+        "y": 100
+    },
+    "velocity": {
+        "x": 500,
+        "y": 500
+    },
+    "scale": {
+        "x": 0.10,
+        "y": 0.10
+    },
+    "weapon": {
+      "damage": 50,
+      "cooldown": 0.5
+    },
+    "binds": {
+      "MoveUp": "z",
+      "MoveDown": "q",
+      "MoveLeft": "s",
+      "MoveRight": "d",
+      "Shoot": "space"
+    }
+  },
+
+  "structure": {
+    "path": "app/assets/sprites/structure.png",
+    "health": 100,
+    "timer": 3,
+    "loop": true,
+    "position": {
+        "x": 100,
+        "y": "random"
+    },
+    "velocity": {
+        "x": 500,
+        "y": 500
+    },
+    "scale": {
+        "x": 0.10,
+        "y": 0.10
+    }
+  },
+
+  "enemy": {
+    "iaType": "random",
+    "path": "app/assets/sprites/enemy.png",
+    "health": 100,
+    "damage": 10,
+    "timer": 3,
+    "loop": true,
+    "position": {
+        "x": 1920,
+        "y": "random"
+    },
+    "velocity": {
+        "x": -200,
+        "y": 0
+    },
+    "scale": {
+        "x": 0.20,
+        "y": 0.20
+    }
+  }
+}
