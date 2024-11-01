@@ -21,16 +21,14 @@ public:
 
     entity::IEntity *createBackground();
     entity::IEntity *createPlayer(int numClient);
-    entity::IEntity *createEnemy();
+    entity::IEntity *createEnemy(const nlohmann::json &enemy);
     entity::IEntity *createWeapon(uint32_t parentID, Type type, int damage,
                                   float cooldown);
     entity::IEntity *createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient, std::string text = "Play");
 
     void createMenu(int numClient);
 
-    entity::IEntity *createStructure(uint32_t entityID, std::string texturePath,
-                                     std::pair<float, float> position,
-                                     std::pair<float, float> scale, int health);
+    entity::IEntity *createStructure();
 
     void init();
     void run();

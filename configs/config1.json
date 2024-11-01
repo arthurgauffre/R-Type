@@ -1,16 +1,18 @@
 {
-  "waveNumber": 10,
-  "waveInterval": 5,
+  "waveSystem": {
+    "waveNumber": 10,
+    "waveInterval": 5
+  },
 
   "background": {
     "path": "app/assets/images/city_background.png",
     "velocity": {
-        "x": -100,
-        "y": 0
+      "x": -100,
+      "y": 0
     },
     "size": {
-        "width": 4448,
-        "height": 1200
+      "width": 4448,
+      "height": 1200
     }
   },
 
@@ -18,16 +20,16 @@
     "path": "app/assets/sprites/plane.png",
     "health": 100,
     "position": {
-        "x": 100,
-        "y": 100
+      "x": 100,
+      "y": 100
     },
     "velocity": {
-        "x": 500,
-        "y": 500
+      "x": 500,
+      "y": 500
     },
     "scale": {
-        "x": 0.10,
-        "y": 0.10
+      "x": 0.1,
+      "y": 0.1
     },
     "weapon": {
       "damage": 50,
@@ -43,42 +45,58 @@
   },
 
   "structure": {
-    "path": "app/assets/sprites/structure.png",
+    "path": "app/assets/sprites/block.png",
     "health": 100,
-    "timer": 3,
-    "loop": true,
     "position": {
-        "x": 100,
-        "y": "random"
+      "x": 100,
+      "y": 100
     },
     "velocity": {
-        "x": 500,
-        "y": 500
+      "x": 500,
+      "y": 500
     },
     "scale": {
-        "x": 0.10,
-        "y": 0.10
+      "x": 0.1,
+      "y": 0.1
     }
   },
 
-  "enemy": {
-    "iaType": "random",
-    "path": "app/assets/sprites/enemy.png",
-    "health": 100,
-    "damage": 10,
-    "timer": 3,
-    "loop": true,
-    "position": {
+  "enemy": [
+    {
+      "iaType": "random",
+      "path": "app/assets/sprites/enemy.png",
+      "health": 100,
+      "damage": 10,
+      "position": {
         "x": 1920,
         "y": "random"
-    },
-    "velocity": {
+      },
+      "velocity": {
         "x": -200,
         "y": 0
+      },
+      "scale": {
+        "x": 0.2,
+        "y": 0.2
+      }
     },
-    "scale": {
-        "x": 0.20,
-        "y": 0.20
+    {
+      "iaType": "random",
+      "path": "app/assets/sprites/enemy.png",
+      "health": 100,
+      "damage": 10,
+      "position": {
+        "x": 1920,
+        "y": "random"
+      },
+      "velocity": {
+        "x": -200,
+        "y": 0
+      },
+      "scale": {
+        "x": 0.2,
+        "y": 0.2
+      }
     }
-  }
+  ]
 }

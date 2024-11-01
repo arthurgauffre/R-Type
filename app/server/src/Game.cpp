@@ -195,21 +195,16 @@ entity::IEntity *Game::createPlayer(int numClient)
  *
  * @return entity::IEntity* Pointer to the created enemy entity.
  */
-entity::IEntity *Game::createEnemy()
+entity::IEntity *Game::createEnemy(const nlohmann::json &enemy)
 {
-    nlohmann::json config = this->getConfig();
-
-    if (config.contains("enemy") == false)
-        return nullptr;
-
-    std::string texturePath = config["enemy"]["path"];
-    int damage = config["enemy"]["damage"];
-    std::pair<float, float> velocity = std::pair<float, float>(config["enemy"]["velocity"]["x"], config["enemy"]["velocity"]["y"]);
-    std::pair<float, float> scale = std::pair<float, float>(config["enemy"]["scale"]["x"], config["enemy"]["scale"]["y"]);
-    auto positionInput = config["enemy"]["position"];
-    int health = config["enemy"]["health"];
+    std::string texturePath = enemy["path"];
+    int damage = enemy["damage"];
+    std::pair<float, float> velocity = std::pair<float, float>(enemy["velocity"]["x"], enemy["velocity"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(enemy["scale"]["x"], enemy["scale"]["y"]);
+    auto positionInput = enemy["position"];
+    int health = enemy["health"];
     std::pair<float, float> position;
-    std::string iaType = config["enemy"]["iaType"];
+    std::string iaType = enemy["iaType"];
 
     if (positionInput["x"] == "random")
         position.first = getRandomPosition();
@@ -221,7 +216,7 @@ entity::IEntity *Game::createEnemy()
         position.second = positionInput["y"];
 
     uint32_t entityID = _engine->getEntityManager()->generateEntityID();
-    entity::IEntity *enemy = _engine->getEntityManager()->createEntity(entityID, -1);
+    entity::IEntity *enemyEntity = _engine->getEntityManager()->createEntity(entityID, -1);
     entity::IEntity *weapon = createWeapon(entityID, Type::WEAPON, damage, 2);
 
     if (iaType == "random")
@@ -262,7 +257,7 @@ entity::IEntity *Game::createEnemy()
         entityID, _engine->_graphic->getTextureSize(texture->getTexture()).first * scale.first,
         _engine->_graphic->getTextureSize(texture->getTexture()).second * scale.second);
 
-    return enemy;
+    return enemyEntity;
 }
 
 entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient, std::string text)
@@ -291,10 +286,20 @@ void Game::createMenu(int numClient)
     buttonClearFilter->setSceneStatus(Scene::MENU);
 }
 
-entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePath,
-                                       std::pair<float, float> position,
-                                       std::pair<float, float> scale, int health)
+entity::IEntity *Game::createStructure()
 {
+    nlohmann::json config = this->getConfig();
+
+    if (config.contains("structure") == false)
+        return nullptr;
+
+    std::string texturePath = config["structure"]["path"];
+    std::pair<float, float> position = std::pair<float, float>(config["structure"]["position"]["x"], config["structure"]["position"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(config["structure"]["scale"]["x"], config["structure"]["scale"]["y"]);
+    int health = config["structure"]["health"];
+
+    uint32_t entityID = _engine->getEntityManager()->generateEntityID();
+
     entity::IEntity *structure = _engine->getEntityManager()->createEntity(entityID, -1);
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
@@ -380,17 +385,13 @@ void Game::init()
 
         this->createBackground();
 
-        this->createStructure(_engine->getEntityManager()->generateEntityID(),
-                              "app/assets/sprites/block.png",
-                              std::pair<float, float>(1920.0f, 0.0f),
-                              std::pair<float, float>(0.5f, 0.5f), 50);
-
-        int waveInterval = this->getConfig()["waveInterval"];
-        int waveNumber = this->getConfig()["waveNumber"];
-        // int spawnInterval = this->getConfig()["spawnInterval"];
-        // this->_spawnInterval = spawnInterval;
-        this->_waveInterval = waveInterval;
-        this->_waveNumber = waveNumber;
+        if (this->getConfig().contains("waveSystem"))
+        {
+            int waveInterval = this->getConfig()["waveSystem"]["waveInterval"];
+            int waveNumber = this->getConfig()["waveSystem"]["waveNumber"];
+            this->_waveInterval = waveInterval;
+            this->_waveNumber = waveNumber;
+        }
     }
     catch (const std::exception &e)
     {
@@ -596,17 +597,27 @@ void Game::run()
         _engine->update();
         if (_waveNumber != 0 && _waveClock.getElapsedTime().asSeconds() > _waveInterval && _isStarted)
         {
-            this->createEnemy();
+            const auto &config = getConfig();
+
+            if (config.contains("enemy") && config["enemy"].is_array())
+            {
+                for (const auto &enemy : config["enemy"])
+                {
+                    this->createEnemy(enemy);
+                }
+            }
+            else
+            {
+                std::cerr << "Warning: 'enemy' not found or is not an array in config." << std::endl;
+            }
+
             _waveNumber--;
             _waveClock.restart();
         }
 
         // if (_spawnClock.getElapsedTime().asSeconds() > _spawnInterval && _isStarted)
         // {
-        //     this->createStructure(_engine->getEntityManager()->generateEntityID(),
-        //                           "app/assets/sprites/block.png",
-        //                           std::pair<float, float>(1920.0f, 0.0f),
-        //                           std::pair<float, float>(0.5f, 0.5f), 50);
+        //     this->createStructure();
         //     _spawnClock.restart();
         // }
 
