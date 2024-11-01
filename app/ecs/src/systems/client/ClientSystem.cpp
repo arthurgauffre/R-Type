@@ -624,20 +624,6 @@ namespace rtype
         if (action != NetworkMessages::none)
         {
           message.header.id = action;
-          std::cout << "Action sent : ";
-          if (action == NetworkMessages::moveUp)
-            std::cout << "moveUp" << id.id << std::endl;
-          else if (action == NetworkMessages::moveDown)
-            std::cout << "moveDown" << id.id << std::endl;
-          else if (action == NetworkMessages::moveLeft)
-            std::cout << "moveLeft";
-          else if (action == NetworkMessages::moveRight)
-            std::cout << "moveRight";
-          else if (action == NetworkMessages::shoot)
-            std::cout << "shoot";
-          else
-            std::cout << "none";
-          std::cout << std::endl;
           std::chrono::system_clock::time_point timeNow =
               std::chrono::system_clock::now();
           message << timeNow;

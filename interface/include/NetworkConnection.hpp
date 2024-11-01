@@ -223,6 +223,11 @@ private:
         asio::buffer(&temporaryIncomingMessage.header,
                      sizeof(rtype::network::MessageHeader<T>)),
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
+          if (ec.value() == 125) {
+            std::cout << "Connection closed" << std::endl;
+            // asioSocket.close();
+            return;
+          }
           if (!ec) {
             if (temporaryIncomingMessage.header.size > 0) {
               temporaryIncomingMessage.body.resize(

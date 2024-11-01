@@ -76,7 +76,7 @@ namespace rtype
         {
         case NetworkMessages::ClientConnection:
         {
-          std::cout << "Client Connected : " << client->GetId() << std::endl;
+          std::cout << "Client Connected in ServerSystem.hpp : " << client->GetId() << std::endl;
         }
         break;
         case NetworkMessages::MessageAll:
@@ -99,11 +99,11 @@ namespace rtype
           // extract the content of the body's message
 
           // status = ServerStatus::SERVER_RECEIVING;
-          if (!queueOfAckMessages.empty()) {
+          if (!queueOfAckMessages.empty())
+          {
             queueOfAckMessages.pop_back();
             // std::cout << "Acknowledgement message received" << std::endl;
           }
-
         }
         break;
         default:
@@ -122,9 +122,11 @@ namespace rtype
         // std::cout << "Handling input message" << std::endl;
         switch (message.header.id)
         {
-        case NetworkMessages::ClientDisconnection: {
+        case NetworkMessages::ClientDisconnection:
+        {
           int numPlayer = 0;
-          for (int i = 0; i < 4; i++) {
+          for (int i = 0; i < 4; i++)
+          {
             if (_playerConnected[i].second == client->GetId())
             {
               numPlayer = i;
@@ -134,7 +136,13 @@ namespace rtype
             }
           }
           _msgReceived.emplace_back(std::make_pair("clientDisconnection", std::make_pair(numPlayer, client->GetId())));
-          // deqConnections.erase(std::remove(deqConnections.begin(), deqConnections.end(), client), deqConnections.end());
+          OnClientDisconnection(client);
+          for (; incomingMessages.queueSize() > 0;) {
+            incomingMessages.popBack();
+          }
+          // client->Disconnect();
+          // client.reset();
+          // return;
         }
         break;
         case NetworkMessages::moveUp:
@@ -200,11 +208,23 @@ namespace rtype
         return true;
       }
 
+
       virtual void OnClientDisconnection(
-          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
-              client)
+          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
       {
-        // std::cout << "Client disconnected : " << client->GetId() << std::endl;
+        std::mutex connectionMutex;
+        if (client)
+        {
+          std::lock_guard<std::mutex> lock(connectionMutex);
+          auto it = std::remove_if(deqConnections.begin(), deqConnections.end(),
+                                   [&](const auto &connection)
+                                   {
+                                     return connection->GetId() == client->GetId();
+                                   });
+          deqConnections.erase(it, deqConnections.end());
+          // client.reset();
+          return;
+        }
       }
 
       void WaitForMessage()
@@ -270,7 +290,6 @@ namespace rtype
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-
             SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
@@ -283,7 +302,6 @@ namespace rtype
           {
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
-
 
             // entity->setCommunication(entity::EntityCommunication::NONE);
             SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
@@ -380,7 +398,8 @@ namespace rtype
           {
             component::InputComponent *component =
                 _componentManager.getComponent<component::InputComponent>(entity->getID());
-            for (int i = 0; i < deqConnections.size(); i++) {
+            for (int i = 0; i < deqConnections.size(); i++)
+            {
               if (deqConnections[i]->GetId() == component->getNumClient())
               {
 
@@ -390,14 +409,14 @@ namespace rtype
 
                   queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-
                   component->setCommunication(component::ComponentCommunication::STANDBY);
                   std::cout << "SENDING INPUT MSG TO ALL CLIENTS" << std::endl;
                   SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), deqConnections[i]);
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
                 {
-                  if (queueOfAckMessages.empty()) {
+                  if (queueOfAckMessages.empty())
+                  {
                     component->setCommunication(component::ComponentCommunication::NONE);
                     for (auto &bind : component->getKeyBindings())
                     {
@@ -663,10 +682,10 @@ namespace rtype
         else
         {
           OnClientDisconnection(client);
-          client.reset();
-          deqConnections.erase(
-              std::remove(deqConnections.begin(), deqConnections.end(), client),
-              deqConnections.end());
+          // client.reset();
+          // deqConnections.erase(
+          //     std::remove(deqConnections.begin(), deqConnections.end(), client),
+          //     deqConnections.end());
         }
       }
 
@@ -680,7 +699,8 @@ namespace rtype
         {
           if (client && client->IsConnected())
           {
-            if (client != clientToIgnore) {
+            if (client != clientToIgnore)
+            {
               client->Send(message);
             }
           }
@@ -707,11 +727,14 @@ namespace rtype
         while (messageCount < maxMessages && !incomingMessages.empty())
         {
           // auto message = incomingMessages.popFront();
-          if (queueOfAckMessages.size() >= 0){
+          if (queueOfAckMessages.size() >= 0)
+          {
             auto message = incomingMessages.popFront();
             OnMessageReceived(message.remoteConnection, message.message);
             // auto toto = queueOfAckMessages.pop_front();
-          } else {
+          }
+          else
+          {
             auto message = incomingMessages.popFront();
             OnMessageReceived(message.remoteConnection, message.message);
           }

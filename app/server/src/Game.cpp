@@ -263,14 +263,15 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
                                                std::pair<float, float>(500.0f, 500.0f),
                                                std::pair<float, float>(0.10f, 0.10f), 100, numClient);
         _players[numClient] = entity;
-        std::cout << "Client connected : " << id << std::endl;
+        std::cout << "Client connected in Game.cpp : " << id << std::endl;
     }
     if (msg == "clientDisconnection")
     {
-        std::cout << "Client disconnected : " << numClient << std::endl;
+        std::cout << "Client disconnected in Game.cpp : " << numClient << std::endl;
         if (_players.find(numClient) != _players.end())
         {
             _players[numClient]->setCommunication(entity::EntityCommunication::DELETE);
+            std::cout << "Setting the communication to delete" << std::endl;
             _players.erase(numClient);
         }
     }
@@ -281,6 +282,8 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     }
     if (_players[numClient]->getID() != id) {
         std::cout << "Player ID not matching" << std::endl;
+        std::cout << "id var value : " << id << std::endl;
+        std::cout << "_players var value : " << _players[numClient]->getID() << std::endl;
         return;
     }
     if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")

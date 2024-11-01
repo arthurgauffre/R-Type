@@ -95,7 +95,7 @@ void rtype::CoreModule::update() {
   _entityMutex.lock();
   auto entities = this->getEntityManager()->getEntities();
   _entityMutex.unlock();
-  this->getSystemManager()->update(deltatime, entities, msgToSend, this->msgReceived, _entityMutex);
+  this->getSystemManager()->update(deltatime, entities, this->msgToSend, this->msgReceived, _entityMutex);
 }
 
 void rtype::CoreModule::run() {
@@ -104,7 +104,7 @@ void rtype::CoreModule::run() {
     this->update();
     if (!keepRunning) {
       std::cout << "Exiting..." << std::endl;
-      msgToSend.push_back(std::make_pair("exit", 0));
+      this->msgToSend.push_back(std::make_pair("exit", 0));
       break;
     }
   }
