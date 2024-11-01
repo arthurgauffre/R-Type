@@ -21,7 +21,7 @@ namespace ECS_system {
         std::lock_guard<std::mutex> lock(entityMutex);
         for (auto &entity : _componentManager.getEntitiesWithComponents<component::OnClickComponent,
         component::RectangleShapeComponent, component::TransformComponent>(entities)) {
-            if (entity->getSceneStatus() != *sceneStatus)
+            if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
                 continue;
             component::OnClickComponent *onClick = _componentManager.getComponent<component::OnClickComponent>(entity->getID());
             component::RectangleShapeComponent *rectangle = _componentManager.getComponent<component::RectangleShapeComponent>(entity->getID());

@@ -187,6 +187,21 @@ namespace rtype
           _msgReceived.emplace_back(std::make_pair("play", std::make_pair(entityId, client->GetId())));
         }
         break;
+        case Action::PROTANOPIA:
+        {
+          _msgReceived.emplace_back(std::make_pair("protanopia", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::DEUTERANOPIA:
+        {
+          _msgReceived.emplace_back(std::make_pair("deuteranopia", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::TRITANOPIA:
+        {
+          _msgReceived.emplace_back(std::make_pair("tritanopia", std::make_pair(entityId, client->GetId())));
+        }
+        break;
         case Action::EXIT:
         {
           int numPlayer = 0;
@@ -339,8 +354,10 @@ namespace rtype
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-            if (entity->getNumClient() != -1)
-              SendMessageToClient(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
+            if (entity->getNumClient() != -1) {
+              if (entity->getNumClient() < deqConnections.size())
+                SendMessageToClient(networkMessageFactory.deleteEntityMsg(entity->getID()), deqConnections[entity->getNumClient()]);
+            }
             else
               SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
             _componentManager.removeAllComponents(entity->getID());

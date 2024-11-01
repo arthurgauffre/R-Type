@@ -145,7 +145,7 @@ void ECS_system::CollisionSystem::update(
 {
   for (auto &entity : entities)
   {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     component::HitBoxComponent *hitbox1 =
         _componentManager.getComponent<component::HitBoxComponent>(

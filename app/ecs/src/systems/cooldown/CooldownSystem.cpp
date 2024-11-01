@@ -44,7 +44,7 @@ void ECS_system::CooldownSystem::update(
   for (auto &entity :
        _componentManager
            .getEntitiesWithComponents<component::CooldownComponent>(entities)) {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     component::CooldownComponent *cooldownComponent =
         _componentManager.getComponent<component::CooldownComponent>(

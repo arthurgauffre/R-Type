@@ -17,6 +17,9 @@ int main(void)
   stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
   stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
   stringCom.textString[TextString::Play] = "Play"; 
+  stringCom.textString[TextString::Protanopia] = "Protanopia";
+  stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
+  stringCom.textString[TextString::Tritanopia] = "Tritanopia";
 
   std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
 

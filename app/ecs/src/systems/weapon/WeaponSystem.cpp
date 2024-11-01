@@ -78,7 +78,7 @@ void ECS_system::WeaponSystem::update(
          _componentManager.getEntitiesWithComponents<component::WeaponComponent>(
              entities))
     {
-        if (entity->getSceneStatus() != *sceneStatus)
+        if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
             continue;
         component::WeaponComponent *weaponComponent =
             _componentManager.getComponent<component::WeaponComponent>(

@@ -261,22 +261,28 @@ entity::IEntity *Game::createEnemy()
     return enemy;
 }
 
-entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient)
+entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient, std::string text)
 {
     entity::IEntity *button = _engine->getEntityManager()->createEntity(entityID, numClient);
 
     _engine->getComponentManager()->addComponent<component::RectangleShapeComponent>(entityID, position, size, color, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(entityID, position, std::pair<float, float>(1, 1));
     _engine->getComponentManager()->addComponent<component::OnClickComponent>(entityID, action, numClient);
-    _engine->getComponentManager()->addComponent<component::TextComponent>(entityID, std::make_pair(position.first + 50, position.second), "Play", 50, RColor{25, 25, 25, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(entityID, position, text, 50, RColor{25, 25, 25, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
 
     return button;
 }
 
 void Game::createMenu(int numClient)
 {
-    entity::IEntity *button = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(860.0f, 700.0f), std::pair<float, float>(70.0f, 200.0f), Action::PLAY, numClient);
-    button->setSceneStatus(Scene::MENU);
+    entity::IEntity *buttonPlay = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(860.0f, 700.0f), std::pair<float, float>(70.0f, 200.0f), Action::PLAY, numClient, "Play");
+    entity::IEntity *buttonProtanopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 20.0f), std::pair<float, float>(70.0f, 300.0f), Action::PROTANOPIA, numClient, "Protanopia");
+    entity::IEntity *buttonDeuteranopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 110.0f), std::pair<float, float>(70.0f, 300.0f), Action::DEUTERANOPIA, numClient, "Deuteranopia");
+    entity::IEntity *buttonTritanopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 200.0f), std::pair<float, float>(70.0f, 300.0f), Action::TRITANOPIA, numClient, "Tritanopia");
+    buttonPlay->setSceneStatus(Scene::MENU);
+    buttonProtanopia->setSceneStatus(Scene::MENU);
+    buttonDeuteranopia->setSceneStatus(Scene::MENU);
+    buttonTritanopia->setSceneStatus(Scene::MENU);
 }
 
 entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePath,
@@ -355,7 +361,10 @@ void Game::init()
   stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
   stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
   stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
-  stringCom.textString[TextString::Play] = "Play"; 
+  stringCom.textString[TextString::Play] = "Play";
+  stringCom.textString[TextString::Protanopia] = "Protanopia";
+  stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
+  stringCom.textString[TextString::Tritanopia] = "Tritanopia";
 
     try
     {
@@ -400,6 +409,22 @@ void Game::init()
     this->_waveNumber = waveNumber;
 }
 
+entity::IEntity *Game::addFilter(std::string filter, int numClient)
+{
+    entity::IEntity *filterEntity = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    if (filter == "protanopia")
+        _engine->getComponentManager()->addComponent<component::RectangleShapeComponent>(filterEntity->getID(), std::pair<float, float>(0, 0), std::pair<float, float>(1080, 1920), RColor{56, 181, 0, 25}, _engine->_graphic);
+    if (filter == "deuteranopia")
+        _engine->getComponentManager()->addComponent<component::RectangleShapeComponent>(filterEntity->getID(), std::pair<float, float>(0, 0), std::pair<float, float>(1080, 1920), RColor{119, 119, 0, 25}, _engine->_graphic);
+    if (filter == "tritanopia")
+        _engine->getComponentManager()->addComponent<component::RectangleShapeComponent>(filterEntity->getID(), std::pair<float, float>(0, 0), std::pair<float, float>(1080, 1920), RColor{255, 127, 0, 25}, _engine->_graphic);
+    filterEntity->setSceneStatus(Scene::ALL);
+    _engine->getComponentManager()->addComponent<component::TransformComponent>(filterEntity->getID(), std::pair<float, float>(0, 0), std::pair<float, float>(1, 1));
+    _engine->getComponentManager()->addComponent<component::TypeComponent>(filterEntity->getID(), Type::FILTER);
+    std::cout << "Filter added with id: " << filterEntity->getID() << "and a numClient of: " << numClient << std::endl;
+    return filterEntity;
+}
+
 void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
 {
     std::string msg = msgReceived.front().first;
@@ -429,6 +454,39 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
         _players[numClient] = entity;
         _playersScenes[numClient] = Scene::GAME;
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::GAME, numClient));
+    }
+    if (msg == "protanopia")
+    {
+        if (_playersFilters.find(numClient) != _playersFilters.end())
+        {
+            if (_playersFilters[numClient].second == "protanopia")
+                return;
+            _playersFilters[numClient].first->setCommunication(entity::EntityCommunication::DELETE);
+            _playersFilters.erase(numClient);
+        }
+        _playersFilters[numClient] = std::pair<entity::IEntity *, std::string>(addFilter("protanopia", numClient), "protanopia");
+    }
+    if (msg == "deuteranopia")
+    {
+        if (_playersFilters.find(numClient) != _playersFilters.end())
+        {
+            if (_playersFilters[numClient].second == "deuteranopia")
+                return;
+            _playersFilters[numClient].first->setCommunication(entity::EntityCommunication::DELETE);
+            _playersFilters.erase(numClient);
+        }
+        _playersFilters[numClient] = std::pair<entity::IEntity *, std::string>(addFilter("deuteranopia", numClient), "deuteranopia");
+    }
+    if (msg == "tritanopia")
+    {
+        if (_playersFilters.find(numClient) != _playersFilters.end())
+        {
+            if (_playersFilters[numClient].second == "tritanopia")
+                return;
+            _playersFilters[numClient].first->setCommunication(entity::EntityCommunication::DELETE);
+            _playersFilters.erase(numClient);
+        }
+        _playersFilters[numClient] = std::pair<entity::IEntity *, std::string>(addFilter("tritanopia", numClient), "tritanopia");
     }
     // std::cout << "numClient: " << numClient << std::endl;
     if (_players.find(numClient) == _players.end())

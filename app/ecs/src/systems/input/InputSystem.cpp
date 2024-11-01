@@ -29,7 +29,7 @@ void ECS_system::InputSystem::update(
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
            entities)) {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(

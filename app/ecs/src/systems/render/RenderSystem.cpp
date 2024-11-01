@@ -49,7 +49,7 @@ void ECS_system::RenderSystem::update(
                       component::TextureComponent, component::SizeComponent,
                       component::SpriteComponent>(entities))
   {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     if (entity.get()->getActive() == false ||
         _componentManager
@@ -84,7 +84,7 @@ void ECS_system::RenderSystem::update(
                       component::TransformComponent, component::SpriteComponent,
                       component::TextureComponent, component::TypeComponent>(entities))
   {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     if (entity.get()->getActive() == false ||
         _componentManager
@@ -123,7 +123,7 @@ void ECS_system::RenderSystem::update(
                       component::RectangleShapeComponent,
                       component::TransformComponent>(entities))
   {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
 
     if (entity.get()->getActive() == false)
@@ -159,7 +159,7 @@ void ECS_system::RenderSystem::update(
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TextComponent>(entities))
   {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     if (entity.get()->getActive() == false)
       continue;
@@ -171,6 +171,47 @@ void ECS_system::RenderSystem::update(
     if (!textComponent)
       continue;
     _graphic->drawText(textComponent->getTextId());
+  }
+
+  // draw rectangle filter
+  for (auto &entity : _componentManager.getEntitiesWithComponents<
+                      component::RectangleShapeComponent,
+                      component::TransformComponent,
+                      component::TypeComponent>(entities))
+  {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
+    if (entity.get()->getActive() == false ||
+        _componentManager
+                .getComponent<component::TypeComponent>(entity.get()->getID())
+                ->getType() != Type::FILTER)
+      continue;
+    component::RectangleShapeComponent *rectangleShapeComponent =
+        _componentManager.getComponent<component::RectangleShapeComponent>(
+            entity.get()->getID());
+    component::TransformComponent *transformComponent =
+        _componentManager.getComponent<component::TransformComponent>(
+            entity.get()->getID());
+
+    std::pair<float, float> Position = {transformComponent->getPosition().first,
+                                        transformComponent->getPosition().second};
+
+    std::pair<float, float> Size = {rectangleShapeComponent->getWidth(),
+                                    rectangleShapeComponent->getHeight()};
+
+    _graphic->setRectangleShapePosition(Position.first, Position.second,
+                                        rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeSize(Size.first, Size.second,
+                                    rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeRotation(transformComponent->getRotation(),
+                                        rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeFillColor(rectangleShapeComponent->getColor().r,
+                                         rectangleShapeComponent->getColor().g,
+                                         rectangleShapeComponent->getColor().b,
+                                         rectangleShapeComponent->getColor().a,
+                                         rectangleShapeComponent->getRectangleShapeId());
+
+    _graphic->drawRectangleShape(rectangleShapeComponent->getRectangleShapeId());
   }
 
   _graphic->windowDisplay();

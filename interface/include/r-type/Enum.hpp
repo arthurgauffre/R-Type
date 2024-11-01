@@ -15,6 +15,7 @@ enum class Scene : uint32_t
     GAMEOVER,
     SETTINGS,
     LOADING,
+    ALL,
     NONE
 };
 
@@ -28,6 +29,9 @@ enum class Action : uint32_t
     MENU,
     PLAY,
     GAME,
+    PROTANOPIA,
+    DEUTERANOPIA,
+    TRITANOPIA,
     EXIT,
     NONE,
 };
@@ -58,6 +62,9 @@ enum class TextFont : uint32_t
 enum class TextString : uint32_t
 {
     Play,
+    Protanopia,
+    Deuteranopia,
+    Tritanopia,
     Unknown,
 };
 
@@ -70,8 +77,9 @@ enum class Type
     PLAYER_PROJECTILE,
     ENEMY_PROJECTILE,
     BACKGROUND,
-    UNKNOWN,
     STRUCTURE,
+    FILTER,
+    UNKNOWN,
 };
 
 enum class KeyBoard : uint32_t

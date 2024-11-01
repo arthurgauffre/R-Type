@@ -50,7 +50,7 @@ void ECS_system::HealthSystem::update(
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::HealthComponent>(
            entities)) {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     component::HealthComponent *healthComponent =
         _componentManager.getComponent<component::HealthComponent>(

@@ -48,7 +48,7 @@ void ECS_system::GameSystem::update(
   int _enemyCount = 0;
 
   for (auto &entity : entities) {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     component::TypeComponent *type =
         _componentManager.getComponent<component::TypeComponent>(

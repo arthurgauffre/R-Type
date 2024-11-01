@@ -17,7 +17,7 @@ namespace ECS_system
         std::lock_guard<std::mutex> lock(entityMutex);
         for (auto &entity : entities)
         {
-            if (entity->getSceneStatus() != *sceneStatus)
+            if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
                 continue;
             component::TypeComponent *typeComponent = _componentManager.getComponent<component::TypeComponent>(entity->getID());
             component::AIComponent *aiComponent = _componentManager.getComponent<component::AIComponent>(entity->getID());

@@ -30,7 +30,7 @@ void ECS_system::MovementSystem::update(
            component::TransformComponent, component::VelocityComponent>(
            entities))
   {
-    if (entity->getSceneStatus() != *sceneStatus)
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     component::TransformComponent *transform =
         _componentManager.getComponent<component::TransformComponent>(
