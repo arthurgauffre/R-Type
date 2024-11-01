@@ -76,7 +76,7 @@ public:
   void setCommunication(ComponentCommunication communication) override { _communication = communication; }
 
 protected:
-  uint32_t id;   // Id of the associated entity
-  bool isActive; // State of the component
+  uint32_t id;
+  bool isActive;
 };
 } // namespace component
