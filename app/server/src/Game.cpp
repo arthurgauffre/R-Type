@@ -127,19 +127,19 @@ Game::createPlayer(uint32_t entityID, std::string texturePath,
         entityID, numClient);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction(Action::MOVE_LEFT, sf::Keyboard::Q);
+        ->bindAction(Action::MOVE_LEFT, KeyBoard::Q);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction(Action::MOVE_RIGHT, sf::Keyboard::D);
+        ->bindAction(Action::MOVE_RIGHT, KeyBoard::D);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction(Action::MOVE_UP, sf::Keyboard::Z);
+        ->bindAction(Action::MOVE_UP, KeyBoard::Z);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction(Action::MOVE_DOWN, sf::Keyboard::S);
+        ->bindAction(Action::MOVE_DOWN, KeyBoard::S);
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
-        ->bindAction(Action::SHOOT, sf::Keyboard::Space);
+        ->bindAction(Action::SHOOT, KeyBoard::Space);
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, velocity);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(

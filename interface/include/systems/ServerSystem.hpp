@@ -453,7 +453,7 @@ namespace rtype
                     component->setCommunication(component::ComponentCommunication::NONE);
                     for (auto &bind : component->getKeyBindings())
                     {
-                      BindKey input = {getKeyBind(bind.second), bind.first};
+                      BindKey input = {bind.second, bind.first};
                       SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
                     }
                     return;
@@ -464,7 +464,7 @@ namespace rtype
                   component->setCommunication(component::ComponentCommunication::NONE);
                   for (auto &bind : component->getKeyBindings())
                   {
-                    BindKey input = {getKeyBind(bind.second), bind.first};
+                    BindKey input = {bind.second, bind.first};
                     SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
                   }
                 }
@@ -706,7 +706,7 @@ namespace rtype
               SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
               for (auto &bind : component->getKeyBindings())
               {
-                BindKey input = {getKeyBind(bind.second), bind.first};
+                BindKey input = {bind.second, bind.first};
                 SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), client);
               }
             }
@@ -896,21 +896,6 @@ namespace rtype
         if (texture == "app/assets/sprites/projectile.gif")
           return TexturePath::Bullet;
         return TexturePath::Player;
-      }
-
-      KeyBoard getKeyBind(sf::Keyboard::Key key)
-      {
-        if (key == sf::Keyboard::Z)
-          return KeyBoard::Z;
-        if (key == sf::Keyboard::Q)
-          return KeyBoard::Q;
-        if (key == sf::Keyboard::S)
-          return KeyBoard::S;
-        if (key == sf::Keyboard::D)
-          return KeyBoard::D;
-        if (key == sf::Keyboard::Space)
-          return KeyBoard::Space;
-        return KeyBoard::Z;
       }
 
       EntityType getEntityType(component::Type type)

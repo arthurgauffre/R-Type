@@ -40,68 +40,6 @@ namespace rtype
       return "";
     }
 
-    sf::Keyboard::Key ClientSystem::getKey(KeyBoard key)
-    {
-      switch (key)
-      {
-      case KeyBoard::A:
-        return sf::Keyboard::A;
-      case KeyBoard::B:
-        return sf::Keyboard::B;
-      case KeyBoard::C:
-        return sf::Keyboard::C;
-      case KeyBoard::D:
-        return sf::Keyboard::D;
-      case KeyBoard::E:
-        return sf::Keyboard::E;
-      case KeyBoard::F:
-        return sf::Keyboard::F;
-      case KeyBoard::G:
-        return sf::Keyboard::G;
-      case KeyBoard::H:
-        return sf::Keyboard::H;
-      case KeyBoard::I:
-        return sf::Keyboard::I;
-      case KeyBoard::J:
-        return sf::Keyboard::J;
-      case KeyBoard::K:
-        return sf::Keyboard::K;
-      case KeyBoard::L:
-        return sf::Keyboard::L;
-      case KeyBoard::M:
-        return sf::Keyboard::M;
-      case KeyBoard::N:
-        return sf::Keyboard::N;
-      case KeyBoard::O:
-        return sf::Keyboard::O;
-      case KeyBoard::P:
-        return sf::Keyboard::P;
-      case KeyBoard::Q:
-        return sf::Keyboard::Q;
-      case KeyBoard::R:
-        return sf::Keyboard::R;
-      case KeyBoard::S:
-        return sf::Keyboard::S;
-      case KeyBoard::T:
-        return sf::Keyboard::T;
-      case KeyBoard::U:
-        return sf::Keyboard::U;
-      case KeyBoard::V:
-        return sf::Keyboard::V;
-      case KeyBoard::W:
-        return sf::Keyboard::W;
-      case KeyBoard::X:
-        return sf::Keyboard::X;
-      case KeyBoard::Y:
-        return sf::Keyboard::Y;
-      case KeyBoard::Z:
-        return sf::Keyboard::Z;
-      case KeyBoard::Space:
-        return sf::Keyboard::Space;
-      }
-      return sf::Keyboard::Unknown;
-    }
-
     component::Type ClientSystem::getTypedEntity(EntityType type)
     {
       switch (type)
@@ -365,7 +303,7 @@ namespace rtype
                     sizeof(BindKey));
         _componentManager
             .updateComponent<component::InputComponent>(id.id, input.action,
-                                                        getKey(input.key));
+                                                        input.key);
       }
       break;
       case NetworkMessages::createType:

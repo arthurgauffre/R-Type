@@ -18,6 +18,8 @@
 #include <vector>
 #include <unordered_map>
 
+#include <r-type/Enum.hpp>
+
 class IGraphic {
     public:
         IGraphic(){};
@@ -44,6 +46,8 @@ class IGraphic {
         virtual void drawRectangleShape(size_t id) = 0;
 
         virtual void eventHandler() = 0;
+
+        virtual bool isKeyPressed(KeyBoard key) = 0;
 
         virtual bool isMousePressed() = 0;
         virtual std::pair<float, float> getMousePosition() = 0;

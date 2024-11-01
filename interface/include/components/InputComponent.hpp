@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
 #include <r-type/Enum.hpp>
 #include <string>
@@ -24,7 +23,7 @@ public:
    */
   ~InputComponent() = default;
 
-  void update(Action action, sf::Keyboard::Key key) {
+  void update(Action action, KeyBoard key) {
     bindAction(action, key);
   }
 
@@ -34,19 +33,19 @@ public:
    * @param action A string representing the action (e.g., "MoveLeft").
    * @param key The key from the keyboard to bind to this action.
    */
-  void bindAction(Action action, sf::Keyboard::Key key) {
+  void bindAction(Action action, KeyBoard key) {
     _keyBindings[action] = key;
   }
 
-  sf::Keyboard::Key getBoundKey(Action action) const;
+  KeyBoard getBoundKey(Action action) const;
 
-  bool isActionActive(Action action) const;
+  bool isActionActive(Action action, std::shared_ptr<IGraphic> graphic) const;
 
-  std::unordered_map<Action, sf::Keyboard::Key> getKeyBindings() const;
+  std::unordered_map<Action, KeyBoard> getKeyBindings() const;
 
   int getNumClient() const { return _numClient; }
 
-  std::unordered_map<Action, sf::Keyboard::Key> &getKeyBindings() { return _keyBindings; }
+  std::unordered_map<Action, KeyBoard> &getKeyBindings() { return _keyBindings; }
 
 private:
   /**
@@ -55,7 +54,7 @@ private:
    * The key is a string representing the action (e.g., "MoveLeft"), and the
    * value is the key from the keyboard associated with that action.
    */
-  std::unordered_map<Action, sf::Keyboard::Key> _keyBindings;
+  std::unordered_map<Action, KeyBoard> _keyBindings;
 
   int _numClient = 0;
 };

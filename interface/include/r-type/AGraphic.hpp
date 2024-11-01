@@ -36,6 +36,8 @@ class AGraphic: virtual public IGraphic {
 
         virtual void eventHandler() = 0;
 
+        virtual bool isKeyPressed(KeyBoard key) = 0;
+
         virtual bool isMousePressed() = 0;
         virtual std::pair<float, float> getMousePosition() = 0;
 

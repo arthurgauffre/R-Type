@@ -67,8 +67,6 @@ namespace rtype
 
       std::string GetTexturePath(TexturePath texture);
 
-      sf::Keyboard::Key getKey(KeyBoard key);
-
       component::Type getTypedEntity(EntityType type);
 
       virtual void Disconnect() {}

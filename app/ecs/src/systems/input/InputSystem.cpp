@@ -5,7 +5,6 @@
 ** InputSystem
 */
 
-#include <components/VelocityComponent.hpp>
 #include <systems/InputSystem.hpp>
 
 /**
@@ -37,7 +36,7 @@ void ECS_system::InputSystem::update(
             entity.get()->getID());
 
     for (auto &action : inputComponent->getKeyBindings()) {
-      if (inputComponent->isActionActive(action.first)) {
+      if (inputComponent->isActionActive(action.first, _graphic)) {
         msgToSend.emplace_back(action.first, entity->getID());
       }
     }

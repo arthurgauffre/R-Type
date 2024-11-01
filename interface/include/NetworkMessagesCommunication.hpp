@@ -108,36 +108,6 @@ enum class TexturePath : uint32_t {
   Background,
 };
 
-enum class KeyBoard : uint32_t {
-  A,
-  B,
-  C,
-  D,
-  E,
-  F,
-  G,
-  H,
-  I,
-  J,
-  K,
-  L,
-  M,
-  N,
-  O,
-  P,
-  Q,
-  R,
-  S,
-  T,
-  U,
-  V,
-  W,
-  X,
-  Y,
-  Z,
-  Space,
-};
-
 struct TextureComponent {
   TexturePath texturePath;
 };

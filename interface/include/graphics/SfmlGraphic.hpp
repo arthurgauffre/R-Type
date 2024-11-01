@@ -37,6 +37,8 @@ class SfmlGraphic : virtual public AGraphic {
 
         void eventHandler() override;
 
+        bool isKeyPressed(KeyBoard key) override;
+
         bool isMousePressed() override;
         std::pair<float, float> getMousePosition() override;
 
