@@ -42,7 +42,6 @@ void ECS_system::RenderSystem::update(
 {
   _graphic->windowClear();
 
-  // lock the entity mutex
   std::lock_guard<std::mutex> lock(entityMutex);
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::SpriteComponent, component::TransformComponent,
@@ -173,7 +172,6 @@ void ECS_system::RenderSystem::update(
     _graphic->drawText(textComponent->getTextId());
   }
 
-  // draw rectangle filter
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::RectangleShapeComponent,
                       component::TransformComponent,
