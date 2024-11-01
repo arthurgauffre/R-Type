@@ -123,6 +123,9 @@ void Game::BindInputScript(entity::IEntity *entity)
     _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
         ->bindAction(Action::SHOOT, KeyBoard::Space);
+    _engine->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction(Action::MENU, KeyBoard::escape);
 }
 
 /**
@@ -436,6 +439,7 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     msgReceived.erase(msgReceived.begin());
     if (msg == "clientConnection")
     {
+
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, numClient));
         _playersScenes[numClient] = Scene::MENU;
         createMenu(numClient);
@@ -454,8 +458,10 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     if (msg == "play") {
         if (_playersScenes[numClient] == Scene::GAME)
             return;
-        entity::IEntity *entity = createPlayer(numClient);
-        _players[numClient] = entity;
+        if (_players.find(numClient) == _players.end()) {
+            entity::IEntity *entity = createPlayer(numClient);
+            _players[numClient] = entity;
+        }
         _playersScenes[numClient] = Scene::GAME;
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::GAME, numClient));
     }
@@ -499,6 +505,13 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
             _playersFilters[numClient].first->setCommunication(entity::EntityCommunication::DELETE);
             _playersFilters.erase(numClient);
         }
+    }
+    if (msg == "menu")
+    {
+        if (_playersScenes[numClient] == Scene::MENU)
+            return;
+        _playersScenes[numClient] = Scene::MENU;
+        _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, numClient));
     }
     // std::cout << "numClient: " << numClient << std::endl;
     if (_players.find(numClient) == _players.end())

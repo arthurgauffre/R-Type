@@ -182,6 +182,11 @@ namespace rtype
           _msgReceived.emplace_back(std::make_pair("play", std::make_pair(entityId, client->GetId())));
         }
         break;
+        case Action::MENU:
+        {
+          _msgReceived.emplace_back(std::make_pair("menu", std::make_pair(entityId, client->GetId())));
+        }
+        break;
         case Action::PROTANOPIA:
         {
           _msgReceived.emplace_back(std::make_pair("protanopia", std::make_pair(entityId, client->GetId())));
@@ -220,9 +225,9 @@ namespace rtype
           // std::cout << "WAITING FOR DISCONNECTION" << std::endl;
           _msgReceived.emplace_back(std::make_pair("clientDisconnection", std::make_pair(numPlayer, client->GetId())));
           // OnClientDisconnection(client);
-          for (; incomingMessages.queueSize() > 0;) {
-            incomingMessages.popBack();
-          }
+          // for (; incomingMessages.queueSize() > 0;) {
+          //   incomingMessages.popBack();
+          // }
           // client->Disconnect();
           // client.reset();
           // return;
@@ -993,10 +998,6 @@ namespace rtype
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
         else if (msgToSend.first == Action::GAME)
           SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
-        // else if (msgToSend.first == Action::SETTINGS)
-        // SendMessageToClient(networkMessageFactory.createSettingsMsg(), deqConnections[msgToSend.second]);
-        // else if (msgToSend.first == Action::EXIT)
-        //   SendMessageToClient(networkMessageFactory.createExitMsg(), deqConnections[msgToSend.second]);
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;
