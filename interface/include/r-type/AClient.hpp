@@ -10,10 +10,7 @@
 
 #pragma once
 
-// #include <NetworkConnection.hpp>
 #include <Error.hpp>
-// #include <NetworkingCommon.hpp>
-// #include <OwnedMessage.hpp>
 #include <r-type/IClient.hpp>
 
 namespace rtype {
@@ -34,7 +31,6 @@ public:
           std::move(socket), std::move(remoteEndpoint),
           queueOfincomingMessages);
       connection->EstablishServerConnection();
-      // std::cout << "Connection : " << *(connection.get()) << std::endl;
       contextThread = std::thread([this]() { asioContext.run(); });
 
     } catch (rtype::ClientConnectionException &e) {
