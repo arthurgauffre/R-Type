@@ -10,6 +10,7 @@ add_library(r-type_collision_system SHARED
     ../../components/health/HealthComponent.cpp
     ../../components/type/TypeComponent.cpp
     ../../components/damage/DamageComponent.cpp
+    ../../components/velocity/VelocityComponent.cpp
 )
 
 target_include_directories(r-type_collision_system PRIVATE ${SFML_INCLUDE_DIR})

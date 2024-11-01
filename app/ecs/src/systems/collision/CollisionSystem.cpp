@@ -120,6 +120,11 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
 
     entity2->setCommunication(entity::EntityCommunication::DELETE);
   }
+
+  if (type1 == component::Type::PLAYER && type2 == component::Type::STRUCTURE)
+    std::cout << "Player collided with structure" << std::endl;
+  else if (type1 == component::Type::STRUCTURE && type2 == component::Type::PLAYER)
+    std::cout << "Structure collided with player" << std::endl;
 }
 
 /**
