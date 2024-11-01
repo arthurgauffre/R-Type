@@ -20,7 +20,6 @@ void ECS_system::WeaponSystem::createProjectile(
     std::pair<float, float> velocity, std::pair<float, float> scale,
     int damage)
 {
-    // std::cout << "Creating projectile" << std::endl;
     uint32_t projectileID = _entityManager.generateEntityID();
     entity::IEntity *projectile = _entityManager.createEntity(projectileID, -1);
 
@@ -93,7 +92,7 @@ void ECS_system::WeaponSystem::update(
         component::DamageComponent *damageComponent =
             _componentManager.getComponent<component::DamageComponent>(
                 weaponComponent->getWeaponEntityID());
-        
+
         if (!damageComponent || !cooldownComponent || !weaponComponent)
             continue;
 
