@@ -45,7 +45,7 @@ enum class TextFont: uint32_t {
 
 enum class TextString: uint32_t {
     Play,
-    unknown,
+    Unknown,
 };
 
 enum class KeyBoard : uint32_t {

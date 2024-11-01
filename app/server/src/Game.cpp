@@ -193,6 +193,7 @@ entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<f
     _engine->getComponentManager()->addComponent<component::RectangleShapeComponent>(entityID, position, size, color, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(entityID, position, std::pair<float, float>(1, 1));
     _engine->getComponentManager()->addComponent<component::OnClickComponent>(entityID, action, numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(entityID, position, "Play", 50, RColor{200, 200, 200, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
 
     return button;
 }
@@ -238,6 +239,8 @@ void Game::init()
   stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
   stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
   stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
+  stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
+  stringCom.textString[TextString::Play] = "Play"; 
 
     this->createBackground("app/assets/images/city_background.png",
                            std::pair<float, float>(-100.0f, 0.0f),

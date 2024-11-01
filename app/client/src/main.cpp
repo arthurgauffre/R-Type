@@ -15,6 +15,8 @@ int main(void)
   stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
   stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
   stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
+  stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
+  stringCom.textString[TextString::Play] = "Play"; 
 
   std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
 

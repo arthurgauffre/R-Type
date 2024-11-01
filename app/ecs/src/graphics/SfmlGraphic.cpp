@@ -211,16 +211,24 @@ void SfmlGraphic::windowClose()
 
 size_t SfmlGraphic::createText(std::string text, std::string fontPath, int size, RColor color)
 {
-    size_t id = _textsId.size();
-    _textsId.push_back(id);
-    _texts[id] = sf::Text();
-    _fonts[id] = sf::Font();
-    _fonts[id].loadFromFile(fontPath);
-    _texts[id].setFont(_fonts[id]);
-    _texts[id].setString(text);
-    _texts[id].setCharacterSize(size);
-    _texts[id].setFillColor(sf::Color(color.r, color.g, color.b, color.a));
-    return id;
+    size_t idText = _textsId.size();
+    size_t idFont = _fontsId.size();
+    
+    _textsId.push_back(idText);
+    _texts[idText] = sf::Text();
+    if (_fontsId.find(fontPath) != _fontsId.end()) {
+        idFont = _fontsId[fontPath];
+    } else {
+        _fontsId[fontPath] = idFont;
+        _fonts[idText] = sf::Font();
+        _fonts[idText].loadFromFile(fontPath);
+    }
+
+    _texts[idText].setFont(_fonts[idFont]);
+    _texts[idText].setString(text);
+    _texts[idText].setCharacterSize(size);
+    _texts[idText].setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+    return idText;
 }
 
 void SfmlGraphic::updateText(size_t id, std::string text, int size, RColor color)
@@ -230,6 +238,15 @@ void SfmlGraphic::updateText(size_t id, std::string text, int size, RColor color
     _texts[id].setString(text);
     _texts[id].setCharacterSize(size);
     _texts[id].setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+}
+
+void SfmlGraphic::setTextPosition(float x, float y, size_t id)
+{
+    std::cout << "setTextPosition" << std::endl;
+    if (_texts.find(id) == _texts.end())
+        return;
+    std::cout << "x: " << x << " y: " << y << std::endl;
+    _texts[id].setPosition(x, y);
 }
 
 EXPORT_API IGraphic *createGraphic()

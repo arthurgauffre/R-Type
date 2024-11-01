@@ -502,6 +502,52 @@ namespace rtype
         Send(message);
       }
       break;
+      case NetworkMessages::createText:
+      {
+        // std::cout << "Text component created" << std::endl;
+        TextComponent text;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&text, msg.body.data() + sizeof(EntityId),
+                    sizeof(TextComponent));
+        // std::cout << "Text: " << text.x << " " << text.y << " " << text.size << std::endl;
+        if (_stringCom.textFont.find(text.textFont) == _stringCom.textFont.end() && _stringCom.textString.find(text.textString) == _stringCom.textString.end())
+          _componentManager
+              .addComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[TextString::Unknown], text.size, text.color, _stringCom.textFont[TextFont::Unknown], _graphic);
+        else if (_stringCom.textFont.find(text.textFont) == _stringCom.textFont.end())
+          _componentManager
+              .addComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _stringCom.textFont[TextFont::Unknown], _graphic);
+        else if (_stringCom.textString.find(text.textString) == _stringCom.textString.end())
+          _componentManager
+              .addComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[TextString::Unknown], text.size, text.color, _stringCom.textFont[text.textFont], _graphic);
+        else
+          _componentManager
+              .addComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _stringCom.textFont[text.textFont], _graphic);
+      }
+      break;
+      case NetworkMessages::updateText:
+      {
+        // std::cout << "Text component updated" << std::endl;
+        TextComponent text;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&text, msg.body.data() + sizeof(EntityId),
+                    sizeof(TextComponent));
+        // std::cout << "Text: " << text.x << " " << text.y << " " << text.size << std::endl;
+        if (_stringCom.textString.find(text.textString) == _stringCom.textString.end())
+          _componentManager
+              .updateComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[TextString::Unknown], text.size, text.color, _graphic);
+        else
+          _componentManager
+              .updateComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _graphic);
+      }
+      break;
       }
     }
 

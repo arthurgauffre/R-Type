@@ -48,6 +48,7 @@ class SfmlGraphic : virtual public AGraphic {
         void windowClose() override;
 
         size_t createText(std::string text, std::string fontPath, int size, RColor color) override;
+        void setTextPosition(float x, float y, size_t id) override;
         void updateText(size_t id, std::string text, int size, RColor color) override;
     protected:
     private:

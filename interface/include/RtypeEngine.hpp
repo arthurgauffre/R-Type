@@ -36,6 +36,7 @@
 #include <components/AIComponent.hpp>
 #include <components/RectangleShapeComponent.hpp>
 #include <components/OnClickComponent.hpp>
+#include <components/TextComponent.hpp>
 
 #include <r-type/IGraphic.hpp>
 #include <r-type/Enum.hpp>

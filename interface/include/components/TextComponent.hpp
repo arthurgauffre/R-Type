@@ -72,6 +72,8 @@ public:
      */
     size_t getTextId() const { return _textId; }
 
+    std::string getFont() const { return _fontPath; }
+
     void update(std::pair<float, float> position, std::string text, int size, RColor color, std::shared_ptr<IGraphic> graphic);
 
 private:
@@ -95,6 +97,8 @@ private:
      * @brief Represents the text to display.
      */
     std::string _text;
+
+    std::string _fontPath;
 
     /**
      * @brief Represents the size of the text.

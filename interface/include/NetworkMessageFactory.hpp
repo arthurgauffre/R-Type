@@ -1017,4 +1017,48 @@ public:
         message << timeNow;
         return message;
     }
+    rtype::network::Message<NetworkMessages> createTextMsg(size_t id, float x, float y, TextFont font, TextString string, int size, RColor color)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::createText;
+        EntityId entity = {id};
+        TextComponent text = {x, y, font, string, size, color};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) + sizeof(EntityId));
+        std::vector<uint8_t> textBytes(reinterpret_cast<uint8_t *>(&text),
+                                       reinterpret_cast<uint8_t *>(&text) + sizeof(TextComponent));
+        message.body.insert(message.body.end(), entityBytes.begin(), entityBytes.end());
+        message.body.insert(message.body.end(), textBytes.begin(), textBytes.end());
+        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> updateTextMsg(size_t id, float x, float y, TextFont font, TextString string, int size, RColor color)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::updateText;
+        EntityId entity = {id};
+        TextComponent text = {x, y, font, string, size, color};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) + sizeof(EntityId));
+        std::vector<uint8_t> textBytes(reinterpret_cast<uint8_t *>(&text),
+                                       reinterpret_cast<uint8_t *>(&text) + sizeof(TextComponent));
+        message.body.insert(message.body.end(), entityBytes.begin(), entityBytes.end());
+        message.body.insert(message.body.end(), textBytes.begin(), textBytes.end());
+        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
+    rtype::network::Message<NetworkMessages> deleteTextMsg(size_t id)
+    {
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::deleteText;
+        EntityId entity = {id};
+        std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
+                                         reinterpret_cast<uint8_t *>(&entity) + sizeof(EntityId));
+        message.body.insert(message.body.end(), entityBytes.begin(), entityBytes.end());
+        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+        message << timeNow;
+        return message;
+    }
 };

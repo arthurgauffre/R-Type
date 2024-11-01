@@ -612,6 +612,48 @@ namespace rtype
               }
             }
           }
+          if (_componentManager.getComponent<component::TextComponent>(entity->getID()))
+          {
+            component::TextComponent *component =
+                _componentManager.getComponent<component::TextComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              status = ServerStatus::WAITING_FOR_MESSAGE;
+              auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
+              auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
+              if (textFontKey && textStringKey)
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.createTextMsg(entity->getID(), component->getX(), component->getY(), *textFontKey, *textStringKey, component->getSize(), component->getColor()), clientToIgnore);
+              }
+              else
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.createTextMsg(entity->getID(), component->getX(), component->getY(), TextFont::Unknown, TextString::Unknown, component->getSize(), component->getColor()), clientToIgnore);
+              }
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
+              auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
+              if (textFontKey && textStringKey)
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.updateTextMsg(entity->getID(), component->getX(), component->getY(), *textFontKey, *textStringKey, component->getSize(), component->getColor()), clientToIgnore);
+              }
+              else
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.updateTextMsg(entity->getID(), component->getX(), component->getY(), TextFont::Unknown, TextString::Unknown, component->getSize(), component->getColor()), clientToIgnore);
+              }
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteTextMsg(entity->getID()), clientToIgnore);
+            }
+          }
         }
         if (transform)
         {
@@ -653,6 +695,21 @@ namespace rtype
               SendMessageToClient(networkMessageFactory.createTextureMsg(entity->getID(), *textureKey), client);
             else
               SendMessageToClient(networkMessageFactory.createTextureMsg(entity->getID(), TexturePath::Unknown), client);
+          }
+          if (_componentManager.getComponent<component::TextComponent>(entity->getID()))
+          {
+            component::TextComponent *component =
+                _componentManager.getComponent<component::TextComponent>(entity->getID());
+            auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
+            auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
+            if (textFontKey && textStringKey)
+            {
+              SendMessageToClient(networkMessageFactory.createTextMsg(entity->getID(), component->getX(), component->getY(), *textFontKey, *textStringKey, component->getSize(), component->getColor()), client);
+            }
+            else
+            {
+              SendMessageToClient(networkMessageFactory.createTextMsg(entity->getID(), component->getX(), component->getY(), TextFont::Unknown, TextString::Unknown, component->getSize(), component->getColor()), client);
+            }
           }
           if (_componentManager.getComponent<component::TransformComponent>(entity->getID()))
           {

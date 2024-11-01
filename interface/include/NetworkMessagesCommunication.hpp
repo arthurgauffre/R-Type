@@ -40,6 +40,7 @@ enum class NetworkMessages : uint32_t {
   createAI,
   createRectangleShape,
   createOnCLick,
+  createText,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -58,6 +59,7 @@ enum class NetworkMessages : uint32_t {
   updateAI,
   updateRectangleShape,
   updateOnClick,
+  updateText,
   deleteTexture,
   deletePosition,
   deleteVelocity,
@@ -76,6 +78,7 @@ enum class NetworkMessages : uint32_t {
   deleteAI,
   deleteRectangleShape,
   deleteOnClick,
+  deleteText,
   acknowledgementMesage,
   menu,
   game,
@@ -106,8 +109,12 @@ struct TextureComponent {
 };
 
 struct TextComponent {
+  float x;
+  float y;
   TextFont textFont;
   TextString textString;
+  int size;
+  RColor color;
 };
 
 struct OnClickComponent {
