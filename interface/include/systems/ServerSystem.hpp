@@ -45,6 +45,8 @@
 #include <r-type/ASystem.hpp>
 #include <ServerStatus.hpp>
 
+#include <optional>
+
 namespace rtype
 {
   namespace network
@@ -55,10 +57,10 @@ namespace rtype
     {
     public:
       ServerSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
           : rtype::network::IServer<NetworkMessages>(), ECS_system::ASystem(
                                                             componentManager,
-                                                            entityManager, graphic),
+                                                            entityManager, graphic, stringCom),
             _componentManager(componentManager), _entityManager(entityManager), asioSocket(asioContext,
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {
@@ -312,12 +314,15 @@ namespace rtype
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-            if (entity->getNumClient() != -1) {
-              for (int i = 0; i < deqConnections.size(); i++) {
+            if (entity->getNumClient() != -1)
+            {
+              for (int i = 0; i < deqConnections.size(); i++)
+              {
                 if (i == entity->getNumClient())
                   SendMessageToClient(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), deqConnections[i]);
               }
-            } else
+            }
+            else
               SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
@@ -370,12 +375,20 @@ namespace rtype
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createTextureMsg(entity->getID(), GetEnumTexturePath(component->getPath())), clientToIgnore);
+              auto textureKey = getKeyByValue(_stringCom.texturePath, component->getPath());
+              if (textureKey)
+                SendMessageToAllClients(networkMessageFactory.createTextureMsg(entity->getID(), *textureKey), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.createTextureMsg(entity->getID(), TexturePath::Unknown), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateTextureMsg(entity->getID(), GetEnumTexturePath(component->getPath())), clientToIgnore);
+              auto textureKey= getKeyByValue(_stringCom.texturePath, component->getPath());
+              if (textureKey)
+                SendMessageToAllClients(networkMessageFactory.updateTextureMsg(entity->getID(), *textureKey), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.updateTextureMsg(entity->getID(), TexturePath::Unknown), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -635,10 +648,11 @@ namespace rtype
           {
             component::TextureComponent *component =
                 _componentManager.getComponent<component::TextureComponent>(entity->getID());
-            SendMessageToClient(
-                networkMessageFactory.createTextureMsg(
-                    entity->getID(), GetEnumTexturePath(component->getPath())),
-                client);
+            auto textureKey = getKeyByValue(_stringCom.texturePath, component->getPath());
+            if (textureKey)
+              SendMessageToClient(networkMessageFactory.createTextureMsg(entity->getID(), *textureKey), client);
+            else
+              SendMessageToClient(networkMessageFactory.createTextureMsg(entity->getID(), TexturePath::Unknown), client);
           }
           if (_componentManager.getComponent<component::TransformComponent>(entity->getID()))
           {
@@ -863,40 +877,40 @@ namespace rtype
       {
       }
 
-      std::string GetTexturePath(TexturePath texture)
-      {
-        switch (texture)
-        {
-        case TexturePath::Background:
-        {
-          return "app/assets/images/city_background.png";
-        }
-        break;
-        case TexturePath::Player:
-        {
-          return "app/assets/sprites/plane.png";
-        }
-        break;
-        case TexturePath::Enemy:
-        {
-          return "assets/enemy.png";
-        }
-        }
-        return "";
-      }
+      // std::string GetTexturePath(TexturePath texture)
+      // {
+      //   switch (texture)
+      //   {
+      //   case TexturePath::Background:
+      //   {
+      //     return "app/assets/images/city_background.png";
+      //   }
+      //   break;
+      //   case TexturePath::Player:
+      //   {
+      //     return "app/assets/sprites/plane.png";
+      //   }
+      //   break;
+      //   case TexturePath::Enemy:
+      //   {
+      //     return "assets/enemy.png";
+      //   }
+      //   }
+      //   return "";
+      // }
 
-      TexturePath GetEnumTexturePath(std::string texture)
-      {
-        if (texture == "app/assets/sprites/plane.png")
-          return TexturePath::Player;
-        if (texture == "app/assets/sprites/enemy.png")
-          return TexturePath::Enemy;
-        if (texture == "app/assets/images/city_background.png")
-          return TexturePath::Background;
-        if (texture == "app/assets/sprites/projectile.gif")
-          return TexturePath::Bullet;
-        return TexturePath::Player;
-      }
+      // TexturePath GetEnumTexturePath(std::string texture)
+      // {
+      //   if (texture == "app/assets/sprites/plane.png")
+      //     return TexturePath::Player;
+      //   if (texture == "app/assets/sprites/enemy.png")
+      //     return TexturePath::Enemy;
+      //   if (texture == "app/assets/images/city_background.png")
+      //     return TexturePath::Background;
+      //   if (texture == "app/assets/sprites/projectile.gif")
+      //     return TexturePath::Bullet;
+      //   return TexturePath::Player;
+      // }
 
       EntityType getEntityType(component::Type type)
       {
@@ -928,6 +942,19 @@ namespace rtype
         return AIType::Unknown;
       }
 
+      template <typename KeyType, typename ValueType>
+      std::optional<KeyType> getKeyByValue(const std::unordered_map<KeyType, ValueType> &map, const ValueType &value)
+      {
+        for (const auto &[key, val] : map)
+        {
+          if (val == value)
+          {
+            return key;
+          }
+        }
+        return std::nullopt;
+      }
+
       void handleMsgToSend(std::pair<Action, size_t> msgToSend)
       {
         std::cout << "Handling message to send" << std::endl;
@@ -936,9 +963,9 @@ namespace rtype
         else if (msgToSend.first == Action::GAME)
           SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
         // else if (msgToSend.first == Action::SETTINGS)
-          // SendMessageToClient(networkMessageFactory.createSettingsMsg(), deqConnections[msgToSend.second]);
+        // SendMessageToClient(networkMessageFactory.createSettingsMsg(), deqConnections[msgToSend.second]);
         // else if (msgToSend.first == Action::EXIT)
-          // SendMessageToClient(networkMessageFactory.createExitMsg(), deqConnections[msgToSend.second]);
+        // SendMessageToClient(networkMessageFactory.createExitMsg(), deqConnections[msgToSend.second]);
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;

@@ -34,6 +34,7 @@ class SfmlGraphic : virtual public AGraphic {
 
         void drawSprite(size_t id) override;
         void drawRectangleShape(size_t id) override;
+        void drawText(size_t id) override;
 
         void eventHandler() override;
 
@@ -45,12 +46,16 @@ class SfmlGraphic : virtual public AGraphic {
         void windowDisplay() override;
         void windowClear() override;
         void windowClose() override;
+
+        size_t createText(std::string text, std::string fontPath, int size, RColor color) override;
+        void updateText(size_t id, std::string text, int size, RColor color) override;
     protected:
     private:
         sf::RenderWindow _window;
         sf::Event _event;
         std::unordered_map<size_t, sf::Sprite> _sprites;
         std::unordered_map<size_t, sf::Texture> _textures;
+        std::unordered_map<size_t, sf::Text> _texts;
         std::unordered_map<size_t, sf::RectangleShape> _rectangleShapes;
         std::unordered_map<size_t, sf::Font> _fonts;
 };

@@ -19,6 +19,7 @@
 #include <unordered_map>
 
 #include <r-type/Enum.hpp>
+#include <graphics/Color.hpp>
 
 class IGraphic {
     public:
@@ -44,6 +45,7 @@ class IGraphic {
 
         virtual void drawSprite(size_t id) = 0;
         virtual void drawRectangleShape(size_t id) = 0;
+        virtual void drawText(size_t id) = 0;
 
         virtual void eventHandler() = 0;
 
@@ -56,8 +58,12 @@ class IGraphic {
         virtual void windowClear() = 0;
         virtual void windowClose() = 0;
 
+        virtual size_t createText(std::string text, std::string fontPath, int size, RColor color) = 0;
+        virtual void updateText(size_t id, std::string text, int size, RColor color) = 0;
+
     protected:
         std::vector<size_t> _spritesId;
+        std::vector<size_t> _textsId;
         std::unordered_map<std::string, size_t> _texturesId;
         std::unordered_map<std::string, size_t> _fontsId;
         std::vector<size_t> _rectangleShapesId;

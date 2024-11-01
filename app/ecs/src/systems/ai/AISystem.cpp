@@ -62,7 +62,7 @@ namespace ECS_system
 }
 
 extern "C" ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
-                                             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+                                             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
 {
-    return new ECS_system::AISytem(componentManager, entityManager, graphic);
+    return new ECS_system::AISytem(componentManager, entityManager, graphic, stringCom);
 }

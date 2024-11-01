@@ -233,6 +233,12 @@ void Game::createMenu(int numClient)
  */
 void Game::init()
 {
+  ECS_system::StringCom stringCom;
+  stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
+  stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
+  stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+  stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
+
     this->createBackground("app/assets/images/city_background.png",
                            std::pair<float, float>(-100.0f, 0.0f),
                            std::pair<float, float>(4448.0f, 1200.0f));
@@ -247,17 +253,17 @@ void Game::init()
     entity::EntityManager &entityManager = *_engine->getEntityManager();
 
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "movement", _engine->_graphic);
+                                               "movement", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "server", _engine->_graphic);
+                                               "server", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "cooldown", _engine->_graphic);
+                                               "cooldown", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "weapon", _engine->_graphic);
+                                               "weapon", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "ai", _engine->_graphic);
+                                               "ai", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "collision", _engine->_graphic);
+                                               "collision", _engine->_graphic, stringCom);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "health", _engine->_graphic);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,

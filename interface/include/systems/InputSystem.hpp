@@ -18,8 +18,8 @@ namespace ECS_system {
 class InputSystem : public ASystem {
 public:
   InputSystem(component::ComponentManager &componentManager,
-              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
-      : ASystem(componentManager, entityManager, graphic) {}
+              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+      : ASystem(componentManager, entityManager, graphic, stringCom) {}
   ~InputSystem() = default;
 
   void

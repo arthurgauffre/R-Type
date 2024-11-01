@@ -13,32 +13,32 @@ namespace rtype
   {
 
     // merge it with server
-    std::string ClientSystem::GetTexturePath(TexturePath texture)
-    {
-      switch (texture)
-      {
-      case TexturePath::Background:
-      {
-        return "app/assets/images/city_background.png";
-      }
-      break;
-      case TexturePath::Player:
-      {
-        return "app/assets/sprites/plane.png";
-      }
-      break;
-      case TexturePath::Enemy:
-      {
-        return "app/assets/sprites/enemy.png";
-      }
-      break;
-      case TexturePath::Bullet:
-      {
-        return "app/assets/sprites/projectile.gif";
-      }
-      }
-      return "";
-    }
+    // std::string ClientSystem::GetTexturePath(TexturePath texture)
+    // {
+    //   switch (texture)
+    //   {
+    //   case TexturePath::Background:
+    //   {
+    //     return "app/assets/images/city_background.png";
+    //   }
+    //   break;
+    //   case TexturePath::Player:
+    //   {
+    //     return "app/assets/sprites/plane.png";
+    //   }
+    //   break;
+    //   case TexturePath::Enemy:
+    //   {
+    //     return "app/assets/sprites/enemy.png";
+    //   }
+    //   break;
+    //   case TexturePath::Bullet:
+    //   {
+    //     return "app/assets/sprites/projectile.gif";
+    //   }
+    //   }
+    //   return "";
+    // }
 
     component::Type ClientSystem::getTypedEntity(EntityType type)
     {
@@ -132,7 +132,6 @@ namespace rtype
         message.header.id = NetworkMessages::acknowledgementMesage;
         Send(message);
         // std::cout << "Create component ack message sent" << std::endl;
-
       }
       break;
       case NetworkMessages::updateEntity:
@@ -188,9 +187,14 @@ namespace rtype
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&texture, msg.body.data() + sizeof(EntityId),
                     sizeof(TextureComponent));
-        _componentManager
-            .addComponent<component::TextureComponent>(
-                id.id, GetTexturePath(texture.texturePath), _graphic);
+        if (_stringCom.texturePath.find(texture.texturePath) == _stringCom.texturePath.end())
+          _componentManager
+              .addComponent<component::TextureComponent>(
+                  id.id, _stringCom.texturePath[TexturePath::Unknown], _graphic);
+        else
+          _componentManager
+              .addComponent<component::TextureComponent>(
+                  id.id, _stringCom.texturePath[texture.texturePath], _graphic);
       }
       break;
       case NetworkMessages::createTransform:
@@ -578,19 +582,21 @@ namespace rtype
 
     // Stop processing and join threads
     void ClientSystem::stopMessageProcessing()
-{
     {
+      {
         std::unique_lock<std::mutex> lock(queueMutex);
         processingMessages = false;
-    }
-    queueCondition.notify_all();
-    for (auto &thread : workerThreads) {
-        if (thread.joinable()) {
-            thread.join();
+      }
+      queueCondition.notify_all();
+      for (auto &thread : workerThreads)
+      {
+        if (thread.joinable())
+        {
+          thread.join();
         }
+      }
+      workerThreads.clear();
     }
-    workerThreads.clear();
-}
 
     void ClientSystem::enqueueMessage(Message<NetworkMessages> msg)
     {
@@ -602,9 +608,9 @@ namespace rtype
     }
 
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
-                                                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+                                                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
     {
-      return new rtype::network::ClientSystem(componentManager, entityManager, graphic);
+      return new rtype::network::ClientSystem(componentManager, entityManager, graphic, stringCom);
     }
   } // namespace network
 } // namespace rtype

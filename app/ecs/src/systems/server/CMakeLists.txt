@@ -24,6 +24,7 @@ add_library(r-type_server_system SHARED
     ../../components/ai/AIComponent.cpp
     ../../components/rectangle/RectangleShapeComponent.cpp
     ../../components/onclick/OnClickComponent.cpp
+    ../../components/text/TextComponent.cpp
     ../../entity/Entity.cpp
 )
 

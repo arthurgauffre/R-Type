@@ -18,8 +18,8 @@
  */
 ECS_system::HealthSystem::HealthSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
-    : ASystem(componentManager, entityManager, graphic) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, stringCom) {}
 
 /**
  * @brief Destructor for the HealthSystem class.
@@ -69,6 +69,6 @@ void ECS_system::HealthSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic) {
-  return new ECS_system::HealthSystem(componentManager, entityManager, graphic);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {
+  return new ECS_system::HealthSystem(componentManager, entityManager, graphic, stringCom);
 }

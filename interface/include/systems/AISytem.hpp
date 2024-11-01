@@ -22,8 +22,8 @@ namespace ECS_system
     {
     public:
         AISytem(component::ComponentManager &componentManager,
-                entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
-            : ASystem(componentManager, entityManager, graphic) {}
+                entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+            : ASystem(componentManager, entityManager, graphic, stringCom) {}
         ~AISytem() = default;
 
         void update(float deltaTime,

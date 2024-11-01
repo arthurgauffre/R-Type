@@ -26,7 +26,7 @@ namespace rtype
     {
     public:
       ClientSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic) : AClient(), ASystem(componentManager, entityManager, graphic), _componentManager(componentManager), _entityManager(entityManager), _entityMutex(nullptr)
+                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) : AClient(), ASystem(componentManager, entityManager, graphic, stringCom), _componentManager(componentManager), _entityManager(entityManager), _entityMutex(nullptr)
       {
         Connect("127.0.0.1", 60000);
         startMessageProcessing();

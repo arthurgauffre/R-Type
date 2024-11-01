@@ -98,7 +98,7 @@ void ECS_system::MovementSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
 {
-  return new ECS_system::MovementSystem(componentManager, entityManager, graphic);
+  return new ECS_system::MovementSystem(componentManager, entityManager, graphic, stringCom);
 }

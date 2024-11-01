@@ -106,6 +106,11 @@ void SfmlGraphic::drawRectangleShape(size_t id)
     _window.draw(_rectangleShapes[id]);
 }
 
+void SfmlGraphic::drawText(size_t id)
+{
+    _window.draw(_texts[id]);
+}
+
 void SfmlGraphic::eventHandler()
 {
     while (_window.pollEvent(_event))
@@ -202,6 +207,29 @@ void SfmlGraphic::windowClear()
 void SfmlGraphic::windowClose()
 {
     _window.close();
+}
+
+size_t SfmlGraphic::createText(std::string text, std::string fontPath, int size, RColor color)
+{
+    size_t id = _textsId.size();
+    _textsId.push_back(id);
+    _texts[id] = sf::Text();
+    _fonts[id] = sf::Font();
+    _fonts[id].loadFromFile(fontPath);
+    _texts[id].setFont(_fonts[id]);
+    _texts[id].setString(text);
+    _texts[id].setCharacterSize(size);
+    _texts[id].setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+    return id;
+}
+
+void SfmlGraphic::updateText(size_t id, std::string text, int size, RColor color)
+{
+    if (_texts.find(id) == _texts.end())
+        return;
+    _texts[id].setString(text);
+    _texts[id].setCharacterSize(size);
+    _texts[id].setFillColor(sf::Color(color.r, color.g, color.b, color.a));
 }
 
 EXPORT_API IGraphic *createGraphic()

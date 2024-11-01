@@ -14,7 +14,7 @@ namespace ECS_system {
 class CooldownSystem : virtual public ASystem {
 public:
   CooldownSystem(component::ComponentManager &componentManager,
-                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic);
+                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
   ~CooldownSystem();
 
   void update(float deltaTime,

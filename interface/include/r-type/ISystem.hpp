@@ -24,11 +24,16 @@
 #endif
 
 namespace ECS_system {
+struct StringCom {
+  std::unordered_map<TexturePath, std::string> texturePath;
+  std::unordered_map<TextFont, std::string> textFont;
+  std::unordered_map<TextString, std::string> textString;
+};
 class ISystem {
 public:
   ISystem(component::ComponentManager &componentManager,
-          entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
-      : _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic) {}
+          entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+      : _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic), _stringCom(stringCom) {}
   /*
   ** @brief Initializes the system.
   */
@@ -69,5 +74,6 @@ protected:
   component::ComponentManager &_componentManager;
   entity::EntityManager &_entityManager;
   std::shared_ptr<IGraphic> _graphic;
+  StringCom _stringCom;
 };
 } // namespace ECS_system

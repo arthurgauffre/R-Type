@@ -30,6 +30,24 @@ enum class Action: uint32_t {
     NONE,
 };
 
+enum class TexturePath: uint32_t {
+    Player,
+    Enemy,
+    Background,
+    Bullet,
+    Unknown,
+};
+
+enum class TextFont: uint32_t {
+    Arial,
+    Unknown,
+};
+
+enum class TextString: uint32_t {
+    Play,
+    unknown,
+};
+
 enum class KeyBoard : uint32_t {
   A,
   B,

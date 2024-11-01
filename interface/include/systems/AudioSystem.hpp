@@ -26,8 +26,8 @@ public:
    * all components.
    */
   AudioSystem(component::ComponentManager &componentManager,
-              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic)
-      : ASystem(componentManager, entityManager, graphic) {}
+              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+      : ASystem(componentManager, entityManager, graphic, stringCom) {}
 
   /**
    * @brief Destroys the AudioSystem object.

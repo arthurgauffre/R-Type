@@ -38,6 +38,7 @@
 #include <components/OnClickComponent.hpp>
 
 #include <r-type/IGraphic.hpp>
+#include <r-type/Enum.hpp>
 
 namespace rtype {
 class RtypeEngine : virtual public IRtypeEngine {

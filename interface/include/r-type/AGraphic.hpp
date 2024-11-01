@@ -33,6 +33,7 @@ class AGraphic: virtual public IGraphic {
 
         virtual void drawSprite(size_t id) = 0;
         virtual void drawRectangleShape(size_t id) = 0;
+        virtual void drawText(size_t id) = 0;
 
         virtual void eventHandler() = 0;
 
@@ -44,6 +45,9 @@ class AGraphic: virtual public IGraphic {
         virtual void windowDisplay() = 0;
         virtual void windowClear() = 0;
         virtual void windowClose() = 0;
+
+        virtual size_t createText(std::string text, std::string fontPath, int size, RColor color) = 0;
+        virtual void updateText(size_t id, std::string text, int size, RColor color) = 0;
     protected:
     private:
 };

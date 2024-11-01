@@ -21,7 +21,7 @@ namespace ECS_system
     {
     public:
         ButtonSystem(component::ComponentManager &componentManager,
-                     entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic);
+                     entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
         ~ButtonSystem() = default;
 
         void

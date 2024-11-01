@@ -101,15 +101,13 @@ enum class AIType : uint32_t {
   Unknown,
 };
 
-enum class TexturePath : uint32_t {
-  Player,
-  Enemy,
-  Bullet,
-  Background,
-};
-
 struct TextureComponent {
   TexturePath texturePath;
+};
+
+struct TextComponent {
+  TextFont textFont;
+  TextString textString;
 };
 
 struct OnClickComponent {

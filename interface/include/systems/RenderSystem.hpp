@@ -15,6 +15,7 @@
 #include <components/SizeComponent.hpp>
 #include <components/TypeComponent.hpp>
 #include <components/RectangleShapeComponent.hpp>
+#include <components/TextComponent.hpp>
 
 #include <r-type/ASystem.hpp>
 
@@ -30,7 +31,7 @@ public:
    * take place.
    */
   RenderSystem(component::ComponentManager &componentManager,
-               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic);
+               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
 
   /**
    * @brief Destroy the RenderSystem object.

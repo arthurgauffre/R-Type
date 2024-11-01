@@ -29,7 +29,7 @@ namespace ECS_system {
 class WeaponSystem : virtual public ASystem {
 public:
   WeaponSystem(component::ComponentManager &componentManager,
-               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic);
+               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
   ~WeaponSystem();
 
   void
