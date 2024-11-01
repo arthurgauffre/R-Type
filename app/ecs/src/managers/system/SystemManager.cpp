@@ -29,8 +29,7 @@ void ECS_system::SystemManager::update(
     std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
   for (auto &system : _systems) {
     system->update(deltaTime, entities,
-                               msgToSend, msgReceived, entityMutex, _sceneStatus); // Each system updates itself because
-                                           // each system has its own logic
+                               msgToSend, msgReceived, entityMutex, _sceneStatus);
   }
 }
 
@@ -55,22 +54,18 @@ void ECS_system::SystemManager::addSystem(
           rtype::RtypeEngine::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
           "lib/systems/r-type_" + systemName + "_system.so");
 
-  // check if the systemLoader is not null
   if (!systemLoader) {
     std::cerr << "Error: systemLoader is null" << std::endl;
     exit(84);
   }
 
-  // Wrap the returned raw pointer in a shared_ptr
   std::shared_ptr<ECS_system::ISystem> system =
       std::shared_ptr<ECS_system::ISystem>(systemLoader->getSystem(
           "createSystem", componentManager, entityManager, graphic, stringCom));
 
-  // check if the system is not null
   if (!system) {
     std::cerr << "Error: system is null" << std::endl;
     exit(84);
   }
-  // Add to the systems manager
   _systems.push_back(system);
 }
