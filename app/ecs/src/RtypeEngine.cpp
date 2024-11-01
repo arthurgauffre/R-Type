@@ -19,7 +19,7 @@ std::atomic<bool> keepRunning(true);
  */
 void signalHandler(int signum) {
     std::cout << "\nInterrupt signal (" << signum << ") received. Stopping...\n";
-    keepRunning = false; // Set flag to false to stop the loop
+    keepRunning = false;
 }
 
 /**
