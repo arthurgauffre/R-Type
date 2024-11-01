@@ -86,13 +86,6 @@ enum class NetworkMessages : uint32_t {
   none,
 };
 
-enum class AIType : uint32_t {
-  Linear,
-  Sinusoidal,
-  Circular,
-  Unknown,
-};
-
 struct TextureComponent {
   TexturePath texturePath;
 };

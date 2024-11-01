@@ -11,14 +11,6 @@
 
 namespace component
 {
-
-  enum class AIType
-  {
-    LINEAR,
-    SINUSOIDAL,
-    CIRCULAR,
-    UNKNOWN,
-  };
   class AIComponent : public AComponent
   {
   public:

@@ -540,12 +540,12 @@ namespace rtype
             {
               status = ServerStatus::WAITING_FOR_MESSAGE;
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createAIMsg(entity->getID(), component->getType()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateAIMsg(entity->getID(), component->getType()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -795,7 +795,7 @@ namespace rtype
             component::AIComponent *component =
                 _componentManager.getComponent<component::AIComponent>(entity->getID());
             SendMessageToClient(networkMessageFactory.createAIMsg(
-                                    entity->getID(), getAIType(component->getType())),
+                                    entity->getID(), component->getType()),
                                 client);
           }
           if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
@@ -932,17 +932,6 @@ namespace rtype
 
       virtual void OnClientValidated(std::shared_ptr<NetworkConnection<T>> client)
       {
-      }
-
-      AIType getAIType(component::AIType type)
-      {
-        if (type == component::AIType::LINEAR)
-          return AIType::Linear;
-        if (type == component::AIType::SINUSOIDAL)
-          return AIType::Sinusoidal;
-        if (type == component::AIType::CIRCULAR)
-          return AIType::Circular;
-        return AIType::Unknown;
       }
 
       template <typename KeyType, typename ValueType>

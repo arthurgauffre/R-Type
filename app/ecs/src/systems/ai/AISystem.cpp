@@ -26,11 +26,11 @@ namespace ECS_system
                 continue;
             if (typeComponent->getType() != Type::ENEMY)
                 continue;
-            if (aiComponent->getType() == component::AIType::LINEAR)
+            if (aiComponent->getType() == AIType::LINEAR)
             {
                 velocityComponent->setActualVelocityX(velocityComponent->getVelocity().first);
             }
-            else if (aiComponent->getType() == component::AIType::SINUSOIDAL)
+            else if (aiComponent->getType() == AIType::SINUSOIDAL)
             {
                 float horizontalSpeed = velocityComponent->getVelocity().first;
 
@@ -44,7 +44,7 @@ namespace ECS_system
 
                 aiComponent->setElapsedTime(deltaTime + aiComponent->getElapsedTime());
             }
-            else if (aiComponent->getType() == component::AIType::CIRCULAR)
+            else if (aiComponent->getType() == AIType::CIRCULAR)
             {
                 float radius = 100.0f;
                 float angularSpeed = 0.5f;

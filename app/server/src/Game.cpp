@@ -224,20 +224,20 @@ entity::IEntity *Game::createEnemy()
     {
         int random = rand() % 3;
         if (random == 0)
-            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::LINEAR);
+            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::LINEAR);
         if (random == 1)
-            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::SINUSOIDAL);
+            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::SINUSOIDAL);
         if (random == 2)
-            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::CIRCULAR);
+            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::CIRCULAR);
     }
     else if (iaType == "linear")
-        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::LINEAR);
+        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::LINEAR);
     else if (iaType == "sinusoidal")
-        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::SINUSOIDAL);
+        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::SINUSOIDAL);
     else if (iaType == "circular")
-        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::CIRCULAR);
+        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::CIRCULAR);
     else
-        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::UNKNOWN);
+        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::UNKNOWN);
 
     _engine->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), true, -500);
