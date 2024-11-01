@@ -86,7 +86,7 @@ public:
     ECS_system::ISystem *getSystem(const std::string &funcName,
                                      Args &&...args) {
       using FuncPtr =
-          ECS_system::ISystem *(*)(Args...); // Function pointer type
+          ECS_system::ISystem *(*)(Args...);
       void *sym;
 
 #ifdef _WIN32
@@ -115,7 +115,7 @@ public:
 
     IGraphic *getGraphic(const std::string &funcName) {
       using FuncPtr =
-          IGraphic *(*)(); // Function pointer type
+          IGraphic *(*)();
       void *sym;
 
 #ifdef _WIN32
