@@ -113,5 +113,6 @@ enum class KeyBoard : uint32_t
     Y,
     Z,
     Space,
+    escape,
     Unknown,
 };

@@ -178,6 +178,8 @@ bool SfmlGraphic::isKeyPressed(KeyBoard key)
         return sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
     case KeyBoard::Space:
         return sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+    case KeyBoard::escape:
+        return sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
     default:
         return false;
     }

@@ -187,6 +187,10 @@ namespace rtype
           _msgReceived.emplace_back(std::make_pair("play", std::make_pair(entityId, client->GetId())));
         }
         break;
+        case Action::MENU:
+        {
+          _msgReceived.emplace_back(std::make_pair("menu", std::make_pair(entityId, client->GetId())));
+        }
         case Action::PROTANOPIA:
         {
           _msgReceived.emplace_back(std::make_pair("protanopia", std::make_pair(entityId, client->GetId())));
