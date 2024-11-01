@@ -45,23 +45,26 @@ entity::IEntity *Game::createWeapon(uint32_t parentID,
 }
 
 /**
- * @brief Creates a background entity with the specified components.
+ * @brief Creates and initializes background entities for the game.
  *
- * This function creates a background entity with the given entity ID and
- * initializes it with various components including type, music, transform, and
- * background components.
+ * This function reads the background configuration from a JSON file, including
+ * the texture path, velocity, and size. It then creates two background entities
+ * and adds various components to them, such as TypeComponent, MusicComponent,
+ * TransformComponent, VelocityComponent, TextureComponent, SpriteComponent, and
+ * SizeComponent. The second background entity is positioned to the right of the
+ * first one to create a seamless scrolling effect.
  *
- * @param entityID The unique identifier for the entity.
- * @param texturePath The file path to the texture to be used for the entity.
- * @param speed The speed at which the background should scroll.
- * @param size The size of the background entity.
- * @return A pointer to the created background entity.
+ * @return A pointer to the first background entity created.
  */
 entity::IEntity *Game::createBackground()
 {
     nlohmann::json config = this->getConfig();
+
+    if(config.contains("background") == false)
+        return nullptr;
+
     std::string texturePath = config["background"]["path"];
-    std::pair<float, float> speed = std::pair<float, float>(config["background"]["speed"]["x"], config["background"]["speed"]["y"]);
+    std::pair<float, float> speed = std::pair<float, float>(config["background"]["velocity"]["x"], config["background"]["velocity"]["y"]);
     std::pair<float, float> size = std::pair<float, float>(config["background"]["size"]["width"], config["background"]["size"]["height"]);
 
     entity::IEntity *background1 = _coreModule->getEntityManager()->createEntity(
@@ -101,25 +104,45 @@ entity::IEntity *Game::createBackground()
     return background1;
 }
 
+void Game::BindInputScript(entity::IEntity *entity)
+{
+    uint32_t entityID = entity->getID();
+
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("MoveLeft", sf::Keyboard::Q);
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("MoveRight", sf::Keyboard::D);
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("MoveUp", sf::Keyboard::Z);
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("MoveDown", sf::Keyboard::S);
+    _coreModule->getComponentManager()
+        ->getComponent<component::InputComponent>(entityID)
+        ->bindAction("Shoot", sf::Keyboard::Space);
+}
+
 /**
- * @brief Creates a player entity with the specified components.
+ * @brief Creates a player entity with the specified client number.
  *
- * This function creates a player entity with the given entity ID and
- * initializes it with various components including position, sprite, texture,
- * input, velocity, and transform components.
+ * This function initializes a player entity with various components such as
+ * weapon, sprite, input, velocity, transform, health, and hitbox. The configuration
+ * for the player is loaded from a JSON file.
  *
- * @param entityID The unique identifier for the entity.
- * @param texturePath The file path to the texture to be used for the entity.
- * @param position The initial position of the entity.
- * @param velocity The initial velocity of the entity.
- * @param scale The scale of the entity.
+ * @param numClient The client number associated with the player.
  * @return A pointer to the created player entity.
  */
-entity::IEntity *
-Game::createPlayer(int numClient)
+entity::IEntity *Game::createPlayer(int numClient)
 {
     nlohmann::json config = this->getConfig();
     uint32_t entityID = _coreModule->getEntityManager()->generateEntityID();
+
+    if (config.contains("player") == false)
+        return nullptr;
+
     std::string texturePath = config["player"]["path"];
     std::pair<float, float> position = std::pair<float, float>(config["player"]["position"]["x"], config["player"]["position"]["y"]);
     std::pair<float, float> velocity = std::pair<float, float>(config["player"]["velocity"]["x"], config["player"]["velocity"]["y"]);
@@ -144,21 +167,7 @@ Game::createPlayer(int numClient)
             entityID, texturePath);
     _coreModule->getComponentManager()->addComponent<component::InputComponent>(
         entityID, numClient);
-    _coreModule->getComponentManager()
-        ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("MoveLeft", sf::Keyboard::Q);
-    _coreModule->getComponentManager()
-        ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("MoveRight", sf::Keyboard::D);
-    _coreModule->getComponentManager()
-        ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("MoveUp", sf::Keyboard::Z);
-    _coreModule->getComponentManager()
-        ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("MoveDown", sf::Keyboard::S);
-    _coreModule->getComponentManager()
-        ->getComponent<component::InputComponent>(entityID)
-        ->bindAction("Shoot", sf::Keyboard::Space);
+    BindInputScript(player);
     _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, velocity);
     _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
@@ -172,9 +181,23 @@ Game::createPlayer(int numClient)
     return player;
 }
 
+/**
+ * @brief Creates an enemy entity based on the configuration.
+ *
+ * This function reads the enemy configuration from a JSON object, generates a new entity ID,
+ * and creates an enemy entity with various components such as AI, weapon, sprite, texture,
+ * velocity, transform, health, and hitbox. The position of the enemy can be random or specified
+ * in the configuration. The AI type can also be random or specified.
+ *
+ * @return entity::IEntity* Pointer to the created enemy entity.
+ */
 entity::IEntity *Game::createEnemy()
 {
     nlohmann::json config = this->getConfig();
+
+    if (config.contains("enemy") == false)
+        return nullptr;
+
     std::string texturePath = config["enemy"]["path"];
     int damage = config["enemy"]["damage"];
     std::pair<float, float> velocity = std::pair<float, float>(config["enemy"]["velocity"]["x"], config["enemy"]["velocity"]["y"]);

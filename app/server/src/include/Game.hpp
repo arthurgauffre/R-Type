@@ -37,6 +37,7 @@ public:
     void handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived);
 
     nlohmann::json fillConfigJson(const std::string &path);
+    void BindInputScript(entity::IEntity *entity);
 
     void setConfig(nlohmann::json config) { _config = config; }
     nlohmann::json getConfig() { return _config; }
