@@ -63,6 +63,7 @@ namespace rtype
       void stopMessageProcessing();
       void enqueueMessage(Message<NetworkMessages> msg);
 
+      void sendAckMessage();
       void handleMessage(rtype::network::Message<NetworkMessages> &msg);
 
       std::string GetTexturePath(TexturePath texture);

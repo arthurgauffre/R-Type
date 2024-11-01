@@ -39,7 +39,7 @@ enum class NetworkMessages : uint32_t {
   createSize,
   createAI,
   createRectangleShape,
-  createOnCLick,
+  createOnClick,
   createText,
   updateTexture,
   updatePosition,

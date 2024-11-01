@@ -114,7 +114,6 @@ namespace rtype
         break;
         case NetworkMessages::MessageAll:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           rtype::network::Message<NetworkMessages> message;
           message.header.id = NetworkMessages::ServerMessage;
           message << client->GetId();
@@ -148,31 +147,26 @@ namespace rtype
         {
         case Action::MOVE_UP:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           _msgReceived.emplace_back(std::make_pair("moveUp", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::MOVE_DOWN:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           _msgReceived.emplace_back(std::make_pair("moveDown", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::MOVE_LEFT:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           _msgReceived.emplace_back(std::make_pair("moveLeft", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::MOVE_RIGHT:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           _msgReceived.emplace_back(std::make_pair("moveRight", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::SHOOT:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           // std::cout << "shoot" << std::endl;
           _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entityId, client->GetId())));
         }
@@ -352,7 +346,6 @@ namespace rtype
         {
           if (entity->getCommunication() == entity::EntityCommunication::CREATE)
           {
-            // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
             if (entity->getNumClient() != -1)
@@ -377,7 +370,6 @@ namespace rtype
           }
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
           {
-            // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
             if (entity->getNumClient() != -1) {
@@ -611,7 +603,7 @@ namespace rtype
                 _componentManager.getComponent<component::RectangleShapeComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              status = ServerStatus::WAITING_FOR_MESSAGE;
+              queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.createRectangleShapeMsg(entity->getID(), component->getX(), component->getY(), component->getHeight(), component->getWidth(), component->getColor()), clientToIgnore);
             }
@@ -657,7 +649,6 @@ namespace rtype
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::DELETE)
                 {
-                  status = ServerStatus::SERVER_RECEIVING;
                   component->setCommunication(component::ComponentCommunication::NONE);
                   SendMessageToClient(networkMessageFactory.deleteOnClickMsg(entity->getID()), deqConnections[i]);
                 }
@@ -670,7 +661,7 @@ namespace rtype
                 _componentManager.getComponent<component::TextComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              status = ServerStatus::WAITING_FOR_MESSAGE;
+              queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
               auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
               if (textFontKey && textStringKey)
@@ -994,8 +985,10 @@ namespace rtype
       void handleMsgToSend(std::pair<Action, size_t> msgToSend)
       {
         std::cout << "Handling message to send" << std::endl;
-        if (msgToSend.first == Action::MENU)
+        if (msgToSend.first == Action::MENU) {
+          queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
+        }
         else if (msgToSend.first == Action::GAME)
           SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
       }
@@ -1012,7 +1005,6 @@ namespace rtype
       NetworkMessageFactory networkMessageFactory;
       std::array<char, 1024> bufferOfIncomingMessages;
       uint32_t actualId = 0;
-      ServerStatus status;
       std::vector<ServerStatus> queueOfAckMessages;
       // int nbOfAckMessages = 0;
 

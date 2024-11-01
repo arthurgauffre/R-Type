@@ -976,7 +976,7 @@ public:
     rtype::network::Message<NetworkMessages> createOnClickMsg(size_t id, int numClient, Action action)
     {
         rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::createOnCLick;
+        message.header.id = NetworkMessages::createOnClick;
         EntityId entity = {id};
         OnClickComponent onClick = {action, numClient};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),

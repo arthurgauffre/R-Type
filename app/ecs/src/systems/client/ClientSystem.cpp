@@ -11,6 +11,15 @@ namespace rtype
 {
   namespace network
   {
+
+    void ClientSystem::sendAckMessage()
+    {
+      rtype::network::Message<NetworkMessages> message;
+      message.header.id = NetworkMessages::acknowledgementMesage;
+      Send(message);
+    }
+
+
     void ClientSystem::handleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
       std::lock_guard<std::mutex> lock(*_entityMutex);
@@ -55,7 +64,9 @@ namespace rtype
       break;
       case NetworkMessages::menu:
       {
+        std::cout << "Menu CREATED IN ON THE CLIENT SIDE" << std::endl;
         _sceneStatus = std::make_shared<Scene>(Scene::MENU);
+        sendAckMessage();
       }
       break;
       case NetworkMessages::game:
@@ -77,9 +88,7 @@ namespace rtype
         entity::IEntity *entity = _entityManager.createEntity(entityId.id, entityId.numClient);
         entity->setSceneStatus(scene.scene);
         // Send acknowledgement message
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::acknowledgementMesage;
-        Send(message);
+        sendAckMessage();
         // std::cout << "Create component ack message sent" << std::endl;
       }
       break;
@@ -97,9 +106,9 @@ namespace rtype
           return;
         entity->setSceneStatus(scene.scene);
         // Send acknowledgement message
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::acknowledgementMesage;
-        Send(message);
+        // rtype::network::Message<NetworkMessages> message;
+        // message.header.id = NetworkMessages::acknowledgementMesage;
+        // Send(message);
         // std::cout << "Update component ack message sent" << std::endl;
       }
       case NetworkMessages::deleteEntity:
@@ -110,9 +119,7 @@ namespace rtype
         // std::cout << "Entity id: " << entity.id << std::endl;
         _componentManager.removeAllComponents(entity.id);
         _entityManager.removeEntity(entity.id);
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::acknowledgementMesage;
-        Send(message);
+        sendAckMessage();
       }
       break;
       case NetworkMessages::createSprite:
@@ -240,9 +247,7 @@ namespace rtype
                     sizeof(InputComponent));
         _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
 
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::acknowledgementMesage;
-        Send(message);
+        sendAckMessage();
         std::cout << "Input component ack message sent" << std::endl;
       }
       break;
@@ -270,9 +275,7 @@ namespace rtype
         _componentManager
             .addComponent<component::TypeComponent>(id.id, type.type);
         // Send acknowledgement message
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::acknowledgementMesage;
-        Send(message);
+        sendAckMessage();
       }
       break;
       case NetworkMessages::updateType:
@@ -423,6 +426,7 @@ namespace rtype
         // std::cout << "RectangleShape: " << rectangleShape.x << " " << rectangleShape.y << " " << rectangleShape.width << " " << rectangleShape.height << std::endl;
         _componentManager
             .addComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
+        sendAckMessage();
       }
       break;
       case NetworkMessages::updateRectangleShape:
@@ -438,7 +442,7 @@ namespace rtype
             .updateComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
       }
       break;
-      case NetworkMessages::createOnCLick:
+      case NetworkMessages::createOnClick:
       {
         // create On click same as input
         // std::cout << "OnCLick component created" << std::endl;
@@ -450,9 +454,7 @@ namespace rtype
         // std::cout << "onClick with id " << id.id << std::endl;
         _componentManager
             .addComponent<component::OnClickComponent>(id.id, onClick.action, onClick.numClient);
-        rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::acknowledgementMesage;
-        Send(message);
+        sendAckMessage();
       }
       break;
       case NetworkMessages::createText:
@@ -480,6 +482,7 @@ namespace rtype
           _componentManager
               .addComponent<component::TextComponent>(
                   id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _stringCom.textFont[text.textFont], _graphic);
+        sendAckMessage();
       }
       break;
       case NetworkMessages::updateText:
