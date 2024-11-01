@@ -28,7 +28,6 @@ bool ECS_system::CollisionSystem::isColliding(
       _componentManager.getComponent<component::TransformComponent>(
           hitbox2->getEntityID());
 
-  // Check if the hitboxes are colliding
   if (pos1->getPosition().first <
           pos2->getPosition().first + hitbox2->getWidth() &&
       pos1->getPosition().first + hitbox1->getWidth() >
