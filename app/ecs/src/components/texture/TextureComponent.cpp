@@ -9,5 +9,4 @@
 
 void component::TextureComponent::update(std::string &path, std::shared_ptr<IGraphic> graphic) {
   _textureId = graphic->createTexture(path);
-  // Update the component
 }
