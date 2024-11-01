@@ -10,7 +10,7 @@
 #include <RtypeEngine.hpp>
 #include <nlohmann/json.hpp>
 #include <fstream>
-
+#include <cmath>
 #include <random>
 
 class Game
@@ -51,12 +51,14 @@ protected:
 private:
     int _waveNumber;
     std::shared_ptr<rtype::RtypeEngine> _engine;
-    sf::Clock inputClock;
-    sf::Clock waveClock;
+    sf::Clock _inputClock;
+    sf::Clock _waveClock;
+    sf::Clock _spawnClock;
     std::unordered_map<size_t, entity::IEntity *> _players;
     std::unordered_map<size_t, Scene> _playersScenes;
     std::unordered_map<int, std::pair<entity::IEntity *, std::string>> _playersFilters;
     float _spawnInterval;
     float _waveInterval;
     nlohmann::json _config;
+    bool _isStarted;
 };

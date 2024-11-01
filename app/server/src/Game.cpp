@@ -9,6 +9,7 @@
 
 Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
 {
+    _isStarted = false;
 }
 
 Game::~Game()
@@ -162,7 +163,7 @@ entity::IEntity *Game::createPlayer(int numClient)
     _engine->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), false, 500);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
-                                                                               Type::PLAYER);
+                                                                           Type::PLAYER);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second, _engine->_graphic);
     component::TextureComponent *texture =
@@ -360,17 +361,18 @@ nlohmann::json Game::fillConfigJson(const std::string &path)
  */
 void Game::init()
 {
-  ECS_system::StringCom stringCom;
-  stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
-  stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
-  stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
-  stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
-  stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
-  stringCom.textString[TextString::Play] = "Play";
-  stringCom.textString[TextString::Protanopia] = "Protanopia";
-  stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
-  stringCom.textString[TextString::Tritanopia] = "Tritanopia";
-  stringCom.textString[TextString::ClearFilter] = "Clear Filter";
+    ECS_system::StringCom stringCom;
+    stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
+    stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
+    stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+    stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
+    stringCom.texturePath[TexturePath::Structure] = "app/assets/sprites/block.png";
+    stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
+    stringCom.textString[TextString::Play] = "Play";
+    stringCom.textString[TextString::Protanopia] = "Protanopia";
+    stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
+    stringCom.textString[TextString::Tritanopia] = "Tritanopia";
+    stringCom.textString[TextString::ClearFilter] = "Clear Filter";
 
     try
     {
@@ -382,6 +384,13 @@ void Game::init()
                               "app/assets/sprites/block.png",
                               std::pair<float, float>(1920.0f, 0.0f),
                               std::pair<float, float>(0.5f, 0.5f), 50);
+
+        int waveInterval = this->getConfig()["waveInterval"];
+        int waveNumber = this->getConfig()["waveNumber"];
+        // int spawnInterval = this->getConfig()["spawnInterval"];
+        // this->_spawnInterval = spawnInterval;
+        this->_waveInterval = waveInterval;
+        this->_waveNumber = waveNumber;
     }
     catch (const std::exception &e)
     {
@@ -393,26 +402,21 @@ void Game::init()
     entity::EntityManager &entityManager = *_engine->getEntityManager();
 
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "movement", _engine->_graphic, stringCom);
+                                           "movement", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "server", _engine->_graphic, stringCom);
+                                           "server", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "cooldown", _engine->_graphic, stringCom);
+                                           "cooldown", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "weapon", _engine->_graphic, stringCom);
+                                           "weapon", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "ai", _engine->_graphic, stringCom);
+                                           "ai", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "collision", _engine->_graphic, stringCom);
+                                           "collision", _engine->_graphic, stringCom);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "health", _engine->_graphic);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "game", _engine->_graphic);
-
-    int waveInterval = this->getConfig()["waveInterval"];
-    int waveNumber = this->getConfig()["waveNumber"];
-    this->_waveInterval = waveInterval;
-    this->_waveNumber = waveNumber;
 }
 
 entity::IEntity *Game::addFilter(std::string filter, int numClient)
@@ -454,10 +458,15 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
             _players.erase(numClient);
         }
     }
-    if (msg == "play") {
+    if (msg == "play")
+    {
+        _isStarted = true;
+        _spawnClock.restart();
+        _waveClock.restart();
         if (_playersScenes[numClient] == Scene::GAME)
             return;
-        if (_players.find(numClient) == _players.end()) {
+        if (_players.find(numClient) == _players.end())
+        {
             entity::IEntity *entity = createPlayer(numClient);
             _players[numClient] = entity;
         }
@@ -567,12 +576,12 @@ void Game::resetInput()
             if (_engine->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID()))
             {
                 component::VelocityComponent *velocityComponent = _engine->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID());
-                if ((velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0) && inputClock.getElapsedTime().asSeconds() > 0.1)
+                if ((velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0) && _inputClock.getElapsedTime().asSeconds() > 0.1)
                 {
                     velocityComponent->setActualVelocityX(0);
                     velocityComponent->setActualVelocityY(0);
                     velocityComponent->setCommunication(component::ComponentCommunication::UPDATE);
-                    inputClock.restart();
+                    _inputClock.restart();
                 }
             }
         }
@@ -581,17 +590,26 @@ void Game::resetInput()
 
 void Game::run()
 {
-    inputClock.restart();
-    waveClock.restart();
+    _inputClock.restart();
     while (1)
     {
         _engine->update();
-        if (_waveNumber != 0 && waveClock.getElapsedTime().asSeconds() > _waveInterval)
+        if (_waveNumber != 0 && _waveClock.getElapsedTime().asSeconds() > _waveInterval && _isStarted)
         {
             this->createEnemy();
             _waveNumber--;
-            waveClock.restart();
+            _waveClock.restart();
         }
+
+        // if (_spawnClock.getElapsedTime().asSeconds() > _spawnInterval && _isStarted)
+        // {
+        //     this->createStructure(_engine->getEntityManager()->generateEntityID(),
+        //                           "app/assets/sprites/block.png",
+        //                           std::pair<float, float>(1920.0f, 0.0f),
+        //                           std::pair<float, float>(0.5f, 0.5f), 50);
+        //     _spawnClock.restart();
+        // }
+
         if (!_engine->msgReceived.empty())
         {
             // std::cout << "msgReceivedSize: " << _engine->msgReceived.size() << std::endl;
