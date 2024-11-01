@@ -193,14 +193,14 @@ entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<f
     _engine->getComponentManager()->addComponent<component::RectangleShapeComponent>(entityID, position, size, color, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(entityID, position, std::pair<float, float>(1, 1));
     _engine->getComponentManager()->addComponent<component::OnClickComponent>(entityID, action, numClient);
-    _engine->getComponentManager()->addComponent<component::TextComponent>(entityID, position, "Play", 50, RColor{200, 200, 200, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(entityID, std::make_pair(position.first + 50, position.second), "Play", 50, RColor{25, 25, 25, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
 
     return button;
 }
 
 void Game::createMenu(int numClient)
 {
-    entity::IEntity *button = createButton(_engine->getEntityManager()->generateEntityID(), RColor{255, 255, 255, 255}, std::pair<float, float>(100.0f, 100.0f), std::pair<float, float>(100.0f, 100.0f), Action::PLAY, numClient);
+    entity::IEntity *button = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(860.0f, 700.0f), std::pair<float, float>(70.0f, 200.0f), Action::PLAY, numClient);
     button->setSceneStatus(Scene::MENU);
 }
 

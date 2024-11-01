@@ -242,10 +242,8 @@ void SfmlGraphic::updateText(size_t id, std::string text, int size, RColor color
 
 void SfmlGraphic::setTextPosition(float x, float y, size_t id)
 {
-    std::cout << "setTextPosition" << std::endl;
     if (_texts.find(id) == _texts.end())
         return;
-    std::cout << "x: " << x << " y: " << y << std::endl;
     _texts[id].setPosition(x, y);
 }
 
