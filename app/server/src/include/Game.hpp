@@ -8,7 +8,6 @@
 #pragma once
 
 #include <RtypeEngine.hpp>
-#include <CoreModule.hpp>
 #include <nlohmann/json.hpp>
 #include <fstream>
 

@@ -67,8 +67,8 @@ entity::IEntity *Game::createBackground()
     std::pair<float, float> speed = std::pair<float, float>(config["background"]["velocity"]["x"], config["background"]["velocity"]["y"]);
     std::pair<float, float> size = std::pair<float, float>(config["background"]["size"]["width"], config["background"]["size"]["height"]);
 
-    entity::IEntity *background1 = _coreModule->getEntityManager()->createEntity(
-        _coreModule->getEntityManager()->generateEntityID(), -1);
+    entity::IEntity *background1 = _engine->getEntityManager()->createEntity(
+        _engine->getEntityManager()->generateEntityID(), -1);
 
     entity::IEntity *background2 = _engine->getEntityManager()->createEntity(
         _engine->getEntityManager()->generateEntityID(), -1);
@@ -106,25 +106,9 @@ entity::IEntity *Game::createBackground()
 
 void Game::BindInputScript(entity::IEntity *entity)
 {
-    auto player = _engine->getEntityManager()->createEntity(entityID, -1);
-
-    auto weapon = createWeapon(entityID, component::Type::WEAPON, 50, 0.5);
-
-    _engine->getComponentManager()->addComponent<component::WeaponComponent>(
-        entityID, weapon->getID(), false, 500);
-    _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
-                                                                               component::Type::PLAYER);
-    _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second, _engine->_graphic);
-    auto texture =
-        _engine->getComponentManager()->addComponent<component::TextureComponent>(
-            entityID, texturePath, _engine->_graphic);
-    _engine->getComponentManager()->addComponent<component::InputComponent>(
-        entityID, numClient);
-    _engine->getComponentManager()
     uint32_t entityID = entity->getID();
 
-    _coreModule->getComponentManager()
+    _engine->getComponentManager()
         ->getComponent<component::InputComponent>(entityID)
         ->bindAction(Action::MOVE_LEFT, KeyBoard::Q);
     _engine->getComponentManager()
@@ -154,7 +138,7 @@ void Game::BindInputScript(entity::IEntity *entity)
 entity::IEntity *Game::createPlayer(int numClient)
 {
     nlohmann::json config = this->getConfig();
-    uint32_t entityID = _coreModule->getEntityManager()->generateEntityID();
+    uint32_t entityID = _engine->getEntityManager()->generateEntityID();
 
     if (config.contains("player") == false)
         return nullptr;
@@ -168,23 +152,23 @@ entity::IEntity *Game::createPlayer(int numClient)
     int weaponDamage = config["player"]["weapon"]["damage"];
     float weaponCooldown = config["player"]["weapon"]["cooldown"];
 
-    entity::IEntity *player = _coreModule->getEntityManager()->createEntity(entityID, -1);
+    entity::IEntity *player = _engine->getEntityManager()->createEntity(entityID, -1);
 
     entity::IEntity *weapon = createWeapon(entityID, component::Type::WEAPON, weaponDamage, weaponCooldown);
 
-    _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
+    _engine->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), false, 500);
-    _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID,
+    _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                                component::Type::PLAYER);
-    _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second);
+    _engine->getComponentManager()->addComponent<component::SpriteComponent>(
+        entityID, position.first, position.second, _engine->_graphic);
     component::TextureComponent *texture =
-        _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-            entityID, texturePath);
-    _coreModule->getComponentManager()->addComponent<component::InputComponent>(
+        _engine->getComponentManager()->addComponent<component::TextureComponent>(
+            entityID, texturePath, _engine->_graphic);
+    _engine->getComponentManager()->addComponent<component::InputComponent>(
         entityID, numClient);
     BindInputScript(player);
-    _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+    _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, velocity);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
         entityID, position, scale);
@@ -232,47 +216,47 @@ entity::IEntity *Game::createEnemy()
     else
         position.second = positionInput["y"];
 
-    uint32_t entityID = _coreModule->getEntityManager()->generateEntityID();
-    entity::IEntity *enemy = _coreModule->getEntityManager()->createEntity(entityID);
+    uint32_t entityID = _engine->getEntityManager()->generateEntityID();
+    entity::IEntity *enemy = _engine->getEntityManager()->createEntity(entityID, -1);
     entity::IEntity *weapon = createWeapon(entityID, component::Type::WEAPON, damage, 2);
 
     if (iaType == "random")
     {
         int random = rand() % 3;
         if (random == 0)
-            _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::LINEAR);
+            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::LINEAR);
         if (random == 1)
-            _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::SINUSOIDAL);
+            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::SINUSOIDAL);
         if (random == 2)
-            _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::CIRCULAR);
+            _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::CIRCULAR);
     }
     else if (iaType == "linear")
-        _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::LINEAR);
+        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::LINEAR);
     else if (iaType == "sinusoidal")
-        _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::SINUSOIDAL);
+        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::SINUSOIDAL);
     else if (iaType == "circular")
-        _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::CIRCULAR);
+        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::CIRCULAR);
     else
-        _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::UNKNOWN);
+        _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::UNKNOWN);
 
     _engine->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), true, -500);
-    _coreModule->getComponentManager()->addComponent<component::TypeComponent>(entityID, component::Type::ENEMY);
-    _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second);
+    _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, component::Type::ENEMY);
+    _engine->getComponentManager()->addComponent<component::SpriteComponent>(
+        entityID, position.first, position.second, _engine->_graphic);
     component::TextureComponent *texture =
-        _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-            entityID, texturePath);
-    _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+        _engine->getComponentManager()->addComponent<component::TextureComponent>(
+            entityID, texturePath, _engine->_graphic);
+    _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, velocity);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
         entityID, position, scale);
 
     _engine->getComponentManager()->addComponent<component::HealthComponent>(
         entityID, health);
-    _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-        entityID, texture->getTexture().getSize().x * scale.first,
-        texture->getTexture().getSize().y * scale.second);
+    _engine->getComponentManager()->addComponent<component::HitBoxComponent>(
+        entityID, _engine->_graphic->getTextureSize(texture->getTexture()).first * scale.first,
+        _engine->_graphic->getTextureSize(texture->getTexture()).second * scale.second);
 
     return enemy;
 }
@@ -299,23 +283,23 @@ entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePat
                                        std::pair<float, float> position,
                                        std::pair<float, float> scale, int health)
 {
-    entity::IEntity *structure = _coreModule->getEntityManager()->createEntity(entityID);
+    entity::IEntity *structure = _engine->getEntityManager()->createEntity(entityID, -1);
 
-    _coreModule->getComponentManager()->addComponent<component::TypeComponent>(
+    _engine->getComponentManager()->addComponent<component::TypeComponent>(
         entityID, component::Type::STRUCTURE);
-    _coreModule->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second);
+    _engine->getComponentManager()->addComponent<component::SpriteComponent>(
+        entityID, position.first, position.second, _engine->_graphic);
     component::TextureComponent *texture =
-        _coreModule->getComponentManager()->addComponent<component::TextureComponent>(
-            entityID, texturePath);
-    _coreModule->getComponentManager()->addComponent<component::TransformComponent>(
+        _engine->getComponentManager()->addComponent<component::TextureComponent>(
+            entityID, texturePath, _engine->_graphic);
+    _engine->getComponentManager()->addComponent<component::TransformComponent>(
         entityID, position, scale);
-    _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
-        entityID, texture->getTexture().getSize().x * scale.first,
-        texture->getTexture().getSize().y * scale.second);
-    _coreModule->getComponentManager()->addComponent<component::VelocityComponent>(
+    _engine->getComponentManager()->addComponent<component::HitBoxComponent>(
+        entityID, _engine->_graphic->getTextureSize(texture->getTexture()).first * scale.first,
+        _engine->_graphic->getTextureSize(texture->getTexture()).second * scale.second);
+    _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         entityID, std::pair<float, float>(-200.0f, 0.0f), std::pair<float, float>(-200.0f, 0.0f));
-    _coreModule->getComponentManager()->addComponent<component::HealthComponent>(
+    _engine->getComponentManager()->addComponent<component::HealthComponent>(
         entityID, health);
 
     return structure;
@@ -373,21 +357,13 @@ void Game::init()
   stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
   stringCom.textString[TextString::Play] = "Play"; 
 
-    this->createBackground("app/assets/images/city_background.png",
-                           std::pair<float, float>(-100.0f, 0.0f),
-                           std::pair<float, float>(4448.0f, 1200.0f));
-    this->createEnemy(_engine->getEntityManager()->generateEntityID(),
-                      "app/assets/sprites/enemy.png",
-                      std::pair<float, float>(1800.0f, 0.0f),
-                      std::pair<float, float>(-200.0f, 0.0f),
-                      std::pair<float, float>(0.2f, 0.2f), 100, 100);
     try
     {
         this->setConfig(this->fillConfigJson("configs/config1.json"));
 
         this->createBackground();
 
-        this->createStructure(_coreModule->getEntityManager()->generateEntityID(),
+        this->createStructure(_engine->getEntityManager()->generateEntityID(),
                               "app/assets/sprites/block.png",
                               std::pair<float, float>(1920.0f, 0.0f),
                               std::pair<float, float>(0.5f, 0.5f), 50);
@@ -527,7 +503,7 @@ void Game::run()
     waveClock.restart();
     while (1)
     {
-        _coreModule->update();
+        _engine->update();
         if (_waveNumber != 0 && waveClock.getElapsedTime().asSeconds() > _waveInterval)
         {
             this->createEnemy();
