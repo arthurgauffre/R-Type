@@ -17,8 +17,8 @@
  */
 ECS_system::CooldownSystem::CooldownSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, stringCom) {}
 
 /**
  * @brief Destructor for the CooldownSystem class.
@@ -40,10 +40,12 @@ ECS_system::CooldownSystem::~CooldownSystem() {}
  * @param entities A vector of shared pointers to entities to be updated.
  */
 void ECS_system::CooldownSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) {
   for (auto &entity :
        _componentManager
            .getEntitiesWithComponents<component::CooldownComponent>(entities)) {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
     component::CooldownComponent *cooldownComponent =
         _componentManager.getComponent<component::CooldownComponent>(
             entity.get()->getID());
@@ -55,6 +57,6 @@ void ECS_system::CooldownSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::CooldownSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {
+  return new ECS_system::CooldownSystem(componentManager, entityManager, graphic, stringCom);
 }

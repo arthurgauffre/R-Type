@@ -2,7 +2,6 @@
 *.out
 .vscode
 *.so
-*.json
 
 # CMake template
 CMakeLists.txt.user

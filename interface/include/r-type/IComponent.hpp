@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cstdint>
+#include <r-type/IGraphic.hpp>
 
 namespace component {
 enum class ComponentCommunication {

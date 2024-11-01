@@ -18,9 +18,11 @@
  */
 ECS_system::RenderSystem::RenderSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager),
-      _window(sf::VideoMode(1920, 1080), "R-Type"), _event(sf::Event()) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, stringCom)
+{
+  _graphic->createWindow(1920, 1080, "R-Type");
+}
 
 /**
  * @brief Updates the render system by drawing all entities with the appropriate
@@ -36,19 +38,23 @@ ECS_system::RenderSystem::RenderSystem(
  */
 void ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
-  _window.clear();
+    std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
+{
+  _graphic->windowClear();
 
   // lock the entity mutex
   std::lock_guard<std::mutex> lock(entityMutex);
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::SpriteComponent, component::TransformComponent,
                       component::TextureComponent, component::SizeComponent,
-                      component::SpriteComponent>(entities)) {
-     if (entity.get()->getActive() == false ||
+                      component::SpriteComponent>(entities))
+  {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
+    if (entity.get()->getActive() == false ||
         _componentManager
                 .getComponent<component::TypeComponent>(entity.get()->getID())
-                ->getType() != component::Type::BACKGROUND)
+                ->getType() != Type::BACKGROUND)
       continue;
     component::SpriteComponent *spriteComponent =
         _componentManager.getComponent<component::SpriteComponent>(
@@ -63,25 +69,27 @@ void ECS_system::RenderSystem::update(
         _componentManager.getComponent<component::SizeComponent>(
             entity->getID());
 
-    sf::Vector2f position = {transformComponent->getPosition().first,
-                             transformComponent->getPosition().second};
-    sf::Sprite sprite = spriteComponent->getSprite();
-    sf::Texture backgroundTexture = textureComponent->getTexture();
+    std::pair<float, float> position = {transformComponent->getPosition().first,
+                                        transformComponent->getPosition().second};
+    size_t sprite = spriteComponent->getSpriteId();
+    size_t backgroundTexture = textureComponent->getTexture();
 
-    sprite.setTexture(backgroundTexture);
-    sprite.setPosition(position);
+    _graphic->setSpriteTexture(sprite, backgroundTexture);
+    _graphic->setSpritePosition(position.first, position.second, sprite);
 
-    _window.draw(sprite);
+    _graphic->drawSprite(sprite);
   }
 
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::TransformComponent, component::SpriteComponent,
-                      component::TextureComponent, component::TypeComponent>(entities)) {
-
-     if (entity.get()->getActive() == false ||
+                      component::TextureComponent, component::TypeComponent>(entities))
+  {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
+    if (entity.get()->getActive() == false ||
         _componentManager
                 .getComponent<component::TypeComponent>(entity.get()->getID())
-                ->getType() == component::Type::BACKGROUND)
+                ->getType() == Type::BACKGROUND)
       continue;
     component::TransformComponent *transformComponent =
         _componentManager.getComponent<component::TransformComponent>(
@@ -93,32 +101,126 @@ void ECS_system::RenderSystem::update(
         _componentManager.getComponent<component::TextureComponent>(
             entity.get()->getID());
 
-    sf::Vector2f SfPosition = {transformComponent->getPosition().first,
-                               transformComponent->getPosition().second};
+    std::pair<float, float> Position = {transformComponent->getPosition().first,
+                                        transformComponent->getPosition().second};
 
-    sf::Vector2f SfScale = {transformComponent->getScale().first,
-                            transformComponent->getScale().second};
+    std::pair<float, float> Scale = {transformComponent->getScale().first,
+                                     transformComponent->getScale().second};
 
-    spriteComponent->getSprite().setTexture(textureComponent->getTexture());
-    spriteComponent->getSprite().setPosition(SfPosition);
-    spriteComponent->getSprite().setRotation(transformComponent->getRotation());
-    spriteComponent->getSprite().setScale(SfScale);
+    _graphic->setSpriteTexture(spriteComponent->getSpriteId(),
+                               textureComponent->getTexture());
+    _graphic->setSpritePosition(Position.first, Position.second,
+                                spriteComponent->getSpriteId());
+    _graphic->setSpriteRotation(transformComponent->getRotation(),
+                                spriteComponent->getSpriteId());
+    _graphic->setSpriteScale(Scale.first, Scale.second,
+                             spriteComponent->getSpriteId());
 
-    _window.draw(spriteComponent->getSprite());
+    _graphic->drawSprite(spriteComponent->getSpriteId());
   }
-  _window.display();
 
-  // sf event
-  while (_window.pollEvent(_event)) {
-    if (_event.type == sf::Event::Closed) {
-      _window.close();
-      // this->_gameClosed = true;
-    }
+  for (auto &entity : _componentManager.getEntitiesWithComponents<
+                      component::RectangleShapeComponent,
+                      component::TransformComponent>(entities))
+  {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
+
+    if (entity.get()->getActive() == false)
+      continue;
+    component::RectangleShapeComponent *rectangleShapeComponent =
+        _componentManager.getComponent<component::RectangleShapeComponent>(
+            entity.get()->getID());
+    component::TransformComponent *transformComponent =
+        _componentManager.getComponent<component::TransformComponent>(
+            entity.get()->getID());
+
+    std::pair<float, float> Position = {transformComponent->getPosition().first,
+                                        transformComponent->getPosition().second};
+
+    std::pair<float, float> Size = {rectangleShapeComponent->getWidth(),
+                                    rectangleShapeComponent->getHeight()};
+
+    _graphic->setRectangleShapePosition(Position.first, Position.second,
+                                        rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeSize(Size.first, Size.second,
+                                    rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeRotation(transformComponent->getRotation(),
+                                        rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeFillColor(rectangleShapeComponent->getColor().r,
+                                         rectangleShapeComponent->getColor().g,
+                                         rectangleShapeComponent->getColor().b,
+                                         rectangleShapeComponent->getColor().a,
+                                         rectangleShapeComponent->getRectangleShapeId());
+
+    _graphic->drawRectangleShape(rectangleShapeComponent->getRectangleShapeId());
   }
+
+  for (auto &entity : _componentManager.getEntitiesWithComponents<
+                      component::TextComponent>(entities))
+  {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
+    if (entity.get()->getActive() == false)
+      continue;
+
+    component::TextComponent *textComponent =
+        _componentManager.getComponent<component::TextComponent>(
+            entity.get()->getID());
+
+    if (!textComponent)
+      continue;
+    _graphic->drawText(textComponent->getTextId());
+  }
+
+  // draw rectangle filter
+  for (auto &entity : _componentManager.getEntitiesWithComponents<
+                      component::RectangleShapeComponent,
+                      component::TransformComponent,
+                      component::TypeComponent>(entities))
+  {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
+    if (entity.get()->getActive() == false ||
+        _componentManager
+                .getComponent<component::TypeComponent>(entity.get()->getID())
+                ->getType() != Type::FILTER)
+      continue;
+    component::RectangleShapeComponent *rectangleShapeComponent =
+        _componentManager.getComponent<component::RectangleShapeComponent>(
+            entity.get()->getID());
+    component::TransformComponent *transformComponent =
+        _componentManager.getComponent<component::TransformComponent>(
+            entity.get()->getID());
+
+    std::pair<float, float> Position = {transformComponent->getPosition().first,
+                                        transformComponent->getPosition().second};
+
+    std::pair<float, float> Size = {rectangleShapeComponent->getWidth(),
+                                    rectangleShapeComponent->getHeight()};
+
+    _graphic->setRectangleShapePosition(Position.first, Position.second,
+                                        rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeSize(Size.first, Size.second,
+                                    rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeRotation(transformComponent->getRotation(),
+                                        rectangleShapeComponent->getRectangleShapeId());
+    _graphic->setRectangleShapeFillColor(rectangleShapeComponent->getColor().r,
+                                         rectangleShapeComponent->getColor().g,
+                                         rectangleShapeComponent->getColor().b,
+                                         rectangleShapeComponent->getColor().a,
+                                         rectangleShapeComponent->getRectangleShapeId());
+
+    _graphic->drawRectangleShape(rectangleShapeComponent->getRectangleShapeId());
+  }
+
+  _graphic->windowDisplay();
+  _graphic->eventHandler();
 }
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::RenderSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+{
+  return new ECS_system::RenderSystem(componentManager, entityManager, graphic, stringCom);
 }

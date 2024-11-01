@@ -10,8 +10,8 @@
 
 ECS_system::WeaponSystem::WeaponSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, stringCom) {}
 
 ECS_system::WeaponSystem::~WeaponSystem() {}
 
@@ -22,15 +22,15 @@ void ECS_system::WeaponSystem::createProjectile(
 {
     // std::cout << "Creating projectile" << std::endl;
     uint32_t projectileID = _entityManager.generateEntityID();
-    entity::IEntity *projectile = _entityManager.createEntity(projectileID);
+    entity::IEntity *projectile = _entityManager.createEntity(projectileID, -1);
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
-            ->getType() == component::Type::PLAYER)
+            ->getType() == Type::PLAYER)
         _componentManager.addComponent<component::TypeComponent>(
-            projectileID, component::Type::PLAYER_PROJECTILE);
+            projectileID, Type::PLAYER_PROJECTILE);
     else
         _componentManager.addComponent<component::TypeComponent>(projectileID,
-                                                                 component::Type::ENEMY_PROJECTILE);
+                                                                 Type::ENEMY_PROJECTILE);
     _componentManager.addComponent<component::DamageComponent>(projectileID,
                                                                damage);
     _componentManager.addComponent<component::ParentComponent>(projectileID,
@@ -38,60 +38,55 @@ void ECS_system::WeaponSystem::createProjectile(
     _componentManager.addComponent<component::VelocityComponent>(
         projectileID, velocity, velocity);
     component::TextureComponent *texture = _componentManager.addComponent<component::TextureComponent>(
-        projectileID, texturePath);
+        projectileID, texturePath, _graphic);
     _componentManager.addComponent<component::HitBoxComponent>(
-        projectileID, texture->getTexture().getSize().x,
-        texture->getTexture().getSize().y);
+        projectileID, _graphic->getTextureSize(texture->getTexture()).first,
+        _graphic->getTextureSize(texture->getTexture()).second);
 
     component::TransformComponent *transformPlayer =
         _componentManager.getComponent<component::TransformComponent>(parentID);
     component::TextureComponent *textureP =
         _componentManager.getComponent<component::TextureComponent>(parentID);
-    const sf::Texture *texturePlayer = &textureP->getTexture();
-
-    if (!texturePlayer)
-    {
-        std::cout << "Error: Player transform or texture not found" << std::endl;
-        return;
-    }
 
     std::pair<float, float> position = {
         transformPlayer->getPosition().first +
-            texturePlayer->getSize().x * transformPlayer->getScale().first,
+            _graphic->getTextureSize(textureP->getTexture()).first * transformPlayer->getScale().first,
         transformPlayer->getPosition().second +
-            (texturePlayer->getSize().y * transformPlayer->getScale().second) /
+            (_graphic->getTextureSize(textureP->getTexture()).second * transformPlayer->getScale().second) /
                 2};
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
-            ->getType() == component::Type::ENEMY)
+            ->getType() == Type::ENEMY)
         position.first -=
-            texturePlayer->getSize().x * transformPlayer->getScale().first;
+            _graphic->getTextureSize(textureP->getTexture()).first * transformPlayer->getScale().first;
 
     component::TransformComponent *transformComponent =
         _componentManager.addComponent<component::TransformComponent>(
             projectileID, position, scale);
     _componentManager.addComponent<component::SpriteComponent>(
-        projectileID, position.first, position.second);
+        projectileID, position.first, position.second, _graphic);
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
-            ->getType() == component::Type::ENEMY)
+            ->getType() == Type::ENEMY)
         transformComponent->setRotation(180);
 }
 
 void ECS_system::WeaponSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
 {
     for (auto &entity :
          _componentManager.getEntitiesWithComponents<component::WeaponComponent>(
              entities))
     {
+        if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+            continue;
         component::WeaponComponent *weaponComponent =
             _componentManager.getComponent<component::WeaponComponent>(
                 entity->getID());
         component::CooldownComponent *cooldownComponent =
             _componentManager.getComponent<component::CooldownComponent>(
                 weaponComponent->getWeaponEntityID());
-        component::Type entityType =
+        Type entityType =
             _componentManager
                 .getComponent<component::TypeComponent>(entity->getID())
                 ->getType();
@@ -106,7 +101,7 @@ void ECS_system::WeaponSystem::update(
             cooldownComponent->getTimeRemaining() > 0)
             weaponComponent->setIsFiring(false);
 
-        if (cooldownComponent->getTimeRemaining() <= 0 && entityType == component::Type::ENEMY)
+        if (cooldownComponent->getTimeRemaining() <= 0 && entityType == Type::ENEMY)
             weaponComponent->setIsFiring(true);
 
         float weaponVelocity = weaponComponent->getVelocity();
@@ -120,7 +115,7 @@ void ECS_system::WeaponSystem::update(
 
             cooldownComponent->setTimeRemaining(cooldownComponent->getCooldown());
 
-            if (entityType == component::Type::PLAYER)
+            if (entityType == Type::PLAYER)
             {
                 // _componentManager
                 //     .getComponent<component::SoundComponent>(
@@ -134,7 +129,7 @@ void ECS_system::WeaponSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
 {
-    return new ECS_system::WeaponSystem(componentManager, entityManager);
+    return new ECS_system::WeaponSystem(componentManager, entityManager, graphic, stringCom);
 }

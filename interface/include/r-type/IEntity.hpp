@@ -17,6 +17,7 @@
 #endif
 
 #include <cstdint>
+#include <r-type/Enum.hpp>
 
 namespace entity {
 enum class EntityCommunication {
@@ -87,7 +88,47 @@ public:
      */
     virtual void setCommunication(EntityCommunication status) = 0;
 
+    /**
+     * @brief Retrieves the scene status of the entity.
+     *
+     * This method is used to determine the current scene status of the entity.
+     *
+     * @return Scene The current scene status of the entity.
+     */
+    virtual Scene getSceneStatus() const = 0;
+
+    /**
+     * @brief Sets the scene status of the entity.
+     *
+     * This method is used to set the scene status of the entity to the specified
+     * value.
+     *
+     * @param status The new scene status for the entity.
+     */
+    virtual void setSceneStatus(Scene status) = 0;
+
+    /**
+     * @brief Retrieves the number of the client associated with the entity.
+     *
+     * This method is used to determine the number of the client associated with
+     * the entity.
+     *
+     * @return int The number of the client associated with the entity.
+     */
+    virtual int getNumClient() const = 0;
+
+    /**
+     * @brief Sets the number of the client associated with the entity.
+     *
+     * This method is used to set the number of the client associated with the
+     * entity to the specified value.
+     *
+     * @param numClient The new number of the client associated with the entity.
+     */
+    virtual void setNumClient(int numClient) = 0;
+
   protected:
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
+    Scene sceneStatus{Scene::GAME};
 };
 } // namespace entity

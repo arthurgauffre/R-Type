@@ -10,6 +10,8 @@ add_library(r-type_render_system SHARED
     ../../components/hitbox/HitBoxComponent.cpp
     ../../components/size/SizeComponent.cpp
     ../../components/type/TypeComponent.cpp
+    ../../components/rectangle/RectangleShapeComponent.cpp
+    ../../components/text/TextComponent.cpp
 )
 
 target_include_directories(r-type_render_system PRIVATE ${SFML_INCLUDE_DIR})

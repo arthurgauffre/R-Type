@@ -1,7 +1,7 @@
 add_executable(r-type_server
     main.cpp
     Game.cpp
-    ../../ecs/src/CoreModule.cpp
+    ../../ecs/src/RtypeEngine.cpp
     ../../ecs/src/managers/system/SystemManager.cpp
     ../../ecs/src/managers/component/ComponentManager.cpp
     ../../ecs/src/managers/entity/EntityManager.cpp
@@ -21,6 +21,9 @@ add_executable(r-type_server
     ../../ecs/src/components/weapon/WeaponComponent.cpp
     ../../ecs/src/components/size/SizeComponent.cpp
     ../../ecs/src/components/ai/AIComponent.cpp
+    ../../ecs/src/components/rectangle/RectangleShapeComponent.cpp
+    ../../ecs/src/components/onclick/OnClickComponent.cpp
+    ../../ecs/src/components/text/TextComponent.cpp
     ../../ecs/src/entity/Entity.cpp
 )
 

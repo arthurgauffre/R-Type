@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <r-type/AComponent.hpp>
+#include <memory>
 
 namespace component {
 class TextureComponent : public AComponent {
@@ -23,10 +23,10 @@ public:
    * component.
    * @param path The file path to the texture to be loaded.
    */
-  TextureComponent(uint32_t entityID, const std::string &path)
+  TextureComponent(uint32_t entityID, const std::string &path, std::shared_ptr<IGraphic> graphic)
       : AComponent(entityID) {
     _path = path;
-    _texture.loadFromFile(path);
+    _textureId = graphic->createTexture(path);
   }
 
   /**
@@ -39,7 +39,7 @@ public:
    *
    * @return Reference to the sf::Texture object.
    */
-  sf::Texture &getTexture() { return _texture; }
+  size_t &getTexture() { return _textureId; }
 
   /**
    * @brief Retrieves the path to the texture file.
@@ -56,7 +56,7 @@ public:
    *
    * @param deltaTime The time elapsed since the last update, in seconds.
    */
-  void update(std::string &path);
+  void update(std::string &path, std::shared_ptr<IGraphic> graphic);
 
 private:
   /**
@@ -68,7 +68,7 @@ private:
    *
    * @see sf::Texture
    */
-  sf::Texture _texture;
+  size_t _textureId;
   std::string _path;
 };
 } // namespace component

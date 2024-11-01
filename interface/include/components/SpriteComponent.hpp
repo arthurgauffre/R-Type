@@ -20,8 +20,10 @@ public:
    * @param x The x-coordinate of the sprite.
    * @param y The y-coordinate of the sprite.
    */
-  SpriteComponent(uint32_t entityID, float x, float y)
-      : AComponent(entityID), _x(x), _y(y){};
+  SpriteComponent(uint32_t entityID, float x, float y, std::shared_ptr<IGraphic> graphic)
+      : AComponent(entityID), _x(x), _y(y){
+        _spriteId = graphic->createSprite();
+      };
 
   /**
    * @brief Default destructor for the SpriteComponent class.
@@ -47,9 +49,9 @@ public:
    *
    * @return sf::Sprite& The sprite object.
    */
-  sf::Sprite &getSprite() { return _sprite; }
+  size_t &getSpriteId() { return _spriteId; }
 
-  void update(float x, float y);
+  void update(float x, float y, std::shared_ptr<IGraphic> graphic);
 
 private:
   /**
@@ -65,6 +67,6 @@ private:
   /**
    * @brief Represents the sprite object.
    */
-  sf::Sprite _sprite;
+  size_t _spriteId;
 };
 } // namespace component

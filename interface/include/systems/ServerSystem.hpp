@@ -11,7 +11,31 @@
 #pragma once
 
 #include <r-type/IServer.hpp>
-#include <CoreModule.hpp>
+
+#include <components/DamageComponent.hpp>
+#include <components/HealthComponent.hpp>
+#include <components/HitBoxComponent.hpp>
+#include <components/InputComponent.hpp>
+#include <components/MusicComponent.hpp>
+#include <components/ParentComponent.hpp>
+#include <components/SizeComponent.hpp>
+#include <components/SoundComponent.hpp>
+#include <components/SpriteComponent.hpp>
+#include <components/TextureComponent.hpp>
+#include <components/TransformComponent.hpp>
+#include <components/TypeComponent.hpp>
+#include <components/VelocityComponent.hpp>
+#include <components/WeaponComponent.hpp>
+#include <components/CooldownComponent.hpp>
+#include <components/SizeComponent.hpp>
+#include <components/AIComponent.hpp>
+#include <components/RectangleShapeComponent.hpp>
+#include <components/OnClickComponent.hpp>
+
+#include <managers/ComponentManager.hpp>
+#include <managers/EntityManager.hpp>
+#include <managers/SystemManager.hpp>
+
 #include <NetworkMessagesCommunication.hpp>
 #include <NetworkMessageFactory.hpp>
 #include <NetworkConnection.hpp>
@@ -20,6 +44,8 @@
 #include <Error.hpp>
 #include <r-type/ASystem.hpp>
 #include <ServerStatus.hpp>
+
+#include <optional>
 
 namespace rtype
 {
@@ -31,10 +57,10 @@ namespace rtype
     {
     public:
       ServerSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager)
+                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
           : rtype::network::IServer<NetworkMessages>(), ECS_system::ASystem(
                                                             componentManager,
-                                                            entityManager),
+                                                            entityManager, graphic, stringCom),
             _componentManager(componentManager), _entityManager(entityManager), asioSocket(asioContext,
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {
@@ -52,10 +78,17 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
+             std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
       {
+        *sceneStatus = Scene::GAME;
         sf::Clock clock;
         float deltatime = clock.restart().asSeconds();
+        while (!msgToSend.empty())
+        {
+          std::pair<Action, size_t> msg = msgToSend.front();
+          msgToSend.erase(msgToSend.begin());
+          handleMsgToSend(msg);
+        }
         sendAllEntitiesUpdateOrCreateToAllClient(nullptr);
         this->ServerUpdate(100, false);
         while (!_msgReceived.empty())
@@ -108,16 +141,68 @@ namespace rtype
         }
       }
 
-      void handleInputMessage(
-          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
-          rtype::network::Message<NetworkMessages> &message)
+      void handleActionMessage(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
+                               Action action, size_t entityId)
       {
-        // print witch client send the message
-        // std::cout << "Client " << client->GetId() << " send a message" << std::endl;
-        // std::cout << "Handling input message" << std::endl;
-        switch (message.header.id)
+        switch (action)
         {
-        case NetworkMessages::ClientDisconnection:
+        case Action::MOVE_UP:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("moveUp", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::MOVE_DOWN:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("moveDown", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::MOVE_LEFT:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("moveLeft", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::MOVE_RIGHT:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          _msgReceived.emplace_back(std::make_pair("moveRight", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::SHOOT:
+        {
+          status = ServerStatus::SERVER_RECEIVING;
+          // std::cout << "shoot" << std::endl;
+          _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::PLAY:
+        {
+          _msgReceived.emplace_back(std::make_pair("play", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::PROTANOPIA:
+        {
+          _msgReceived.emplace_back(std::make_pair("protanopia", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::DEUTERANOPIA:
+        {
+          _msgReceived.emplace_back(std::make_pair("deuteranopia", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::TRITANOPIA:
+        {
+          _msgReceived.emplace_back(std::make_pair("tritanopia", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::CLEARFILTER:
+        {
+          _msgReceived.emplace_back(std::make_pair("clearFilter", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::EXIT:
         {
           int numPlayer = 0;
           for (int i = 0; i < 4; i++)
@@ -131,60 +216,38 @@ namespace rtype
             }
           }
           // wait for all the threads to finish before executing the disconnection of the client
-          std::this_thread::sleep_for(std::chrono::milliseconds(100));
+          // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+          // std::cout << "WAITING FOR DISCONNECTION" << std::endl;
           _msgReceived.emplace_back(std::make_pair("clientDisconnection", std::make_pair(numPlayer, client->GetId())));
-          OnClientDisconnection(client);
+          // OnClientDisconnection(client);
           for (; incomingMessages.queueSize() > 0;) {
             incomingMessages.popBack();
           }
           // client->Disconnect();
           // client.reset();
-          return;
+          // return;
         }
         break;
-        case NetworkMessages::moveUp:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
-
-          EntityId entity;
-          std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveUp", std::make_pair(entity.id, client->GetId())));
         }
-        break;
-        case NetworkMessages::moveDown:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
+      }
 
+      void handleInputMessage(
+          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
+          rtype::network::Message<NetworkMessages> &message)
+      {
+        // print witch client send the message
+        // std::cout << "Client " << client->GetId() << " send a message" << std::endl;
+        // std::cout << "Handling input message" << std::endl;
+        switch (message.header.id)
+        {
+        case NetworkMessages::action:
+        {
+          ActionMsg action;
           EntityId entity;
           std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveDown", std::make_pair(entity.id, client->GetId())));
-        }
-        break;
-        case NetworkMessages::moveLeft:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
-
-          EntityId entity;
-          std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveLeft", std::make_pair(entity.id, client->GetId())));
-        }
-        break;
-        case NetworkMessages::moveRight:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
-
-          EntityId entity;
-          std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("moveRight", std::make_pair(entity.id, client->GetId())));
-        }
-        break;
-        case NetworkMessages::shoot:
-        {
-          status = ServerStatus::SERVER_RECEIVING;
-
-          EntityId entity;
-          std::memcpy(&entity, message.body.data(), sizeof(EntityId));
-          _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entity.id, client->GetId())));
+          std::memcpy(&action, message.body.data() + sizeof(EntityId),
+                      sizeof(ActionMsg));
+          handleActionMessage(client, action.action, entity.id);
         }
         break;
         default:
@@ -218,9 +281,9 @@ namespace rtype
                                    {
                                      return connection->GetId() == client->GetId();
                                    });
-          deqConnections.erase(it, deqConnections.end());
+          // deqConnections.erase(it, deqConnections.end());
           // client.reset();
-          return;
+          // return;
         }
       }
 
@@ -287,12 +350,24 @@ namespace rtype
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-            SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID()), clientToIgnore);
+            if (entity->getNumClient() != -1)
+            {
+              for (int i = 0; i < deqConnections.size(); i++)
+              {
+                if (i == entity->getNumClient())
+                  SendMessageToClient(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), deqConnections[i]);
+              }
+            }
+            else
+              SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
           else if (entity->getCommunication() == entity::EntityCommunication::UPDATE)
           {
-            SendMessageToAllClients(networkMessageFactory.updateEntityMsg(entity->getID()), clientToIgnore);
+            if (entity->getNumClient() != -1)
+              SendMessageToClient(networkMessageFactory.updateEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), clientToIgnore);
+            else
+              SendMessageToAllClients(networkMessageFactory.updateEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), clientToIgnore);
             entity->setCommunication(entity::EntityCommunication::NONE);
           }
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
@@ -300,8 +375,12 @@ namespace rtype
             // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-            // entity->setCommunication(entity::EntityCommunication::NONE);
-            SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
+            if (entity->getNumClient() != -1) {
+              if (entity->getNumClient() < deqConnections.size())
+                SendMessageToClient(networkMessageFactory.deleteEntityMsg(entity->getID()), deqConnections[entity->getNumClient()]);
+            }
+            else
+              SendMessageToAllClients(networkMessageFactory.deleteEntityMsg(entity->getID()), clientToIgnore);
             _componentManager.removeAllComponents(entity->getID());
             _entityManager.removeEntity(entity->getID());
             return;
@@ -336,12 +415,20 @@ namespace rtype
             {
               // queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createTextureMsg(entity->getID(), GetEnumTexturePath(component->getPath())), clientToIgnore);
+              auto textureKey = getKeyByValue(_stringCom.texturePath, component->getPath());
+              if (textureKey)
+                SendMessageToAllClients(networkMessageFactory.createTextureMsg(entity->getID(), *textureKey), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.createTextureMsg(entity->getID(), TexturePath::Unknown), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateTextureMsg(entity->getID(), GetEnumTexturePath(component->getPath())), clientToIgnore);
+              auto textureKey= getKeyByValue(_stringCom.texturePath, component->getPath());
+              if (textureKey)
+                SendMessageToAllClients(networkMessageFactory.updateTextureMsg(entity->getID(), *textureKey), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.updateTextureMsg(entity->getID(), TexturePath::Unknown), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -419,12 +506,12 @@ namespace rtype
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
                 {
-                  if (queueOfAckMessages.empty() == true)
+                  if (queueOfAckMessages.empty())
                   {
                     component->setCommunication(component::ComponentCommunication::NONE);
                     for (auto &bind : component->getKeyBindings())
                     {
-                      BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                      BindKey input = {bind.second, bind.first};
                       SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
                     }
                   // return;
@@ -435,7 +522,7 @@ namespace rtype
                   component->setCommunication(component::ComponentCommunication::NONE);
                   for (auto &bind : component->getKeyBindings())
                   {
-                    BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                    BindKey input = {bind.second, bind.first};
                     SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
                   }
                 }
@@ -455,12 +542,12 @@ namespace rtype
             {
               queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createTypeMsg(entity->getID(), getEntityType(component->getType())), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createTypeMsg(entity->getID(), component->getType()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateTypeMsg(entity->getID(), getEntityType(component->getType())), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateTypeMsg(entity->getID(), component->getType()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -499,18 +586,119 @@ namespace rtype
             {
               // queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createAIMsg(entity->getID(), component->getType()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateAIMsg(entity->getID(), getAIType(component->getType())), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateAIMsg(entity->getID(), component->getType()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
               // queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.deleteAIMsg(entity->getID()), clientToIgnore);
+            }
+          }
+          if (_componentManager.getComponent<component::RectangleShapeComponent>(entity->getID()))
+          {
+            component::RectangleShapeComponent *component =
+                _componentManager.getComponent<component::RectangleShapeComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              status = ServerStatus::WAITING_FOR_MESSAGE;
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.createRectangleShapeMsg(entity->getID(), component->getX(), component->getY(), component->getHeight(), component->getWidth(), component->getColor()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.updateRectangleShapeMsg(entity->getID(), component->getX(), component->getY(), component->getHeight(), component->getWidth(), component->getColor()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteRectangleShapeMsg(entity->getID()), clientToIgnore);
+            }
+          }
+          if (_componentManager.getComponent<component::OnClickComponent>(entity->getID()))
+          {
+            component::OnClickComponent *component =
+                _componentManager.getComponent<component::OnClickComponent>(entity->getID());
+            for (int i = 0; i < deqConnections.size(); i++)
+            {
+              if (deqConnections[i]->GetId() == component->getNumClient())
+              {
+                if (component->getCommunication() == component::ComponentCommunication::CREATE)
+                {
+                  queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
+
+                  component->setCommunication(component::ComponentCommunication::STANDBY);
+                  SendMessageToClient(networkMessageFactory.createOnClickMsg(entity->getID(), component->getNumClient(), component->getAction()), deqConnections[i]);
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
+                {
+                  if (queueOfAckMessages.empty())
+                  {
+                    component->setCommunication(component::ComponentCommunication::NONE);
+                    SendMessageToClient(networkMessageFactory.updateOnClickMsg(entity->getID(), component->getAction()), deqConnections[i]);
+                    return;
+                  }
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+                {
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  SendMessageToClient(networkMessageFactory.updateOnClickMsg(entity->getID(), component->getAction()), deqConnections[i]);
+                }
+                else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+                {
+                  status = ServerStatus::SERVER_RECEIVING;
+                  component->setCommunication(component::ComponentCommunication::NONE);
+                  SendMessageToClient(networkMessageFactory.deleteOnClickMsg(entity->getID()), deqConnections[i]);
+                }
+              }
+            }
+          }
+          if (_componentManager.getComponent<component::TextComponent>(entity->getID()))
+          {
+            component::TextComponent *component =
+                _componentManager.getComponent<component::TextComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              status = ServerStatus::WAITING_FOR_MESSAGE;
+              auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
+              auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
+              if (textFontKey && textStringKey)
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.createTextMsg(entity->getID(), component->getX(), component->getY(), *textFontKey, *textStringKey, component->getSize(), component->getColor()), clientToIgnore);
+              }
+              else
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.createTextMsg(entity->getID(), component->getX(), component->getY(), TextFont::Unknown, TextString::Unknown, component->getSize(), component->getColor()), clientToIgnore);
+              }
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
+              auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
+              if (textFontKey && textStringKey)
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.updateTextMsg(entity->getID(), component->getX(), component->getY(), *textFontKey, *textStringKey, component->getSize(), component->getColor()), clientToIgnore);
+              }
+              else
+              {
+                component->setCommunication(component::ComponentCommunication::NONE);
+                SendMessageToAllClients(networkMessageFactory.updateTextMsg(entity->getID(), component->getX(), component->getY(), TextFont::Unknown, TextString::Unknown, component->getSize(), component->getColor()), clientToIgnore);
+              }
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteTextMsg(entity->getID()), clientToIgnore);
             }
           }
         }
@@ -532,8 +720,10 @@ namespace rtype
         }
         for (auto &entity : _entityManager.getEntities())
         {
+          if (entity->getNumClient() != -1 && entity->getNumClient() != numClient)
+            continue;
           SendMessageToClient(
-              networkMessageFactory.createEntityMsg(entity->getID()), client);
+              networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), client);
           if (_componentManager.getComponent<component::SpriteComponent>(entity->getID()))
           {
             component::SpriteComponent *component =
@@ -547,10 +737,26 @@ namespace rtype
           {
             component::TextureComponent *component =
                 _componentManager.getComponent<component::TextureComponent>(entity->getID());
-            SendMessageToClient(
-                networkMessageFactory.createTextureMsg(
-                    entity->getID(), GetEnumTexturePath(component->getPath())),
-                client);
+            auto textureKey = getKeyByValue(_stringCom.texturePath, component->getPath());
+            if (textureKey)
+              SendMessageToClient(networkMessageFactory.createTextureMsg(entity->getID(), *textureKey), client);
+            else
+              SendMessageToClient(networkMessageFactory.createTextureMsg(entity->getID(), TexturePath::Unknown), client);
+          }
+          if (_componentManager.getComponent<component::TextComponent>(entity->getID()))
+          {
+            component::TextComponent *component =
+                _componentManager.getComponent<component::TextComponent>(entity->getID());
+            auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
+            auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
+            if (textFontKey && textStringKey)
+            {
+              SendMessageToClient(networkMessageFactory.createTextMsg(entity->getID(), component->getX(), component->getY(), *textFontKey, *textStringKey, component->getSize(), component->getColor()), client);
+            }
+            else
+            {
+              SendMessageToClient(networkMessageFactory.createTextMsg(entity->getID(), component->getX(), component->getY(), TextFont::Unknown, TextString::Unknown, component->getSize(), component->getColor()), client);
+            }
           }
           if (_componentManager.getComponent<component::TransformComponent>(entity->getID()))
           {
@@ -618,7 +824,7 @@ namespace rtype
               SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), client);
               for (auto &bind : component->getKeyBindings())
               {
-                BindKey input = {getKeyBind(bind.second), getStringAction(bind.first)};
+                BindKey input = {bind.second, bind.first};
                 SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), client);
               }
             }
@@ -628,7 +834,7 @@ namespace rtype
             component::TypeComponent *component =
                 _componentManager.getComponent<component::TypeComponent>(entity->getID());
             SendMessageToClient(networkMessageFactory.createTypeMsg(
-                                    entity->getID(), getEntityType(component->getType())),
+                                    entity->getID(), component->getType()),
                                 client);
           }
           if (_componentManager.getComponent<component::AIComponent>(entity->getID()))
@@ -636,7 +842,7 @@ namespace rtype
             component::AIComponent *component =
                 _componentManager.getComponent<component::AIComponent>(entity->getID());
             SendMessageToClient(networkMessageFactory.createAIMsg(
-                                    entity->getID(), getAIType(component->getType())),
+                                    entity->getID(), component->getType()),
                                 client);
           }
           if (_componentManager.getComponent<component::SizeComponent>(entity->getID()))
@@ -646,6 +852,23 @@ namespace rtype
             SendMessageToClient(networkMessageFactory.createSizeMsg(
                                     entity->getID(), component->getSize().first, component->getSize().second),
                                 client);
+          }
+          if (_componentManager.getComponent<component::RectangleShapeComponent>(entity->getID()))
+          {
+            component::RectangleShapeComponent *component =
+                _componentManager.getComponent<component::RectangleShapeComponent>(entity->getID());
+            SendMessageToClient(networkMessageFactory.createRectangleShapeMsg(
+                                    entity->getID(), component->getX(), component->getY(), component->getWidth(), component->getHeight(), component->getColor()),
+                                client);
+          }
+          if (_componentManager.getComponent<component::OnClickComponent>(entity->getID()))
+          {
+            component::OnClickComponent *component =
+                _componentManager.getComponent<component::OnClickComponent>(entity->getID());
+            if (numClient == component->getNumClient())
+            {
+              SendMessageToClient(networkMessageFactory.createOnClickMsg(entity->getID(), component->getNumClient(), component->getAction()), client);
+            }
           }
         }
       }
@@ -750,99 +973,30 @@ namespace rtype
       {
       }
 
-      std::string GetTexturePath(TexturePath texture)
+      template <typename KeyType, typename ValueType>
+      std::optional<KeyType> getKeyByValue(const std::unordered_map<KeyType, ValueType> &map, const ValueType &value)
       {
-        switch (texture)
+        for (const auto &[key, val] : map)
         {
-        case TexturePath::Background:
-        {
-          return "app/assets/images/city_background.png";
+          if (val == value)
+          {
+            return key;
+          }
         }
-        break;
-        case TexturePath::Player:
-        {
-          return "app/assets/sprites/plane.png";
-        }
-        break;
-        case TexturePath::Enemy:
-        {
-          return "assets/enemy.png";
-        }
-        }
-        return "";
+        return std::nullopt;
       }
 
-      TexturePath GetEnumTexturePath(std::string texture)
+      void handleMsgToSend(std::pair<Action, size_t> msgToSend)
       {
-        if (texture == "app/assets/sprites/plane.png")
-          return TexturePath::Player;
-        if (texture == "app/assets/sprites/enemy.png")
-          return TexturePath::Enemy;
-        if (texture == "app/assets/images/city_background.png")
-          return TexturePath::Background;
-        if (texture == "app/assets/sprites/projectile.gif")
-          return TexturePath::Bullet;
-        return TexturePath::Player;
-      }
-
-      KeyBoard getKeyBind(sf::Keyboard::Key key)
-      {
-        if (key == sf::Keyboard::Z)
-          return KeyBoard::Z;
-        if (key == sf::Keyboard::Q)
-          return KeyBoard::Q;
-        if (key == sf::Keyboard::S)
-          return KeyBoard::S;
-        if (key == sf::Keyboard::D)
-          return KeyBoard::D;
-        if (key == sf::Keyboard::Space)
-          return KeyBoard::Space;
-        return KeyBoard::Z;
-      }
-
-      BindAction getStringAction(std::string action)
-      {
-        if (action == "MoveUp")
-          return BindAction::MoveUp;
-        if (action == "MoveDown")
-          return BindAction::MoveDown;
-        if (action == "MoveLeft")
-          return BindAction::MoveLeft;
-        if (action == "MoveRight")
-          return BindAction::MoveRight;
-        if (action == "Shoot")
-          return BindAction::Shoot;
-        return BindAction::MoveUp;
-      }
-
-      EntityType getEntityType(component::Type type)
-      {
-        if (type == component::Type::PLAYER)
-          return EntityType::Player;
-        if (type == component::Type::ENEMY)
-          return EntityType::Enemy;
-        if (type == component::Type::BACKGROUND)
-          return EntityType::Background;
-        if (type == component::Type::PLAYER_PROJECTILE)
-          return EntityType::Player_projectile;
-        if (type == component::Type::ENEMY_PROJECTILE)
-          return EntityType::Enemy_projectile;
-        if (type == component::Type::PROJECTILE)
-          return EntityType::Projectile;
-        if (type == component::Type::WEAPON)
-          return EntityType::Weapon;
-        return EntityType::Unknown;
-      }
-
-      AIType getAIType(component::AIType type)
-      {
-        if (type == component::AIType::LINEAR)
-          return AIType::Linear;
-        if (type == component::AIType::SINUSOIDAL)
-          return AIType::Sinusoidal;
-        if (type == component::AIType::CIRCULAR)
-          return AIType::Circular;
-        return AIType::Unknown;
+        std::cout << "Handling message to send" << std::endl;
+        if (msgToSend.first == Action::MENU)
+          SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
+        else if (msgToSend.first == Action::GAME)
+          SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
+        // else if (msgToSend.first == Action::SETTINGS)
+        // SendMessageToClient(networkMessageFactory.createSettingsMsg(), deqConnections[msgToSend.second]);
+        // else if (msgToSend.first == Action::EXIT)
+        //   SendMessageToClient(networkMessageFactory.createExitMsg(), deqConnections[msgToSend.second]);
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;

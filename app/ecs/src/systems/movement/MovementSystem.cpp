@@ -21,7 +21,7 @@
  */
 void ECS_system::MovementSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
+    std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
 {
   // lock the entity mutex
   std::lock_guard<std::mutex> lock(entityMutex);
@@ -30,6 +30,8 @@ void ECS_system::MovementSystem::update(
            component::TransformComponent, component::VelocityComponent>(
            entities))
   {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
     component::TransformComponent *transform =
         _componentManager.getComponent<component::TransformComponent>(
             entity->getID());
@@ -48,7 +50,7 @@ void ECS_system::MovementSystem::update(
     float newY = transform->getPosition().second +
                  velocity->getActualVelocity().second * deltaTime;
 
-    if (type->getType() == component::Type::BACKGROUND)
+    if (type->getType() == Type::BACKGROUND)
     {
       component::SizeComponent *size =
           _componentManager.getComponent<component::SizeComponent>(
@@ -65,7 +67,7 @@ void ECS_system::MovementSystem::update(
       if (newY > size->getSize().second)
         newY = -size->getSize().second + 1;
     }
-    else if (type->getType() == component::Type::PLAYER)
+    else if (type->getType() == Type::PLAYER)
     {
       if (newX < 0)
         newX = 0;
@@ -76,8 +78,8 @@ void ECS_system::MovementSystem::update(
       if (newY > 1080)
         newY = 1080;
     }
-    else if (type->getType() == component::Type::ENEMY_PROJECTILE ||
-             type->getType() == component::Type::PLAYER_PROJECTILE)
+    else if (type->getType() == Type::ENEMY_PROJECTILE ||
+             type->getType() == Type::PLAYER_PROJECTILE)
     {
       if (newX < 0 || newX > 1920 || newY < 0 || newY > 1080)
         entity->setCommunication(entity::EntityCommunication::DELETE);
@@ -96,7 +98,7 @@ void ECS_system::MovementSystem::update(
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager)
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
 {
-  return new ECS_system::MovementSystem(componentManager, entityManager);
+  return new ECS_system::MovementSystem(componentManager, entityManager, graphic, stringCom);
 }

@@ -5,22 +5,35 @@
 ** main
 */
 
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <memory>
 
-int main(void) {
+int main(void)
+{
+  ECS_system::StringCom stringCom;
+  stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
+  stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
+  stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+  stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
+  stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
+  stringCom.textString[TextString::Play] = "Play"; 
+  stringCom.textString[TextString::Protanopia] = "Protanopia";
+  stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
+  stringCom.textString[TextString::Tritanopia] = "Tritanopia";
+  stringCom.textString[TextString::ClearFilter] = "Clear Filter";
 
-    std::shared_ptr<rtype::CoreModule> core = std::make_shared<rtype::CoreModule>();
+  std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
 
-    // load all systems
-    component::ComponentManager &componentManager = *core->getComponentManager();
-    entity::EntityManager &entityManager = *core->getEntityManager();
+  // load all systems
+  component::ComponentManager &componentManager = *engine->getComponentManager();
+  entity::EntityManager &entityManager = *engine->getEntityManager();
 
-    core->getSystemManager()->addSystem(componentManager, entityManager, "movement");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "render");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "input");
-    core->getSystemManager()->addSystem(componentManager, entityManager, "client");
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "render", engine->_graphic, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "movement", engine->_graphic, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "button", engine->_graphic, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "input", engine->_graphic, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "client", engine->_graphic, stringCom);
 
-    core->run();
+  engine->run();
   return 0;
 }

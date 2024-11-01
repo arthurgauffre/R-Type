@@ -39,12 +39,12 @@ public:
    * @return T* A pointer to the newly created system.
    */
   void addSystem(component::ComponentManager &componentManager,
-                 entity::EntityManager &entityManager, std::string systemName);
+                 entity::EntityManager &entityManager, std::string systemName, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
 
   void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex);
+         std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex);
 
   std::vector<std::shared_ptr<ISystem>> getSystems() const { return _systems; }
 
@@ -56,6 +56,7 @@ private:
    * system is uniquely owned and properly destroyed when no longer needed.
    */
   std::vector<std::shared_ptr<ISystem>> _systems;
+  std::shared_ptr<Scene> _sceneStatus = std::make_shared<Scene>(Scene::MENU);
 
 };
 } // namespace ECS_system

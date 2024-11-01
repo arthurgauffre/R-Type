@@ -5,7 +5,7 @@
 ** SystemManager
 */
 
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <managers/SystemManager.hpp>
 
 ECS_system::SystemManager::SystemManager() {}
@@ -26,10 +26,10 @@ ECS_system::SystemManager::~SystemManager() {
  */
 void ECS_system::SystemManager::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
+    std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
   for (auto &system : _systems) {
     system->update(deltaTime, entities,
-                               msgToSend, msgReceived, entityMutex); // Each system updates itself because
+                               msgToSend, msgReceived, entityMutex, _sceneStatus); // Each system updates itself because
                                            // each system has its own logic
   }
 }
@@ -48,12 +48,12 @@ void ECS_system::SystemManager::update(
  */
 void ECS_system::SystemManager::addSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager, std::string systemName) {
+    entity::EntityManager &entityManager, std::string systemName, std::shared_ptr<IGraphic> graphic, StringCom stringCom) {
   std::shared_ptr<
-      rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
+      rtype::RtypeEngine::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
       systemLoader = std::make_shared<
-          rtype::CoreModule::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
-          "lib/client_systems/r-type_" + systemName + "_system.so");
+          rtype::RtypeEngine::DLLoader<std::shared_ptr<ECS_system::ISystem>>>(
+          "lib/systems/r-type_" + systemName + "_system.so");
 
   // check if the systemLoader is not null
   if (!systemLoader) {
@@ -63,8 +63,8 @@ void ECS_system::SystemManager::addSystem(
 
   // Wrap the returned raw pointer in a shared_ptr
   std::shared_ptr<ECS_system::ISystem> system =
-      std::shared_ptr<ECS_system::ISystem>(systemLoader->getInstance(
-          "createSystem", componentManager, entityManager));
+      std::shared_ptr<ECS_system::ISystem>(systemLoader->getSystem(
+          "createSystem", componentManager, entityManager, graphic, stringCom));
 
   // check if the system is not null
   if (!system) {

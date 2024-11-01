@@ -14,6 +14,8 @@
 #include <components/TransformComponent.hpp>
 #include <components/SizeComponent.hpp>
 #include <components/TypeComponent.hpp>
+#include <components/RectangleShapeComponent.hpp>
+#include <components/TextComponent.hpp>
 
 #include <r-type/ASystem.hpp>
 
@@ -29,7 +31,7 @@ public:
    * take place.
    */
   RenderSystem(component::ComponentManager &componentManager,
-               entity::EntityManager &entityManager);
+               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
 
   /**
    * @brief Destroy the RenderSystem object.
@@ -41,7 +43,7 @@ public:
   void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) override;
+         std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) override;
 
   /**
    * @brief Initializes the render system.
@@ -60,9 +62,5 @@ public:
    */
   void handleComponents() override{};
 
-private:
-  sf::RenderWindow _window;
-  sf::Event _event;
-  // bool _gameClosed = false;
 };
 } // namespace ECS_system

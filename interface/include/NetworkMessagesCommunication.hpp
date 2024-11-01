@@ -8,6 +8,8 @@
 #pragma once
 
 #include <cstdint>
+#include <graphics/Color.hpp>
+#include <r-type/Enum.hpp>
 
 enum class NetworkMessages : uint32_t {
   ServerAcceptance,
@@ -36,6 +38,9 @@ enum class NetworkMessages : uint32_t {
   createType,
   createSize,
   createAI,
+  createRectangleShape,
+  createOnCLick,
+  createText,
   updateTexture,
   updatePosition,
   updateVelocity,
@@ -52,6 +57,9 @@ enum class NetworkMessages : uint32_t {
   updateSize,
   updateCooldown,
   updateAI,
+  updateRectangleShape,
+  updateOnClick,
+  updateText,
   deleteTexture,
   deletePosition,
   deleteVelocity,
@@ -68,84 +76,45 @@ enum class NetworkMessages : uint32_t {
   deleteType,
   deleteSize,
   deleteAI,
-  moveUp,
-  moveDown,
-  moveLeft,
-  moveRight,
-  shoot,
+  deleteRectangleShape,
+  deleteOnClick,
+  deleteText,
   acknowledgementMesage,
+  menu,
+  game,
+  action,
   none,
-};
-
-enum class EntityType : uint32_t {
-  Player,
-  Enemy,
-  Weapon,
-  Projectile,
-  Player_projectile,
-  Enemy_projectile,
-  Background,
-  Unknown,
-};
-
-enum class AIType : uint32_t {
-  Linear,
-  Sinusoidal,
-  Circular,
-  Unknown,
-};
-
-enum class TexturePath : uint32_t {
-  Player,
-  Enemy,
-  Bullet,
-  Background,
-};
-
-enum class BindAction : uint32_t {
-  MoveUp,
-  MoveDown,
-  MoveLeft,
-  MoveRight,
-  Shoot,
-};
-
-enum class KeyBoard : uint32_t {
-  A,
-  B,
-  C,
-  D,
-  E,
-  F,
-  G,
-  H,
-  I,
-  J,
-  K,
-  L,
-  M,
-  N,
-  O,
-  P,
-  Q,
-  R,
-  S,
-  T,
-  U,
-  V,
-  W,
-  X,
-  Y,
-  Z,
-  Space,
 };
 
 struct TextureComponent {
   TexturePath texturePath;
 };
 
+struct TextComponent {
+  float x;
+  float y;
+  TextFont textFont;
+  TextString textString;
+  int size;
+  RColor color;
+};
+
+struct OnClickComponent {
+  Action action;
+  int numClient;
+};
+
+struct EntityStruct {
+  size_t id;
+  int numClient;
+};
+
 struct EntityId {
   size_t id;
+};
+
+struct SceneStatus {
+  Scene scene;
 };
 
 struct VelocityComponent {
@@ -199,7 +168,7 @@ struct CoolDownComponent {
 };
 
 struct TypeComponent {
-  EntityType type;
+  Type type;
 };
 
 struct SizeComponent {
@@ -216,7 +185,19 @@ struct InputComponent {
   int numClient;
 };
 
+struct RectangleShapeComponent {
+  float x;
+  float y;
+  float width;
+  float height;
+  RColor color;
+};
+
 struct BindKey {
   KeyBoard key;
-  BindAction action;
+  Action action;
+};
+
+struct ActionMsg {
+  Action action;
 };

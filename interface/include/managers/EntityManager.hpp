@@ -21,7 +21,7 @@ public:
    */
   EntityManager();
 
-  IEntity *createEntity(uint32_t id);
+  IEntity *createEntity(uint32_t id, int numClt);
 
   IEntity *getEntityByID(uint32_t id) const;
 

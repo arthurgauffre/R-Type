@@ -20,6 +20,6 @@ component::TypeComponent::TypeComponent(uint32_t entityID, Type type)
  */
 component::TypeComponent::~TypeComponent() {}
 
-component::Type component::TypeComponent::getType() { return _type; }
+Type component::TypeComponent::getType() { return _type; }
 
 void component::TypeComponent::setType(Type type) { _type = type; }

@@ -80,6 +80,7 @@ endif()
 
 
 include_directories(${CMAKE_SOURCE_DIR}/3rd_party_lib/asio/asio/include)
+include_directories(${CMAKE_SOURCE_DIR}/3rd_party_lib/json/include/)
 
 
 # Add the interface to the project

@@ -16,8 +16,8 @@
  */
 ECS_system::GameSystem::GameSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager)
-    : ASystem(componentManager, entityManager) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, stringCom) {}
 
 /**
  * @brief Destructor for the GameSystem class.
@@ -43,11 +43,13 @@ ECS_system::GameSystem::~GameSystem() {}
  * @throws rtype::GameWon If there are no enemies left in the game.
  */
 void ECS_system::GameSystem::update(
-    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
+    float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) {
   int _playerCount = 0;
   int _enemyCount = 0;
 
   for (auto &entity : entities) {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
     component::TypeComponent *type =
         _componentManager.getComponent<component::TypeComponent>(
             entity->getID());
@@ -55,10 +57,10 @@ void ECS_system::GameSystem::update(
     if (!type)
       continue;
 
-    if (type->getType() == component::Type::PLAYER)
+    if (type->getType() == Type::PLAYER)
       _playerCount++;
 
-    if (type->getType() == component::Type::ENEMY)
+    if (type->getType() == Type::ENEMY)
       _enemyCount++;
   }
 
@@ -71,6 +73,6 @@ void ECS_system::GameSystem::update(
 
 extern "C" ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::GameSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {
+  return new ECS_system::GameSystem(componentManager, entityManager, graphic, stringCom);
 }

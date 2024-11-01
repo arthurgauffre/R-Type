@@ -22,8 +22,8 @@ public:
    * components.
    */
   ASystem(component::ComponentManager &componentManager,
-          entity::EntityManager &entityManager)
-      : ISystem(componentManager, entityManager) {}
+          entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
+      : ISystem(componentManager, entityManager, graphic, stringCom) {}
 
   /**
    * @brief Virtual destructor for the ASystem class.
@@ -50,7 +50,7 @@ public:
   virtual void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
-         std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) = 0;
+         std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) = 0;
 
   /**
    * @brief Pure virtual function to handle the components of the system.

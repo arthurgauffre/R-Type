@@ -11,154 +11,6 @@ namespace rtype
 {
   namespace network
   {
-
-    // merge it with server
-    std::string ClientSystem::GetTexturePath(TexturePath texture)
-    {
-      switch (texture)
-      {
-      case TexturePath::Background:
-      {
-        return "app/assets/images/city_background.png";
-      }
-      break;
-      case TexturePath::Player:
-      {
-        return "app/assets/sprites/plane.png";
-      }
-      break;
-      case TexturePath::Enemy:
-      {
-        return "app/assets/sprites/enemy.png";
-      }
-      break;
-      case TexturePath::Bullet:
-      {
-        return "app/assets/sprites/projectile.gif";
-      }
-      }
-      return "";
-    }
-
-    NetworkMessages ClientSystem::getAction(std::string action)
-    {
-      if (action == "MoveUp")
-        return NetworkMessages::moveUp;
-      if (action == "MoveDown")
-        return NetworkMessages::moveDown;
-      if (action == "MoveLeft")
-        return NetworkMessages::moveLeft;
-      if (action == "MoveRight")
-        return NetworkMessages::moveRight;
-      if (action == "Shoot")
-        return NetworkMessages::shoot;
-      if (action == "exit")
-        return NetworkMessages::ClientDisconnection;
-      return NetworkMessages::none;
-    }
-
-    std::string ClientSystem::getStringAction(BindAction action)
-    {
-      switch (action)
-      {
-      case BindAction::MoveUp:
-        return "MoveUp";
-      case BindAction::MoveDown:
-        return "MoveDown";
-      case BindAction::MoveLeft:
-        return "MoveLeft";
-      case BindAction::MoveRight:
-        return "MoveRight";
-      case BindAction::Shoot:
-        return "Shoot";
-      }
-      return "";
-    }
-
-    sf::Keyboard::Key ClientSystem::getKey(KeyBoard key)
-    {
-      switch (key)
-      {
-      case KeyBoard::A:
-        return sf::Keyboard::A;
-      case KeyBoard::B:
-        return sf::Keyboard::B;
-      case KeyBoard::C:
-        return sf::Keyboard::C;
-      case KeyBoard::D:
-        return sf::Keyboard::D;
-      case KeyBoard::E:
-        return sf::Keyboard::E;
-      case KeyBoard::F:
-        return sf::Keyboard::F;
-      case KeyBoard::G:
-        return sf::Keyboard::G;
-      case KeyBoard::H:
-        return sf::Keyboard::H;
-      case KeyBoard::I:
-        return sf::Keyboard::I;
-      case KeyBoard::J:
-        return sf::Keyboard::J;
-      case KeyBoard::K:
-        return sf::Keyboard::K;
-      case KeyBoard::L:
-        return sf::Keyboard::L;
-      case KeyBoard::M:
-        return sf::Keyboard::M;
-      case KeyBoard::N:
-        return sf::Keyboard::N;
-      case KeyBoard::O:
-        return sf::Keyboard::O;
-      case KeyBoard::P:
-        return sf::Keyboard::P;
-      case KeyBoard::Q:
-        return sf::Keyboard::Q;
-      case KeyBoard::R:
-        return sf::Keyboard::R;
-      case KeyBoard::S:
-        return sf::Keyboard::S;
-      case KeyBoard::T:
-        return sf::Keyboard::T;
-      case KeyBoard::U:
-        return sf::Keyboard::U;
-      case KeyBoard::V:
-        return sf::Keyboard::V;
-      case KeyBoard::W:
-        return sf::Keyboard::W;
-      case KeyBoard::X:
-        return sf::Keyboard::X;
-      case KeyBoard::Y:
-        return sf::Keyboard::Y;
-      case KeyBoard::Z:
-        return sf::Keyboard::Z;
-      case KeyBoard::Space:
-        return sf::Keyboard::Space;
-      }
-      return sf::Keyboard::Unknown;
-    }
-
-    component::Type ClientSystem::getTypedEntity(EntityType type)
-    {
-      switch (type)
-      {
-      case EntityType::Player:
-        return component::Type::PLAYER;
-      case EntityType::Enemy:
-        return component::Type::ENEMY;
-      case EntityType::Background:
-        return component::Type::BACKGROUND;
-      case EntityType::Player_projectile:
-        return component::Type::PLAYER_PROJECTILE;
-      case EntityType::Enemy_projectile:
-        return component::Type::ENEMY_PROJECTILE;
-      case EntityType::Projectile:
-        return component::Type::PROJECTILE;
-      case EntityType::Weapon:
-        return component::Type::WEAPON;
-      }
-      return component::Type::UNKNOWN;
-    }
-
     void ClientSystem::handleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
       std::lock_guard<std::mutex> lock(*_entityMutex);
@@ -201,22 +53,55 @@ namespace rtype
       {
       }
       break;
+      case NetworkMessages::menu:
+      {
+        _sceneStatus = std::make_shared<Scene>(Scene::MENU);
+      }
+      break;
+      case NetworkMessages::game:
+      {
+        _sceneStatus = std::make_shared<Scene>(Scene::GAME);
+      }
       case NetworkMessages::createEntity:
       {
         // std::cout << "Entity created" << std::endl;
-        EntityId entity;
-        std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
-
-        // std::cout << "Entity id: " << entity.id << std::endl;
-        _entityManager.createEntity(entity.id);
+        EntityStruct entityId;
+        SceneStatus scene;
+        if (msg.body.size() < sizeof(EntityStruct) + sizeof(SceneStatus))
+          return;
+        std::memcpy(&entityId, msg.body.data(), sizeof(EntityStruct));
+        if (_entityManager.getEntities().size() + 100 < entityId.id)
+          return;
+        std::memcpy(&scene, msg.body.data() + sizeof(EntityStruct),
+                    sizeof(SceneStatus));
+        entity::IEntity *entity = _entityManager.createEntity(entityId.id, entityId.numClient);
+        entity->setSceneStatus(scene.scene);
         // Send acknowledgement message
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::acknowledgementMesage;
         Send(message);
         // std::cout << "Create component ack message sent" << std::endl;
-
       }
       break;
+      case NetworkMessages::updateEntity:
+      {
+        // std::cout << "Entity updated" << std::endl;
+        EntityStruct entityId;
+        SceneStatus scene;
+        std::memcpy(&entityId, msg.body.data(), sizeof(EntityStruct));
+        std::memcpy(&scene, msg.body.data() + sizeof(EntityStruct),
+                    sizeof(SceneStatus));
+        // std::cout << "Entity id: " << entity.id << std::endl;
+        entity::IEntity *entity = _entityManager.getEntityByID(entityId.id);
+        if (entity == nullptr)
+          return;
+        entity->setSceneStatus(scene.scene);
+        // Send acknowledgement message
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
+        // std::cout << "Update component ack message sent" << std::endl;
+      }
       case NetworkMessages::deleteEntity:
       {
         // std::cout << "Entity destroyed" << std::endl;
@@ -240,7 +125,7 @@ namespace rtype
                     sizeof(SpriteComponent));
         // std::cout << "Sprite: " << sprite.x << " " << sprite.y << std::endl;
         _componentManager
-            .addComponent<component::SpriteComponent>(id.id, sprite.x, sprite.y);
+            .addComponent<component::SpriteComponent>(id.id, sprite.x, sprite.y, _graphic);
       }
       break;
       case NetworkMessages::createTexture:
@@ -251,9 +136,14 @@ namespace rtype
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&texture, msg.body.data() + sizeof(EntityId),
                     sizeof(TextureComponent));
-        _componentManager
-            .addComponent<component::TextureComponent>(
-                id.id, GetTexturePath(texture.texturePath));
+        if (_stringCom.texturePath.find(texture.texturePath) == _stringCom.texturePath.end())
+          _componentManager
+              .addComponent<component::TextureComponent>(
+                  id.id, _stringCom.texturePath[TexturePath::Unknown], _graphic);
+        else
+          _componentManager
+              .addComponent<component::TextureComponent>(
+                  id.id, _stringCom.texturePath[texture.texturePath], _graphic);
       }
       break;
       case NetworkMessages::createTransform:
@@ -266,6 +156,7 @@ namespace rtype
                     sizeof(TransformComponent));
         // std::cout << "Transform: " << transform.x << " " << transform.y << " "
         //           << transform.scaleX << " " << transform.scaleY << " " << transform.rotation << std::endl;
+        // std::cout << "transform with id " << id.id << std::endl;
         _componentManager
             .addComponent<component::TransformComponent>(
                 id.id, std::make_pair(transform.x, transform.y),
@@ -338,30 +229,6 @@ namespace rtype
             .addComponent<component::HitBoxComponent>(id.id, hitbox.x, hitbox.y);
       }
       break;
-      // case NetworkMessages::createMusic:
-      // {
-      //   std::cout << "Music component created" << std::endl;
-      //   MusicComponent music;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&music, msg.body.data() + sizeof(EntityId),
-      //               sizeof(MusicComponent));
-      //   std::cout << "Music: " << music.musicPath << std::endl;
-      // }
-      // break;
-      // case NetworkMessages::createSound:
-      // {
-      //   std::cout << "Sound component created" << std::endl;
-      //   SoundComponent sound;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&sound, msg.body.data() + sizeof(EntityId),
-      //               sizeof(SoundComponent));
-      //   std::cout << "Sound: " << sound.soundPath << std::endl;
-      //   _coreModule.get()->getComponentManager()->addComponent<component::SoundComponent>(id.id,
-      //   sound.soundPath);
-      // }
-      // break;
       case NetworkMessages::createInput:
       {
         std::cout << "Input component created" << std::endl;
@@ -388,8 +255,8 @@ namespace rtype
         std::memcpy(&input, msg.body.data() + sizeof(EntityId),
                     sizeof(BindKey));
         _componentManager
-            .updateComponent<component::InputComponent>(id.id, getStringAction(input.action),
-                                                        getKey(input.key));
+            .updateComponent<component::InputComponent>(id.id, input.action,
+                                                        input.key);
       }
       break;
       case NetworkMessages::createType:
@@ -401,7 +268,7 @@ namespace rtype
         std::memcpy(&type, msg.body.data() + sizeof(EntityId),
                     sizeof(TypeComponent));
         _componentManager
-            .addComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
+            .addComponent<component::TypeComponent>(id.id, type.type);
         // Send acknowledgement message
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::acknowledgementMesage;
@@ -417,7 +284,7 @@ namespace rtype
         std::memcpy(&type, msg.body.data() + sizeof(EntityId),
                     sizeof(TypeComponent));
         _componentManager
-            .updateComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
+            .updateComponent<component::TypeComponent>(id.id, type.type);
       }
       break;
       case NetworkMessages::updateSprite:
@@ -431,25 +298,9 @@ namespace rtype
         // std::cout << "Sprite: " << sprite.x << " " << sprite.y << std::endl;
         _componentManager
             .updateComponent<component::SpriteComponent>(id.id, sprite.x,
-                                                         sprite.y);
+                                                         sprite.y, _graphic);
       }
       break;
-      // case NetworkMessages::updateTexture:
-      // {
-      //   std::cout << "Texture component updated" << std::endl;
-      //   TextureComponent texture;
-      //   EntityId id;
-      //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-      //   std::memcpy(&texture, msg.body.data() + sizeof(EntityId),
-      //               sizeof(TextureComponent));
-      //   std::cout << "Texture: " << GetTexturePath(texture.texturePath)
-      //             << std::endl;
-      //   _coreModule.get()
-      //       ->getComponentManager()
-      //       ->updateComponent<component::TextureComponent>(
-      //           id.id, GetTexturePath(texture.texturePath));
-      // }
-      // break;
       case NetworkMessages::updateTransform:
       {
         // std::cout << "Transform component updated" << std::endl;
@@ -560,37 +411,102 @@ namespace rtype
             .updateComponent<component::SizeComponent>(id.id, std::make_pair(size.x, size.y));
       }
       break;
-        // break;
-        // case NetworkMessages::updateMusic:
-        // {
-        //   std::cout << "Music component updated" << std::endl;
-        //   MusicComponent music;
-        //   EntityId id;
-        //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        //   std::memcpy(&music, msg.body.data() + sizeof(EntityId),
-        //               sizeof(MusicComponent));
-        //   std::cout << "Music: " << music.musicPath << std::endl;
-        // }
-        // break;
-        // case NetworkMessages::updateSound:
-        // {
-        //   std::cout << "Sound component updated" << std::endl;
-        //   SoundComponent sound;
-        //   EntityId id;
-        //   std::memcpy(&id, msg.body.data(), sizeof(EntityId));
-        //   std::memcpy(&sound, msg.body.data() + sizeof(EntityId),
-        //               sizeof(SoundComponent));
-        //   std::cout << "Sound: " << sound.soundPath << std::endl;
-        //   _coreModule.get()->getComponentManager()->updateComponent<component::SoundComponent>(id.id,
-        //   sound.soundPath);
-        // }
-        // break;
+      case NetworkMessages::createRectangleShape:
+      {
+        // std::cout << "RectangleShape component created" << std::endl;
+        RectangleShapeComponent rectangleShape;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&rectangleShape, msg.body.data() + sizeof(EntityId),
+                    sizeof(RectangleShapeComponent));
+        // std::cout << "rectangle with id " << id.id << std::endl;
+        // std::cout << "RectangleShape: " << rectangleShape.x << " " << rectangleShape.y << " " << rectangleShape.width << " " << rectangleShape.height << std::endl;
+        _componentManager
+            .addComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
+      }
+      break;
+      case NetworkMessages::updateRectangleShape:
+      {
+        // std::cout << "RectangleShape component updated" << std::endl;
+        RectangleShapeComponent rectangleShape;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&rectangleShape, msg.body.data() + sizeof(EntityId),
+                    sizeof(RectangleShapeComponent));
+        // std::cout << "RectangleShape: " << rectangleShape.x << " " << rectangleShape.y << " " << rectangleShape.width << " " << rectangleShape.height << std::endl;
+        _componentManager
+            .updateComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
+      }
+      break;
+      case NetworkMessages::createOnCLick:
+      {
+        // create On click same as input
+        // std::cout << "OnCLick component created" << std::endl;
+        EntityId id;
+        OnClickComponent onClick;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&onClick, msg.body.data() + sizeof(EntityId),
+                    sizeof(OnClickComponent));
+        // std::cout << "onClick with id " << id.id << std::endl;
+        _componentManager
+            .addComponent<component::OnClickComponent>(id.id, onClick.action, onClick.numClient);
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
+      }
+      break;
+      case NetworkMessages::createText:
+      {
+        // std::cout << "Text component created" << std::endl;
+        TextComponent text;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&text, msg.body.data() + sizeof(EntityId),
+                    sizeof(TextComponent));
+        // std::cout << "Text: " << text.x << " " << text.y << " " << text.size << std::endl;
+        if (_stringCom.textFont.find(text.textFont) == _stringCom.textFont.end() && _stringCom.textString.find(text.textString) == _stringCom.textString.end())
+          _componentManager
+              .addComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[TextString::Unknown], text.size, text.color, _stringCom.textFont[TextFont::Unknown], _graphic);
+        else if (_stringCom.textFont.find(text.textFont) == _stringCom.textFont.end())
+          _componentManager
+              .addComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _stringCom.textFont[TextFont::Unknown], _graphic);
+        else if (_stringCom.textString.find(text.textString) == _stringCom.textString.end())
+          _componentManager
+              .addComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[TextString::Unknown], text.size, text.color, _stringCom.textFont[text.textFont], _graphic);
+        else
+          _componentManager
+              .addComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _stringCom.textFont[text.textFont], _graphic);
+      }
+      break;
+      case NetworkMessages::updateText:
+      {
+        // std::cout << "Text component updated" << std::endl;
+        TextComponent text;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&text, msg.body.data() + sizeof(EntityId),
+                    sizeof(TextComponent));
+        // std::cout << "Text: " << text.x << " " << text.y << " " << text.size << std::endl;
+        if (_stringCom.textString.find(text.textString) == _stringCom.textString.end())
+          _componentManager
+              .updateComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[TextString::Unknown], text.size, text.color, _graphic);
+        else
+          _componentManager
+              .updateComponent<component::TextComponent>(
+                  id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _graphic);
+      }
+      break;
       }
     }
 
     void ClientSystem::update(float deltaTime,
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
-                              std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex)
+                              std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
     {
       _entityMutex = &entityMutex;
       std::lock_guard<std::mutex> lock(*_entityMutex);
@@ -615,16 +531,22 @@ namespace rtype
       while (!msgToSend.empty())
       {
         // popfront the first message in the queue
-        std::string msg = msgToSend.front().first;
+        Action msg = msgToSend.front().first;
         EntityId id = {msgToSend.front().second};
+        ActionMsg actionMsg = {msg};
         msgToSend.erase(msgToSend.begin());
         rtype::network::Message<NetworkMessages> message;
-        NetworkMessages action = getAction(msg);
+        NetworkMessages action = NetworkMessages::action;
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&id),
                                          reinterpret_cast<uint8_t *>(&id) +
                                              sizeof(EntityId));
+        std::vector<uint8_t> actionBytes(reinterpret_cast<uint8_t *>(&actionMsg),
+                                         reinterpret_cast<uint8_t *>(&actionMsg) +
+                                             sizeof(ActionMsg));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
+        message.body.insert(message.body.end(), actionBytes.begin(),
+                            actionBytes.end());
         if (action != NetworkMessages::none)
         {
           message.header.id = action;
@@ -634,6 +556,7 @@ namespace rtype
           Send(message);
         }
       }
+      sceneStatus = _sceneStatus;
     }
 
     void ClientSystem::startMessageProcessing()
@@ -658,19 +581,21 @@ namespace rtype
 
     // Stop processing and join threads
     void ClientSystem::stopMessageProcessing()
-{
     {
+      {
         std::unique_lock<std::mutex> lock(queueMutex);
         processingMessages = false;
-    }
-    queueCondition.notify_all();
-    for (auto &thread : workerThreads) {
-        if (thread.joinable()) {
-            thread.join();
+      }
+      queueCondition.notify_all();
+      for (auto &thread : workerThreads)
+      {
+        if (thread.joinable())
+        {
+          thread.join();
         }
+      }
+      workerThreads.clear();
     }
-    workerThreads.clear();
-}
 
     void ClientSystem::enqueueMessage(Message<NetworkMessages> msg)
     {
@@ -682,9 +607,9 @@ namespace rtype
     }
 
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
-                                                 entity::EntityManager &entityManager)
+                                                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
     {
-      return new rtype::network::ClientSystem(componentManager, entityManager);
+      return new rtype::network::ClientSystem(componentManager, entityManager, graphic, stringCom);
     }
   } // namespace network
 } // namespace rtype

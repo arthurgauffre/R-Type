@@ -8,7 +8,7 @@
 #pragma once
 
 #include <r-type/AClient.hpp>
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include <NetworkMessage.hpp>
 #include <NetworkMessageFactory.hpp>
 #include <NetworkMessagesCommunication.hpp>
@@ -26,10 +26,11 @@ namespace rtype
     {
     public:
       ClientSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager) : AClient(), ASystem(componentManager, entityManager), _componentManager(componentManager), _entityManager(entityManager)
+                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) : AClient(), ASystem(componentManager, entityManager, graphic, stringCom), _componentManager(componentManager), _entityManager(entityManager), _entityMutex(nullptr)
       {
         Connect("127.0.0.1", 60000);
         startMessageProcessing();
+        _sceneStatus = std::make_shared<Scene>(Scene::MENU);
       }
 
       ~ClientSystem()
@@ -66,14 +67,6 @@ namespace rtype
 
       std::string GetTexturePath(TexturePath texture);
 
-      NetworkMessages getAction(std::string action);
-
-      std::string getStringAction(BindAction action);
-
-      sf::Keyboard::Key getKey(KeyBoard key);
-
-      component::Type getTypedEntity(EntityType type);
-
       virtual void Disconnect() {}
 
       void initialize() override {};
@@ -82,7 +75,10 @@ namespace rtype
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
-             std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) override;
+             std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) override;
+
+    protected:
+      std::shared_ptr<Scene> _sceneStatus;
 
     private:
       uint8_t entityID = 0;

@@ -5,15 +5,15 @@
 ** main
 */
 
-#include <CoreModule.hpp>
+#include <RtypeEngine.hpp>
 #include "include/Game.hpp"
 #include <iostream>
 
 int main(void)
 {
-  std::shared_ptr<rtype::CoreModule> coreModule =
-      std::make_shared<rtype::CoreModule>();
-  Game game(coreModule);
+  std::shared_ptr<rtype::RtypeEngine> engine =
+      std::make_shared<rtype::RtypeEngine>("sfml");
+  Game game(engine);
   game.init();
   game.run();
   return 0;

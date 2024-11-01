@@ -5,7 +5,6 @@
 ** InputSystem
 */
 
-#include <components/VelocityComponent.hpp>
 #include <systems/InputSystem.hpp>
 
 /**
@@ -24,40 +23,30 @@
  */
 void ECS_system::InputSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<std::string, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex) {
+    std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) {
   // lock the entity mutex
   std::lock_guard<std::mutex> lock(entityMutex);
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
            entities)) {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
     component::InputComponent *inputComponent =
         _componentManager.getComponent<component::InputComponent>(
             entity.get()->getID());
-    if (inputComponent->isActionActive("MoveUp"))
-      msgToSend.emplace_back("MoveUp", entity->getID());
-    if (inputComponent->isActionActive("MoveDown"))
-      msgToSend.emplace_back("MoveDown", entity->getID());
-    if (inputComponent->isActionActive("MoveLeft"))
-      msgToSend.emplace_back("MoveLeft", entity->getID());
-    if (inputComponent->isActionActive("MoveRight"))
-      msgToSend.emplace_back("MoveRight", entity->getID());
-            entity->getID();
-    if (inputComponent->isActionActive("Shoot"))
-      msgToSend.emplace_back("Shoot", entity->getID());
+
+    for (auto &action : inputComponent->getKeyBindings()) {
+      if (inputComponent->isActionActive(action.first, _graphic)) {
+        msgToSend.emplace_back(action.first, entity->getID());
+      }
+    }
     if (!inputComponent)
       return;
-    // component::WeaponComponent *weaponComponent =
-    //     _componentManager.getComponent<component::WeaponComponent>(
-    //         entity->getID());
-    // if (!weaponComponent)
-    //   return msgToSend;
-
-    // weaponComponent->setIsFiring(true);
   }
 }
 
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager) {
-  return new ECS_system::InputSystem(componentManager, entityManager);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {
+  return new ECS_system::InputSystem(componentManager, entityManager, graphic, stringCom);
 }
