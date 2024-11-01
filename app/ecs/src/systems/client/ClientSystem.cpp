@@ -402,6 +402,10 @@ namespace rtype
                     sizeof(TypeComponent));
         _componentManager
             .addComponent<component::TypeComponent>(id.id, getTypedEntity(type.type));
+        // Send acknowledgement message
+        rtype::network::Message<NetworkMessages> message;
+        message.header.id = NetworkMessages::acknowledgementMesage;
+        Send(message);
       }
       break;
       case NetworkMessages::updateType:
