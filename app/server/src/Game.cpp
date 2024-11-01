@@ -182,6 +182,7 @@ entity::IEntity *Game::createEnemy()
     auto positionInput = config["enemy"]["position"];
     int health = config["enemy"]["health"];
     std::pair<float, float> position;
+    std::string iaType = config["enemy"]["iaType"];
 
     if (positionInput["x"] == "random")
         position.first = getRandomPosition();
@@ -195,6 +196,25 @@ entity::IEntity *Game::createEnemy()
     uint32_t entityID = _coreModule->getEntityManager()->generateEntityID();
     entity::IEntity *enemy = _coreModule->getEntityManager()->createEntity(entityID);
     entity::IEntity *weapon = createWeapon(entityID, component::Type::WEAPON, damage, 2);
+
+    if (iaType == "random")
+    {
+        int random = rand() % 3;
+        if (random == 0)
+            _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::LINEAR);
+        if (random == 1)
+            _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::SINUSOIDAL);
+        if (random == 2)
+            _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::CIRCULAR);
+    }
+    else if (iaType == "linear")
+        _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::LINEAR);
+    else if (iaType == "sinusoidal")
+        _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::SINUSOIDAL);
+    else if (iaType == "circular")
+        _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::CIRCULAR);
+    else
+        _coreModule->getComponentManager()->addComponent<component::AIComponent>(entityID, component::AIType::UNKNOWN);
 
     _coreModule->getComponentManager()->addComponent<component::WeaponComponent>(
         entityID, weapon->getID(), true, -500);
@@ -214,8 +234,6 @@ entity::IEntity *Game::createEnemy()
     _coreModule->getComponentManager()->addComponent<component::HitBoxComponent>(
         entityID, texture->getTexture().getSize().x * scale.first,
         texture->getTexture().getSize().y * scale.second);
-    _coreModule->getComponentManager()->addComponent<component::AIComponent>(
-        entityID, component::AIType::SINUSOIDAL);
 
     return enemy;
 }
