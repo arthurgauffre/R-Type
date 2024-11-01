@@ -981,10 +981,6 @@ namespace rtype
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
         else if (msgToSend.first == Action::GAME)
           SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
-        // else if (msgToSend.first == Action::SETTINGS)
-        // SendMessageToClient(networkMessageFactory.createSettingsMsg(), deqConnections[msgToSend.second]);
-        // else if (msgToSend.first == Action::EXIT)
-        // SendMessageToClient(networkMessageFactory.createExitMsg(), deqConnections[msgToSend.second]);
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;
