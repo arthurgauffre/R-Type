@@ -89,9 +89,9 @@ namespace rtype
 
       std::mutex *_entityMutex;
       std::queue<Message<NetworkMessages>> messageQueue;
-      std::mutex queueMutex;                  // Mutex for queue access
-      std::condition_variable queueCondition; // Condition variable to notify threads
-      bool processingMessages;                // Flag to control threads
+      std::mutex queueMutex;
+      std::condition_variable queueCondition;
+      bool processingMessages;
       std::vector<std::thread> workerThreads;
     };
   } // namespace network
