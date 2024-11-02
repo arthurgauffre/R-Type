@@ -20,25 +20,33 @@ namespace ECS_system
     void ButtonSystem::bindTheKey(KeyBoard key, Action action)
     {
         std::ifstream file("configs/keyBind.json");
-
-        if (!file.is_open())
-            throw std::runtime_error("Failed to open file: configs/keyBind.json");
-
         nlohmann::json json;
 
-        file >> json;
-        json[std::to_string(static_cast<int>(action))] = static_cast<int>(key);
-        std::ofstream file2("configs/keyBind.json");
-        if (!file2.is_open())
-            throw std::runtime_error("Failed to open file: configs/keyBind.json");
-        file2 << json.dump(4);
-        file.close();
-        file2.close();
+        if (file.is_open())
+            file >> json;
+
+        try
+        {
+            json[std::to_string(static_cast<int>(action))] = static_cast<int>(key);
+            std::ofstream file2("configs/keyBind.json");
+            if (!file2.is_open())
+                throw std::runtime_error("Failed to open file: configs/keyBind.json");
+            file2 << json.dump(4);
+            file.close();
+            file2.close();
+        }
+        catch (std::exception &e)
+        {
+            std::cerr << e.what() << std::endl;
+            file.close();
+        }
     }
 
     void ButtonSystem::changeText(size_t id, KeyBoard key, std::shared_ptr<IGraphic> graphic)
     {
         component::TextComponent *text = _componentManager.getComponent<component::TextComponent>(id);
+        if (!text)
+            return;
         switch (key)
         {
         case KeyBoard::A:
@@ -141,6 +149,35 @@ namespace ECS_system
         }
     }
 
+    static KeyBoard getKey(Action action, KeyBoard key)
+    {
+        std::ifstream file("configs/keyBind.json");
+
+        if (!file.is_open())
+            throw std::runtime_error("Failed to open file: configs/keyBind.json");
+
+        nlohmann::json json;
+
+        file >> json;
+        file.close();
+        // check if the key is already binded
+        try
+        {
+            int actionJson = static_cast<int>(action);
+            if (json.contains(std::to_string(actionJson)))
+            {
+                int keyBind = json[std::to_string(actionJson)];
+                return static_cast<KeyBoard>(keyBind);
+            }
+            else
+                return key;
+        }
+        catch (std::exception &e)
+        {
+            return key;
+        }
+    }
+
     void ButtonSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
     {
         std::lock_guard<std::mutex> lock(entityMutex);
@@ -155,6 +192,8 @@ namespace ECS_system
             if (_graphic->isMousePressed())
                 onClick->setClicked(true);
             std::pair<float, float> mousePos = _graphic->getMousePosition();
+            if (type->getType() == Type::BUTTONBIND)
+                changeText(entity->getID(), getKey(onClick->getAction(), KeyBoard::Unknown), _graphic);
             if (mousePos.first >= rectangle->getX() && mousePos.first <= rectangle->getX() + rectangle->getWidth() &&
                 mousePos.second >= rectangle->getY() && mousePos.second <= rectangle->getY() + rectangle->getHeight())
             {
@@ -163,6 +202,7 @@ namespace ECS_system
                     onClick->setClicked(false);
                     msgToSend.push_back(std::make_pair(onClick->getAction(), entity->getID()));
                 }
+
                 if (onClick->getClicked() && type->getType() == Type::BUTTONBIND)
                 {
                     KeyBoard key = _graphic->getKeyPressed();
