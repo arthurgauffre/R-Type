@@ -21,10 +21,27 @@
 namespace rtype {
 class RtypeException : public std::exception {
 public:
+  /**
+   * @brief Constructs a new RtypeException object with the given message.
+   *
+   * @param message The error message associated with the exception.
+   */
   RtypeException(std::string const &message) noexcept : _message(message) {}
+
+  /**
+   * @brief Returns the explanatory string.
+   *
+   * This function overrides the what() method from the std::exception class.
+   * It provides a description of the error that occurred.
+   *
+   * @return A C-style string containing the error message.
+   */
   const char *what() const noexcept override { return _message.c_str(); }
 
 private:
+  /**
+   * @brief A string that holds the error message.
+   */
   std::string _message;
 };
 
