@@ -35,7 +35,7 @@ namespace ECS_system
          * @param stringCom StringCom object.
          */
         ButtonSystem(component::ComponentManager &componentManager,
-                     entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
+                     entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom);
 
         /**
          * @brief Default destructor for the ButtonSystem class.

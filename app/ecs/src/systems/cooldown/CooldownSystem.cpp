@@ -17,8 +17,8 @@
  */
 ECS_system::CooldownSystem::CooldownSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-    : ASystem(componentManager, entityManager, graphic, stringCom) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, audio, stringCom) {}
 
 /**
  * @brief Destructor for the CooldownSystem class.
@@ -68,6 +68,6 @@ void ECS_system::CooldownSystem::update(
  */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {
-  return new ECS_system::CooldownSystem(componentManager, entityManager, graphic, stringCom);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom) {
+  return new ECS_system::CooldownSystem(componentManager, entityManager, graphic, audio, stringCom);
 }

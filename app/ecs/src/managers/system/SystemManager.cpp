@@ -59,7 +59,7 @@ void ECS_system::SystemManager::update(
  */
 void ECS_system::SystemManager::addSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager, std::string systemName, std::shared_ptr<IGraphic> graphic, StringCom stringCom) {
+    entity::EntityManager &entityManager, std::string systemName, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom) {
   std::shared_ptr<
       rtype::RtypeEngine::DLLoader<std::shared_ptr<ECS_system::ISystem>>>
       systemLoader = std::make_shared<
@@ -73,7 +73,7 @@ void ECS_system::SystemManager::addSystem(
 
   std::shared_ptr<ECS_system::ISystem> system =
       std::shared_ptr<ECS_system::ISystem>(systemLoader->getSystem(
-          "createSystem", componentManager, entityManager, graphic, stringCom));
+          "createSystem", componentManager, entityManager, graphic, audio, stringCom));
 
   if (!system) {
     std::cerr << "Error: system is null" << std::endl;

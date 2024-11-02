@@ -72,7 +72,7 @@ namespace ECS_system
  * @return Pointer to the newly created AISystem instance.
  */
 extern "C" ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
-                                             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+                                             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
 {
-    return new ECS_system::AISytem(componentManager, entityManager, graphic, stringCom);
+    return new ECS_system::AISytem(componentManager, entityManager, graphic, audio, stringCom);
 }

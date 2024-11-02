@@ -472,17 +472,17 @@ void Game::init()
     entity::EntityManager &entityManager = *_engine->getEntityManager();
 
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "movement", _engine->_graphic, stringCom);
+                                           "movement", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "server", _engine->_graphic, stringCom);
+                                           "server", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "cooldown", _engine->_graphic, stringCom);
+                                           "cooldown", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "weapon", _engine->_graphic, stringCom);
+                                           "weapon", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "ai", _engine->_graphic, stringCom);
+                                           "ai", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "collision", _engine->_graphic, stringCom);
+                                           "collision", _engine->_graphic, _engine->_audio, stringCom);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "health", _engine->_graphic);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,

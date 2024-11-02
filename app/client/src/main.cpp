@@ -38,17 +38,17 @@ int main(void)
   stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/blaster.wav";
   stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/testSong.wav";
 
-  std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
+  std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml", "sfml");
 
   component::ComponentManager &componentManager = *engine->getComponentManager();
   entity::EntityManager &entityManager = *engine->getEntityManager();
 
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "render", engine->_graphic, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "movement", engine->_graphic, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "button", engine->_graphic, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "input", engine->_graphic, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "client", engine->_graphic, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "audio", engine->_graphic, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "render", engine->_graphic, engine->_audio, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "movement", engine->_graphic, engine->_audio, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "button", engine->_graphic, engine->_audio, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "input", engine->_graphic, engine->_audio, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "client", engine->_graphic, engine->_audio, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "audio", engine->_graphic, engine->_audio, stringCom);
 
   engine->run();
   return 0;

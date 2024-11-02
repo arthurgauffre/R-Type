@@ -24,7 +24,7 @@ public:
    * @param stringCom StringCom object.
    */
   GameSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom);
 
   /**
    * @brief Destructor for the GameSystem class.

@@ -16,8 +16,8 @@
  */
 ECS_system::GameSystem::GameSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-    : ASystem(componentManager, entityManager, graphic, stringCom) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, audio, stringCom) {}
 
 /**
  * @brief Destructor for the GameSystem class.
@@ -84,6 +84,6 @@ void ECS_system::GameSystem::update(
  */
 extern "C" ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {
-  return new ECS_system::GameSystem(componentManager, entityManager, graphic, stringCom);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom) {
+  return new ECS_system::GameSystem(componentManager, entityManager, graphic, audio, stringCom);
 }

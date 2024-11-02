@@ -18,8 +18,8 @@
  */
 ECS_system::RenderSystem::RenderSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-    : ASystem(componentManager, entityManager, graphic, stringCom)
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, audio, stringCom)
 {
   _graphic->createWindow(1920, 1080, "R-Type");
 }
@@ -229,7 +229,7 @@ void ECS_system::RenderSystem::update(
  */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
 {
-  return new ECS_system::RenderSystem(componentManager, entityManager, graphic, stringCom);
+  return new ECS_system::RenderSystem(componentManager, entityManager, graphic, audio, stringCom);
 }
