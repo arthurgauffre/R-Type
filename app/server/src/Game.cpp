@@ -11,6 +11,7 @@ Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
 {
     _isStarted = false;
     _structureCreated = false;
+    _isRunning = true;
     _waveNumber = 0;
     _waveInterval = 0;
 }
@@ -483,8 +484,8 @@ void Game::init()
                                            "ai", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
                                            "collision", _engine->_graphic, stringCom);
-    // _engine->getSystemManager()->addSystem(componentManager, entityManager,
-    //                                            "health", _engine->_graphic);
+    _engine->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "health", _engine->_graphic, stringCom);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "game", _engine->_graphic);
 }
@@ -505,7 +506,7 @@ entity::IEntity *Game::addFilter(std::string filter, int numClient)
     return filterEntity;
 }
 
-void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
+void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
 {
     std::string msg = msgReceived.front().first;
     size_t id = msgReceived.front().second.first;
@@ -667,7 +668,7 @@ void Game::resetInput()
 void Game::run()
 {
     _inputClock.restart();
-    while (1)
+    while (_isRunning)
     {
         _engine->update();
         if (_waveNumber != 0 && _waveClock.getElapsedTime() > _waveInterval && _isStarted)
@@ -715,9 +716,23 @@ void Game::run()
                 std::cerr << "Warning: 'structure' not found or is not an array in config." << std::endl;
         }
 
+        if (_players.size() == 0 && _isStarted)
+        {
+            _isStarted = false;
+        }
+        if (_players.size() != 0 && _waveNumber == 0 && _isStarted)
+        {
+            _isStarted = false;
+            for (auto &player : _players)
+            {
+                _playersScenes[player.first] = Scene::MENU;
+                _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, player.first));
+            }
+        }
+
         if (!_engine->msgReceived.empty())
         {
-            handdleReceivedMessage(_engine->msgReceived);
+            handleReceivedMessage(_engine->msgReceived);
         }
         else
         {

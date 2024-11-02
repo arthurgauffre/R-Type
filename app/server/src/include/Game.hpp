@@ -152,7 +152,7 @@ public:
      *
      * @param msgReceived A reference to a vector of pairs, where each pair consists of a string and a pair of size_t values.
      */
-    void handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived);
+    void handleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived);
 
     /**
      * @brief Adds a filter to the game.
@@ -242,6 +242,7 @@ private:
      */
     nlohmann::json _config;
     bool _isStarted;
+    bool _isRunning;
     bool _structureCreated;
     int _createdStructure;
 };
