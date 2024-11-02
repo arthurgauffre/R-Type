@@ -35,7 +35,7 @@ int main(void)
   stringCom.textString[TextString::D] = "D";
   stringCom.textString[TextString::Space] = "Space";
   stringCom.textString[TextString::PressKey] = "Press a key";
-  stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/testSong.wav";
+  stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/blaster.wav";
   stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/testSong.wav";
 
   std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");

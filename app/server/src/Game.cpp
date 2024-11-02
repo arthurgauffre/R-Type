@@ -35,8 +35,8 @@ entity::IEntity *Game::createWeapon(uint32_t parentID, nlohmann::json &weapon)
     auto weaponEntity = _engine->getEntityManager()->createEntity(
         _engine->getEntityManager()->generateEntityID(), -1);
 
-    // _engine->getComponentManager()->addComponent<component::SoundComponent>(
-    //     weapon->getID(), "app/assets/musics/blaster.wav");
+    _engine->getComponentManager()->addComponent<component::SoundComponent>(
+        weaponEntity->getID(), "app/assets/musics/blaster.wav");
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         weaponEntity->getID(), Type::WEAPON);
     _engine->getComponentManager()->addComponent<component::ParentComponent>(
@@ -435,7 +435,7 @@ void Game::init()
   stringCom.textString[TextString::D] = "D";
   stringCom.textString[TextString::Space] = "Space";
   stringCom.textString[TextString::PressKey] = "Press a key";
-  stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/testSong.wav";
+  stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/blaster.wav";
   stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/testSong.wav";
 
 
