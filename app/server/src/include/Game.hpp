@@ -8,9 +8,10 @@
 #pragma once
 
 #include <RtypeEngine.hpp>
+#include <Clock.hpp>
 #include <nlohmann/json.hpp>
 #include <fstream>
-
+#include <cmath>
 #include <random>
 
 class Game
@@ -48,27 +49,8 @@ public:
      * @return A pointer to the created player entity.
      */
     entity::IEntity *createPlayer(int numClient);
-
-    /**
-     * @brief Creates an enemy entity.
-     *
-     * This function is responsible for creating and returning a pointer to an enemy entity.
-     *
-     * @return A pointer to the created enemy entity.
-     */
-    entity::IEntity *createEnemy();
-
-    /**
-     * @brief Creates a weapon entity.
-     *
-     * @param parentID The ID of the parent entity.
-     * @param type The type of the weapon.
-     * @param damage The damage value of the weapon.
-     * @param cooldown The cooldown time between weapon uses.
-     * @return A pointer to the created weapon entity.
-     */
-    entity::IEntity *createWeapon(uint32_t parentID, Type type, int damage,
-                                  float cooldown);
+    entity::IEntity *createEnemy(const nlohmann::json &enemy);
+    entity::IEntity *createWeapon(uint32_t parentID, nlohmann::json &weapon);
 
     /**
      * @brief Creates a button entity.
@@ -113,9 +95,7 @@ public:
      * @param health The health value of the entity.
      * @return A pointer to the created IEntity object.
      */
-    entity::IEntity *createStructure(uint32_t entityID, std::string texturePath,
-                                     std::pair<float, float> position,
-                                     std::pair<float, float> scale, int health);
+    entity::IEntity *createStructure(const nlohmann::json &structure);
 
     /**
      * @brief Initializes the game.
@@ -214,14 +194,6 @@ public:
      * @param config A JSON object containing the configuration settings.
      */
     void setConfig(nlohmann::json config) { _config = config; }
-
-    /**
-     * @brief Retrieves the configuration settings.
-     *
-     * @return nlohmann::json The configuration settings in JSON format.
-     */
-    nlohmann::json getConfig() { return _config; }
-
 protected:
 private:
     /**
@@ -238,31 +210,9 @@ private:
      * RtypeEngine instance.
      */
     std::shared_ptr<rtype::RtypeEngine> _engine;
-
-    /**
-     * @brief A clock to measure the time elapsed since the last input event.
-     *
-     * This clock is used to track the time duration between input events,
-     * allowing the game to handle input timing and possibly debounce input actions.
-     */
-    sf::Clock inputClock;
-
-    /**
-     * @brief A clock to keep track of the time elapsed since the last wave.
-     *
-     * This clock is used to measure the time interval between waves in the game.
-     * It is an instance of the sf::Clock class from the SFML library, which provides
-     * high precision time measurement.
-     */
-    sf::Clock waveClock;
-
-    /**
-     * @brief A map that associates player IDs with their corresponding entity pointers.
-     *
-     * This unordered map uses the player's unique ID (of type size_t) as the key and
-     * a pointer to an IEntity object as the value. It is used to keep track of all
-     * players in the game.
-     */
+    rtype::Clock _inputClock;
+    rtype::Clock _waveClock;
+    std::vector<rtype::Clock> _spawnClocks;
     std::unordered_map<size_t, entity::IEntity *> _players;
 
     /**
@@ -282,22 +232,6 @@ private:
      * - A string representing the player's filter.
      */
     std::unordered_map<int, std::pair<entity::IEntity *, std::string>> _playersFilters;
-
-    /**
-     * @brief Interval at which new entities are spawned in the game.
-     *
-     * This variable determines the time interval (in seconds) between
-     * the spawning of new entities in the game. It is used to control
-     * the frequency of entity generation, ensuring a balanced gameplay
-     * experience.
-     */
-    float _spawnInterval;
-
-    /**
-     * @brief Interval between waves in the game.
-     *
-     * This variable represents the time interval (in seconds) between consecutive waves of enemies or events in the game.
-     */
     float _waveInterval;
 
     /**
@@ -307,4 +241,7 @@ private:
      * stored in a JSON object using the nlohmann::json library.
      */
     nlohmann::json _config;
+    bool _isStarted;
+    bool _structureCreated;
+    int _createdStructure;
 };

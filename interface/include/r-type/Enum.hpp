@@ -58,6 +58,7 @@ enum class TexturePath : uint32_t
     Enemy,
     Background,
     Bullet,
+    Structure,
     Unknown,
 };
 

@@ -45,6 +45,8 @@
 #include <r-type/ASystem.hpp>
 #include <ServerStatus.hpp>
 
+#include <Clock.hpp>
+
 #include <optional>
 
 namespace rtype
@@ -81,8 +83,8 @@ namespace rtype
              std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
       {
         *sceneStatus = Scene::GAME;
-        sf::Clock clock;
-        float deltatime = clock.restart().asSeconds();
+        rtype::Clock clock;
+        float deltatime = clock.restart();
         while (!msgToSend.empty())
         {
           std::pair<Action, size_t> msg = msgToSend.front();
@@ -442,7 +444,7 @@ namespace rtype
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
-              if (frequencyClock.getElapsedTime().asSeconds() > 0.2)
+              if (frequencyClock.getElapsedTime() > 0.2)
               {
                 component->setCommunication(component::ComponentCommunication::NONE);
                 SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
@@ -996,7 +998,7 @@ namespace rtype
       std::vector<std::pair<bool, int>> _playerConnected;
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
-      sf::Clock frequencyClock;
+      rtype::Clock frequencyClock;
     };
   } // namespace network
 } // namespace rtype

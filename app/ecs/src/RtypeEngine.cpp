@@ -102,7 +102,7 @@ rtype::RtypeEngine::getSystemManager() const {
  * the entity manager.
  */
 void rtype::RtypeEngine::update() {
-  float deltatime = clock.restart().asSeconds();
+  float deltatime = clock.restart();
   _entityMutex.lock();
   auto entities = this->getEntityManager()->getEntities();
   _entityMutex.unlock();

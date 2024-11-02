@@ -12,6 +12,7 @@
 #include <iostream>
 #include <limits.h>
 #include <memory>
+#include <Clock.hpp>
 #include <r-type/Entity.hpp>
 #include <r-type/IRtypeEngine.hpp>
 #include <r-type/ISystem.hpp>
@@ -124,32 +125,7 @@ public:
  * represented by an Action and its associated size.
  */
   std::vector<std::pair<Action, size_t>> msgToSend;
-
-/**
- * @brief A class to measure elapsed time.
- *
- * The sf::Clock class provides a way to measure the time elapsed since the clock was started.
- * It can be used to measure time intervals, for example to implement frame timing in a game.
- *
- * Usage example:
- * ```
- * sf::Clock clock;
- * // some code that takes time
- * sf::Time elapsed = clock.getElapsedTime();
- * std::cout << "Time elapsed: " << elapsed.asSeconds() << " seconds" << std::endl;
- * ```
- *
- * @see sf::Time
- */
-  sf::Clock clock;
-
-/**
- * @brief Mutex to protect access to the entity data.
- *
- * This mutex is used to ensure thread-safe operations on the entity data.
- * It should be locked before accessing or modifying any entity-related data
- * and unlocked after the operation is complete.
- */
+  rtype::Clock clock;
   std::mutex _entityMutex;
 
 /**
