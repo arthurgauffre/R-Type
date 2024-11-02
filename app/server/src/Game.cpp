@@ -147,16 +147,18 @@ entity::IEntity *Game::createPlayer(int numClient)
 {
     uint32_t entityID = _engine->getEntityManager()->generateEntityID();
 
+    entity::IEntity *player = _engine->getEntityManager()->createEntity(entityID, -1);
+
     if (_config.contains("player") == false)
-        return nullptr;
+    {
+        throw rtype::NoPlayerInConfigException("No player configuration found in the JSON file.");
+    }
 
     std::string texturePath = _config["player"]["path"];
     std::pair<float, float> position = std::pair<float, float>(_config["player"]["position"]["x"], _config["player"]["position"]["y"]);
     std::pair<float, float> velocity = std::pair<float, float>(_config["player"]["velocity"]["x"], _config["player"]["velocity"]["y"]);
     std::pair<float, float> scale = std::pair<float, float>(_config["player"]["scale"]["x"], _config["player"]["scale"]["y"]);
     int health = _config["player"]["health"];
-
-    entity::IEntity *player = _engine->getEntityManager()->createEntity(entityID, -1);
 
     if (_config["player"].contains("weapon"))
     {
@@ -411,34 +413,33 @@ nlohmann::json Game::fillConfigJson(const std::string &path)
  */
 void Game::init()
 {
-  ECS_system::StringCom stringCom;
-  stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
-  stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
-  stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
-  stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
-  stringCom.texturePath[TexturePath::Structure] = "app/assets/sprites/block.png";
-  stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
-  stringCom.textString[TextString::Play] = "Play";
-  stringCom.textString[TextString::Protanopia] = "Protanopia";
-  stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
-  stringCom.textString[TextString::Tritanopia] = "Tritanopia";
-  stringCom.textString[TextString::ClearFilter] = "Clear Filter";
-  stringCom.textString[TextString::KeyBind] = "Key Bind";
-  stringCom.textString[TextString::Menu] = "Menu";
-  stringCom.textString[TextString::MoveUp] = "Move Up";
-  stringCom.textString[TextString::MoveDown] = "Move Down";
-  stringCom.textString[TextString::MoveLeft] = "Move Left";
-  stringCom.textString[TextString::MoveRight] = "Move Right";
-  stringCom.textString[TextString::Shoot] = "Shoot";
-  stringCom.textString[TextString::Z] = "Z";
-  stringCom.textString[TextString::S] = "S";
-  stringCom.textString[TextString::Q] = "Q";
-  stringCom.textString[TextString::D] = "D";
-  stringCom.textString[TextString::Space] = "Space";
-  stringCom.textString[TextString::PressKey] = "Press a key";
-  stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/blaster.wav";
-  stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/dancin.ogg";
-
+    ECS_system::StringCom stringCom;
+    stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
+    stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
+    stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+    stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
+    stringCom.texturePath[TexturePath::Structure] = "app/assets/sprites/block.png";
+    stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
+    stringCom.textString[TextString::Play] = "Play";
+    stringCom.textString[TextString::Protanopia] = "Protanopia";
+    stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
+    stringCom.textString[TextString::Tritanopia] = "Tritanopia";
+    stringCom.textString[TextString::ClearFilter] = "Clear Filter";
+    stringCom.textString[TextString::KeyBind] = "Key Bind";
+    stringCom.textString[TextString::Menu] = "Menu";
+    stringCom.textString[TextString::MoveUp] = "Move Up";
+    stringCom.textString[TextString::MoveDown] = "Move Down";
+    stringCom.textString[TextString::MoveLeft] = "Move Left";
+    stringCom.textString[TextString::MoveRight] = "Move Right";
+    stringCom.textString[TextString::Shoot] = "Shoot";
+    stringCom.textString[TextString::Z] = "Z";
+    stringCom.textString[TextString::S] = "S";
+    stringCom.textString[TextString::Q] = "Q";
+    stringCom.textString[TextString::D] = "D";
+    stringCom.textString[TextString::Space] = "Space";
+    stringCom.textString[TextString::PressKey] = "Press a key";
+    stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/blaster.wav";
+    stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/dancin.ogg";
 
     try
     {
@@ -485,7 +486,7 @@ void Game::init()
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
                                            "collision", _engine->_graphic, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "health", _engine->_graphic, stringCom);
+                                           "health", _engine->_graphic, stringCom);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "game", _engine->_graphic);
 }
@@ -732,7 +733,15 @@ void Game::run()
 
         if (!_engine->msgReceived.empty())
         {
-            handleReceivedMessage(_engine->msgReceived);
+            try
+            {
+                handleReceivedMessage(_engine->msgReceived);
+            }
+            catch (const rtype::NoPlayerInConfigException &e)
+            {
+                std::cerr << e.what() << '\n';
+                // disconnect the client
+            }
         }
         else
         {

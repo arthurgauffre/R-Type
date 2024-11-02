@@ -47,8 +47,7 @@ private:
 
 NEW_EXCEPTION(ServerException)
 NEW_EXCEPTION(ClientConnectionException)
-NEW_EXCEPTION(GameLoosed)
-NEW_EXCEPTION(GameWon)
+NEW_EXCEPTION(NoPlayerInConfigException)
 } // namespace rtype
 
 #endif /* !ERROR_HPP_ */
