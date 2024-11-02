@@ -50,8 +50,7 @@ public:
      */
     entity::IEntity *createPlayer(int numClient);
     entity::IEntity *createEnemy(const nlohmann::json &enemy);
-    entity::IEntity *createWeapon(uint32_t parentID, Type type, int damage,
-                                  float cooldown);
+    entity::IEntity *createWeapon(uint32_t parentID, nlohmann::json &weapon);
 
     /**
      * @brief Creates a button entity.
@@ -176,14 +175,6 @@ public:
      * @param config A JSON object containing the configuration settings.
      */
     void setConfig(nlohmann::json config) { _config = config; }
-
-    /**
-     * @brief Retrieves the configuration settings.
-     *
-     * @return nlohmann::json The configuration settings in JSON format.
-     */
-    nlohmann::json getConfig() { return _config; }
-
 protected:
 private:
     /**
@@ -202,7 +193,7 @@ private:
     std::shared_ptr<rtype::RtypeEngine> _engine;
     rtype::Clock _inputClock;
     rtype::Clock _waveClock;
-    std::vector<std::chrono::time_point<std::chrono::system_clock>> _spawnClocks;
+    std::vector<rtype::Clock> _spawnClocks;
     std::unordered_map<size_t, entity::IEntity *> _players;
 
     /**

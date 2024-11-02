@@ -27,25 +27,26 @@ float getRandomPosition()
     return dis(gen);
 }
 
-entity::IEntity *Game::createWeapon(uint32_t parentID,
-                                    Type type, int damage,
-                                    float cooldown)
+entity::IEntity *Game::createWeapon(uint32_t parentID, nlohmann::json &weapon)
 {
-    auto weapon = _engine->getEntityManager()->createEntity(
+    int damage = weapon["damage"];
+    float cooldown = weapon["cooldown"];
+
+    auto weaponEntity = _engine->getEntityManager()->createEntity(
         _engine->getEntityManager()->generateEntityID(), -1);
 
     // _engine->getComponentManager()->addComponent<component::SoundComponent>(
     //     weapon->getID(), "app/assets/musics/blaster.wav");
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
-        weapon->getID(), type);
+        weaponEntity->getID(), Type::WEAPON);
     _engine->getComponentManager()->addComponent<component::ParentComponent>(
-        weapon->getID(), parentID);
+        weaponEntity->getID(), parentID);
     _engine->getComponentManager()->addComponent<component::CooldownComponent>(
-        weapon->getID(), cooldown);
+        weaponEntity->getID(), cooldown);
     _engine->getComponentManager()->addComponent<component::DamageComponent>(
-        weapon->getID(), damage);
+        weaponEntity->getID(), damage);
 
-    return weapon;
+    return weaponEntity;
 }
 
 /**
@@ -62,14 +63,13 @@ entity::IEntity *Game::createWeapon(uint32_t parentID,
  */
 entity::IEntity *Game::createBackground()
 {
-    nlohmann::json config = this->getConfig();
 
-    if (config.contains("background") == false)
+    if (_config.contains("background") == false)
         return nullptr;
 
-    std::string texturePath = config["background"]["path"];
-    std::pair<float, float> speed = std::pair<float, float>(config["background"]["velocity"]["x"], config["background"]["velocity"]["y"]);
-    std::pair<float, float> size = std::pair<float, float>(config["background"]["size"]["width"], config["background"]["size"]["height"]);
+    std::string texturePath = _config["background"]["path"];
+    std::pair<float, float> speed = std::pair<float, float>(_config["background"]["velocity"]["x"], _config["background"]["velocity"]["y"]);
+    std::pair<float, float> size = std::pair<float, float>(_config["background"]["size"]["width"], _config["background"]["size"]["height"]);
 
     entity::IEntity *background1 = _engine->getEntityManager()->createEntity(
         _engine->getEntityManager()->generateEntityID(), -1);
@@ -144,27 +144,30 @@ void Game::BindInputScript(entity::IEntity *entity)
  */
 entity::IEntity *Game::createPlayer(int numClient)
 {
-    nlohmann::json config = this->getConfig();
     uint32_t entityID = _engine->getEntityManager()->generateEntityID();
 
-    if (config.contains("player") == false)
+    if (_config.contains("player") == false)
         return nullptr;
 
-    std::string texturePath = config["player"]["path"];
-    std::pair<float, float> position = std::pair<float, float>(config["player"]["position"]["x"], config["player"]["position"]["y"]);
-    std::pair<float, float> velocity = std::pair<float, float>(config["player"]["velocity"]["x"], config["player"]["velocity"]["y"]);
-    std::pair<float, float> scale = std::pair<float, float>(config["player"]["scale"]["x"], config["player"]["scale"]["y"]);
-    int health = config["player"]["health"];
+    std::string texturePath = _config["player"]["path"];
+    std::pair<float, float> position = std::pair<float, float>(_config["player"]["position"]["x"], _config["player"]["position"]["y"]);
+    std::pair<float, float> velocity = std::pair<float, float>(_config["player"]["velocity"]["x"], _config["player"]["velocity"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(_config["player"]["scale"]["x"], _config["player"]["scale"]["y"]);
+    int health = _config["player"]["health"];
 
-    int weaponDamage = config["player"]["weapon"]["damage"];
-    float weaponCooldown = config["player"]["weapon"]["cooldown"];
+    int weaponDamage = _config["player"]["weapon"]["damage"];
+    float weaponCooldown = _config["player"]["weapon"]["cooldown"];
 
     entity::IEntity *player = _engine->getEntityManager()->createEntity(entityID, -1);
 
-    entity::IEntity *weapon = createWeapon(entityID, Type::WEAPON, weaponDamage, weaponCooldown);
+    if (_config["player"].contains("weapon") == true)
+    {
+        entity::IEntity *weapon = createWeapon(entityID, _config["player"]["weapon"]);
+        float speed = _config["player"]["weapon"]["speed"];
+        _engine->getComponentManager()->addComponent<component::WeaponComponent>(
+            entityID, weapon->getID(), false, speed);
+    }
 
-    _engine->getComponentManager()->addComponent<component::WeaponComponent>(
-        entityID, weapon->getID(), false, 500);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                            Type::PLAYER);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
@@ -220,7 +223,15 @@ entity::IEntity *Game::createEnemy(const nlohmann::json &enemy)
 
     uint32_t entityID = _engine->getEntityManager()->generateEntityID();
     entity::IEntity *enemyEntity = _engine->getEntityManager()->createEntity(entityID, -1);
-    entity::IEntity *weapon = createWeapon(entityID, Type::WEAPON, damage, 2);
+
+    if (enemy.contains("weapon") == true)
+    {
+        auto weaponConfig = enemy["weapon"];
+        entity::IEntity *weapon = createWeapon(entityID, weaponConfig);
+        float speed = enemy["weapon"]["speed"];
+        _engine->getComponentManager()->addComponent<component::WeaponComponent>(
+            entityID, weapon->getID(), true, speed);
+    }
 
     if (iaType == "random")
     {
@@ -241,8 +252,6 @@ entity::IEntity *Game::createEnemy(const nlohmann::json &enemy)
     else
         _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::UNKNOWN);
 
-    _engine->getComponentManager()->addComponent<component::WeaponComponent>(
-        entityID, weapon->getID(), true, -500);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, Type::ENEMY);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second, _engine->_graphic);
@@ -383,26 +392,22 @@ void Game::init()
 
         this->createBackground();
 
-        if (this->getConfig().contains("waveSystem"))
+        if (_config.contains("waveSystem"))
         {
-            int waveInterval = this->getConfig()["waveSystem"]["waveInterval"];
-            int waveNumber = this->getConfig()["waveSystem"]["waveNumber"];
+            int waveInterval = _config["waveSystem"]["waveInterval"];
+            int waveNumber = _config["waveSystem"]["waveNumber"];
             this->_waveInterval = waveInterval;
             this->_waveNumber = waveNumber;
         }
 
-        // init spawnclocks
-        // if (this->getConfig().contains("structure") && this->getConfig()["structure"].is_array())
-        // {
-        //     for (const auto &structure : this->getConfig()["structure"])
-        //     {
-        //         if (structure.contains("timer"))
-        //         {
-                    
-        //         }
-        //     }
-        // }
-
+        if (_config.contains("structure") && _config["structure"].is_array())
+        {
+            for (const auto &structure : _config["structure"])
+            {
+                if (structure.contains("timer"))
+                    _spawnClocks.push_back(rtype::Clock());
+            }
+        }
     }
     catch (const std::exception &e)
     {
@@ -473,8 +478,9 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     }
     if (msg == "play")
     {
+        for (auto &spawnClocks : _spawnClocks)
+            spawnClocks.restart();
         _isStarted = true;
-        // _spawnClock.restart();
         _waveClock.restart();
         if (_playersScenes[numClient] == Scene::GAME)
             return;
@@ -605,11 +611,9 @@ void Game::run()
         _engine->update();
         if (_waveNumber != 0 && _waveClock.getElapsedTime() > _waveInterval && _isStarted)
         {
-            const auto &config = getConfig();
-
-            if (config.contains("enemy") && config["enemy"].is_array())
+            if (_config.contains("enemy") && _config["enemy"].is_array())
             {
-                for (const auto &enemy : config["enemy"])
+                for (const auto &enemy : _config["enemy"])
                     this->createEnemy(enemy);
             }
             else
@@ -619,30 +623,36 @@ void Game::run()
             _waveClock.restart();
         }
 
-        // if (!_structureCreated && _isStarted)
-        // {
-        //     const auto &config = getConfig();
+        if (!_structureCreated && _isStarted)
+        {
+            if (_config.contains("structure") && _config["structure"].is_array())
+            {
+                if (_spawnClocks.size() >= _config["structure"].size())
+                {
+                    for (size_t i = 0; i < _config["structure"].size(); ++i)
+                    {
+                        const auto &structure = _config["structure"][i];
 
-        //     if (config.contains("structure") && config["structure"].is_array())
-        //     {
-        //         for (const auto &structure : config["structure"])
-        //         {
-        //             if (structure.contains("timer"))
-        //             {
-        //                 float timer = structure["timer"];
-        //                 if (_spawnClock.getElapsedTime() > timer)
-        //                 {
-        //                     this->createStructure(structure);
-        //                     _createdStructure++;
-        //                 }
-        //             }
-        //         }
-        //         if (_createdStructure == config["structure"].size())
-        //             _structureCreated = true;
-        //     }
-        //     else
-        //         std::cerr << "Warning: 'structure' not found or is not an array in config." << std::endl;
-        // }
+                        if (structure.contains("timer"))
+                        {
+                            float timer = structure["timer"];
+                            if (_spawnClocks[i].getElapsedTime() > timer)
+                            {
+                                this->createStructure(structure);
+                                _createdStructure++;
+                                _spawnClocks[i].restart();
+                            }
+                        }
+                    }
+                }
+                else
+                    std::cerr << "Erreur : _spawnClocks n'a pas assez d'éléments pour correspondre à config[\"structure\"]." << std::endl;
+                if (_createdStructure == _config["structure"].size())
+                    _structureCreated = true;
+            }
+            else
+                std::cerr << "Warning: 'structure' not found or is not an array in config." << std::endl;
+        }
 
         if (!_engine->msgReceived.empty())
         {
