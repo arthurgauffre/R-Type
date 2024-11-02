@@ -46,6 +46,12 @@ float component::HitBoxComponent::getWidth() const { return _width; }
  */
 float component::HitBoxComponent::getHeight() const { return _height; }
 
+/**
+ * @brief Updates the dimensions of the hitbox.
+ *
+ * @param width The new width of the hitbox.
+ * @param height The new height of the hitbox.
+ */
 void component::HitBoxComponent::update(float width, float height) {
   _width = width;
   _height = height;

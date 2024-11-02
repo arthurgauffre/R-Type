@@ -76,6 +76,13 @@ public:
   virtual void setCommunication(ComponentCommunication communication) = 0;
 
   protected:
+    /**
+     * @brief Represents the communication type for a component.
+     *
+     * This member variable is used to specify the type of communication
+     * that a component will use. It is initialized with the value
+     * ComponentCommunication::CREATE.
+     */
     ComponentCommunication _communication{ComponentCommunication::CREATE};
 };
 } // namespace component

@@ -9,6 +9,11 @@
 
 namespace component
 {
+    /**
+     * @brief Updates the OnClickComponent with the specified action.
+     *
+     * @param action The action to be set for the OnClickComponent.
+     */
     void OnClickComponent::update(Action action)
     {
         _action = action;

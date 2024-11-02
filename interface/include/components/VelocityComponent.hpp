@@ -76,6 +76,12 @@ namespace component
      */
     std::pair<float, float> getActualVelocity() { return _actualVelocity; }
 
+    /**
+     * @brief Updates the velocity and actual velocity of the component.
+     *
+     * @param velocity A pair of floats representing the new velocity.
+     * @param actualVelocity A pair of floats representing the new actual velocity.
+     */
     void update(std::pair<float, float> velocity, std::pair<float, float> actualVelocity)
     {
       _velocity = velocity;

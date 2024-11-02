@@ -55,15 +55,45 @@ void entity::Entity::setActive(bool active) { isActive = active; }
  */
 bool entity::Entity::getActive() const { return isActive; }
 
+/**
+ * @brief Retrieves the communication status of the entity.
+ *
+ * @return EntityCommunication The current communication status of the entity.
+ */
 EntityCommunication entity::Entity::getCommunication() const { return communicationStatus; }
 
+/**
+ * @brief Sets the communication status of the entity.
+ *
+ * @param communication The new communication status to be set.
+ */
 void entity::Entity::setCommunication(EntityCommunication communication) { communicationStatus = communication; }
 
+/**
+ * @brief Retrieves the current status of the scene associated with the entity.
+ *
+ * @return Scene The current scene status.
+ */
 Scene entity::Entity::getSceneStatus() const { return sceneStatus; }
 
+/**
+ * @brief Sets the scene status of the entity.
+ *
+ * @param status The new scene status to be set.
+ */
 void entity::Entity::setSceneStatus(Scene status) { sceneStatus = status; }
 
+/**
+ * @brief Get the number of clients associated with the entity.
+ *
+ * @return int The number of clients.
+ */
 int entity::Entity::getNumClient() const { return numClient; }
 
+/**
+ * @brief Sets the number of clients associated with the entity.
+ *
+ * @param num The number of clients to set.
+ */
 void entity::Entity::setNumClient(int num) { numClient = num; }
 } // namespace entity

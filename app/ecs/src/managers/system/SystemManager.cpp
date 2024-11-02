@@ -8,8 +8,20 @@
 #include <RtypeEngine.hpp>
 #include <managers/SystemManager.hpp>
 
+/**
+ * @brief Constructs a new SystemManager object.
+ *
+ * This is the default constructor for the SystemManager class.
+ * It initializes a new instance of the SystemManager.
+ */
 ECS_system::SystemManager::SystemManager() {}
 
+/**
+ * @brief Destructor for the SystemManager class.
+ *
+ * This destructor clears the _systems container, ensuring that all systems
+ * managed by the SystemManager are properly cleaned up.
+ */
 ECS_system::SystemManager::~SystemManager() {
   _systems.clear();
 }

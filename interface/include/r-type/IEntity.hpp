@@ -128,7 +128,23 @@ public:
     virtual void setNumClient(int numClient) = 0;
 
   protected:
+    /**
+     * @brief Represents the communication status of an entity.
+     *
+     * This enum class is used to define the various communication statuses
+     * that an entity can have within the system. The possible values include:
+     * - CREATE: Indicates that the entity is in the creation state.
+     * - UPDATE: Indicates that the entity is in the update state.
+     * - DELETE: Indicates that the entity is in the deletion state.
+     */
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
+
+    /**
+     * @brief Represents the current status of the scene.
+     *
+     * This variable holds the status of the scene, which is of type Scene.
+     * The initial value is set to Scene::GAME.
+     */
     Scene sceneStatus{Scene::GAME};
 };
 } // namespace entity

@@ -13,6 +13,14 @@
 namespace component {
 class TransformComponent : public AComponent {
 public:
+  /**
+   * @brief Construct a new TransformComponent object
+   *
+   * @param entityID The unique identifier for the entity
+   * @param position The initial position of the entity as a pair of floats (x, y)
+   * @param scale The scale of the entity as a pair of floats (x, y), default is {1.0f, 1.0f}
+   * @param rotation The rotation of the entity in degrees, default is 0.0f
+   */
   TransformComponent(uint32_t entityID, std::pair<float, float> position,
                      std::pair<float, float> scale = {1.0f, 1.0f},
                      float rotation = 0.0f);
@@ -29,8 +37,18 @@ public:
    */
   std::pair<float, float> getPosition() { return _position; }
 
+  /**
+   * @brief Retrieves the previous position of the component.
+   *
+   * @return A std::pair containing the x and y coordinates of the previous position.
+   */
   std::pair<float, float> getPreviousPosition() { return _previousPosition; }
 
+  /**
+   * @brief Sets the previous position of the component.
+   *
+   * @param position A pair of floats representing the previous position (x, y).
+   */
   void setPreviousPosition(std::pair<float, float> position) {
     _previousPosition = position;
   }
@@ -117,6 +135,13 @@ private:
    */
   std::pair<float, float> _scale;
 
+  /**
+   * @brief Stores the previous position of an object.
+   *
+   * This pair holds the x and y coordinates of the object's previous position.
+   * The first element represents the x-coordinate, and the second element
+   * represents the y-coordinate.
+   */
   std::pair<float, float> _previousPosition;
 };
 } // namespace component

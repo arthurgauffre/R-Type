@@ -69,6 +69,10 @@ private:
    * @see sf::Texture
    */
   size_t _textureId;
+
+  /**
+   * @brief The file path to the texture.
+   */
   std::string _path;
 };
 } // namespace component
