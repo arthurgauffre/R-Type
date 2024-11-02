@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <r-type/Enum.hpp>
 #include <managers/ComponentManager.hpp>
 #include <managers/EntityManager.hpp>

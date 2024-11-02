@@ -7,8 +7,6 @@ add_library(r-type_audio_system SHARED
     ../../managers/component/ComponentManager.cpp
 )
 
-target_include_directories(r-type_audio_system PRIVATE ${SFML_INCLUDE_DIR})
-
 target_link_libraries(
     r-type_audio_system
     r-type_interfaces

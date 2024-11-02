@@ -9,7 +9,6 @@
 #define ICOREMODULE_HPP_
 
 #pragma once
-#include <SFML/Graphics.hpp>
 
 #ifdef _WIN32
 #include <tchar.h>
