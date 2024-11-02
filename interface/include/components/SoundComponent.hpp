@@ -54,7 +54,18 @@ public:
     _sound.setBuffer(_soundBuffer);
   }
 
+  /**
+   * @brief Sets the flag indicating whether the sound should play.
+   *
+   * @param shouldPlay A boolean value where true means the sound should play and false means it should not.
+   */
   void setShouldPlay(bool shouldPlay) { _shouldPlay = shouldPlay; }
+
+  /**
+   * @brief Checks if the sound should be played.
+   *
+   * @return true if the sound should be played, false otherwise.
+   */
   bool getShouldPlay() { return _shouldPlay; }
 
 private:

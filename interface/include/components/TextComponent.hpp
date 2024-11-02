@@ -61,7 +61,7 @@ public:
     /**
      * @brief Get the color of the text.
      *
-     * @return The color as an RColor.
+     * @return The color as an RColor (struct containing rgba values).
      */
     RColor getColor() const { return _color; }
 
@@ -72,14 +72,27 @@ public:
      */
     size_t getTextId() const { return _textId; }
 
+    /**
+     * @brief Retrieves the font path.
+     *
+     * @return A string representing the path to the font.
+     */
     std::string getFont() const { return _fontPath; }
 
+    /**
+     * @brief Updates the text component with the given parameters.
+     *
+     * @param position A pair of floats representing the new position of the text component.
+     * @param text A string containing the new text to be displayed.
+     * @param size An integer representing the new size of the text.
+     * @param color An RColor object representing the new color of the text.
+     * @param graphic A shared pointer to an IGraphic object used for rendering the text.
+     */
     void update(std::pair<float, float> position, std::string text, int size, RColor color, std::shared_ptr<IGraphic> graphic);
 
 private:
     /**
      * @brief Represents the idtext of the text.
-     * 
      */
     size_t _textId;
 
@@ -98,6 +111,9 @@ private:
      */
     std::string _text;
 
+    /**
+     * @brief Path to the font file.
+     */
     std::string _fontPath;
 
     /**

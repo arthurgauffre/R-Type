@@ -25,7 +25,21 @@ namespace component {
 namespace component {
 class ComponentManager {
 public:
+  /**
+   * @brief Constructs a new ComponentManager object.
+   *
+   * This constructor initializes a new instance of the ComponentManager class.
+   */
   ComponentManager();
+
+  /**
+   * @brief Destructor for the ComponentManager class.
+   *
+   * This destructor is responsible for cleaning up any resources
+   * or memory allocated by the ComponentManager instance. It ensures
+   * that when a ComponentManager object is destroyed, all associated
+   * resources are properly released.
+   */
   ~ComponentManager() = default;
   /**
    * @brief Adds a new component of type T to the specified entity.

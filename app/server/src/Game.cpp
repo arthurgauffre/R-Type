@@ -463,10 +463,11 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     }
     if (msg == "clientDisconnection")
     {
-        std::cout << "Client disconnected : " << numClient << std::endl;
+        std::cout << "Client disconnected in Game.cpp : " << numClient << std::endl;
         if (_players.find(numClient) != _players.end())
         {
             _players[numClient]->setCommunication(entity::EntityCommunication::DELETE);
+            std::cout << "Setting the communication to delete" << std::endl;
             _players.erase(numClient);
         }
     }
@@ -533,15 +534,12 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
         _playersScenes[numClient] = Scene::MENU;
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, numClient));
     }
-    // std::cout << "numClient: " << numClient << std::endl;
     if (_players.find(numClient) == _players.end())
     {
-        // std::cout << "Player not found" << std::endl;
         return;
     }
     if (_players[numClient]->getID() != id)
     {
-        // std::cout << "Player ID not matching" << std::endl;
         return;
     }
     if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")
@@ -578,7 +576,6 @@ void Game::moveEntity(std::string msg, size_t id)
 
 void Game::resetInput()
 {
-    // get All entities with input component
     std::vector<std::shared_ptr<entity::IEntity>> entities = _engine->getEntityManager()->getEntities();
 
     for (auto &entity : entities)
@@ -649,7 +646,6 @@ void Game::run()
 
         if (!_engine->msgReceived.empty())
         {
-            // std::cout << "msgReceivedSize: " << _engine->msgReceived.size() << std::endl;
             handdleReceivedMessage(_engine->msgReceived);
         }
         else

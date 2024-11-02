@@ -67,6 +67,15 @@ void ECS_system::HealthSystem::update(
   }
 }
 
+/**
+ * @brief Factory function to create a HealthSystem instance.
+ *
+ * @param componentManager Reference to the ComponentManager.
+ * @param entityManager Reference to the EntityManager.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom instance for communication.
+ * @return ECS_system::ISystem* Pointer to the newly created HealthSystem instance.
+ */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {

@@ -71,6 +71,17 @@ void ECS_system::GameSystem::update(
     std::cout << "You Win" << std::endl;
 }
 
+/**
+ * @brief Factory function to create a new GameSystem.
+ *
+ * This function is used to create a new instance of the GameSystem class.
+ *
+ * @param componentManager Reference to the ComponentManager.
+ * @param entityManager Reference to the EntityManager.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom object.
+ * @return Pointer to the newly created GameSystem instance.
+ */
 extern "C" ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {

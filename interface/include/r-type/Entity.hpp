@@ -57,38 +57,61 @@ public:
   bool getActive() const override;
 
   /**
-   * @brief
+   * @brief Retrieves the communication status of the entity.
    *
+   * This method is used to determine the current communication status of the
+   * entity.
+   *
+   * @return EntityCommunication The current communication status of the entity.
    */
   EntityCommunication getCommunication() const override;
 
+
   /**
-   * @brief
+   * @brief Sets the communication object for the entity.
    *
+   * This function overrides the base class implementation to set the
+   * communication object which is used for inter-entity communication.
+   *
+   * @param communication The EntityCommunication object to be set.
    */
   void setCommunication(EntityCommunication communication) override;
 
   /**
-   * @brief
+   * @brief Retrieves the current status of the scene.
    *
+   * This function overrides the base class implementation to provide
+   * the current status of the scene associated with the entity.
+   *
+   * @return Scene The current status of the scene.
    */
   Scene getSceneStatus() const override;
 
   /**
-   * @brief
+   * @brief Sets the status of the scene.
    *
+   * This function overrides the base class method to set the current status
+   * of the scene to the provided status.
+   *
+   * @param status The new status to set for the scene.
    */
   void setSceneStatus(Scene status) override;
 
   /**
-   * @brief
+   * @brief Set the number of clients associated with the entity.
    *
+   * This function sets the number of clients associated with the entity.
+   *
+   * @param numClient The number of clients.
    */
   void setNumClient(int numClient) override;
 
   /**
-   * @brief
+   * @brief Get the number of clients.
    *
+   * This function returns the number of clients connected or associated with the entity.
+   *
+   * @return int The number of clients.
    */
   int getNumClient() const override;
 
@@ -110,6 +133,12 @@ protected:
    */
   bool isActive;
 
+  /**
+   * @brief Represents the number of clients.
+   *
+   * This variable holds the number of clients connected.
+   * It is initialized to -1, indicating no clients are connected by default.
+   */
   int numClient{-1};
 };
 } // namespace entity

@@ -24,6 +24,15 @@
 #endif
 
 namespace ECS_system {
+/**
+ * @struct StringCom
+ * @brief A structure to hold mappings of various types to their corresponding string representations.
+ *
+ * This structure contains three unordered maps:
+ * - texturePath: Maps TexturePath to its corresponding string.
+ * - textFont: Maps TextFont to its corresponding string.
+ * - textString: Maps TextString to its corresponding string.
+ */
 struct StringCom {
   std::unordered_map<TexturePath, std::string> texturePath;
   std::unordered_map<TextFont, std::string> textFont;
@@ -71,9 +80,38 @@ public:
   virtual void handleComponents() = 0;
 
 protected:
+  /**
+   * @brief Reference to the ComponentManager instance.
+   *
+   * This member variable holds a reference to the ComponentManager, which is responsible
+   * for managing all the components within the system. It provides functionalities to
+   * add, remove, and query components.
+   */
   component::ComponentManager &_componentManager;
+
+  /**
+   * @brief Reference to the EntityManager instance.
+   *
+   * This member variable holds a reference to the EntityManager, which is responsible
+   * for managing all entities within the system. It provides functionalities such as
+   * adding, removing, and updating entities.
+   */
   entity::EntityManager &_entityManager;
+
+  /**
+   * @brief A shared pointer to an IGraphic instance.
+   *
+   * This member variable holds a shared pointer to an object that implements
+   * the IGraphic interface. It is used to manage the graphical components
+   * within the system, ensuring proper memory management and resource sharing.
+   */
   std::shared_ptr<IGraphic> _graphic;
+
+  /**
+   * @brief A member variable of type StringCom.
+   *
+   * This variable is used to store and manage string communications within the system.
+   */
   StringCom _stringCom;
 };
 } // namespace ECS_system

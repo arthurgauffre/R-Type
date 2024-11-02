@@ -13,6 +13,12 @@
 namespace component {
 class MusicComponent : public AComponent {
 public:
+  /**
+   * @brief Constructs a new MusicComponent object.
+   *
+   * @param entityID The unique identifier for the entity associated with this component.
+   * @param soundFilePath The file path to the sound file to be used by this component.
+   */
   MusicComponent(uint32_t entityID, const std::string &soundFilePath);
 
   /**

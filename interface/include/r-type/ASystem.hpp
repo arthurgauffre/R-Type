@@ -61,13 +61,5 @@ public:
   virtual void handleComponents() = 0;
 
 protected:
-  /**
-   * @brief Reference to the ComponentManager instance.
-   *
-   * This member variable holds a reference to the ComponentManager, which is
-   * responsible for managing all the components within the ECS (Entity
-   * Component System). It provides functionalities to add, remove, and access
-   * components associated with entities.
-   */
 };
 } // namespace ECS_system

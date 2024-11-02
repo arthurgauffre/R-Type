@@ -24,7 +24,6 @@
 void ECS_system::InputSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) {
-  // lock the entity mutex
   std::lock_guard<std::mutex> lock(entityMutex);
   for (auto &entity :
        _componentManager.getEntitiesWithComponents<component::InputComponent>(
@@ -45,6 +44,17 @@ void ECS_system::InputSystem::update(
   }
 }
 
+/**
+ * @brief Creates a new InputSystem instance.
+ *
+ * This function creates and returns a new instance of the InputSystem class.
+ *
+ * @param componentManager Reference to the ComponentManager.
+ * @param entityManager Reference to the EntityManager.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom object.
+ * @return Pointer to the newly created InputSystem instance.
+ */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {

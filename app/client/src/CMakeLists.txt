@@ -36,7 +36,7 @@ add_executable(r-type_client
     ../../ecs/src/entity/Entity.cpp
 )
 
-target_link_libraries(r-type_client r-type_interfaces r-type_client_interfaces sfml-graphics sfml-window sfml-system)
+target_link_libraries(r-type_client r-type_interfaces sfml-graphics sfml-window sfml-system)
 target_include_directories(r-type_client PRIVATE ${SFML_INCLUDE_DIR})
 
 add_custom_command(

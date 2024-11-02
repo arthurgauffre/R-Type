@@ -106,17 +106,15 @@ namespace rtype
               client,
           rtype::network::Message<NetworkMessages> &message)
       {
-        // std::cout << "Message received" << std::endl;
         switch (message.header.id)
         {
         case NetworkMessages::ClientConnection:
         {
-          std::cout << "Client Connected : " << client->GetId() << std::endl;
+          std::cout << "Client Connected in ServerSystem.hpp : " << client->GetId() << std::endl;
         }
         break;
         case NetworkMessages::MessageAll:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           rtype::network::Message<NetworkMessages> message;
           message.header.id = NetworkMessages::ServerMessage;
           message << client->GetId();
@@ -131,14 +129,8 @@ namespace rtype
         break;
         case NetworkMessages::acknowledgementMesage:
         {
-          // extract the content of the body's message
-
-          // status = ServerStatus::SERVER_RECEIVING;
           if (!queueOfAckMessages.empty())
-          {
             queueOfAckMessages.pop_back();
-            // std::cout << "Acknowledgement message received" << std::endl;
-          }
         }
         break;
         default:
@@ -155,32 +147,26 @@ namespace rtype
         {
         case Action::MOVE_UP:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           _msgReceived.emplace_back(std::make_pair("moveUp", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::MOVE_DOWN:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           _msgReceived.emplace_back(std::make_pair("moveDown", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::MOVE_LEFT:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           _msgReceived.emplace_back(std::make_pair("moveLeft", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::MOVE_RIGHT:
         {
-          status = ServerStatus::SERVER_RECEIVING;
           _msgReceived.emplace_back(std::make_pair("moveRight", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::SHOOT:
         {
-          status = ServerStatus::SERVER_RECEIVING;
-          // std::cout << "shoot" << std::endl;
           _msgReceived.emplace_back(std::make_pair("shoot", std::make_pair(entityId, client->GetId())));
         }
         break;
@@ -227,8 +213,18 @@ namespace rtype
               break;
             }
           }
+          //! Need to see if it can be implemented correctly
+          // wait for all the threads to finish before executing the disconnection of the client
+          // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+          // std::cout << "WAITING FOR DISCONNECTION" << std::endl;
           _msgReceived.emplace_back(std::make_pair("clientDisconnection", std::make_pair(numPlayer, client->GetId())));
-          // deqConnections.erase(std::remove(deqConnections.begin(), deqConnections.end(), client), deqConnections.end());
+          // OnClientDisconnection(client);
+          // for (; incomingMessages.queueSize() > 0;) {
+          //   incomingMessages.popBack();
+          // }
+          // client->Disconnect();
+          // client.reset();
+          // return;
         }
         break;
         }
@@ -238,9 +234,6 @@ namespace rtype
           std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
           rtype::network::Message<NetworkMessages> &message)
       {
-        // print witch client send the message
-        // std::cout << "Client " << client->GetId() << " send a message" << std::endl;
-        // std::cout << "Handling input message" << std::endl;
         switch (message.header.id)
         {
         case NetworkMessages::action:
@@ -271,11 +264,23 @@ namespace rtype
         return true;
       }
 
+
       virtual void OnClientDisconnection(
-          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
-              client)
+          std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
       {
-        // std::cout << "Client disconnected : " << client->GetId() << std::endl;
+        std::mutex connectionMutex;
+        if (client)
+        {
+          std::lock_guard<std::mutex> lock(connectionMutex);
+          auto it = std::remove_if(deqConnections.begin(), deqConnections.end(),
+                                   [&](const auto &connection)
+                                   {
+                                     return connection->GetId() == client->GetId();
+                                   });
+          // deqConnections.erase(it, deqConnections.end());
+          // client.reset();
+          // return;
+        }
       }
 
       void WaitForMessage()
@@ -338,7 +343,6 @@ namespace rtype
         {
           if (entity->getCommunication() == entity::EntityCommunication::CREATE)
           {
-            // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
             if (entity->getNumClient() != -1)
@@ -363,7 +367,6 @@ namespace rtype
           }
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
           {
-            // status = ServerStatus::WAITING_FOR_MESSAGE;
             queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
             if (entity->getNumClient() != -1) {
@@ -382,7 +385,6 @@ namespace rtype
                 _componentManager.getComponent<component::SpriteComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              status = ServerStatus::WAITING_FOR_MESSAGE;
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.createSpriteMsg(entity->getID(), component->getX(), component->getY()), clientToIgnore);
             }
@@ -485,7 +487,7 @@ namespace rtype
                   queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
                   component->setCommunication(component::ComponentCommunication::STANDBY);
-                  std::cout << "SENDING INPUT MSG TO ALL CLIENTS" << std::endl;
+                  std::cout << "SENDING INPUT MSG TO CLIENT" << std::endl;
                   SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), deqConnections[i]);
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
@@ -498,7 +500,6 @@ namespace rtype
                       BindKey input = {bind.second, bind.first};
                       SendMessageToClient(networkMessageFactory.updateInputMsg(entity->getID(), input), deqConnections[i]);
                     }
-                    return;
                   }
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
@@ -512,7 +513,6 @@ namespace rtype
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::DELETE)
                 {
-                  status = ServerStatus::SERVER_RECEIVING;
                   component->setCommunication(component::ComponentCommunication::NONE);
                   SendMessageToClient(networkMessageFactory.deleteInputMsg(entity->getID()), deqConnections[i]);
                 }
@@ -525,7 +525,7 @@ namespace rtype
                 _componentManager.getComponent<component::TypeComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              status = ServerStatus::WAITING_FOR_MESSAGE;
+              queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.createTypeMsg(entity->getID(), component->getType()), clientToIgnore);
             }
@@ -546,7 +546,6 @@ namespace rtype
                 _componentManager.getComponent<component::SizeComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              status = ServerStatus::WAITING_FOR_MESSAGE;
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.createSizeMsg(entity->getID(), component->getSize().first, component->getSize().second), clientToIgnore);
             }
@@ -567,7 +566,6 @@ namespace rtype
                 _componentManager.getComponent<component::AIComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              status = ServerStatus::WAITING_FOR_MESSAGE;
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.createAIMsg(entity->getID(), component->getType()), clientToIgnore);
             }
@@ -588,7 +586,7 @@ namespace rtype
                 _componentManager.getComponent<component::RectangleShapeComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              status = ServerStatus::WAITING_FOR_MESSAGE;
+              queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.createRectangleShapeMsg(entity->getID(), component->getX(), component->getY(), component->getHeight(), component->getWidth(), component->getColor()), clientToIgnore);
             }
@@ -634,7 +632,6 @@ namespace rtype
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::DELETE)
                 {
-                  status = ServerStatus::SERVER_RECEIVING;
                   component->setCommunication(component::ComponentCommunication::NONE);
                   SendMessageToClient(networkMessageFactory.deleteOnClickMsg(entity->getID()), deqConnections[i]);
                 }
@@ -647,7 +644,7 @@ namespace rtype
                 _componentManager.getComponent<component::TextComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              status = ServerStatus::WAITING_FOR_MESSAGE;
+              queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
               auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
               if (textFontKey && textStringKey)
@@ -887,16 +884,11 @@ namespace rtype
       {
         if (client && client->IsConnected())
         {
-          // std::cout << "Sending message to client" << std::endl;
           client->Send(message);
         }
         else
         {
           OnClientDisconnection(client);
-          client.reset();
-          deqConnections.erase(
-              std::remove(deqConnections.begin(), deqConnections.end(), client),
-              deqConnections.end());
         }
       }
 
@@ -918,7 +910,6 @@ namespace rtype
           else
           {
             OnClientDisconnection(client);
-            client.reset();
             invalidClientExists = true;
           }
         }
@@ -937,24 +928,15 @@ namespace rtype
         size_t messageCount = 0;
         while (messageCount < maxMessages && !incomingMessages.empty())
         {
-          // auto message = incomingMessages.popFront();
-          if (queueOfAckMessages.size() >= 0)
-          {
-            auto message = incomingMessages.popFront();
-            OnMessageReceived(message.remoteConnection, message.message);
-            // auto toto = queueOfAckMessages.pop_front();
+          auto msg = incomingMessages.popFront();
+          auto originalQueueSize = queueOfAckMessages.size();
+          if (queueOfAckMessages.empty() == false) {
+            OnMessageReceived(msg.remoteConnection, msg.message);
+            if (originalQueueSize == queueOfAckMessages.size())
+              incomingMessages.pushBack(msg);
+          } else {
+            OnMessageReceived(msg.remoteConnection, msg.message);
           }
-          else
-          {
-            auto message = incomingMessages.popFront();
-            OnMessageReceived(message.remoteConnection, message.message);
-          }
-          // if (status == ServerStatus::WAITING_FOR_MESSAGE) {
-          //   std::cout << "Packet lost" << std::endl;
-          //   SendMessageToAllClients(message.message, message.remoteConnection);
-          //   OnMessageReceived(message.remoteConnection, message.message);
-
-          // }
           messageCount++;
         }
       }
@@ -997,9 +979,7 @@ namespace rtype
       NetworkMessageFactory networkMessageFactory;
       std::array<char, 1024> bufferOfIncomingMessages;
       uint32_t actualId = 0;
-      ServerStatus status;
       std::vector<ServerStatus> queueOfAckMessages;
-      // int nbOfAckMessages = 0;
 
       std::vector<std::pair<std::string, std::pair<size_t, size_t>>> _msgReceived;
 

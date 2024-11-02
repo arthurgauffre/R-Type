@@ -7,10 +7,21 @@
 
 #include <graphics/SfmlGraphic.hpp>
 
+/**
+ * @brief Default constructor for the SfmlGraphic class.
+ *
+ * This constructor initializes an instance of the SfmlGraphic class.
+ */
 SfmlGraphic::SfmlGraphic()
 {
 }
 
+/**
+ * @brief Destructor for the SfmlGraphic class.
+ *
+ * This destructor is responsible for cleaning up any resources
+ * that the SfmlGraphic object may have acquired during its lifetime.
+ */
 SfmlGraphic::~SfmlGraphic()
 {
 }
@@ -215,7 +226,7 @@ size_t SfmlGraphic::createText(std::string text, std::string fontPath, int size,
 {
     size_t idText = _textsId.size();
     size_t idFont = _fontsId.size();
-    
+
     _textsId.push_back(idText);
     _texts[idText] = sf::Text();
     if (_fontsId.find(fontPath) != _fontsId.end()) {

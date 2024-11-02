@@ -19,7 +19,7 @@ std::atomic<bool> keepRunning(true);
  */
 void signalHandler(int signum) {
     std::cout << "\nInterrupt signal (" << signum << ") received. Stopping...\n";
-    keepRunning = false; // Set flag to false to stop the loop
+    keepRunning = false;
 }
 
 /**
@@ -106,7 +106,7 @@ void rtype::RtypeEngine::update() {
   _entityMutex.lock();
   auto entities = this->getEntityManager()->getEntities();
   _entityMutex.unlock();
-  this->getSystemManager()->update(deltatime, entities, msgToSend, this->msgReceived, _entityMutex);
+  this->getSystemManager()->update(deltatime, entities, this->msgToSend, this->msgReceived, _entityMutex);
 }
 
 void rtype::RtypeEngine::run() {

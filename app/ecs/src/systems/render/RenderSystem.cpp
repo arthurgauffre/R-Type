@@ -42,7 +42,6 @@ void ECS_system::RenderSystem::update(
 {
   _graphic->windowClear();
 
-  // lock the entity mutex
   std::lock_guard<std::mutex> lock(entityMutex);
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::SpriteComponent, component::TransformComponent,
@@ -173,7 +172,6 @@ void ECS_system::RenderSystem::update(
     _graphic->drawText(textComponent->getTextId());
   }
 
-  // draw rectangle filter
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::RectangleShapeComponent,
                       component::TransformComponent,
@@ -218,6 +216,17 @@ void ECS_system::RenderSystem::update(
   _graphic->eventHandler();
 }
 
+/**
+ * @brief Factory function to create a new RenderSystem.
+ *
+ * This function creates and returns a new instance of the RenderSystem class.
+ *
+ * @param componentManager Reference to the ComponentManager instance.
+ * @param entityManager Reference to the EntityManager instance.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom instance for communication.
+ * @return Pointer to the newly created RenderSystem instance.
+ */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)

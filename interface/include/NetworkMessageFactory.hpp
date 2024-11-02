@@ -33,7 +33,6 @@ public:
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
-        // std::cout << "entity send with bodySize :" << message.body.size() << std::endl;
         return message;
     }
     rtype::network::Message<NetworkMessages> updateEntityMsg(size_t id, Scene scene, int numClient)
@@ -976,7 +975,7 @@ public:
     rtype::network::Message<NetworkMessages> createOnClickMsg(size_t id, int numClient, Action action)
     {
         rtype::network::Message<NetworkMessages> message;
-        message.header.id = NetworkMessages::createOnCLick;
+        message.header.id = NetworkMessages::createOnClick;
         EntityId entity = {id};
         OnClickComponent onClick = {action, numClient};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),

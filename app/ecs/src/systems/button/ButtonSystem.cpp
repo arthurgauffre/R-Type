@@ -41,6 +41,18 @@ namespace ECS_system {
     }
 }
 
+/**
+ * @brief Factory function to create a new ButtonSystem.
+ *
+ * This function creates and returns a new instance of the ButtonSystem class.
+ *
+ * @param componentManager Reference to the ComponentManager instance.
+ * @param entityManager Reference to the EntityManager instance.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom instance for string communication.
+ *
+ * @return Pointer to the newly created ButtonSystem instance.
+ */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {

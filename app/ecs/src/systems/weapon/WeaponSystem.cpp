@@ -20,7 +20,6 @@ void ECS_system::WeaponSystem::createProjectile(
     std::pair<float, float> velocity, std::pair<float, float> scale,
     int damage)
 {
-    // std::cout << "Creating projectile" << std::endl;
     uint32_t projectileID = _entityManager.generateEntityID();
     entity::IEntity *projectile = _entityManager.createEntity(projectileID, -1);
 
@@ -93,7 +92,7 @@ void ECS_system::WeaponSystem::update(
         component::DamageComponent *damageComponent =
             _componentManager.getComponent<component::DamageComponent>(
                 weaponComponent->getWeaponEntityID());
-        
+
         if (!damageComponent || !cooldownComponent || !weaponComponent)
             continue;
 
@@ -127,6 +126,18 @@ void ECS_system::WeaponSystem::update(
     }
 }
 
+/**
+ * @brief Factory function to create a new WeaponSystem.
+ *
+ * This function creates and returns a new instance of the WeaponSystem class.
+ *
+ * @param componentManager Reference to the ComponentManager instance.
+ * @param entityManager Reference to the EntityManager instance.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom instance for communication.
+ *
+ * @return Pointer to the newly created WeaponSystem instance.
+ */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
