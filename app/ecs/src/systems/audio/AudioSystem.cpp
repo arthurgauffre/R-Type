@@ -34,13 +34,13 @@ void ECS_system::AudioSystem::update(
 
     if (soundComponent) {
       if (soundComponent->getShouldPlay()) {
-        soundComponent->play();
+        soundComponent->play(_audio);
         soundComponent->setShouldPlay(false);
       }
     }
     if (musicComponent) {
-      if (!musicComponent->isPlaying())
-        musicComponent->play();
+      if (!musicComponent->isPlaying(_audio))
+        musicComponent->play(_audio);
     }
   }
 }

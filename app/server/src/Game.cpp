@@ -36,7 +36,7 @@ entity::IEntity *Game::createWeapon(uint32_t parentID, nlohmann::json &weapon)
         _engine->getEntityManager()->generateEntityID(), -1);
 
     _engine->getComponentManager()->addComponent<component::SoundComponent>(
-        weaponEntity->getID(), "app/assets/musics/blaster.wav");
+        weaponEntity->getID(), "app/assets/musics/blaster.wav", _engine->_audio);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         weaponEntity->getID(), Type::WEAPON);
     _engine->getComponentManager()->addComponent<component::ParentComponent>(
@@ -80,7 +80,7 @@ entity::IEntity *Game::createBackground()
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         background1->getID(), Type::BACKGROUND);
     _engine->getComponentManager()->addComponent<component::MusicComponent>(
-        background1->getID(), "app/assets/musics/testSong.wav");
+        background1->getID(), "app/assets/musics/dancin.ogg", _engine->_audio);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
         background1->getID(), std::pair<float, float>(0, 0));
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
@@ -436,7 +436,7 @@ void Game::init()
   stringCom.textString[TextString::Space] = "Space";
   stringCom.textString[TextString::PressKey] = "Press a key";
   stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/blaster.wav";
-  stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/testSong.wav";
+  stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/dancin.ogg";
 
 
     try

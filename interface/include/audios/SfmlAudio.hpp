@@ -18,6 +18,9 @@ class SfmlAudio: public AAudio {
         size_t createSound(const std::string &path) override;
         size_t createMusic(const std::string &path) override;
 
+        void updateSound(size_t id, const std::string &path) override;
+        void updateMusic(size_t id, const std::string &path) override;
+
         void playSound(size_t id) override;
         void playMusic(size_t id) override;
 
@@ -29,6 +32,7 @@ class SfmlAudio: public AAudio {
 
     protected:
     private:
-        std::unordered_map<size_t, sf::Sound> _sounds;
+        std::unordered_map<size_t, std::shared_ptr<sf::Sound>> _sounds;
+        std::unordered_map<size_t, std::shared_ptr<sf::SoundBuffer>> _soundBuffers;
         std::unordered_map<size_t, std::shared_ptr<sf::Music>> _musics;
 };

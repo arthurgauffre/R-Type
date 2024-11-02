@@ -29,6 +29,9 @@ class IAudio {
         virtual size_t createSound(const std::string &path) = 0;
         virtual size_t createMusic(const std::string &path) = 0;
 
+        virtual void updateSound(size_t id, const std::string &path) = 0;
+        virtual void updateMusic(size_t id, const std::string &path) = 0;
+
         virtual void playSound(size_t id) = 0;
         virtual void playMusic(size_t id) = 0;
 
