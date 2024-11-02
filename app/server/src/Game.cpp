@@ -13,7 +13,6 @@ Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
     _structureCreated = false;
     _waveNumber = 0;
     _waveInterval = 0;
-    _spawnInterval = 0;
 }
 
 Game::~Game()
@@ -391,6 +390,19 @@ void Game::init()
             this->_waveInterval = waveInterval;
             this->_waveNumber = waveNumber;
         }
+
+        // init spawnclocks
+        // if (this->getConfig().contains("structure") && this->getConfig()["structure"].is_array())
+        // {
+        //     for (const auto &structure : this->getConfig()["structure"])
+        //     {
+        //         if (structure.contains("timer"))
+        //         {
+                    
+        //         }
+        //     }
+        // }
+
     }
     catch (const std::exception &e)
     {
@@ -461,7 +473,7 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
     if (msg == "play")
     {
         _isStarted = true;
-        _spawnClock.restart();
+        // _spawnClock.restart();
         _waveClock.restart();
         if (_playersScenes[numClient] == Scene::GAME)
             return;
@@ -576,7 +588,7 @@ void Game::resetInput()
             if (_engine->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID()))
             {
                 component::VelocityComponent *velocityComponent = _engine->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID());
-                if ((velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0) && _inputClock.getElapsedTime().asSeconds() > 0.1)
+                if ((velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0) && _inputClock.getElapsedTime() > 0.1)
                 {
                     velocityComponent->setActualVelocityX(0);
                     velocityComponent->setActualVelocityY(0);
@@ -594,7 +606,7 @@ void Game::run()
     while (1)
     {
         _engine->update();
-        if (_waveNumber != 0 && _waveClock.getElapsedTime().asSeconds() > _waveInterval && _isStarted)
+        if (_waveNumber != 0 && _waveClock.getElapsedTime() > _waveInterval && _isStarted)
         {
             const auto &config = getConfig();
 
@@ -610,20 +622,30 @@ void Game::run()
             _waveClock.restart();
         }
 
-        if (!_structureCreated)
-        {
-            const auto &config = getConfig();
+        // if (!_structureCreated && _isStarted)
+        // {
+        //     const auto &config = getConfig();
 
-            if (config.contains("structure") && config["structure"].is_array())
-            {
-                for (const auto &structure : config["structure"])
-                    this->createStructure(structure);
-            }
-            else
-                std::cerr << "Warning: 'structure' not found or is not an array in config." << std::endl;
-
-            _structureCreated = true;
-        }
+        //     if (config.contains("structure") && config["structure"].is_array())
+        //     {
+        //         for (const auto &structure : config["structure"])
+        //         {
+        //             if (structure.contains("timer"))
+        //             {
+        //                 float timer = structure["timer"];
+        //                 if (_spawnClock.getElapsedTime() > timer)
+        //                 {
+        //                     this->createStructure(structure);
+        //                     _createdStructure++;
+        //                 }
+        //             }
+        //         }
+        //         if (_createdStructure == config["structure"].size())
+        //             _structureCreated = true;
+        //     }
+        //     else
+        //         std::cerr << "Warning: 'structure' not found or is not an array in config." << std::endl;
+        // }
 
         if (!_engine->msgReceived.empty())
         {

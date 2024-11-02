@@ -12,6 +12,7 @@
 #include <iostream>
 #include <limits.h>
 #include <memory>
+#include <Clock.hpp>
 #include <r-type/Entity.hpp>
 #include <r-type/IRtypeEngine.hpp>
 #include <r-type/ISystem.hpp>
@@ -56,7 +57,7 @@ public:
 
   std::vector<std::pair<std::string, std::pair<size_t, size_t>>> msgReceived;
   std::vector<std::pair<Action, size_t>> msgToSend;
-  sf::Clock clock;
+  rtype::Clock clock;
   std::mutex _entityMutex;
   std::shared_ptr<IGraphic> _graphic;
 

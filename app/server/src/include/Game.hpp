@@ -8,6 +8,7 @@
 #pragma once
 
 #include <RtypeEngine.hpp>
+#include <Clock.hpp>
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <cmath>
@@ -49,15 +50,15 @@ protected:
 private:
     int _waveNumber;
     std::shared_ptr<rtype::RtypeEngine> _engine;
-    sf::Clock _inputClock;
-    sf::Clock _waveClock;
-    sf::Clock _spawnClock;
+    rtype::Clock _inputClock;
+    rtype::Clock _waveClock;
+    std::vector<std::chrono::time_point<std::chrono::system_clock>> _spawnClocks;
     std::unordered_map<size_t, entity::IEntity *> _players;
     std::unordered_map<size_t, Scene> _playersScenes;
     std::unordered_map<int, std::pair<entity::IEntity *, std::string>> _playersFilters;
-    float _spawnInterval;
     float _waveInterval;
     nlohmann::json _config;
     bool _isStarted;
     bool _structureCreated;
+    int _createdStructure;
 };

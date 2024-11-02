@@ -185,7 +185,7 @@ void game::GameLoop::run()
 
 void game::GameLoop::update()
 {
-    float deltaTime = _clock.restart().asSeconds();
+    float deltaTime = _clock.restart();
     _systemManager.update(deltaTime, _entityManager.getEntities());
 }
 ```

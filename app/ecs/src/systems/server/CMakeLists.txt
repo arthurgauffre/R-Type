@@ -4,6 +4,7 @@ find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
 add_library(r-type_server_system SHARED
     ServerSystem.cpp
+    ../../Clock.cpp
     ../../managers/system/SystemManager.cpp
     ../../managers/component/ComponentManager.cpp
     ../../managers/entity/EntityManager.cpp
