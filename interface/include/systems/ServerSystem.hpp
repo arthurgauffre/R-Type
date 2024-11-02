@@ -965,10 +965,8 @@ namespace rtype
       void handleMsgToSend(std::pair<Action, size_t> msgToSend)
       {
         std::cout << "Handling message to send" << std::endl;
-        if (msgToSend.first == Action::MENU) {
-          queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
+        if (msgToSend.first == Action::MENU)
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
-        }
         else if (msgToSend.first == Action::GAME)
           SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
         else if (msgToSend.first == Action::KEYBIND)

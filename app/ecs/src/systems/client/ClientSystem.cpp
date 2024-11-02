@@ -66,7 +66,6 @@ namespace rtype
       {
         std::cout << "Menu CREATED IN ON THE CLIENT SIDE" << std::endl;
         _sceneStatus = std::make_shared<Scene>(Scene::MENU);
-        sendAckMessage();
       }
       break;
       case NetworkMessages::game:
