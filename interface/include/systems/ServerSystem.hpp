@@ -59,10 +59,10 @@ namespace rtype
     {
     public:
       ServerSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
           : rtype::network::IServer<NetworkMessages>(), ECS_system::ASystem(
                                                             componentManager,
-                                                            entityManager, graphic, stringCom),
+                                                            entityManager, graphic, audio, stringCom),
             _componentManager(componentManager), _entityManager(entityManager), asioSocket(asioContext,
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {

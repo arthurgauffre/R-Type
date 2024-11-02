@@ -16,8 +16,6 @@ add_library(r-type_weapon_system SHARED
     ../../entity/Entity.cpp
 )
 
-target_include_directories(r-type_weapon_system PRIVATE ${SFML_INCLUDE_DIR})
-
 target_link_libraries(
     r-type_weapon_system
     r-type_interfaces

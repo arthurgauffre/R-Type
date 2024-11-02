@@ -462,11 +462,11 @@ namespace rtype
         if (_stringCom.soundPath.find(sound.soundPath) == _stringCom.soundPath.end())
           _componentManager
               .addComponent<component::SoundComponent>(
-                  id.id, _stringCom.soundPath[SoundPath::Unknown]);
+                  id.id, _stringCom.soundPath[SoundPath::Unknown], _audio);
         else
           _componentManager
               .addComponent<component::SoundComponent>(
-                  id.id, _stringCom.soundPath[sound.soundPath]);
+                  id.id, _stringCom.soundPath[sound.soundPath], _audio);
         _componentManager.getComponent<component::SoundComponent>(id.id)->setShouldPlay(sound.play);
       }
       break;
@@ -498,11 +498,11 @@ namespace rtype
         if (_stringCom.soundPath.find(music.soundPath) == _stringCom.soundPath.end())
           _componentManager
               .addComponent<component::MusicComponent>(
-                  id.id, _stringCom.soundPath[SoundPath::Unknown]);
+                  id.id, _stringCom.soundPath[SoundPath::Unknown], _audio);
         else
           _componentManager
               .addComponent<component::MusicComponent>(
-                  id.id, _stringCom.soundPath[music.soundPath]);
+                  id.id, _stringCom.soundPath[music.soundPath], _audio);
         _componentManager.getComponent<component::MusicComponent>(id.id)->setShouldPlay(music.play);
       }
       break;
@@ -621,9 +621,9 @@ namespace rtype
     }
 
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
-                                                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+                                                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
     {
-      return new rtype::network::ClientSystem(componentManager, entityManager, graphic, stringCom);
+      return new rtype::network::ClientSystem(componentManager, entityManager, graphic, audio, stringCom);
     }
   } // namespace network
 } // namespace rtype

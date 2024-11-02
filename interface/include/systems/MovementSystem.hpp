@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <SFML/System/Time.hpp>
 #include <components/SizeComponent.hpp>
 #include <components/TransformComponent.hpp>
 #include <components/TypeComponent.hpp>
@@ -28,8 +27,8 @@ public:
    *                         all components in the ECS.
    */
   MovementSystem(component::ComponentManager &componentManager,
-                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-      : ASystem(componentManager, entityManager, graphic, stringCom) {}
+                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+      : ASystem(componentManager, entityManager, graphic, audio, stringCom) {}
 
   /**
    * @brief Default destructor for the MovementSystem class.

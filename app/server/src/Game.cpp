@@ -37,7 +37,7 @@ entity::IEntity *Game::createWeapon(uint32_t parentID, nlohmann::json &weapon)
         _engine->getEntityManager()->generateEntityID(), -1);
 
     _engine->getComponentManager()->addComponent<component::SoundComponent>(
-        weaponEntity->getID(), "app/assets/musics/blaster.wav");
+        weaponEntity->getID(), "app/assets/musics/blaster.wav", _engine->_audio);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         weaponEntity->getID(), Type::WEAPON);
     _engine->getComponentManager()->addComponent<component::ParentComponent>(
@@ -81,7 +81,7 @@ entity::IEntity *Game::createBackground()
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         background1->getID(), Type::BACKGROUND);
     _engine->getComponentManager()->addComponent<component::MusicComponent>(
-        background1->getID(), "app/assets/musics/dancin.ogg");
+        background1->getID(), "app/assets/musics/dancin.ogg", _engine->_audio);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
         background1->getID(), std::pair<float, float>(0, 0));
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
@@ -474,19 +474,19 @@ void Game::init()
     entity::EntityManager &entityManager = *_engine->getEntityManager();
 
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "movement", _engine->_graphic, stringCom);
+                                           "movement", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "server", _engine->_graphic, stringCom);
+                                           "server", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "cooldown", _engine->_graphic, stringCom);
+                                           "cooldown", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "weapon", _engine->_graphic, stringCom);
+                                           "weapon", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "ai", _engine->_graphic, stringCom);
+                                           "ai", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "collision", _engine->_graphic, stringCom);
+                                           "collision", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "health", _engine->_graphic, stringCom);
+                                               "health", _engine->_graphic, _engine->_audio, stringCom);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "game", _engine->_graphic);
 }

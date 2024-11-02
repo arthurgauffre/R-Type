@@ -12,7 +12,7 @@
 int main(void)
 {
   std::shared_ptr<rtype::RtypeEngine> engine =
-      std::make_shared<rtype::RtypeEngine>("sfml");
+      std::make_shared<rtype::RtypeEngine>("sfml", "sfml");
   Game game(engine);
   game.init();
   game.run();

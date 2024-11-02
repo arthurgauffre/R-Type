@@ -21,11 +21,10 @@
  * @throws std::runtime_error If the sound file cannot be loaded.
  */
 component::SoundComponent::SoundComponent(uint32_t entityID,
-                                          const std::string &soundFilePath)
+                                          const std::string &soundFilePath,
+                                          std::shared_ptr<IAudio> audio)
     : AComponent(entityID) {
-  if (!_soundBuffer.loadFromFile(soundFilePath))
-    throw std::runtime_error("Failed to load sound from file");
-  _sound.setBuffer(_soundBuffer);
+  _sound = audio->createSound(soundFilePath);
   _shouldPlay = false;
   _soundFilePath = soundFilePath;
 }

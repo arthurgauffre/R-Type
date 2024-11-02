@@ -28,7 +28,7 @@ public:
    * @param stringCom String communication object for handling string-based messages.
    */
   HealthSystem(component::ComponentManager &componentManager,
-               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
+               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom);
 
   /**
    * @brief Destructor for the HealthSystem class.

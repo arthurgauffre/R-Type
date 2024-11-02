@@ -12,8 +12,8 @@ namespace ECS_system
     ButtonSystem::ButtonSystem(
         component::ComponentManager &componentManager,
         entity::EntityManager &entityManager,
-        std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-        : ASystem(componentManager, entityManager, graphic, stringCom)
+        std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+        : ASystem(componentManager, entityManager, graphic, audio, stringCom)
     {
     }
 
@@ -235,7 +235,7 @@ namespace ECS_system
  */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
 {
-    return new ECS_system::ButtonSystem(componentManager, entityManager, graphic, stringCom);
+    return new ECS_system::ButtonSystem(componentManager, entityManager, graphic, audio, stringCom);
 }

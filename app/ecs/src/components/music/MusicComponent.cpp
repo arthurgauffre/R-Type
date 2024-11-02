@@ -20,9 +20,9 @@
  * @throws std::runtime_error If the music file cannot be loaded.
  */
 component::MusicComponent::MusicComponent(uint32_t entityID,
-                                          const std::string &soundFilePath)
+                                          const std::string &soundFilePath,
+                                          std::shared_ptr<IAudio> audio)
     : AComponent(entityID) {
   _soundFilePath = soundFilePath;
-  if (!_music.openFromFile(soundFilePath))
-    throw std::runtime_error("Failed to load music from file");
+  _music = audio->createMusic(soundFilePath);
 }

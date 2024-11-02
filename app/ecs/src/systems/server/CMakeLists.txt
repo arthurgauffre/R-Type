@@ -1,7 +1,5 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
-
 add_library(r-type_server_system SHARED
     ServerSystem.cpp
     ../../Clock.cpp
@@ -29,10 +27,7 @@ add_library(r-type_server_system SHARED
     ../../entity/Entity.cpp
 )
 
-target_include_directories(r-type_server_system PRIVATE ${SFML_INCLUDE_DIR})
-
 target_link_libraries(
     r-type_server_system
     r-type_interfaces
-    sfml-graphics
 )

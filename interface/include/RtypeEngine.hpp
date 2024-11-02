@@ -40,6 +40,7 @@
 #include <components/TextComponent.hpp>
 
 #include <r-type/IGraphic.hpp>
+#include <r-type/IAudio.hpp>
 #include <r-type/Enum.hpp>
 
 namespace rtype {
@@ -50,7 +51,7 @@ public:
  *
  * @param graphicName The name of the graphic to be used by the engine.
  */
-  RtypeEngine(std::string graphicName);
+  RtypeEngine(std::string graphicName, std::string audioName);
 
 /**
  * @brief Destructor for the RtypeEngine class.
@@ -137,6 +138,8 @@ public:
  * management and shared ownership.
  */
   std::shared_ptr<IGraphic> _graphic;
+
+  std::shared_ptr<IAudio> _audio;
 
   template <typename T> class DLLoader {
   public:
@@ -261,6 +264,34 @@ public:
       FuncPtr createFunc = reinterpret_cast<FuncPtr>(
           sym);
       IGraphic *graphic = createFunc();
+      return graphic;
+    }
+
+    IAudio *getAudio(const std::string &funcName) {
+      using FuncPtr =
+          IAudio *(*)();
+      void *sym;
+
+#ifdef _WIN32
+      sym = GetProcAddress(static_cast<HMODULE>(handle), funcName.c_str());
+#else
+      sym = dlsym(handle, funcName.c_str());
+#endif
+
+      if (!sym) {
+#ifdef _WIN32
+        std::cerr << "Error getting symbol: " << funcName
+                  << " Error: " << GetLastError() << std::endl;
+#else
+        std::cerr << dlerror()
+                  << std::endl;
+#endif
+        exit(1);
+      }
+
+      FuncPtr createFunc = reinterpret_cast<FuncPtr>(
+          sym);
+      IAudio *graphic = createFunc();
       return graphic;
     }
 

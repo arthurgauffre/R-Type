@@ -18,6 +18,7 @@ function fclean() {
     rm -rf $buildDirectory
     rm -f $libDirectory/systems/*.so
     rm -f $libDirectory/graphics/*.so
+    rm -f $libDirectory/audio/*.so
 }
 
 function compile() {

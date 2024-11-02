@@ -30,8 +30,8 @@ namespace ECS_system
          * @param stringCom StringCom object.
          */
         AISytem(component::ComponentManager &componentManager,
-                entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-            : ASystem(componentManager, entityManager, graphic, stringCom) {}
+                entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+            : ASystem(componentManager, entityManager, graphic, audio, stringCom) {}
 
         /**
          * @brief Default destructor for the AISystem class.
