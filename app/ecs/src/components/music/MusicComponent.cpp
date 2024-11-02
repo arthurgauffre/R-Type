@@ -22,6 +22,7 @@
 component::MusicComponent::MusicComponent(uint32_t entityID,
                                           const std::string &soundFilePath)
     : AComponent(entityID) {
+  _soundFilePath = soundFilePath;
   if (!_music.openFromFile(soundFilePath))
     throw std::runtime_error("Failed to load music from file");
 }

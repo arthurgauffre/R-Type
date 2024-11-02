@@ -686,6 +686,62 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteTextMsg(entity->getID()), clientToIgnore);
             }
           }
+          if (_componentManager.getComponent<component::SoundComponent>(entity->getID()))
+          {
+            component::SoundComponent *component =
+                _componentManager.getComponent<component::SoundComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto soundKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+              if (soundKey)
+                SendMessageToAllClients(networkMessageFactory.createSoundMsg(entity->getID(), *soundKey, component->getShouldPlay()), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.createSoundMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto soundKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+              if (soundKey)
+                SendMessageToAllClients(networkMessageFactory.updateSoundMsg(entity->getID(), *soundKey, component->getShouldPlay()), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.updateSoundMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteSoundMsg(entity->getID()), clientToIgnore);
+            }
+          }
+          if (_componentManager.getComponent<component::MusicComponent>(entity->getID()))
+          {
+            component::MusicComponent *component =
+                _componentManager.getComponent<component::MusicComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto musicKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+              if (musicKey)
+                SendMessageToAllClients(networkMessageFactory.createMusicMsg(entity->getID(), *musicKey, component->getShouldPlay()), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.createMusicMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto musicKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+              if (musicKey)
+                SendMessageToAllClients(networkMessageFactory.updateMusicMsg(entity->getID(), *musicKey, component->getShouldPlay()), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.updateMusicMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteMusicMsg(entity->getID()), clientToIgnore);
+            }
+          }
         }
         if (transform)
         {
@@ -854,6 +910,26 @@ namespace rtype
             {
               SendMessageToClient(networkMessageFactory.createOnClickMsg(entity->getID(), component->getNumClient(), component->getAction()), client);
             }
+          }
+          if (_componentManager.getComponent<component::SoundComponent>(entity->getID()))
+          {
+            component::SoundComponent *component =
+                _componentManager.getComponent<component::SoundComponent>(entity->getID());
+            auto soundKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+            if (soundKey)
+              SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(), *soundKey, component->getShouldPlay()), client);
+            else
+              SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), client);
+          }
+          if (_componentManager.getComponent<component::MusicComponent>(entity->getID()))
+          {
+            component::MusicComponent *component =
+                _componentManager.getComponent<component::MusicComponent>(entity->getID());
+            auto musicKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+            if (musicKey)
+              SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(), *musicKey, component->getShouldPlay()), client);
+            else
+              SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), client);
           }
         }
       }

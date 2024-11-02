@@ -37,6 +37,7 @@ struct StringCom {
   std::unordered_map<TexturePath, std::string> texturePath;
   std::unordered_map<TextFont, std::string> textFont;
   std::unordered_map<TextString, std::string> textString;
+  std::unordered_map<SoundPath, std::string> soundPath;
 };
 class ISystem {
 public:

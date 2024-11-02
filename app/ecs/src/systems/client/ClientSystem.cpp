@@ -452,6 +452,74 @@ namespace rtype
                   id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _graphic);
       }
       break;
+      case NetworkMessages::createSound:
+      {
+        SoundComponent sound;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&sound, msg.body.data() + sizeof(EntityId),
+                    sizeof(SoundComponent));
+        if (_stringCom.soundPath.find(sound.soundPath) == _stringCom.soundPath.end())
+          _componentManager
+              .addComponent<component::SoundComponent>(
+                  id.id, _stringCom.soundPath[SoundPath::Unknown]);
+        else
+          _componentManager
+              .addComponent<component::SoundComponent>(
+                  id.id, _stringCom.soundPath[sound.soundPath]);
+        _componentManager.getComponent<component::SoundComponent>(id.id)->setShouldPlay(sound.play);
+      }
+      break;
+      case NetworkMessages::updateSound:
+      {
+        SoundComponent sound;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&sound, msg.body.data() + sizeof(EntityId),
+                    sizeof(SoundComponent));
+        component::SoundComponent *component =
+            _componentManager.getComponent<component::SoundComponent>(id.id);
+        if (!component)
+          return;
+        component->setShouldPlay(sound.play);
+      }
+      break;
+      case NetworkMessages::createMusic:
+      {
+        SoundComponent music;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&music, msg.body.data() + sizeof(EntityId),
+                    sizeof(SoundComponent));
+        if (music.soundPath == SoundPath::Shoot)
+          std::cout << "Music shoot play" << std::endl;
+        if (music.soundPath == SoundPath::Unknown)
+          std::cout << "Music unknown play" << std::endl;
+        if (_stringCom.soundPath.find(music.soundPath) == _stringCom.soundPath.end())
+          _componentManager
+              .addComponent<component::MusicComponent>(
+                  id.id, _stringCom.soundPath[SoundPath::Unknown]);
+        else
+          _componentManager
+              .addComponent<component::MusicComponent>(
+                  id.id, _stringCom.soundPath[music.soundPath]);
+        _componentManager.getComponent<component::MusicComponent>(id.id)->setShouldPlay(music.play);
+      }
+      break;
+      case NetworkMessages::updateMusic:
+      {
+        SoundComponent music;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&music, msg.body.data() + sizeof(EntityId),
+                    sizeof(SoundComponent));
+        component::MusicComponent *component =
+            _componentManager.getComponent<component::MusicComponent>(id.id);
+        if (!component)
+          return;
+        component->setShouldPlay(music.play);
+      }
+      break;
       }
     }
 

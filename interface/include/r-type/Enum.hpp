@@ -91,6 +91,13 @@ enum class TextString : uint32_t
     Unknown,
 };
 
+enum class SoundPath : uint32_t
+{
+    Shoot,
+    BackgroundMusic,
+    Unknown,
+};
+
 enum class Type
 {
     PLAYER,

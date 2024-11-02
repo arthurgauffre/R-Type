@@ -435,6 +435,8 @@ void Game::init()
   stringCom.textString[TextString::D] = "D";
   stringCom.textString[TextString::Space] = "Space";
   stringCom.textString[TextString::PressKey] = "Press a key";
+  stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/testSong.wav";
+  stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/testSong.wav";
 
 
     try

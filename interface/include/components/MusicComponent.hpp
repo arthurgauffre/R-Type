@@ -80,10 +80,20 @@ public:
    */
   void setLoop(bool loop) { _music.setLoop(loop); }
 
+  void setShouldPlay(bool shouldPlay) { _shouldPlay = shouldPlay; }
+
+  bool getShouldPlay() { return _shouldPlay; }
+
+  std::string getPath() { return _soundFilePath; }
+
 private:
   /**
    * @brief Represents the music object.
    */
   sf::Music _music;
+
+  bool _shouldPlay;
+
+  std::string _soundFilePath;
 };
 } // namespace component

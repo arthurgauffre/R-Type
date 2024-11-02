@@ -27,4 +27,5 @@ component::SoundComponent::SoundComponent(uint32_t entityID,
     throw std::runtime_error("Failed to load sound from file");
   _sound.setBuffer(_soundBuffer);
   _shouldPlay = false;
+  _soundFilePath = soundFilePath;
 }

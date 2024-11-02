@@ -68,6 +68,8 @@ public:
    */
   bool getShouldPlay() { return _shouldPlay; }
 
+  std::string getPath() { return _soundFilePath; }
+
 private:
   /**
    * @brief Holds the sound buffer data for the sound component.
@@ -97,5 +99,7 @@ private:
    * play; when set to false, the sound will not play.
    */
   bool _shouldPlay;
+
+  std::string _soundFilePath;
 };
 } // namespace component

@@ -116,10 +116,13 @@ void ECS_system::WeaponSystem::update(
 
             if (entityType == Type::PLAYER)
             {
-                // _componentManager
-                //     .getComponent<component::SoundComponent>(
-                //         weaponComponent->getWeaponEntityID())
-                //     ->setShouldPlay(true);
+                component::SoundComponent *soundComponent =
+                    _componentManager.getComponent<component::SoundComponent>(
+                        weaponComponent->getWeaponEntityID());
+                if (soundComponent) {
+                    soundComponent->setShouldPlay(true);
+                    soundComponent->setCommunication(component::ComponentCommunication::UPDATE);
+                }
                 weaponComponent->setIsFiring(false);
             }
         }

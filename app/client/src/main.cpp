@@ -35,6 +35,8 @@ int main(void)
   stringCom.textString[TextString::D] = "D";
   stringCom.textString[TextString::Space] = "Space";
   stringCom.textString[TextString::PressKey] = "Press a key";
+  stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/testSong.wav";
+  stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/testSong.wav";
 
   std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
 
@@ -46,6 +48,7 @@ int main(void)
   engine->getSystemManager()->addSystem(componentManager, entityManager, "button", engine->_graphic, stringCom);
   engine->getSystemManager()->addSystem(componentManager, entityManager, "input", engine->_graphic, stringCom);
   engine->getSystemManager()->addSystem(componentManager, entityManager, "client", engine->_graphic, stringCom);
+  engine->getSystemManager()->addSystem(componentManager, entityManager, "audio", engine->_graphic, stringCom);
 
   engine->run();
   return 0;
