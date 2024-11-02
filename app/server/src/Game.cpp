@@ -718,7 +718,7 @@ void Game::run()
 
         if (_players.size() == 0 && _isStarted)
         {
-            _isStarted = false;
+            std::cout << "No more players" << std::endl;
         }
         if (_players.size() != 0 && _waveNumber == 0 && _isStarted)
         {
