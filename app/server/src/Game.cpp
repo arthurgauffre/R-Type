@@ -155,12 +155,9 @@ entity::IEntity *Game::createPlayer(int numClient)
     std::pair<float, float> scale = std::pair<float, float>(_config["player"]["scale"]["x"], _config["player"]["scale"]["y"]);
     int health = _config["player"]["health"];
 
-    int weaponDamage = _config["player"]["weapon"]["damage"];
-    float weaponCooldown = _config["player"]["weapon"]["cooldown"];
-
     entity::IEntity *player = _engine->getEntityManager()->createEntity(entityID, -1);
 
-    if (_config["player"].contains("weapon") == true)
+    if (_config["player"].contains("weapon"))
     {
         entity::IEntity *weapon = createWeapon(entityID, _config["player"]["weapon"]);
         float speed = _config["player"]["weapon"]["speed"];
