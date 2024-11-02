@@ -93,6 +93,7 @@ namespace rtype
         this->ServerUpdate(100, false);
         while (!_msgReceived.empty())
         {
+          // std::cout << "size of msgReceived : " << _msgReceived.size() << std::endl;
           msgReceived.emplace_back(_msgReceived.back());
           _msgReceived.pop_back();
         }
@@ -176,6 +177,11 @@ namespace rtype
         case Action::MENU:
         {
           _msgReceived.emplace_back(std::make_pair("menu", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::KEYBIND:
+        {
+          _msgReceived.emplace_back(std::make_pair("keyBind", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::PROTANOPIA:
@@ -965,6 +971,8 @@ namespace rtype
         }
         else if (msgToSend.first == Action::GAME)
           SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
+        else if (msgToSend.first == Action::KEYBIND)
+          SendMessageToClient(networkMessageFactory.createKeyBindMsg(), deqConnections[msgToSend.second]);
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;

@@ -95,6 +95,15 @@ public:
     void createMenu(int numClient);
 
     /**
+     * @brief Creates a key binding for a client.
+     * 
+     * This function sets up the key bindings for a specific client identified by the given client number.
+     * 
+     * @param numClient The identifier for the client for whom the key bindings are being created.
+     */
+    void createKeyBind(int numClient);
+
+    /**
      * @brief Creates a structure entity with the specified parameters.
      *
      * @param entityID The unique identifier for the entity.

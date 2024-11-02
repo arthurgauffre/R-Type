@@ -21,6 +21,18 @@ int main(void)
   stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
   stringCom.textString[TextString::Tritanopia] = "Tritanopia";
   stringCom.textString[TextString::ClearFilter] = "Clear Filter";
+  stringCom.textString[TextString::KeyBind] = "Key Bind";
+  stringCom.textString[TextString::Menu] = "Menu";
+  stringCom.textString[TextString::MoveUp] = "Move Up";
+  stringCom.textString[TextString::MoveDown] = "Move Down";
+  stringCom.textString[TextString::MoveLeft] = "Move Left";
+  stringCom.textString[TextString::MoveRight] = "Move Right";
+  stringCom.textString[TextString::Shoot] = "Shoot";
+  stringCom.textString[TextString::Z] = "Z";
+  stringCom.textString[TextString::S] = "S";
+  stringCom.textString[TextString::Q] = "Q";
+  stringCom.textString[TextString::D] = "D";
+  stringCom.textString[TextString::Space] = "Space";
 
   std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
 

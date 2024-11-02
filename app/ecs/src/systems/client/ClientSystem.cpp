@@ -73,6 +73,12 @@ namespace rtype
       {
         _sceneStatus = std::make_shared<Scene>(Scene::GAME);
       }
+      break;
+      case NetworkMessages::keyBind:
+      {
+        _sceneStatus = std::make_shared<Scene>(Scene::KEYBIND);
+      }
+      break;
       case NetworkMessages::createEntity:
       {
         EntityStruct entityId;

@@ -82,6 +82,7 @@ enum class NetworkMessages : uint32_t {
   acknowledgementMesage,
   menu,
   game,
+  keyBind,
   action,
   none,
 };

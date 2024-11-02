@@ -15,6 +15,7 @@ enum class Scene : uint32_t
     GAMEOVER,
     SETTINGS,
     LOADING,
+    KEYBIND,
     ALL,
     NONE
 };
@@ -27,6 +28,7 @@ enum class Action : uint32_t
     MOVE_RIGHT,
     SHOOT,
     MENU,
+    KEYBIND,
     PLAY,
     GAME,
     PROTANOPIA,
@@ -67,6 +69,18 @@ enum class TextString : uint32_t
     Deuteranopia,
     Tritanopia,
     ClearFilter,
+    KeyBind,
+    Menu,
+    MoveUp,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+    Shoot,
+    Z,
+    S,
+    Q,
+    D,
+    Space,
     Unknown,
 };
 

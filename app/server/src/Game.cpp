@@ -283,11 +283,50 @@ void Game::createMenu(int numClient)
     entity::IEntity *buttonDeuteranopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 110.0f), std::pair<float, float>(70.0f, 300.0f), Action::DEUTERANOPIA, numClient, "Deuteranopia");
     entity::IEntity *buttonTritanopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 200.0f), std::pair<float, float>(70.0f, 300.0f), Action::TRITANOPIA, numClient, "Tritanopia");
     entity::IEntity *buttonClearFilter = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 290.0f), std::pair<float, float>(70.0f, 300.0f), Action::CLEARFILTER, numClient, "Clear Filter");
+    entity::IEntity *buttonKeyBind = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 930.0f), std::pair<float, float>(70.0f, 200.0f), Action::KEYBIND, numClient, "Key Bind");
+
     buttonPlay->setSceneStatus(Scene::MENU);
     buttonProtanopia->setSceneStatus(Scene::MENU);
     buttonDeuteranopia->setSceneStatus(Scene::MENU);
     buttonTritanopia->setSceneStatus(Scene::MENU);
     buttonClearFilter->setSceneStatus(Scene::MENU);
+    buttonKeyBind->setSceneStatus(Scene::MENU);
+}
+
+void Game::createKeyBind(int numClient)
+{
+    entity::IEntity *buttonMoveUp = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 20.0f), std::pair<float, float>(70.0f, 300.0f), Action::MOVE_UP, numClient, "Move Up");
+    entity::IEntity *buttonMoveDown = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 110.0f), std::pair<float, float>(70.0f, 300.0f), Action::MOVE_DOWN, numClient, "Move Down");
+    entity::IEntity *buttonMoveLeft = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 200.0f), std::pair<float, float>(70.0f, 300.0f), Action::MOVE_LEFT, numClient, "Move Left");
+    entity::IEntity *buttonMoveRight = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 290.0f), std::pair<float, float>(70.0f, 300.0f), Action::MOVE_RIGHT, numClient, "Move Right");
+    entity::IEntity *buttonShoot = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 380.0f), std::pair<float, float>(70.0f, 300.0f), Action::SHOOT, numClient, "Shoot");
+    entity::IEntity *buttonMenu = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 470.0f), std::pair<float, float>(70.0f, 300.0f), Action::MENU, numClient, "Menu");
+    entity::IEntity *buttonPlay = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(860.0f, 700.0f), std::pair<float, float>(70.0f, 200.0f), Action::PLAY, numClient, "Play");
+
+    entity::IEntity *textKeyMoveUp = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyMoveUp->getID(), std::pair<float, float>(320.0f, 20.0f), "Z", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    entity::IEntity *textKeyMoveDown = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyMoveDown->getID(), std::pair<float, float>(320.0f, 110.0f), "S", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    entity::IEntity *textKeyMoveLeft = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyMoveLeft->getID(), std::pair<float, float>(320.0f, 200.0f), "Q", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    entity::IEntity *textKeyMoveRight = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyMoveRight->getID(), std::pair<float, float>(320.0f, 290.0f), "D", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    entity::IEntity *textKeyShoot = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyShoot->getID(), std::pair<float, float>(320.0f, 380.0f), "Space", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+
+    buttonMoveUp->setSceneStatus(Scene::KEYBIND);
+    buttonMoveDown->setSceneStatus(Scene::KEYBIND);
+    buttonMoveLeft->setSceneStatus(Scene::KEYBIND);
+    buttonMoveRight->setSceneStatus(Scene::KEYBIND);
+    buttonShoot->setSceneStatus(Scene::KEYBIND);
+    buttonMenu->setSceneStatus(Scene::KEYBIND);
+    buttonPlay->setSceneStatus(Scene::KEYBIND);
+
+    textKeyMoveUp->setSceneStatus(Scene::KEYBIND);
+    textKeyMoveDown->setSceneStatus(Scene::KEYBIND);
+    textKeyMoveLeft->setSceneStatus(Scene::KEYBIND);
+    textKeyMoveRight->setSceneStatus(Scene::KEYBIND);
+    textKeyShoot->setSceneStatus(Scene::KEYBIND);
 }
 
 entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePath,
@@ -371,6 +410,19 @@ void Game::init()
   stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
   stringCom.textString[TextString::Tritanopia] = "Tritanopia";
   stringCom.textString[TextString::ClearFilter] = "Clear Filter";
+  stringCom.textString[TextString::KeyBind] = "Key Bind";
+  stringCom.textString[TextString::Menu] = "Menu";
+  stringCom.textString[TextString::MoveUp] = "Move Up";
+  stringCom.textString[TextString::MoveDown] = "Move Down";
+  stringCom.textString[TextString::MoveLeft] = "Move Left";
+  stringCom.textString[TextString::MoveRight] = "Move Right";
+  stringCom.textString[TextString::Shoot] = "Shoot";
+  stringCom.textString[TextString::Z] = "Z";
+  stringCom.textString[TextString::S] = "S";
+  stringCom.textString[TextString::Q] = "Q";
+  stringCom.textString[TextString::D] = "D";
+  stringCom.textString[TextString::Space] = "Space";
+
 
     try
     {
@@ -427,7 +479,7 @@ entity::IEntity *Game::addFilter(std::string filter, int numClient)
     filterEntity->setSceneStatus(Scene::ALL);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(filterEntity->getID(), std::pair<float, float>(0, 0), std::pair<float, float>(1, 1));
     _engine->getComponentManager()->addComponent<component::TypeComponent>(filterEntity->getID(), Type::FILTER);
-    std::cout << "Filter added with id: " << filterEntity->getID() << "and a numClient of: " << numClient << std::endl;
+    // std::cout << "Filter added with id: " << filterEntity->getID() << "and a numClient of: " << numClient << std::endl;
     return filterEntity;
 }
 
@@ -464,6 +516,14 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
         }
         _playersScenes[numClient] = Scene::GAME;
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::GAME, numClient));
+    }
+    if (msg == "keyBind")
+    {
+        if (_playersScenes[numClient] == Scene::KEYBIND)
+            return;
+        createKeyBind(numClient);
+        _playersScenes[numClient] = Scene::KEYBIND;
+        _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::KEYBIND, numClient));
     }
     if (msg == "protanopia")
     {
