@@ -60,6 +60,17 @@ namespace ECS_system
     }
 }
 
+/**
+ * @brief Factory function to create an AISystem.
+ *
+ * This function is used to create an instance of the AISystem class.
+ *
+ * @param componentManager Reference to the ComponentManager instance.
+ * @param entityManager Reference to the EntityManager instance.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom instance for communication.
+ * @return Pointer to the newly created AISystem instance.
+ */
 extern "C" ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
                                              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
 {

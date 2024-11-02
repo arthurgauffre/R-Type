@@ -168,6 +168,17 @@ void ECS_system::CollisionSystem::update(
   }
 }
 
+/**
+ * @brief Factory function to create a CollisionSystem.
+ *
+ * This function creates a new instance of the CollisionSystem and returns it as a pointer to ISystem.
+ *
+ * @param componentManager Reference to the ComponentManager.
+ * @param entityManager Reference to the EntityManager.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom object for communication.
+ * @return Pointer to the newly created CollisionSystem as an ISystem.
+ */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)

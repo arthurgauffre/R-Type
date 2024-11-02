@@ -38,6 +38,19 @@ public:
    */
   ~RenderSystem() = default;
 
+  /**
+   * @brief Updates the render system.
+   *
+   * This function updates the render system based on the elapsed time, the list of entities,
+   * messages to send, messages received, and the current scene status.
+   *
+   * @param deltaTime The time elapsed since the last update.
+   * @param entities A vector of shared pointers to entities that need to be updated.
+   * @param msgToSend A reference to a vector of pairs containing actions and their corresponding entity IDs to be sent.
+   * @param msgReceived A reference to a vector of pairs containing messages and their corresponding entity IDs received.
+   * @param entityMutex A reference to a mutex for synchronizing access to entities.
+   * @param sceneStatus A shared pointer to the current scene status.
+   */
   void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,

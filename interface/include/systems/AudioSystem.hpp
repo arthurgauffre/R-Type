@@ -34,11 +34,27 @@ public:
    */
   ~AudioSystem() = default;
 
+  /**
+   * @brief Updates the audio system.
+   *
+   * @param deltaTime The time elapsed since the last update.
+   * @param entities A vector of shared pointers to entities that are part of the system.
+   * @param msgToSend A reference to a vector of pairs containing actions and their corresponding entity IDs to be sent.
+   * @param msgReceived A reference to a vector of pairs containing messages and their corresponding sender and receiver IDs.
+   * @param entityMutex A reference to a mutex for synchronizing access to entities.
+   * @param sceneStatus A shared pointer to the current scene status.
+   */
   void
   update(float deltaTime,
          std::vector<std::shared_ptr<entity::IEntity>> entities,
          std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) override;
 
+  /**
+   * @brief Initializes the audio system.
+   *
+   * This method is called to set up any necessary resources or configurations
+   * for the audio system. It overrides the base class implementation.
+   */
   void initialize() override{};
 
   /**

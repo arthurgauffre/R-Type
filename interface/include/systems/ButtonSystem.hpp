@@ -20,10 +20,32 @@ namespace ECS_system
     class ButtonSystem : virtual public ASystem
     {
     public:
+        /**
+         * @brief Constructs a new ButtonSystem object.
+         *
+         * @param componentManager Reference to the ComponentManager instance.
+         * @param entityManager Reference to the EntityManager instance.
+         * @param graphic Shared pointer to an IGraphic instance.
+         * @param stringCom StringCom object.
+         */
         ButtonSystem(component::ComponentManager &componentManager,
                      entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
+
+        /**
+         * @brief Default destructor for the ButtonSystem class.
+         */
         ~ButtonSystem() = default;
 
+        /**
+         * @brief Updates the state of the button system.
+         *
+         * @param deltaTime The time elapsed since the last update.
+         * @param entities A vector of shared pointers to the entities to be updated.
+         * @param msgToSend A reference to a vector of pairs containing actions and their corresponding entity IDs to be sent.
+         * @param msgReceived A reference to a vector of pairs containing messages and their corresponding sender and receiver IDs.
+         * @param entityMutex A reference to a mutex for synchronizing access to entities.
+         * @param sceneStatus A shared pointer to the current scene status.
+         */
         void
         update(float deltaTime,
                std::vector<std::shared_ptr<entity::IEntity>> entities,

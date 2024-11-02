@@ -55,6 +55,17 @@ void ECS_system::CooldownSystem::update(
   }
 }
 
+/**
+ * @brief Factory function to create a new CooldownSystem.
+ *
+ * This function creates and returns a new instance of the CooldownSystem.
+ *
+ * @param componentManager Reference to the ComponentManager.
+ * @param entityManager Reference to the EntityManager.
+ * @param graphic Shared pointer to an IGraphic instance.
+ * @param stringCom StringCom object for system configuration.
+ * @return Pointer to the newly created CooldownSystem.
+ */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
              entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {
