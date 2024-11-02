@@ -196,6 +196,67 @@ bool SfmlGraphic::isKeyPressed(KeyBoard key)
     }
 }
 
+KeyBoard SfmlGraphic::getKeyPressed()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        return KeyBoard::A;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+        return KeyBoard::B;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+        return KeyBoard::C;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        return KeyBoard::D;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+        return KeyBoard::E;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+        return KeyBoard::F;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
+        return KeyBoard::G;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
+        return KeyBoard::H;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::I))
+        return KeyBoard::I;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+        return KeyBoard::J;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+        return KeyBoard::K;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+        return KeyBoard::L;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+        return KeyBoard::M;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+        return KeyBoard::N;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
+        return KeyBoard::O;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+        return KeyBoard::P;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+        return KeyBoard::Q;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+        return KeyBoard::R;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        return KeyBoard::S;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::T))
+        return KeyBoard::T;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
+        return KeyBoard::U;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
+        return KeyBoard::V;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        return KeyBoard::W;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+        return KeyBoard::X;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+        return KeyBoard::Y;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+        return KeyBoard::Z;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        return KeyBoard::Space;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+        return KeyBoard::escape;
+    return KeyBoard::Unknown;
+}
+
 bool SfmlGraphic::isMousePressed()
 {
     return sf::Mouse::isButtonPressed(sf::Mouse::Left);

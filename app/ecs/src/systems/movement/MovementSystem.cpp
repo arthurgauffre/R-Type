@@ -92,6 +92,11 @@ void ECS_system::MovementSystem::update(
       transform->setPreviousPosition({newX, newY});
     }
     transform->setPosition({newX, newY});
+    if (type->getType() == Type::ENEMY)
+    {
+      if (newX < -200 || newX > 2200 || newY < -100 || newY > 1350)
+        entity->setCommunication(entity::EntityCommunication::DELETE);
+    }
   }
 }
 

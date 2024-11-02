@@ -33,6 +33,7 @@ int main(void)
   stringCom.textString[TextString::Q] = "Q";
   stringCom.textString[TextString::D] = "D";
   stringCom.textString[TextString::Space] = "Space";
+  stringCom.textString[TextString::PressKey] = "Press a key";
 
   std::shared_ptr<rtype::RtypeEngine> engine = std::make_shared<rtype::RtypeEngine>("sfml");
 

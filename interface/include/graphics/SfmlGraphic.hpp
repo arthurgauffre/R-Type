@@ -222,6 +222,15 @@ class SfmlGraphic : virtual public AGraphic {
         bool isMousePressed() override;
 
         /**
+         * @brief Gets the key that is currently pressed.
+         *
+         * This function returns the key that is currently pressed.
+         *
+         * @return KeyBoard The key that is currently pressed.
+         */
+        KeyBoard getKeyPressed() override;
+
+        /**
          * @brief Get the current position of the mouse cursor.
          *
          * This function returns the current position of the mouse cursor

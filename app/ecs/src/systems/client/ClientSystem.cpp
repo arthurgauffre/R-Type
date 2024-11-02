@@ -14,6 +14,7 @@ namespace rtype
 
     void ClientSystem::sendAckMessage()
     {
+      // std::cout << "Sending Acknowledgement" << std::endl;
       rtype::network::Message<NetworkMessages> message;
       message.header.id = NetworkMessages::acknowledgementMesage;
       Send(message);
@@ -80,6 +81,7 @@ namespace rtype
       break;
       case NetworkMessages::createEntity:
       {
+        // std::cout << "Entity created" << std::endl;
         EntityStruct entityId;
         SceneStatus scene;
         if (msg.body.size() < sizeof(EntityStruct) + sizeof(SceneStatus))
@@ -108,6 +110,7 @@ namespace rtype
       }
       case NetworkMessages::deleteEntity:
       {
+        // std::cout << "Entity deleted" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
         _componentManager.removeAllComponents(entity.id);
@@ -214,7 +217,7 @@ namespace rtype
       break;
       case NetworkMessages::createInput:
       {
-        std::cout << "Input component created" << std::endl;
+        // std::cout << "Input component created" << std::endl;
         EntityId id;
         InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -223,12 +226,12 @@ namespace rtype
         _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
 
         sendAckMessage();
-        std::cout << "Input component ack message sent" << std::endl;
+        // std::cout << "Input component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateInput:
       {
-        std::cout << "Input component updated" << std::endl;
+        // std::cout << "Input component updated" << std::endl;
         BindKey input;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -241,6 +244,7 @@ namespace rtype
       break;
       case NetworkMessages::createType:
       {
+        // std::cout << "Type component created" << std::endl;
         TypeComponent type;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -369,6 +373,7 @@ namespace rtype
       break;
       case NetworkMessages::createRectangleShape:
       {
+        // std::cout << "RectangleShape component created" << std::endl;
         RectangleShapeComponent rectangleShape;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -392,6 +397,7 @@ namespace rtype
       break;
       case NetworkMessages::createOnClick:
       {
+        // std::cout << "OnClick component created" << std::endl;
         EntityId id;
         OnClickComponent onClick;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -404,6 +410,7 @@ namespace rtype
       break;
       case NetworkMessages::createText:
       {
+        // std::cout << "Text component created" << std::endl;
         TextComponent text;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));

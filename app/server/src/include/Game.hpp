@@ -82,7 +82,7 @@ public:
      * @param text The text displayed on the button. Default is "Play".
      * @return A pointer to the created button entity.
      */
-    entity::IEntity *createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient, std::string text = "Play");
+    entity::IEntity *createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient, std::string text = "Play", Type type = Type::BUTTON);
 
     /**
      * @brief Creates a menu for the game.

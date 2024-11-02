@@ -217,6 +217,15 @@ class IGraphic {
         virtual bool isKeyPressed(KeyBoard key) = 0;
 
         /**
+         * @brief Pure virtual function to get the key pressed.
+         * 
+         * This function should be implemented to return the key that is currently pressed.
+         * 
+         * @return KeyBoard The key that is currently pressed.
+         */
+        virtual KeyBoard getKeyPressed() = 0;
+
+        /**
          * @brief Checks if the mouse button is currently pressed.
          *
          * This function should be implemented to determine whether any mouse button

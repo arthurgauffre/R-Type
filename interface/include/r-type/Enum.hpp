@@ -29,6 +29,11 @@ enum class Action : uint32_t
     SHOOT,
     MENU,
     KEYBIND,
+    KEYMOVEUP,
+    KEYMOVEDOWN,
+    KEYMOVELEFT,
+    KEYMOVERIGHT,
+    KEYSHOOT,
     PLAY,
     GAME,
     PROTANOPIA,
@@ -76,6 +81,7 @@ enum class TextString : uint32_t
     MoveLeft,
     MoveRight,
     Shoot,
+    PressKey,
     Z,
     S,
     Q,
@@ -95,6 +101,8 @@ enum class Type
     BACKGROUND,
     STRUCTURE,
     FILTER,
+    BUTTON,
+    BUTTONBIND,
     UNKNOWN,
 };
 

@@ -932,12 +932,15 @@ namespace rtype
         size_t messageCount = 0;
         while (messageCount < maxMessages && !incomingMessages.empty())
         {
+          // std::cout << "size of incoming messages: " << incomingMessages.queueSize() << std::endl;
           auto msg = incomingMessages.popFront();
           auto originalQueueSize = queueOfAckMessages.size();
           if (queueOfAckMessages.empty() == false) {
             OnMessageReceived(msg.remoteConnection, msg.message);
-            if (originalQueueSize == queueOfAckMessages.size())
+            if (originalQueueSize == queueOfAckMessages.size()) {
+              // std::cout << "Pushing back message" << std::endl;
               incomingMessages.pushBack(msg);
+            }
           } else {
             OnMessageReceived(msg.remoteConnection, msg.message);
           }
