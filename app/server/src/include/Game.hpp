@@ -213,7 +213,7 @@ private:
     std::shared_ptr<rtype::RtypeEngine> _engine;
     rtype::Clock _inputClock;
     rtype::Clock _waveClock;
-    std::vector<rtype::Clock> _spawnClocks;
+    std::vector<std::pair<bool, rtype::Clock>> _spawnClocks;
     std::unordered_map<size_t, size_t> _players;
 
     /**

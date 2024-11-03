@@ -34,7 +34,7 @@
     },
     "weapon": {
       "damage": 50,
-      "cooldown": 1,
+      "cooldown": 0.5,
       "speed": 500
     }
   },
@@ -43,9 +43,9 @@
     {
       "path": "app/assets/sprites/block.png",
       "health": 100,
-      "timer": 5,
+      "timer": 0,
       "position": {
-        "x": 1000,
+        "x": 2000,
         "y": 0
       },
       "velocity": {
@@ -60,10 +60,131 @@
     {
       "path": "app/assets/sprites/block.png",
       "health": 100,
-      "timer": 3,
+      "timer": 0,
       "position": {
-        "x": 1000,
-        "y": 1000
+        "x": 2000,
+        "y": 441
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "path": "app/assets/sprites/block.png",
+      "health": 100,
+      "timer": 0,
+      "position": {
+        "x": 2000,
+        "y": 882
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
+    },
+
+    {
+      "path": "app/assets/sprites/block.png",
+      "health": 100,
+      "timer": 5,
+      "position": {
+        "x": 2000,
+        "y": 0
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "path": "app/assets/sprites/block.png",
+      "health": 100,
+      "timer": 5,
+      "position": {
+        "x": 2000,
+        "y": 441
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "path": "app/assets/sprites/block.png",
+      "health": 100,
+      "timer": 5,
+      "position": {
+        "x": 2000,
+        "y": 882
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
+    },
+
+    {
+      "path": "app/assets/sprites/block.png",
+      "timer": 10,
+      "health": 100,
+      "position": {
+        "x": 2000,
+        "y": 0
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "path": "app/assets/sprites/block.png",
+      "timer": 10,
+      "health": 100,
+      "position": {
+        "x": 2000,
+        "y": 441
+      },
+      "velocity": {
+        "x": 500,
+        "y": 500
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "path": "app/assets/sprites/block.png",
+      "timer": 10,
+      "health": 100,
+      "position": {
+        "x": 2000,
+        "y": 882
       },
       "velocity": {
         "x": 500,
@@ -74,6 +195,7 @@
         "y": 1
       }
     }
+
   ],
 
   "enemy": [

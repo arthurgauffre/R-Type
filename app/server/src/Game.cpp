@@ -459,8 +459,7 @@ void Game::init()
         {
             for (const auto &structure : _config["structure"])
             {
-                if (structure.contains("timer"))
-                    _spawnClocks.push_back(rtype::Clock());
+                _spawnClocks.push_back({false, rtype::Clock()});
             }
         }
     }
@@ -536,7 +535,7 @@ void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<si
     if (msg == "play")
     {
         for (auto &spawnClocks : _spawnClocks)
-            spawnClocks.restart();
+            spawnClocks.second.restart();
         _isStarted = true;
         _waveClock.restart();
         if (_playersScenes[numClient] == Scene::GAME)
@@ -704,16 +703,17 @@ void Game::run()
                 {
                     for (size_t i = 0; i < _config["structure"].size(); ++i)
                     {
-                        const auto &structure = _config["structure"][i];
-
-                        if (structure.contains("timer"))
+                        if (!_spawnClocks[i].first)
                         {
+                            const auto &structure = _config["structure"][i];
+
                             float timer = structure["timer"];
-                            if (_spawnClocks[i].getElapsedTime() > timer)
+                            if (_spawnClocks[i].second.getElapsedTime() > timer)
                             {
                                 this->createStructure(structure);
                                 _createdStructure++;
-                                _spawnClocks[i].restart();
+                                _spawnClocks[i].first = true;
+                                _spawnClocks[i].second.restart();
                             }
                         }
                     }
@@ -727,12 +727,9 @@ void Game::run()
                 std::cerr << "Warning: 'structure' not found or is not an array in config." << std::endl;
         }
 
-        if (_players.size() == 0 && _isStarted)
-        {
-            // std::cout << "No more players" << std::endl;
-        }
         if (_players.size() != 0 && _waveNumber == 0 && _isStarted)
         {
+            std::cout << "You Win" << std::endl;
             _isStarted = false;
             for (auto &player : _players)
             {

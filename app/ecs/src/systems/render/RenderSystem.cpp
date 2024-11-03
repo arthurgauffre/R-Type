@@ -46,7 +46,7 @@ void ECS_system::RenderSystem::update(
   for (auto &entity : _componentManager.getEntitiesWithComponents<
                       component::SpriteComponent, component::TransformComponent,
                       component::TextureComponent, component::SizeComponent,
-                      component::SpriteComponent>(entities))
+                      component::SpriteComponent, component::TypeComponent>(entities))
   {
     if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
@@ -85,6 +85,7 @@ void ECS_system::RenderSystem::update(
   {
     if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
+
     if (entity.get()->getActive() == false ||
         _componentManager
                 .getComponent<component::TypeComponent>(entity.get()->getID())
