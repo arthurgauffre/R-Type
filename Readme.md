@@ -7,6 +7,7 @@
 - [Troubleshooting](#troubleshooting)
 - [Launch the Project](#launch-the-project)
 - [How to Play](#how-to-play)
+- [Configuration files](#configuration-files)
 - [Authors](#authors)
 - [Documentation Dev](https://jsuissayker.github.io/R-Type/)
 - [Game Engine Documentation](GameEngine.md)
@@ -102,6 +103,66 @@ For each client that want to connect to the server, you need to launch a new ter
     - Move Right: `D`
     - Shoot: `Space`
 
+# Configuration files
+
+The configuration files are located in the `configs` folder. You can change the settings of the game by modifying the `config.json` files. Here is the differents key words that you can change:
+
+- "waveSystem": All the settings of the wave system.
+    - "waveNumber": The number of wave that you want to play.
+    - "waveInterval": The interval between each wave.
+
+- "background": If you want to display the background or not.
+    - "path": The path of the background image.
+    - "velocity": The velocity of the background.
+        - "x": The velocity on the x axis.
+        - "y": The velocity on the y axis.
+    - "size": The size of the background.
+        - "x": The size on the x axis.
+        - "y": The size on the y axis.
+
+- "player": All the settings of the player.
+    - "path": The path of the player image.
+    - "velocity": The velocity of the player.
+        - "x": The velocity on the x axis.
+        - "y": The velocity on the y axis.
+    - "size": The size of the player.
+        - "x": The size on the x axis.
+        - "y": The size on the y axis.
+    - "shoot": The settings of the shoot.
+        - "path": The path of the shoot image.
+        - "velocity": The velocity of the shoot.
+            - "x": The velocity on the x axis.
+            - "y": The velocity on the y axis.
+        - "size": The size of the shoot.
+            - "x": The size on the x axis.
+            - "y": The size on the y axis.
+
+- "enemies": All the settings of the enemies.
+    - "path": The path of the enemies image.
+    - "velocity": The velocity of the enemies.
+        - "x": The velocity on the x axis.
+        - "y": The velocity on the y axis.
+    - "size": The size of the enemies.
+        - "x": The size on the x axis.
+        - "y": The size on the y axis.
+    - "shoot": The settings of the shoot.
+        - "path": The path of the shoot image.
+        - "velocity": The velocity of the shoot.
+            - "x": The velocity on the x axis.
+            - "y": The velocity on the y axis.
+        - "size": The size of the shoot.
+            - "x": The size on the x axis.
+            - "y": The size on the y axis.
+
+- "structure": All the settings of the structure.
+    - "timer": The timer of the structure.
+    - "path": The path of the structure image.
+    - "velocity": The velocity of the structure.
+        - "x": The velocity on the x axis.
+        - "y": The velocity on the y axis.
+    - "size": The size of the structure.
+        - "x": The size on the x axis.
+        - "y": The size on the y axis.
 
 # Authors
 
