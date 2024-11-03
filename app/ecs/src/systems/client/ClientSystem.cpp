@@ -110,7 +110,7 @@ namespace rtype
         entity::IEntity *entity = _entityManager.createEntity(entityId.id, entityId.numClient);
         entity->setSceneStatus(scene.scene);
         sendAckMessage(entityId.id, NetworkMessages::acknowledgementMesageToCreateEntity);
-        std::cout << "Entity created ack message sent" << std::endl;
+        // std::cout << "Entity created ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateEntity:
@@ -555,6 +555,7 @@ namespace rtype
         {
           while (!GetIncomingMessages().empty())
           {
+            // std::cout << "size of msgReceived : " << GetIncomingMessages().queueSize() << std::endl;
             rtype::network::Message<NetworkMessages> msg =
                 GetIncomingMessages().popFront().message;
             enqueueMessage(msg);

@@ -79,8 +79,8 @@ namespace rtype
       void handleComponents() {};
 
       void ackMessageReceivedAction(EntityId receivedEntity) {
-        std::cout << "Queue size before erase : " << queueOfAckMessages.size() << std::endl;
-        std::cout << "QUEUE OF OUTGOING MESSAGES SIZE BEFORE : " << queueOfOutgoingMessages.size() << std::endl;
+        // std::cout << "Queue size before erase : " << queueOfAckMessages.size() << std::endl;
+        // std::cout << "QUEUE OF OUTGOING MESSAGES SIZE BEFORE : " << queueOfOutgoingMessages.size() << std::endl;
         size_t originalQueueSize = queueOfAckMessages.size();
         queueOfAckMessages.erase(std::remove_if(queueOfAckMessages.begin(), queueOfAckMessages.end(), [receivedEntity](const std::pair<ServerStatus, uint32_t> &ackMessage) {
           return ackMessage.second == receivedEntity.id;
@@ -93,8 +93,8 @@ namespace rtype
         return outgoingMessage.first.header.id == NetworkMessages::createEntity && outgoingMessage.second.first == receivedEntity.id;
     }), queueOfOutgoingMessages.end());
         }
-        std::cout << "QUEUE OF OUTGOING MESSAGES SIZE AFTER : " << queueOfOutgoingMessages.size() << std::endl;
-        std::cout << "Queue size after erase : " << queueOfAckMessages.size() << std::endl;
+        // std::cout << "QUEUE OF OUTGOING MESSAGES SIZE AFTER : " << queueOfOutgoingMessages.size() << std::endl;
+        // std::cout << "Queue size after erase : " << queueOfAckMessages.size() << std::endl;
       }
 
       void
@@ -1125,7 +1125,7 @@ namespace rtype
             //   queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_ENTITY, actualEntityId.id));
             // }
           } else {
-            std::cout << "No more ack message" << std::endl;
+            // std::cout << "No more ack message" << std::endl;
             OnMessageReceived(msg.remoteConnection, msg.message);
           }
           messageCount++;
@@ -1151,7 +1151,7 @@ namespace rtype
 
       void handleMsgToSend(std::pair<Action, size_t> msgToSend)
       {
-        std::cout << "Handling message to send" << std::endl;
+        // std::cout << "Handling message to send" << std::endl;
         if (msgToSend.first == Action::MENU)
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
         else if (msgToSend.first == Action::GAME)
