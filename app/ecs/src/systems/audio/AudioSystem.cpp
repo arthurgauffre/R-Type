@@ -25,6 +25,10 @@ void ECS_system::AudioSystem::update(
   for (auto &entity : entities) {
     if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
+    if (entity->getSceneStatus() == Scene::ALL)
+      *sceneStatus = Scene::ALL;
+    if (!entity)
+      continue;
     component::SoundComponent *soundComponent =
         _componentManager.getComponent<component::SoundComponent>(
             entity->getID());
