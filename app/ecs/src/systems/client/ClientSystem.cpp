@@ -234,7 +234,7 @@ namespace rtype
       break;
       case NetworkMessages::createInput:
       {
-        // std::cout << "Input component created" << std::endl;
+        std::cout << "Input component created" << std::endl;
         EntityId id;
         InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -242,13 +242,13 @@ namespace rtype
                     sizeof(InputComponent));
         _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
 
-        // sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateInput);
+        sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateInput);
         // std::cout << "Input component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateInput:
       {
-        // std::cout << "Input component updated" << std::endl;
+        std::cout << "Input component updated" << std::endl;
         BindKey input;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -423,7 +423,7 @@ namespace rtype
                     sizeof(OnClickComponent));
         _componentManager
             .addComponent<component::OnClickComponent>(id.id, onClick.action, onClick.numClient);
-        // sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateOnClick);
+        sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateOnClick);
         // std::cout << "OnClick component ack message sent" << std::endl;
       }
       break;
