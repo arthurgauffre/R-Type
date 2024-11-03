@@ -1,0 +1,5 @@
+<map id="Sdl2Graphic" name="Sdl2Graphic">
+<area shape="rect" id="node1" title=" " alt="" coords="5,155,105,181"/>
+<area shape="rect" id="node2" href="$classAGraphic.html" title="A base class for graphical components in the R&#45;Type game." alt="" coords="15,80,96,107"/>
+<area shape="rect" id="node3" href="$classIGraphic.html" title="Interface for graphical operations." alt="" coords="17,5,93,32"/>
+</map>

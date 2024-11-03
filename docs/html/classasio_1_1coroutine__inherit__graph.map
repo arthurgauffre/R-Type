@@ -1,0 +1,7 @@
+<map id="asio::coroutine" name="asio::coroutine">
+<area shape="rect" id="node1" title="Provides support for implementing stackless coroutines." alt="" coords="225,5,343,32"/>
+<area shape="rect" id="node2" href="$classhttp_1_1server4_1_1server.html" title="The top&#45;level coroutine of the HTTP server." alt="" coords="5,80,160,107"/>
+<area shape="rect" id="node3" href="$classread__loop.html" title=" " alt="" coords="185,80,271,107"/>
+<area shape="rect" id="node4" href="$classtcp__server.html" title=" " alt="" coords="296,80,387,107"/>
+<area shape="rect" id="node5" href="$classudp__server.html" title=" " alt="" coords="411,80,506,107"/>
+</map>

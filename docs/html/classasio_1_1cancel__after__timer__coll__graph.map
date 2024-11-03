@@ -1,0 +1,4 @@
+<map id="asio::cancel_after_timer&lt; CompletionToken, Clock, WaitTraits, Executor &gt;" name="asio::cancel_after_timer&lt; CompletionToken, Clock, WaitTraits, Executor &gt;">
+<area shape="rect" id="node1" title="A completion_token adapter that cancels an operation after a timeout." alt="" coords="5,139,219,195"/>
+<area shape="rect" id="node2" href="$classasio_1_1basic__waitable__timer.html" title=" " alt="" coords="31,5,193,76"/>
+</map>

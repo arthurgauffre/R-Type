@@ -1,0 +1,7 @@
+<map id="rtype::network::AClient&lt; T &gt;" name="rtype::network::AClient&lt; T &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="60,247,271,273"/>
+<area shape="rect" id="node2" href="$classrtype_1_1network_1_1IClient.html" title=" " alt="" coords="5,157,211,184"/>
+<area shape="rect" id="node3" href="$classasio_1_1io__context.html" title="Provides core I/O functionality." alt="" coords="235,157,360,184"/>
+<area shape="rect" id="node4" href="$classasio_1_1execution__context.html" title="A context for function object execution." alt="" coords="209,81,385,108"/>
+<area shape="rect" id="node5" href="$classasio_1_1detail_1_1noncopyable.html" title=" " alt="" coords="205,5,390,32"/>
+</map>

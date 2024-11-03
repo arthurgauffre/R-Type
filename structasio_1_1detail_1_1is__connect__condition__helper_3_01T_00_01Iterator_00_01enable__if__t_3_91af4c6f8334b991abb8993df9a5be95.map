@@ -1,0 +1,4 @@
+<map id="asio::detail::is_connect_condition_helper&lt; T, Iterator, enable_if_t&lt; is_same&lt; result_of_t&lt; T(asio::error_code, decltype(*declval&lt; Iterator &gt;()))&gt;, bool &gt;::value &gt; &gt;" name="asio::detail::is_connect_condition_helper&lt; T, Iterator, enable_if_t&lt; is_same&lt; result_of_t&lt; T(asio::error_code, decltype(*declval&lt; Iterator &gt;()))&gt;, bool &gt;::value &gt; &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="5,80,256,180"/>
+<area shape="rect" id="node2" title=" " alt="" coords="89,5,173,32"/>
+</map>

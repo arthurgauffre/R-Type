@@ -1,0 +1,6 @@
+<map id="asio::detail::range_connect_op&lt; Protocol, Executor, EndpointSequence, ConnectCondition, RangeConnectHandler &gt;" name="asio::detail::range_connect_op&lt; Protocol, Executor, EndpointSequence, ConnectCondition, RangeConnectHandler &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="299,78,608,149"/>
+<area shape="rect" id="node2" href="$classasio_1_1detail_1_1base__from__cancellation__state.html" title=" " alt="" coords="5,5,203,61"/>
+<area shape="rect" id="node3" href="$classasio_1_1detail_1_1base__from__connect__condition.html" title=" " alt="" coords="11,85,197,141"/>
+<area shape="rect" id="node4" title=" " alt="" coords="74,165,134,192"/>
+</map>

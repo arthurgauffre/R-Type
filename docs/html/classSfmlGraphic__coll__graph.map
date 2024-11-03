@@ -1,0 +1,5 @@
+<map id="SfmlGraphic" name="SfmlGraphic">
+<area shape="rect" id="node1" title="A class responsible for handling graphical operations using SFML." alt="" coords="5,155,108,181"/>
+<area shape="rect" id="node2" href="$classAGraphic.html" title="A base class for graphical components in the R&#45;Type game." alt="" coords="16,80,97,107"/>
+<area shape="rect" id="node3" href="$classIGraphic.html" title="Interface for graphical operations." alt="" coords="19,5,95,32"/>
+</map>

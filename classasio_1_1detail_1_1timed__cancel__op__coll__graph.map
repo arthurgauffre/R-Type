@@ -1,0 +1,8 @@
+<map id="asio::detail::timed_cancel_op&lt; Handler, Timer, Signatures &gt;" name="asio::detail::timed_cancel_op&lt; Handler, Timer, Signatures &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="659,86,823,142"/>
+<area shape="rect" id="node6" href="$structasio_1_1detail_1_1timed__cancel__op_1_1cancel__proxy.html" title=" " alt="" coords="968,79,1132,149"/>
+<area shape="rect" id="node2" href="$unionasio_1_1detail_1_1timed__cancel__op_1_1payload__storage.html" title=" " alt="" coords="309,5,473,76"/>
+<area shape="rect" id="node3" href="$classasio_1_1detail_1_1completion__payload.html" title=" " alt="" coords="5,20,197,61"/>
+<area shape="rect" id="node4" title=" " alt="" coords="361,101,421,127"/>
+<area shape="rect" id="node5" href="$classasio_1_1cancellation__signal.html" title="A cancellation signal with a single slot." alt="" coords="323,152,459,193"/>
+</map>

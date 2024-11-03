@@ -1,0 +1,7 @@
+<map id="asio::detail::descriptor_read_op&lt; MutableBufferSequence, Handler, IoExecutor &gt;" name="asio::detail::descriptor_read_op&lt; MutableBufferSequence, Handler, IoExecutor &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="30,261,285,317"/>
+<area shape="rect" id="node2" href="$classasio_1_1detail_1_1descriptor__read__op__base.html" title=" " alt="" coords="5,171,309,212"/>
+<area shape="rect" id="node3" href="$classasio_1_1detail_1_1reactor__op.html" title=" " alt="" coords="72,95,243,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="67,5,151,32"/>
+<area shape="rect" id="node5" title=" " alt="" coords="175,5,235,32"/>
+</map>

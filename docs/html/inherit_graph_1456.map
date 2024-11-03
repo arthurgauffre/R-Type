@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classIGraphic.html" title="Interface for graphical operations." alt="" coords="5,31,81,57"/>
+<area shape="rect" id="node2" href="$classAGraphic.html" title="A base class for graphical components in the R&#45;Type game." alt="" coords="129,31,211,57"/>
+<area shape="rect" id="node3" href="$classSdl2Graphic.html" title=" " alt="" coords="260,5,360,32"/>
+<area shape="rect" id="node4" href="$classSfmlGraphic.html" title="A class responsible for handling graphical operations using SFML." alt="" coords="259,56,361,83"/>
+</map>

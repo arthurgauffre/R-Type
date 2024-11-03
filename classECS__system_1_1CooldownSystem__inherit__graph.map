@@ -1,0 +1,5 @@
+<map id="ECS_system::CooldownSystem" name="ECS_system::CooldownSystem">
+<area shape="rect" id="node1" title=" " alt="" coords="5,155,228,181"/>
+<area shape="rect" id="node2" href="$classECS__system_1_1ASystem.html" title=" " alt="" coords="33,80,201,107"/>
+<area shape="rect" id="node3" href="$classECS__system_1_1ISystem.html" title=" " alt="" coords="35,5,198,32"/>
+</map>

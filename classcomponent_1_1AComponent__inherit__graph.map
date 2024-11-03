@@ -1,0 +1,23 @@
+<map id="component::AComponent" name="component::AComponent">
+<area shape="rect" id="node1" title=" " alt="" coords="236,469,423,496"/>
+<area shape="rect" id="node3" href="$classcomponent_1_1AIComponent.html" title=" " alt="" coords="497,5,687,32"/>
+<area shape="rect" id="node4" href="$classcomponent_1_1CooldownComponent.html" title=" " alt="" coords="471,56,713,83"/>
+<area shape="rect" id="node5" href="$classcomponent_1_1DamageComponent.html" title=" " alt="" coords="475,107,709,133"/>
+<area shape="rect" id="node6" href="$classcomponent_1_1HealthComponent.html" title=" " alt="" coords="481,157,703,184"/>
+<area shape="rect" id="node7" href="$classcomponent_1_1HitBoxComponent.html" title=" " alt="" coords="481,208,703,235"/>
+<area shape="rect" id="node8" href="$classcomponent_1_1InputComponent.html" title=" " alt="" coords="487,259,697,285"/>
+<area shape="rect" id="node9" href="$classcomponent_1_1MusicComponent.html" title=" " alt="" coords="484,309,700,336"/>
+<area shape="rect" id="node10" href="$classcomponent_1_1OnClickComponent.html" title=" " alt="" coords="478,360,706,387"/>
+<area shape="rect" id="node11" href="$classcomponent_1_1ParentComponent.html" title=" " alt="" coords="483,411,701,437"/>
+<area shape="rect" id="node12" href="$classcomponent_1_1RectangleShapeComponent.html" title=" " alt="" coords="488,462,696,503"/>
+<area shape="rect" id="node13" href="$classcomponent_1_1SizeComponent.html" title=" " alt="" coords="489,528,695,555"/>
+<area shape="rect" id="node14" href="$classcomponent_1_1SoundComponent.html" title=" " alt="" coords="483,579,701,605"/>
+<area shape="rect" id="node15" href="$classcomponent_1_1SpriteComponent.html" title="A component that represents a sprite in the game." alt="" coords="484,629,700,656"/>
+<area shape="rect" id="node16" href="$classcomponent_1_1TextComponent.html" title=" " alt="" coords="489,680,695,707"/>
+<area shape="rect" id="node17" href="$classcomponent_1_1TextureComponent.html" title=" " alt="" coords="479,731,705,757"/>
+<area shape="rect" id="node18" href="$classcomponent_1_1TransformComponent.html" title=" " alt="" coords="471,781,713,808"/>
+<area shape="rect" id="node19" href="$classcomponent_1_1TypeComponent.html" title=" " alt="" coords="488,832,696,859"/>
+<area shape="rect" id="node20" href="$classcomponent_1_1VelocityComponent.html" title=" " alt="" coords="477,883,707,909"/>
+<area shape="rect" id="node21" href="$classcomponent_1_1WeaponComponent.html" title=" " alt="" coords="477,933,707,960"/>
+<area shape="rect" id="node2" href="$classcomponent_1_1IComponent.html" title=" " alt="" coords="5,469,188,496"/>
+</map>

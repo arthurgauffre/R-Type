@@ -1,0 +1,45 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,1791,89,1817"/>
+<area shape="rect" id="node2" href="$structasio_1_1conjunction.html" title=" " alt="" coords="213,5,384,32"/>
+<area shape="rect" id="node3" href="$structasio_1_1detail_1_1are__completion__signatures_3_4.html" title=" " alt="" coords="197,57,400,98"/>
+<area shape="rect" id="node4" href="$structasio_1_1detail_1_1has__allocator__type_3_01T_00_01void__t_3_01typename_01T_1_1allocator__type_01_4_01_4.html" title=" " alt="" coords="193,123,404,179"/>
+<area shape="rect" id="node5" href="$structasio_1_1detail_1_1has__cancellation__slot__type_3_01T_00_01void__t_3_01typename_01T_1_1cancellation__slot__type_01_4_01_4.html" title=" " alt="" coords="178,203,419,259"/>
+<area shape="rect" id="node6" href="$structasio_1_1detail_1_1has__executor__type_3_01T_00_01void__t_3_01typename_01T_1_1executor__type_01_4_01_4.html" title=" " alt="" coords="193,283,404,339"/>
+<area shape="rect" id="node7" href="$structasio_1_1detail_1_1has__immediate__executor__type_3_01T_00_01void__t_3_01typename_01T_1_1imf91aa48d687066b6f13f68918f70ad87.html" title=" " alt="" coords="196,363,401,434"/>
+<area shape="rect" id="node8" href="$structasio_1_1detail_1_1is__async__operation__call_3_01Call_00_01void__t_3_01enable__if__t_3_01ibe2c80084bb596dbd8ad659bf9d6ffdf.html" title=" " alt="" coords="201,458,397,558"/>
+<area shape="rect" id="node9" href="$structasio_1_1detail_1_1is__buffer__sequence_3_01const__buffer_00_01const__buffer_01_4.html" title=" " alt="" coords="203,583,394,639"/>
+<area shape="rect" id="node10" href="$structasio_1_1detail_1_1is__buffer__sequence_3_01const__registered__buffer_00_01const__buffer_01_4.html" title=" " alt="" coords="191,663,406,719"/>
+<area shape="rect" id="node11" href="$structasio_1_1detail_1_1is__buffer__sequence_3_01mutable__buffer_00_01const__buffer_01_4.html" title=" " alt="" coords="194,743,403,799"/>
+<area shape="rect" id="node12" href="$structasio_1_1detail_1_1is__buffer__sequence_3_01mutable__buffer_00_01mutable__buffer_01_4.html" title=" " alt="" coords="194,823,403,879"/>
+<area shape="rect" id="node13" href="$structasio_1_1detail_1_1is__buffer__sequence_3_01mutable__registered__buffer_00_01const__buffer_01_4.html" title=" " alt="" coords="182,903,415,959"/>
+<area shape="rect" id="node14" href="$structasio_1_1detail_1_1is__buffer__sequence_3_01mutable__registered__buffer_00_01mutable__buffer_01_4.html" title=" " alt="" coords="182,983,415,1039"/>
+<area shape="rect" id="node15" href="$structasio_1_1detail_1_1is__completion__condition__helper_3_01T_00_01enable__if__t_3_01is__same_6dda966c22a3d541efd1a4604cd1bb7f.html" title=" " alt="" coords="191,1063,407,1148"/>
+<area shape="rect" id="node16" href="$structasio_1_1detail_1_1is__completion__condition__helper_3_01T_00_01enable__if__t_3_01is__same_d073b3700a580b776346a5bc22011a58.html" title=" " alt="" coords="191,1172,407,1257"/>
+<area shape="rect" id="node17" href="$structasio_1_1detail_1_1is__completion__signature_3_01R_07Args_8_8_8_08_01_6_01_4.html" title=" " alt="" coords="201,1282,396,1323"/>
+<area shape="rect" id="node18" href="$structasio_1_1detail_1_1is__completion__signature_3_01R_07Args_8_8_8_08_01_6_6_01_4.html" title=" " alt="" coords="197,1347,401,1389"/>
+<area shape="rect" id="node19" href="$structasio_1_1detail_1_1is__completion__signature_3_01R_07Args_8_8_8_08_4.html" title=" " alt="" coords="202,1413,395,1454"/>
+<area shape="rect" id="node20" href="$structasio_1_1detail_1_1is__connect__condition__helper_3_01T_00_01Iterator_00_01enable__if__t_3_09811cd2aa8b3782e7cfd665cec8796f.html" title=" " alt="" coords="175,1479,422,1564"/>
+<area shape="rect" id="node21" href="$structasio_1_1detail_1_1is__connect__condition__helper_3_01T_00_01Iterator_00_01enable__if__t_3_89d243d36b8708ca0fbce396308cc969.html" title=" " alt="" coords="173,1589,424,1689"/>
+<area shape="rect" id="node22" href="$structasio_1_1detail_1_1is__endpoint__sequence__helper_3_01T_00_01void__t_3_01decltype_07declval13ced120cb4654658b14dfc19ef7c6c2.html" title=" " alt="" coords="188,1713,409,1799"/>
+<area shape="rect" id="node23" href="$structasio_1_1detail_1_1is__lvalue__completion__signature_3_01R_07Args_8_8_8_08_01_6_01_4.html" title=" " alt="" coords="213,1823,384,1879"/>
+<area shape="rect" id="node24" href="$structasio_1_1detail_1_1is__rvalue__completion__signature_3_01R_07Args_8_8_8_08_01_6_6_01_4.html" title=" " alt="" coords="213,1903,384,1959"/>
+<area shape="rect" id="node25" href="$structasio_1_1detail_1_1is__work__dispatcher__required.html" title=" " alt="" coords="178,1983,419,2039"/>
+<area shape="rect" id="node26" href="$structasio_1_1execution_1_1detail_1_1is__context__as_3_01context__as__t_3_01U_01_4_01_4.html" title=" " alt="" coords="207,2063,390,2119"/>
+<area shape="rect" id="node27" href="$structasio_1_1execution_1_1detail_1_1is__executor__of__impl_3_01T_00_01F_00_01enable__if__t_3_01cc573bbc3aad31fc21de27ea5d373ec6.html" title=" " alt="" coords="137,2143,460,2375"/>
+<area shape="rect" id="node28" href="$structasio_1_1execution_1_1detail_1_1is__preferable_3_01T_00_01enable__if__t_3_01T_1_1is__preferable_01_4_01_4.html" title=" " alt="" coords="201,2399,396,2455"/>
+<area shape="rect" id="node29" href="$structasio_1_1execution_1_1detail_1_1is__requirable_3_01T_00_01enable__if__t_3_01T_1_1is__requirable_01_4_01_4.html" title=" " alt="" coords="201,2479,396,2535"/>
+<area shape="rect" id="node30" href="$structasio_1_1execution_1_1is__executor_3_01ex__cq__nr_3_01ResultType_00_01ParamType_00_01Result_01_4_01_4.html" title=" " alt="" coords="203,2559,394,2630"/>
+<area shape="rect" id="node31" href="$structasio_1_1execution_1_1is__executor_3_01ex__fq__fr_3_01CurrentType_00_01OtherType_01_4_01_4.html" title=" " alt="" coords="189,2655,408,2711"/>
+<area shape="rect" id="node32" href="$structasio_1_1execution_1_1is__executor_3_01ex__fq__nr_3_01ResultType_00_01ParamType_00_01Result_01_4_01_4.html" title=" " alt="" coords="203,2735,394,2806"/>
+<area shape="rect" id="node33" href="$structasio_1_1execution_1_1is__executor_3_01ex__mq__mr_3_01CurrentType_00_01OtherType_01_4_01_4.html" title=" " alt="" coords="189,2831,408,2887"/>
+<area shape="rect" id="node34" href="$structasio_1_1execution_1_1is__executor_3_01ex__mq__nr_3_01ResultType_00_01ParamType_00_01Result_01_4_01_4.html" title=" " alt="" coords="203,2911,394,2982"/>
+<area shape="rect" id="node35" href="$structasio_1_1execution_1_1is__executor_3_01ex__nq__nr_01_4.html" title=" " alt="" coords="211,3006,386,3047"/>
+<area shape="rect" id="node36" href="$structasio_1_1experimental_1_1detail_1_1has__signature_3_01S_00_01S_00_01Signatures_8_8_8_01_4.html" title=" " alt="" coords="215,3072,382,3128"/>
+<area shape="rect" id="node37" href="$structasio_1_1is__deferred_3_01deferred__async__operation_3_01Signature_00_01Initiation_00_01InitArgs_8_8_8_01_4_01_4.html" title=" " alt="" coords="201,3153,396,3223"/>
+<area shape="rect" id="node38" href="$structasio_1_1is__deferred_3_01deferred__conditional_3_01OnTrue_00_01OnFalse_01_4_01_4.html" title=" " alt="" coords="213,3248,384,3304"/>
+<area shape="rect" id="node39" href="$structasio_1_1is__deferred_3_01deferred__function_3_01Function_01_4_01_4.html" title=" " alt="" coords="223,3328,375,3384"/>
+<area shape="rect" id="node40" href="$structasio_1_1is__deferred_3_01deferred__noop_01_4.html" title=" " alt="" coords="228,3409,369,3450"/>
+<area shape="rect" id="node41" href="$structasio_1_1is__deferred_3_01deferred__sequence_3_01Head_00_01Tail_01_4_01_4.html" title=" " alt="" coords="218,3475,379,3531"/>
+<area shape="rect" id="node42" href="$structasio_1_1is__deferred_3_01deferred__values_3_01Values_8_8_8_01_4_01_4.html" title=" " alt="" coords="183,3555,414,3597"/>
+<area shape="rect" id="node43" href="$structasio_1_1uses__executor_3_01executor__binder_3_01T_00_01Executor_01_4_00_01Executor_01_4.html" title=" " alt="" coords="211,3621,387,3677"/>
+</map>

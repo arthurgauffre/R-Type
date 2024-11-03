@@ -1,0 +1,11 @@
+<map id="rtype::network::NetworkConnection&lt; T &gt;" name="rtype::network::NetworkConnection&lt; T &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="995,183,1285,209"/>
+<area shape="rect" id="node2" title=" " alt="" coords="496,5,731,61"/>
+<area shape="rect" id="node3" title=" " alt="" coords="576,85,651,112"/>
+<area shape="rect" id="node4" title=" " alt="" coords="576,147,651,173"/>
+<area shape="rect" id="node5" href="$classrtype_1_1network_1_1ServerQueue.html" title=" " alt="" coords="488,198,739,239"/>
+<area shape="rect" id="node6" href="$classrtype_1_1network_1_1ServerQueue.html" title=" " alt="" coords="465,263,761,305"/>
+<area shape="rect" id="node7" href="$classasio_1_1io__context.html" title="Provides core I/O functionality." alt="" coords="551,329,676,356"/>
+<area shape="rect" id="node8" href="$classasio_1_1execution__context.html" title="A context for function object execution." alt="" coords="240,329,416,356"/>
+<area shape="rect" id="node9" href="$classasio_1_1detail_1_1noncopyable.html" title=" " alt="" coords="5,329,191,356"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="IGraphic" name="IGraphic">
+<area shape="rect" id="node1" title="Interface for graphical operations." alt="" coords="80,5,156,32"/>
+<area shape="rect" id="node2" href="$classAGraphic.html" title="A base class for graphical components in the R&#45;Type game." alt="" coords="77,80,159,107"/>
+<area shape="rect" id="node3" href="$classSdl2Graphic.html" title=" " alt="" coords="5,155,105,181"/>
+<area shape="rect" id="node4" href="$classSfmlGraphic.html" title="A class responsible for handling graphical operations using SFML." alt="" coords="129,155,232,181"/>
+</map>
