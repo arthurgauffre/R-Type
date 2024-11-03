@@ -37,13 +37,13 @@ void signalHandler(int signum) {
  */
 /**
  * @brief Constructs a new RtypeEngine object.
- * 
+ *
  * This constructor initializes the RtypeEngine by loading the specified graphic and audio libraries,
  * and setting up the component, system, and entity managers.
- * 
+ *
  * @param graphicName The name of the graphic library to load (without the "r-type_" prefix and "_graphic.so" suffix).
  * @param audioName The name of the audio library to load (without the "r-type_" prefix and "_audio.so" suffix).
- * 
+ *
  * @throws std::runtime_error If the graphic or audio library cannot be loaded.
  */
 rtype::RtypeEngine::RtypeEngine(std::string graphicName, std::string audioName) {
@@ -58,7 +58,7 @@ rtype::RtypeEngine::RtypeEngine(std::string graphicName, std::string audioName) 
   }
   this->_graphic = std::shared_ptr<IGraphic>(graphicLoader->getGraphic(
           "createGraphic"));
-    
+
   std::shared_ptr<
       rtype::RtypeEngine::DLLoader<std::shared_ptr<IAudio>>>
       audioLoader = std::make_shared<
@@ -144,7 +144,7 @@ void rtype::RtypeEngine::update() {
 
 /**
  * @brief Runs the main loop of the RtypeEngine.
- * 
+ *
  * This function sets up a signal handler for SIGINT to handle
  * interruption signals. It then enters an infinite loop where it
  * continuously calls the update() method. If the keepRunning flag
@@ -154,13 +154,10 @@ void rtype::RtypeEngine::update() {
  */
 void rtype::RtypeEngine::run() {
   signal(SIGINT, signalHandler);
-  while (1) {
+  while (keepRunning) {
     this->update();
-    if (!keepRunning) {
-      std::cout << "Exiting..." << std::endl;
-      msgToSend.push_back(std::make_pair(Action::EXIT, 0));
-      break;
-    }
   }
+  std::cout << "Exiting..." << std::endl;
+  msgToSend.push_back(std::make_pair(Action::EXIT, 0));
   this->update();
 }

@@ -134,8 +134,11 @@ public:
      * This enum class is used to define the various communication statuses
      * that an entity can have within the system. The possible values include:
      * - CREATE: Indicates that the entity is in the creation state.
+     *
      * - UPDATE: Indicates that the entity is in the update state.
+     *
      * - DELETE: Indicates that the entity is in the deletion state.
+     *
      */
     EntityCommunication communicationStatus{EntityCommunication::CREATE};
 

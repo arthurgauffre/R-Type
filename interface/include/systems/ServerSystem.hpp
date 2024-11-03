@@ -59,6 +59,19 @@ namespace rtype
                          virtual public ECS_system::ASystem
     {
     public:
+      /**
+       * @class ServerSystem
+       * @brief Manages server-side operations for the game, including network communication and entity management.
+       *
+       * @param componentManager Reference to the ComponentManager for managing components.
+       * @param entityManager Reference to the EntityManager for managing entities.
+       * @param graphic Shared pointer to the IGraphic interface for graphical operations.
+       * @param audio Shared pointer to the IAudio interface for audio operations.
+       * @param stringCom StringCom object for ECS system communication.
+       *
+       * The constructor initializes the server system, sets up the ASIO socket for UDP communication on port 60000,
+       * and starts the server. It also initializes the player connection status for up to 4 players.
+       */
       ServerSystem(component::ComponentManager &componentManager,
                    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
           : rtype::network::IServer<NetworkMessages>(), ECS_system::ASystem(
@@ -72,12 +85,41 @@ namespace rtype
           _playerConnected.push_back(std::make_pair(false, -1));
       }
 
+      /**
+       * @brief Destructor for the ServerSystem class.
+       *
+       * This destructor ensures that the Stop() method is called when a ServerSystem
+       * object is destroyed, performing any necessary cleanup operations.
+       */
       ~ServerSystem() { Stop(); };
 
+      /**
+       * @brief Initializes the server system.
+       *
+       * This function sets up the necessary components and configurations
+       * required for the server system to operate. It should be called
+       * before any other operations are performed on the server system.
+       */
       void initialize() {};
 
+      /**
+       * @brief Handles the components within the system.
+       *
+       * This function is responsible for managing and processing
+       * the components associated with the server system.
+       */
       void handleComponents() {};
 
+      /**
+       * @brief Handles the action to be taken when an acknowledgment message is received.
+       *
+       * This function processes the acknowledgment message by removing the corresponding entry
+       * from the queue of acknowledgment messages. If an entry is removed and there are outgoing
+       * messages, it also removes the corresponding entry from the queue of outgoing messages.
+       *
+       * @param receivedEntity The entity ID that received the acknowledgment message.
+       * @param messageType The type of the network message that was acknowledged.
+       */
       void ackMessageReceivedAction(EntityId receivedEntity, NetworkMessages messageType) {
         std::cout << "Queue size before erase : " << queueOfAckMessages.size() << std::endl;
         std::cout << "QUEUE OF OUTGOING MESSAGES SIZE BEFORE : " << queueOfOutgoingMessages.size() << std::endl;
@@ -97,6 +139,19 @@ namespace rtype
         std::cout << "Queue size after erase : " << queueOfAckMessages.size() << std::endl;
       }
 
+      /**
+       * @brief Updates the server system.
+       *
+       * This function updates the server system by processing messages to send,
+       * sending entity updates to all clients, and handling received messages.
+       *
+       * @param deltaTime The time elapsed since the last update.
+       * @param entities A vector of shared pointers to entities in the system.
+       * @param msgToSend A reference to a vector of pairs containing actions and their associated entity IDs to be sent.
+       * @param msgReceived A reference to a vector of pairs containing received messages and their associated entity IDs.
+       * @param entityMutex A reference to a mutex for synchronizing access to entities.
+       * @param sceneStatus A shared pointer to the current scene status.
+       */
       void
       update(float deltaTime,
              std::vector<std::shared_ptr<entity::IEntity>> entities,
@@ -122,6 +177,31 @@ namespace rtype
       }
 
     protected:
+      /**
+       * @brief Handles the received message from a client.
+       *
+       * This method is called whenever a message is received from a client. It processes
+       * the message based on its type and performs the corresponding actions.
+       *
+       * @param client A shared pointer to the network connection of the client that sent the message.
+       * @param message The message received from the client.
+       *
+       * The message types handled are:
+       * - NetworkMessages::ClientConnection: Logs the client connection.
+       *
+       * - NetworkMessages::MessageAll: Sends a message to all clients.
+       *
+       * - NetworkMessages::ServerPing: Logs a ping from the client and sends the message back to the client.
+       *
+       * - NetworkMessages::acknowledgementMesageToCreateEntity: Acknowledges the creation of an entity.
+       *
+       * - NetworkMessages::acknowledgementMesageToCreateInput: Acknowledges the creation of an input.
+       *
+       * - NetworkMessages::acknowledgementMesageToCreateOnClick: Acknowledges the creation of an onClick event.
+       *
+       * - Default: Handles other types of input messages.
+       *
+       */
       virtual void OnMessageReceived(
           std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
               client,
@@ -177,6 +257,17 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief Handles action messages received from a client.
+       *
+       * This function processes different types of actions sent by a client and
+       * stores the corresponding messages in the _msgReceived vector. It also
+       * handles client disconnection and updates the player connection status.
+       *
+       * @param client A shared pointer to the client's network connection.
+       * @param action The action performed by the client.
+       * @param entityId The ID of the entity associated with the action.
+       */
       void handleActionMessage(std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
                                Action action, size_t entityId)
       {
@@ -276,6 +367,16 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief Handles input messages received from a client.
+       *
+       * This function processes incoming messages from a client and performs
+       * actions based on the message type. It currently supports handling
+       * action messages and prints an error for unknown message types.
+       *
+       * @param client A shared pointer to the client's network connection.
+       * @param message The message received from the client.
+       */
       void handleInputMessage(
           std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client,
           rtype::network::Message<NetworkMessages> &message)
@@ -299,6 +400,15 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief Handles the event when a client connects to the server.
+       *
+       * This function is called when a client establishes a connection with the server.
+       * It sends a ServerAcceptance message to the client to acknowledge the connection.
+       *
+       * @param client A shared pointer to the client's network connection.
+       * @return true if the connection is successfully handled.
+       */
       virtual bool OnClientConnection(
           std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>>
               client)
@@ -311,6 +421,14 @@ namespace rtype
       }
 
 
+      /**
+       * @brief Handles the disconnection of a client.
+       *
+       * This method is called when a client disconnects from the server. It removes the client
+       * from the list of active connections if the client is valid.
+       *
+       * @param client A shared pointer to the NetworkConnection object representing the client.
+       */
       virtual void OnClientDisconnection(
           std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
       {
@@ -329,6 +447,23 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief Asynchronously waits for incoming messages from clients.
+       *
+       * This function sets up an asynchronous receive operation on the socket to
+       * wait for incoming messages from clients. When a message is received, it
+       * checks if the client endpoint is using the IPv4 protocol. If the endpoint
+       * is valid and no error occurred, it processes the connection request.
+       *
+       * If the client is already connected, it logs a message and returns. Otherwise,
+       * it creates a new socket and connection object for the client, and if the
+       * connection is approved, it adds the connection to the list of connections,
+       * establishes the client connection, and sends all entities to the client.
+       *
+       * If an error occurs during the receive operation, it logs the error message.
+       *
+       * The function then recursively calls itself to continue waiting for messages.
+       */
       void WaitForMessage()
       {
         asioSocket.async_receive_from(
@@ -382,6 +517,15 @@ namespace rtype
           WaitForMessage(); });
       }
 
+      /**
+       * @brief Sends update or create messages for all entities to all clients, except for the specified client to ignore.
+       *
+       * This function iterates through all entities managed by the entity manager and sends appropriate messages to clients
+       * based on the entity's communication status (CREATE, UPDATE, DELETE). It also handles the communication status of
+       * various components associated with each entity.
+       *
+       * @param clientToIgnore A shared pointer to the network connection of the client to ignore when sending messages.
+       */
       void sendAllEntitiesUpdateOrCreateToAllClient(std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore)
       {
         bool transform = false;
@@ -798,6 +942,19 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief Sends all entities and their components to a specified client.
+       *
+       * This function iterates through all entities managed by the entity manager and sends their
+       * relevant component data to the specified client. It checks if the client is connected before
+       * proceeding with the data transmission. For each entity, it sends messages for various components
+       * such as Sprite, Texture, Text, Transform, Velocity, Health, Damage, HitBox, Parent, Input, Type,
+       * AI, Size, RectangleShape, OnClick, Sound, and Music components.
+       *
+       * @tparam T The type of the network connection.
+       * @param client A shared pointer to the network connection of the client.
+       * @param numClient The client number to which the entities should be sent.
+       */
       void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client, int numClient)
       {
         if (client->IsConnected() == false)
@@ -983,6 +1140,17 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief Starts the server and initializes the context thread.
+       *
+       * This function attempts to start the server by waiting for a message and
+       * then running the ASIO context in a separate thread. If an exception of
+       * type rtype::RtypeException is thrown, it catches the exception, logs the
+       * error message, and returns false. If the server starts successfully, it
+       * prints a confirmation message and returns true.
+       *
+       * @return true if the server starts successfully, false otherwise.
+       */
       bool Start()
       {
         try
@@ -1001,6 +1169,13 @@ namespace rtype
         return true;
       }
 
+      /**
+       * @brief Stops the server by stopping the ASIO context and joining the context thread.
+       *
+       * This function stops the ASIO context, which effectively stops all asynchronous operations.
+       * If the context thread is joinable, it joins the thread to ensure proper cleanup.
+       * Finally, it prints a message indicating that the server has stopped.
+       */
       void Stop()
       {
         asioContext.stop();
@@ -1010,6 +1185,17 @@ namespace rtype
         std::cout << "Server stopped !" << std::endl;
       }
 
+      /**
+       * @brief Sends a message to a specific client.
+       *
+       * This function attempts to send a given message to a specified client.
+       * If the client is connected, the message is sent. If the client is not
+       * connected, the OnClientDisconnection function is called.
+       *
+       * @tparam T The type of the message.
+       * @param message The message to be sent to the client.
+       * @param client A shared pointer to the network connection of the client.
+       */
       void SendMessageToClient(const Message<T> &message,
                                std::shared_ptr<NetworkConnection<T>> client)
       {
@@ -1023,6 +1209,19 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief Sends a message to all connected clients except the specified client to ignore.
+       *
+       * This function iterates through all the connections in the deque and sends the provided
+       * message to each connected client, except for the client specified to be ignored. If a
+       * client is found to be disconnected, it triggers the disconnection handler and marks
+       * the presence of an invalid client. After processing all clients, it removes any
+       * invalid (disconnected) clients from the deque.
+       *
+       * @tparam T The type of the message.
+       * @param message The message to be sent to all clients.
+       * @param clientToIgnore A shared pointer to the client that should be ignored while sending the message. Default is nullptr.
+       */
       void SendMessageToAllClients(
           const rtype::network::Message<T> &message,
           std::shared_ptr<rtype::network::NetworkConnection<T>> clientToIgnore =
@@ -1052,6 +1251,13 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief Get the number of players currently connected.
+       *
+       * This function iterates through the _playerConnected array and counts how many players are currently connected.
+       *
+       * @return int The number of players connected.
+       */
       int getNumPlayerConnected()
       {
         int numPlayer = 0;
@@ -1063,6 +1269,25 @@ namespace rtype
         return numPlayer;
       }
 
+      /**
+       * @brief Updates the server by processing incoming messages and handling acknowledgements.
+       *
+       * @param maxMessages The maximum number of messages to process in one update. Default is -1 (process all messages).
+       * @param needToWait If true, the function will wait for incoming messages before proceeding.
+       *
+       * This function processes incoming messages from clients, handles timeouts, and manages acknowledgement messages.
+       * It performs the following tasks:
+       * - Waits for incoming messages if needToWait is true.
+       *
+       * - Processes up to maxMessages from the incoming message queue.
+       *
+       * - Checks for timeouts and resends messages if necessary.
+       *
+       * - Handles acknowledgement messages and clears queues if acknowledgements are not received in time.
+       *
+       * - Calls OnMessageReceived for each processed message.
+       *
+       */
       void ServerUpdate(size_t maxMessages = -1, bool needToWait = false)
       {
         if (needToWait == true)
@@ -1172,10 +1397,28 @@ namespace rtype
         }
       }
 
+      /**
+       * @brief This method is called when a client has been successfully validated.
+       *
+       * @param client A shared pointer to the validated NetworkConnection object.
+       */
       virtual void OnClientValidated(std::shared_ptr<NetworkConnection<T>> client)
       {
       }
 
+      /**
+       * @brief Retrieves the key associated with a given value in an unordered map.
+       *
+       * This function searches through the provided unordered map to find the first key
+       * that corresponds to the specified value. If such a key is found, it is returned
+       * wrapped in a std::optional. If no matching value is found, std::nullopt is returned.
+       *
+       * @tparam KeyType The type of the keys in the unordered map.
+       * @tparam ValueType The type of the values in the unordered map.
+       * @param map The unordered map to search through.
+       * @param value The value to search for in the map.
+       * @return std::optional<KeyType> The key associated with the specified value, or std::nullopt if no such key exists.
+       */
       template <typename KeyType, typename ValueType>
       std::optional<KeyType> getKeyByValue(const std::unordered_map<KeyType, ValueType> &map, const ValueType &value)
       {
@@ -1189,6 +1432,19 @@ namespace rtype
         return std::nullopt;
       }
 
+      /**
+       * @brief Handles the message to send based on the action type.
+       *
+       * This function processes the message to send by checking the action type
+       * and sending the appropriate message to the client.
+       *
+       * @param msgToSend A pair containing the action type and the index of the connection.
+       *                  - Action::MENU: Sends a menu message to the client.
+       *
+       *                  - Action::GAME: Sends a game message to the client.
+       *
+       *                  - Action::KEYBIND: Sends a keybind message to the client.
+       */
       void handleMsgToSend(std::pair<Action, size_t> msgToSend)
       {
         std::cout << "Handling message to send" << std::endl;
@@ -1200,30 +1456,159 @@ namespace rtype
           SendMessageToClient(networkMessageFactory.createKeyBindMsg(), deqConnections[msgToSend.second]);
       }
 
+      /**
+       * @brief A queue that holds incoming messages for the server.
+       *
+       * This queue stores messages that have been received by the server but not yet processed.
+       * The messages are of type `rtype::network::OwnedMessage<T>`, where `T` is the type of the message payload.
+       */
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;
+
+      /**
+       * @brief A deque that holds shared pointers to NetworkConnection objects.
+       *
+       * This deque is used to manage a collection of network connections. Each
+       * connection is wrapped in a std::shared_ptr to ensure proper memory
+       * management and to allow shared ownership of the connections.
+       *
+       * @tparam T The type of the data that the NetworkConnection handles.
+       */
       std::deque<std::shared_ptr<NetworkConnection<T>>> deqConnections;
 
+      /**
+       * @brief The io_context class provides core I/O functionality for asynchronous operations.
+       *
+       * This object is used to initiate and manage asynchronous operations. It is the main
+       * entry point for all I/O operations in the Boost.Asio library. The io_context object
+       * runs the event loop that dispatches handlers for asynchronous operations.
+       *
+       * @see https://www.boost.org/doc/libs/1_76_0/doc/html/boost_asio/reference/io_context.html
+       */
       asio::io_context asioContext;
+
+      /**
+       * @brief Thread object to manage concurrent execution.
+       *
+       * This member variable represents a thread that can be used to run a function
+       * concurrently with other threads. It is part of the C++ Standard Library's
+       * threading support and allows for the creation and management of threads.
+       */
       std::thread contextThread;
 
+      /**
+       * @brief A socket class for sending and receiving datagrams using the UDP protocol.
+       *
+       * This class provides the necessary functionality to create a UDP socket,
+       * which can be used for network communication. It is part of the ASIO library,
+       * which is a cross-platform C++ library for network and low-level I/O programming.
+       *
+       * @see https://think-async.com/Asio/
+       */
       asio::ip::udp::socket asioSocket;
+
+      /**
+       * @brief Represents an endpoint for a UDP connection.
+       *
+       * This object holds the address and port number of a remote client
+       * in a UDP communication. It is used to specify the destination
+       * or source of a UDP packet.
+       */
       asio::ip::udp::endpoint clientEndpoint;
 
+      /**
+       * @brief A factory class responsible for creating network messages.
+       */
       NetworkMessageFactory networkMessageFactory;
+
+      /**
+       * @brief Buffer to store incoming messages.
+       *
+       * This array is used to temporarily hold incoming messages with a maximum size of 1024 characters.
+       */
       std::array<char, 1024> bufferOfIncomingMessages;
+
+      /**
+       * @brief Holds the current actual ID value.
+       */
       uint32_t actualId = 0;
+
+      /**
+       * @brief A vector that holds pairs of ServerStatus and uint32_t.
+       *
+       * This vector is used to store a queue of acknowledgment messages.
+       * Each element in the vector is a pair, where the first element is
+       * of type ServerStatus representing the status of the server, and
+       * the second element is a uint32_t representing an associated value
+       * (e.g., a message ID or timestamp).
+       */
       std::vector<std::pair<ServerStatus, uint32_t>> queueOfAckMessages;
+
+      /**
+       * @brief A queue of outgoing messages to be sent over the network.
+       *
+       * This vector holds pairs where each pair consists of:
+       * - A message of type `rtype::network::Message<NetworkMessages>`.
+       * - A nested pair containing:
+       *   - A `uint32_t` representing the recipient's ID.
+       *   - An `int` representing additional message metadata or status.
+       */
       std::vector<std::pair<rtype::network::Message<NetworkMessages>, std::pair<uint32_t, int>>> queueOfOutgoingMessages;
-      // std::chrono::_V2::steady_clock::time_point start = std::chrono::steady_clock::now();
+
+      /**
+       * @brief A clock object used to track the start time.
+       *
+       * This clock is part of the rtype namespace and is used to record the
+       * starting time of an event or process. It can be used to measure elapsed
+       * time or to synchronize events within the system.
+       */
       rtype::Clock startClock;
 
 
+      /**
+       * @brief A vector that stores messages received.
+       *
+       * Each element in the vector is a pair where:
+       * - The first element is a string representing the message.
+       * - The second element is a pair of size_t values representing additional data associated with the message.
+       */
       std::vector<std::pair<std::string, std::pair<size_t, size_t>>> _msgReceived;
 
     private:
+      /**
+       * @brief A vector that holds pairs indicating player connection status.
+       *
+       * Each pair consists of:
+       * - A boolean value representing whether a player is connected (true) or not (false).
+       *
+       * - An integer representing the player's ID or some other identifier.
+       *
+       */
       std::vector<std::pair<bool, int>> _playerConnected;
+
+      /**
+       * @brief Reference to the ComponentManager instance.
+       *
+       * This member variable holds a reference to the ComponentManager, which is responsible
+       * for managing all the components in the system. It provides functionalities to add,
+       * remove, and access components associated with entities.
+       */
       component::ComponentManager &_componentManager;
+
+      /**
+       * @brief Reference to the EntityManager instance.
+       *
+       * This member variable holds a reference to the EntityManager, which is responsible
+       * for managing all the entities within the system. It provides functionalities to
+       * create, destroy, and manipulate entities.
+       */
       entity::EntityManager &_entityManager;
+
+      /**
+       * @brief A clock object used to measure the frequency of events.
+       *
+       * This clock can be used to track the time intervals between events
+       * and ensure that they occur at the desired frequency.
+       */
       rtype::Clock frequencyClock;
     };
   } // namespace network

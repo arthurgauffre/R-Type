@@ -9,6 +9,19 @@
 
 namespace ECS_system
 {
+    /**
+     * @brief Updates the AI system for all entities.
+     *
+     * This function updates the AI system for all entities by iterating through the list of entities,
+     * checking their scene status, and updating their velocity based on their AI type.
+     *
+     * @param deltaTime The time elapsed since the last update.
+     * @param entities A vector of shared pointers to entities.
+     * @param msgToSend A reference to a vector of pairs containing actions and entity IDs to send messages.
+     * @param msgReceived A reference to a vector of pairs containing received messages and their associated entity IDs.
+     * @param entityMutex A mutex to ensure thread safety when accessing entities.
+     * @param sceneStatus A shared pointer to the current scene status.
+     */
     void AISytem::update(float deltaTime,
                          std::vector<std::shared_ptr<entity::IEntity>> entities,
                          std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)

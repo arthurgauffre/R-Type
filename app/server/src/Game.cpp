@@ -523,25 +523,35 @@ nlohmann::json Game::fillConfigJson(const std::string &path)
  * and binding input actions to specific keys.
  *
  * The following entities are created:
+ *
  * - Player with ID 0, sprite located at "app/assets/sprites/r-typesheet1.gif",
  *   initial position (100.0f, 100.0f), velocity (10.0f, 0.0f), and scale
  * (1.0f, 1.0f).
+ *
  * - Background with ID 1, image located at
  * "app/assets/images/city_background.png", initial position (100.0f, 0.0f), and
  * size (1920.0f, 1080.0f).
  *
  * The following systems are added to the system manager:
  * - Audio system
+ *
  * - Render system
+ *
  * - Input system
+ *
  * - Movement system
+ *
  * - Background system
  *
  * The following input actions are bound to keys for the player with ID 0:
  * - "MoveLeft" to the 'A' key
+ *
  * - "MoveRight" to the 'D' key
+ *
  * - "MoveUp" to the 'W' key
+ *
  * - "MoveDown" to the 'S' key
+ *
  */
 void Game::init()
 {
@@ -865,10 +875,15 @@ void Game::resetInput()
  *
  * Inside the loop:
  * - The game engine is updated.
+ *
  * - Players are checked for their corresponding entities, and if an entity is not found, the player is removed and a message is sent.
+ *
  * - Waves of enemies are spawned based on the configuration and wave interval.
+ *
  * - Structures are created based on the configuration and spawn timers.
+ *
  * - If all waves are completed and there are still players, a win message is displayed and the game is marked as not started.
+ *
  * - Received messages are handled, and if no messages are received, the input is reset.
  *
  * @throws rtype::NoPlayerInConfigException if there is an issue with player configuration.

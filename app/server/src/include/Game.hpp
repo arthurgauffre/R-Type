@@ -48,11 +48,11 @@ public:
 
     /**
      * @brief Generates a random RColor.
-     * 
+     *
      * This function returns a randomly generated RColor object.
      * The RColor can be used for various purposes such as setting
      * colors in the game.
-     * 
+     *
      * @return RColor A randomly generated RColor object.
      */
     RColor getRandomRColor();
@@ -66,17 +66,17 @@ public:
     entity::IEntity *createPlayer(int numClient);
     /**
      * @brief Creates an enemy entity based on the provided JSON configuration.
-     * 
+     *
      * @param enemy A JSON object containing the configuration for the enemy entity.
      * @return A pointer to the created enemy entity.
      */
     entity::IEntity *createEnemy(const nlohmann::json &enemy);
     /**
      * @brief Creates a weapon entity.
-     * 
+     *
      * This function creates a weapon entity associated with a given parent entity ID.
      * The weapon's properties are defined by the provided JSON object.
-     * 
+     *
      * @param parentID The ID of the parent entity to which the weapon belongs.
      * @param weapon A JSON object containing the properties of the weapon to be created.
      * @return A pointer to the created weapon entity.
@@ -109,9 +109,9 @@ public:
 
     /**
      * @brief Creates a key binding for a client.
-     * 
+     *
      * This function sets up the key bindings for a specific client identified by the given client number.
-     * 
+     *
      * @param numClient The identifier for the client for whom the key bindings are being created.
      */
     void createKeyBind(int numClient);
@@ -241,9 +241,35 @@ private:
      * RtypeEngine instance.
      */
     std::shared_ptr<rtype::RtypeEngine> _engine;
+
+    /**
+     * @brief A clock object used to track input timing.
+     *
+     * This clock is part of the rtype namespace and is used to manage and
+     * measure the timing of inputs within the game. It helps in synchronizing
+     * input events and ensuring they are processed at the correct intervals.
+     */
     rtype::Clock _inputClock;
+
+    /**
+     * @brief A clock object used to track the timing of waves in the game.
+     */
     rtype::Clock _waveClock;
+
+    /**
+     * @brief A vector of pairs where each pair consists of a boolean and an rtype::Clock object.
+     *
+     * The boolean value typically indicates a status or condition related to the corresponding clock.
+     * The rtype::Clock object is used to manage timing or scheduling events in the game.
+     */
     std::vector<std::pair<bool, rtype::Clock>> _spawnClocks;
+
+    /**
+     * @brief A hash table that maps player IDs to their respective scores or other player-specific data.
+     *
+     * The key represents the unique identifier for each player (player ID).
+     * The value represents the associated data for the player, such as their score.
+     */
     std::unordered_map<size_t, size_t> _players;
 
     /**
@@ -263,6 +289,12 @@ private:
      * - A string representing the player's filter.
      */
     std::unordered_map<int, std::pair<entity::IEntity *, std::string>> _playersFilters;
+
+    /**
+     * @brief Interval between waves in the game.
+     *
+     * This variable represents the time interval (in seconds) between consecutive waves of enemies or events in the game.
+     */
     float _waveInterval;
 
     /**
@@ -272,8 +304,24 @@ private:
      * stored in a JSON object using the nlohmann::json library.
      */
     nlohmann::json _config;
+
+    /**
+     * @brief Indicates whether the game has started.
+     */
     bool _isStarted;
+
+    /**
+     * @brief Indicates whether the game is currently running.
+     */
     bool _isRunning;
+
+    /**
+     * @brief Indicates whether the structure has been created.
+     */
     bool _structureCreated;
+
+    /**
+     * @brief Represents the number of structures created in the game.
+     */
     int _createdStructure;
 };

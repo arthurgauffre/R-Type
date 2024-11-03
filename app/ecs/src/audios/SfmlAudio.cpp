@@ -9,7 +9,7 @@
 
 /**
  * @brief Construct a new SfmlAudio object.
- * 
+ *
  * This constructor initializes a new instance of the SfmlAudio class.
  */
 SfmlAudio::SfmlAudio()
@@ -29,10 +29,10 @@ SfmlAudio::~SfmlAudio()
 
 /**
  * @brief Creates a sound from the given file path and stores it in the internal sound map.
- * 
+ *
  * This function loads a sound buffer from the specified file path and associates it with a new sound object.
  * The sound and its buffer are stored in internal maps, and a unique identifier is returned.
- * 
+ *
  * @param path The file path to the sound file to be loaded.
  * @return A unique identifier for the created sound. If the sound could not be loaded, returns static_cast<size_t>(-1).
  */
@@ -72,12 +72,12 @@ size_t SfmlAudio::createMusic(const std::string &path)
 
 /**
  * @brief Updates the sound buffer for a given sound ID.
- * 
+ *
  * This function updates the sound buffer associated with the specified sound ID.
  * If the sound ID exists in the _sounds map, it attempts to load a new sound buffer
  * from the provided file path. If the loading is successful, it updates the sound
  * buffer in the _soundBuffers map and sets the new buffer for the sound.
- * 
+ *
  * @param id The unique identifier for the sound to be updated.
  * @param path The file path to the new sound buffer to be loaded.
  */
@@ -88,7 +88,6 @@ void SfmlAudio::updateSound(size_t id, const std::string &path)
         if (!buffer->loadFromFile(path)) {
             return;
         }
-        
         _soundBuffers[id] = buffer;
         _sounds[id]->setBuffer(*buffer);
     }
@@ -97,10 +96,10 @@ void SfmlAudio::updateSound(size_t id, const std::string &path)
 
 /**
  * @brief Updates the music associated with the given ID by loading a new file from the specified path.
- * 
+ *
  * This function checks if a music object with the given ID exists in the _musics map. If it does,
  * it attempts to open the music file from the provided path and update the music object.
- * 
+ *
  * @param id The unique identifier for the music object to be updated.
  * @param path The file path to the new music file to be loaded.
  */
@@ -113,10 +112,10 @@ void SfmlAudio::updateMusic(size_t id, const std::string &path)
 
 /**
  * @brief Plays the sound associated with the given ID.
- * 
- * This function checks if a sound with the specified ID exists in the 
+ *
+ * This function checks if a sound with the specified ID exists in the
  * _sounds map. If it does, the sound is played.
- * 
+ *
  * @param id The unique identifier of the sound to be played.
  */
 void SfmlAudio::playSound(size_t id)
@@ -127,10 +126,10 @@ void SfmlAudio::playSound(size_t id)
 
 /**
  * @brief Plays the music associated with the given ID.
- * 
- * This function checks if a music track with the specified ID exists in the 
+ *
+ * This function checks if a music track with the specified ID exists in the
  * _musics map. If it does, the music track is played.
- * 
+ *
  * @param id The ID of the music track to be played.
  */
 void SfmlAudio::playMusic(size_t id)
@@ -141,9 +140,9 @@ void SfmlAudio::playMusic(size_t id)
 
 /**
  * @brief Stops the sound associated with the given ID.
- * 
+ *
  * This function stops the sound that corresponds to the provided ID if it exists in the sound map.
- * 
+ *
  * @param id The unique identifier of the sound to be stopped.
  */
 void SfmlAudio::stopSound(size_t id)
@@ -154,10 +153,10 @@ void SfmlAudio::stopSound(size_t id)
 
 /**
  * @brief Stops the music associated with the given ID.
- * 
- * This function checks if a music track with the specified ID exists in the 
+ *
+ * This function checks if a music track with the specified ID exists in the
  * _musics map. If it does, the music track is stopped.
- * 
+ *
  * @param id The unique identifier of the music track to stop.
  */
 void SfmlAudio::stopMusic(size_t id)
@@ -168,7 +167,7 @@ void SfmlAudio::stopMusic(size_t id)
 
 /**
  * @brief Checks if a sound with the given ID is currently playing.
- * 
+ *
  * @param id The unique identifier of the sound to check.
  * @return true if the sound is playing, false otherwise.
  */
@@ -181,10 +180,10 @@ bool SfmlAudio::isSoundPlaying(size_t id)
 
 /**
  * @brief Checks if the music with the given ID is currently playing.
- * 
+ *
  * This function searches for the music with the specified ID in the _musics map.
  * If the music is found, it checks its status to determine if it is playing.
- * 
+ *
  * @param id The unique identifier of the music to check.
  * @return true if the music is playing, false otherwise.
  */
@@ -197,9 +196,9 @@ bool SfmlAudio::isMusicPlaying(size_t id)
 
 /**
  * @brief Factory function to create an instance of SfmlAudio.
- * 
+ *
  * This function creates a new instance of the SfmlAudio class and returns it as a pointer to the IAudio interface.
- * 
+ *
  * @return IAudio* Pointer to the newly created SfmlAudio instance.
  */
 EXPORT_API IAudio *createAudio()

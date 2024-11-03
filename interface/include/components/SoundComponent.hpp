@@ -54,8 +54,18 @@ public:
    */
   bool getShouldPlay() { return _shouldPlay; }
 
+  /**
+   * @brief Get the sound identifier.
+   *
+   * @return size_t The identifier of the sound.
+   */
   size_t getSound() { return _sound; }
 
+  /**
+   * @brief Get the file path of the sound.
+   *
+   * @return std::string The file path of the sound.
+   */
   std::string getPath() { return _soundFilePath; }
 
 private:
@@ -80,6 +90,9 @@ private:
    */
   bool _shouldPlay;
 
+  /**
+   * @brief Path to the sound file.
+   */
   std::string _soundFilePath;
 };
 } // namespace component

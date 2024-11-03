@@ -126,7 +126,22 @@ public:
  * represented by an Action and its associated size.
  */
   std::vector<std::pair<Action, size_t>> msgToSend;
+
+/**
+ * @brief A clock class used for time-related operations within the R-Type engine.
+ *
+ * The rtype::Clock class provides functionalities to measure elapsed time,
+ * manage timers, and perform other time-related operations necessary for
+ * the game engine.
+ */
   rtype::Clock clock;
+
+/**
+ * @brief Mutex to ensure thread-safe access to entities.
+ *
+ * This mutex is used to protect the critical section where entities are accessed or modified,
+ * preventing data races and ensuring that only one thread can access the entities at a time.
+ */
   std::mutex _entityMutex;
 
 /**
@@ -139,6 +154,13 @@ public:
  */
   std::shared_ptr<IGraphic> _graphic;
 
+/**
+ * @brief A shared pointer to an IAudio instance.
+ *
+ * This member variable holds a shared pointer to an object that implements the IAudio interface.
+ * It is used to manage audio-related functionalities within the R-Type engine, ensuring proper
+ * memory management and resource sharing.
+ */
   std::shared_ptr<IAudio> _audio;
 
   template <typename T> class DLLoader {
@@ -267,6 +289,21 @@ public:
       return graphic;
     }
 
+/**
+ * @brief Retrieves an audio interface by dynamically loading a symbol from a shared library.
+ *
+ * This function attempts to load a symbol with the specified name from a shared library
+ * and returns a pointer to an IAudio interface. If the symbol cannot be found, the function
+ * prints an error message and terminates the program.
+ *
+ * @param funcName The name of the symbol to load from the shared library.
+ * @return A pointer to an IAudio interface.
+ *
+ * @note This function uses platform-specific code to load the symbol. On Windows, it uses
+ *       GetProcAddress, and on other platforms, it uses dlsym.
+ *
+ * @throws This function will terminate the program if the symbol cannot be found.
+ */
     IAudio *getAudio(const std::string &funcName) {
       using FuncPtr =
           IAudio *(*)();

@@ -46,8 +46,6 @@ void ECS_system::AudioSystem::update(
   {
     if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
-    // if (entity->getSceneStatus() == Scene::ALL)
-    //   *sceneStatus = Scene::ALL;
     if (!entity)
       continue;
     component::MusicComponent *musicComponent =

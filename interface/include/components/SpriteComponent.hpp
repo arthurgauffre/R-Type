@@ -106,6 +106,13 @@ public:
    */
   size_t &getSpriteId() { return _spriteId; }
 
+  /**
+   * @brief Updates the position of the sprite and performs any necessary graphic updates.
+   *
+   * @param x The new x-coordinate of the sprite.
+   * @param y The new y-coordinate of the sprite.
+   * @param graphic A shared pointer to the graphic interface used for rendering.
+   */
   void update(float x, float y, std::shared_ptr<IGraphic> graphic);
 
   /**

@@ -108,6 +108,13 @@ protected:
    */
   std::shared_ptr<IGraphic> _graphic;
 
+  /**
+   * @brief A shared pointer to an IAudio instance.
+   *
+   * This member variable holds a shared pointer to an object that implements
+   * the IAudio interface. It is used to manage the audio functionalities within
+   * the system, ensuring proper resource management and ownership semantics.
+   */
   std::shared_ptr<IAudio> _audio;
 
   /**

@@ -6,6 +6,7 @@
 */
 
 #include <systems/HealthSystem.hpp>
+#include <iostream>
 
 /**
  * @brief Constructs a new HealthSystem object.
@@ -29,8 +30,6 @@ ECS_system::HealthSystem::HealthSystem(
  * of the HealthSystem class is destroyed.
  */
 ECS_system::HealthSystem::~HealthSystem() {}
-
-#include <iostream>
 
 /**
  * @brief Updates the health status of entities and deactivates those with zero

@@ -7,6 +7,7 @@
 
 #include <managers/EntityManager.hpp>
 #include <r-type/Entity.hpp>
+#include <iostream>
 
 /**
  * @brief Constructs an EntityManager object.
@@ -68,7 +69,6 @@ entity::EntityManager::getEntities() {
  */
 uint32_t entity::EntityManager::generateEntityID() { return _entityCounter++; }
 
-#include <iostream>
 
 /**
  * @brief Removes an entity with the specified ID from the list of entities.
