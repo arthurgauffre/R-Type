@@ -120,10 +120,41 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
     entity2->setCommunication(entity::EntityCommunication::DELETE);
   }
 
-  // if (type1 == Type::PLAYER && type2 == Type::STRUCTURE)
-    // std::cout << "Player collided with structure" << std::endl;
-  // else if (type1 == Type::STRUCTURE && type2 == Type::PLAYER)
-    // std::cout << "Structure collided with player" << std::endl;
+  if (type1 == Type::PLAYER && type2 == Type::STRUCTURE)
+  {
+    component::HealthComponent *health = _componentManager
+                                             .getComponent<component::HealthComponent>(entity1->getID());
+    health->setDamageIncoming(100);
+  }
+  else if (type1 == Type::STRUCTURE && type2 == Type::PLAYER)
+  {
+    component::HealthComponent *health = _componentManager
+                                             .getComponent<component::HealthComponent>(entity2->getID());
+    health->setDamageIncoming(100);
+  }
+
+  if (type1 == Type::PLAYER_PROJECTILE && type2 == Type::STRUCTURE)
+  {
+    component::HealthComponent *health = _componentManager
+                                             .getComponent<component::HealthComponent>(entity2->getID());
+    component::DamageComponent *damage = _componentManager
+                                             .getComponent<component::DamageComponent>(entity1->getID());
+    std::cout << "damage: " << damage->getDamage() << std::endl;
+    health->setDamageIncoming(damage->getDamage());
+
+    entity1->setCommunication(entity::EntityCommunication::DELETE);
+  }
+  else if (type1 == Type::STRUCTURE && type2 == Type::PLAYER_PROJECTILE)
+  {
+    component::HealthComponent *health = _componentManager
+                                             .getComponent<component::HealthComponent>(entity1->getID());
+    component::DamageComponent *damage = _componentManager
+                                             .getComponent<component::DamageComponent>(entity2->getID());
+    std::cout << "damage: " << damage->getDamage() << std::endl;
+    health->setDamageIncoming(damage->getDamage());
+
+    entity2->setCommunication(entity::EntityCommunication::DELETE);
+  }
 }
 
 /**

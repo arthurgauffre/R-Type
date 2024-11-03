@@ -1,5 +1,4 @@
 {
-
   "serverSystems": [
     "server",
     "cooldown",
@@ -10,14 +9,7 @@
     "health"
   ],
 
-  "localSystems": [
-    "render",
-    "movement",
-    "button",
-    "input",
-    "client",
-    "audio"
-  ],
+  "localSystems": ["render", "movement", "button", "input", "client", "audio"],
 
   "waveSystem": {
     "waveNumber": 10,
@@ -215,7 +207,6 @@
         "y": 1
       }
     }
-
   ],
 
   "enemy": [
