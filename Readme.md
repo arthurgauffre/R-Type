@@ -9,7 +9,7 @@
 - [How to Play](#how-to-play)
 - [Configuration files](#configuration-files)
 - [Authors](#authors)
-- [Documentation Dev](https://jsuissayker.github.io/R-Type/)
+- [Documentation Dev](https://arthurgauffre.github.io/R-Type/)
 - [Game Engine Documentation](GameEngine.md)
 - [Networking Protocol](ServerProtocol.md)
 - [Comparative Analysis](ComparativeAnalysis.md)
