@@ -20,6 +20,17 @@ Game::~Game()
 {
 }
 
+RColor Game::getRandomRColor() {
+    RColor color;
+    color.r = rand() % 256;
+    color.g = rand() % 256;
+    color.b = rand() % 256;
+    color.a = 255;
+
+    return color;
+}
+
+
 float getRandomPosition()
 {
     std::random_device rd;
@@ -89,7 +100,7 @@ entity::IEntity *Game::createBackground()
     _engine->getComponentManager()->addComponent<component::TextureComponent>(
         background1->getID(), texturePath, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        background1->getID(), 0, 0, _engine->_graphic);
+        background1->getID(), 0, 0, RColor{255, 255, 255, 255}, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SizeComponent>(
         background1->getID(), size);
 
@@ -102,7 +113,7 @@ entity::IEntity *Game::createBackground()
     _engine->getComponentManager()->addComponent<component::TextureComponent>(
         background2->getID(), texturePath, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        background2->getID(), size.first, 0, _engine->_graphic);
+        background2->getID(), size.first, 0, RColor{255, 255, 255, 255}, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SizeComponent>(
         background2->getID(), size);
 
@@ -171,7 +182,7 @@ entity::IEntity *Game::createPlayer(int numClient)
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                            Type::PLAYER);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second, _engine->_graphic);
+        entityID, position.first, position.second, getRandomRColor(), _engine->_graphic);
     component::TextureComponent *texture =
         _engine->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath, _engine->_graphic);
@@ -254,7 +265,7 @@ entity::IEntity *Game::createEnemy(const nlohmann::json &enemy)
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, Type::ENEMY);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second, _engine->_graphic);
+        entityID, position.first, position.second, RColor{255, 255, 255, 255}, _engine->_graphic);
     component::TextureComponent *texture =
         _engine->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath, _engine->_graphic);
@@ -352,7 +363,7 @@ entity::IEntity *Game::createStructure(const nlohmann::json &structure)
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         entityID, Type::STRUCTURE);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second, _engine->_graphic);
+        entityID, position.first, position.second, RColor{255, 255, 255, 255}, _engine->_graphic);
     component::TextureComponent *texture =
         _engine->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath, _engine->_graphic);
@@ -662,6 +673,7 @@ void Game::resetInput()
 
 void Game::run()
 {
+    std::srand(static_cast<unsigned int>(std::time(0)));
     _inputClock.restart();
     while (_isRunning)
     {

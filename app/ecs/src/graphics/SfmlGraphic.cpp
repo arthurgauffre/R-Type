@@ -82,6 +82,11 @@ void SfmlGraphic::setSpriteRotation(float angle, size_t id)
     _sprites[id].setRotation(angle);
 }
 
+void SfmlGraphic::setSpriteColor(size_t id, RColor color)
+{
+    _sprites[id].setColor(sf::Color(color.r, color.g, color.b, color.a));
+}
+
 void SfmlGraphic::setRectangleShapePosition(float x, float y, size_t id)
 {
     _rectangleShapes[id].setPosition(x, y);
