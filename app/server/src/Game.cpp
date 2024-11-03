@@ -20,7 +20,8 @@ Game::~Game()
 {
 }
 
-RColor Game::getRandomRColor() {
+RColor Game::getRandomRColor()
+{
     RColor color;
     color.r = rand() % 256;
     color.g = rand() % 256;
@@ -29,7 +30,6 @@ RColor Game::getRandomRColor() {
 
     return color;
 }
-
 
 float getRandomPosition()
 {
@@ -483,20 +483,16 @@ void Game::init()
 
     entity::EntityManager &entityManager = *_engine->getEntityManager();
 
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "movement", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "server", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "cooldown", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "weapon", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "ai", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "collision", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "health", _engine->_graphic, _engine->_audio, stringCom);
+    if (_config.contains("serverSystems") == true)
+    {
+        if (!_config["serverSystems"].is_array())
+            throw rtype::InvalidSystemConfigException("Invalid system configuration in JSON file.");
+        else
+        {
+            for (const auto &system : _config["serverSystems"])
+                _engine->getSystemManager()->addSystem(componentManager, entityManager, system, _engine->_graphic, _engine->_audio, stringCom);
+        }
+    }
 }
 
 entity::IEntity *Game::addFilter(std::string filter, int numClient)

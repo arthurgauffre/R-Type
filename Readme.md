@@ -107,6 +107,11 @@ For each client that want to connect to the server, you need to launch a new ter
 
 The configuration files are located in the `configs` folder. You can change the settings of the game by modifying the `config.json` files. Here is the differents key words that you can change:
 
+
+- "serverSystems": Array with all the system that run on the server.
+
+- "localSystems": Array with all the system that run on the client.
+
 - "waveSystem": All the settings of the wave system.
     - "waveNumber": The number of wave that you want to play.
     - "waveInterval": The interval between each wave.

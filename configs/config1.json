@@ -1,4 +1,22 @@
 {
+
+  "serverSystems": [
+    "server",
+    "cooldown",
+    "collision",
+    "weapon",
+    "ai",
+    "health"
+  ],
+
+  "localSystems": [
+    "render",
+    "button",
+    "input",
+    "client",
+    "audio"
+  ],
+
   "waveSystem": {
     "waveNumber": 10,
     "waveInterval": 5
