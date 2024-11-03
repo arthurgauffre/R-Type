@@ -33,7 +33,7 @@
       "y": 0.1
     },
     "weapon": {
-      "damage": 10,
+      "damage": 50,
       "cooldown": 1,
       "speed": 500
     }
@@ -95,7 +95,7 @@
         "y": 0.2
       },
       "weapon": {
-        "damage": 10,
+        "damage": 100,
         "cooldown": 1,
         "speed": -500
       }

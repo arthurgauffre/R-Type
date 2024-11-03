@@ -26,5 +26,5 @@ build
 r-type_server
 r-type_client
 
-# config cleant
+# config clean
 configs/keyBind.json

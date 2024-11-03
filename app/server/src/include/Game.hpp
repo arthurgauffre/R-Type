@@ -214,7 +214,7 @@ private:
     rtype::Clock _inputClock;
     rtype::Clock _waveClock;
     std::vector<rtype::Clock> _spawnClocks;
-    std::unordered_map<size_t, entity::IEntity *> _players;
+    std::unordered_map<size_t, size_t> _players;
 
     /**
      * @brief A map that associates player IDs with their corresponding scenes.

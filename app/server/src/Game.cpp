@@ -486,7 +486,7 @@ void Game::init()
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
                                            "collision", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "health", _engine->_graphic, _engine->_audio, stringCom);
+                                           "health", _engine->_graphic, _engine->_audio, stringCom);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "game", _engine->_graphic);
 }
@@ -527,8 +527,9 @@ void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<si
         std::cout << "Client disconnected in Game.cpp : " << numClient << std::endl;
         if (_players.find(numClient) != _players.end())
         {
-            _players[numClient]->setCommunication(entity::EntityCommunication::DELETE);
-            std::cout << "Setting the communication to delete" << std::endl;
+            entity::IEntity *entity = _engine->getEntityManager()->getEntityByID(_players[numClient]);
+            if (entity)
+                entity->setCommunication(entity::EntityCommunication::DELETE);
             _players.erase(numClient);
         }
     }
@@ -543,7 +544,7 @@ void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<si
         if (_players.find(numClient) == _players.end())
         {
             entity::IEntity *entity = createPlayer(numClient);
-            _players[numClient] = entity;
+            _players[numClient] = entity->getID();
         }
         _playersScenes[numClient] = Scene::GAME;
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::GAME, numClient));
@@ -604,13 +605,9 @@ void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<si
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, numClient));
     }
     if (_players.find(numClient) == _players.end())
-    {
         return;
-    }
-    if (_players[numClient]->getID() != id)
-    {
+    if (_players[numClient] != id)
         return;
-    }
     if (msg == "moveUp" || msg == "moveDown" || msg == "moveLeft" || msg == "moveRight")
         moveEntity(msg, id);
     if (msg == "shoot")
@@ -672,6 +669,19 @@ void Game::run()
     while (_isRunning)
     {
         _engine->update();
+        for (auto it = _players.begin(); it != _players.end();)
+        {
+            entity::IEntity *entity = _engine->getEntityManager()->getEntityByID(it->second);
+            if (!entity)
+            {
+                _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, it->first));
+                it = _players.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
         if (_waveNumber != 0 && _waveClock.getElapsedTime() > _waveInterval && _isStarted)
         {
             if (_config.contains("enemy") && _config["enemy"].is_array())
@@ -719,7 +729,7 @@ void Game::run()
 
         if (_players.size() == 0 && _isStarted)
         {
-            std::cout << "No more players" << std::endl;
+            // std::cout << "No more players" << std::endl;
         }
         if (_players.size() != 0 && _waveNumber == 0 && _isStarted)
         {
