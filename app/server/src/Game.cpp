@@ -9,11 +9,11 @@
 
 /**
  * @brief Constructs a new Game object.
- * 
+ *
  * Initializes the game with the provided core module, setting the initial state
  * of the game to not started, structure not created, running, with wave number
  * and wave interval set to 0.
- * 
+ *
  * @param coreModule A shared pointer to the RtypeEngine core module.
  */
 Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
@@ -27,7 +27,7 @@ Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
 
 /**
  * @brief Destructor for the Game class.
- * 
+ *
  * This destructor is responsible for cleaning up any resources
  * that the Game object may have acquired during its lifetime.
  */
@@ -37,11 +37,11 @@ Game::~Game()
 
 /**
  * @brief Generates a random RColor with random RGB values and full opacity.
- * 
+ *
  * This function creates an RColor object with each of the red, green, and blue
  * components set to a random value between 0 and 255. The alpha component is
  * set to 255, making the color fully opaque.
- * 
+ *
  * @return RColor A randomly generated color with random RGB values and full opacity.
  */
 RColor Game::getRandomRColor()
@@ -57,10 +57,10 @@ RColor Game::getRandomRColor()
 
 /**
  * @brief Generates a random floating-point number representing a position.
- * 
+ *
  * This function uses a random device to seed a Mersenne Twister engine, which
  * generates a random floating-point number uniformly distributed between 0 and 1080.
- * 
+ *
  * @return A random float between 0 and 1080.
  */
 float getRandomPosition()
@@ -73,10 +73,10 @@ float getRandomPosition()
 
 /**
  * @brief Creates a weapon entity with specified properties.
- * 
+ *
  * This function creates a weapon entity and attaches various components to it,
  * such as sound, type, parent, cooldown, and damage components.
- * 
+ *
  * @param parentID The ID of the parent entity.
  * @param weapon A JSON object containing the weapon properties.
  * @return entity::IEntity* A pointer to the created weapon entity.
@@ -164,10 +164,10 @@ entity::IEntity *Game::createBackground()
 
 /**
  * @brief Binds input actions to the specified entity.
- * 
+ *
  * This function binds various input actions (move left, move right, move up, move down, shoot, and menu)
  * to the corresponding keys (Q, D, Z, S, Space, and Escape) for the given entity.
- * 
+ *
  * @param entity A pointer to the entity to which the input actions will be bound.
  */
 void Game::BindInputScript(entity::IEntity *entity)
@@ -335,10 +335,10 @@ entity::IEntity *Game::createEnemy(const nlohmann::json &enemy)
 
 /**
  * @brief Creates a button entity with the specified properties.
- * 
+ *
  * This function creates a button entity and adds various components to it, such as
  * RectangleShapeComponent, TransformComponent, OnClickComponent, TextComponent, and TypeComponent.
- * 
+ *
  * @param entityID The unique identifier for the entity.
  * @param color The color of the button.
  * @param position The position of the button in the form of a pair of floats (x, y).
@@ -364,7 +364,7 @@ entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<f
 
 /**
  * @brief Creates the menu with various buttons for the game.
- * 
+ *
  * This function creates several buttons for the game menu, each with a specific action and position.
  * The buttons created are:
  * - Play
@@ -373,10 +373,10 @@ entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<f
  * - Tritanopia
  * - Clear Filter
  * - Key Bind
- * 
+ *
  * Each button is assigned a unique entity ID, color, position, size, action, and label.
  * The scene status for each button is set to MENU.
- * 
+ *
  * @param numClient The number of clients connected, used to configure the buttons.
  */
 void Game::createMenu(int numClient)
@@ -398,12 +398,12 @@ void Game::createMenu(int numClient)
 
 /**
  * @brief Creates key bindings for a client in the game.
- * 
+ *
  * This function creates several buttons and text components for key bindings
  * and assigns them to a specific client. The buttons and text components are
  * created with specific positions, colors, and actions. The scene status for
  * each button and text component is set to Scene::KEYBIND.
- * 
+ *
  * @param numClient The client number for which the key bindings are created.
  */
 void Game::createKeyBind(int numClient)
@@ -618,13 +618,13 @@ void Game::init()
 
 /**
  * @brief Adds a filter entity to the game based on the specified filter type.
- * 
+ *
  * This function creates a new filter entity and adds the appropriate components
- * to it based on the specified filter type. The filter types supported are 
- * "protanopia", "deuteranopia", and "tritanopia". Each filter type corresponds 
+ * to it based on the specified filter type. The filter types supported are
+ * "protanopia", "deuteranopia", and "tritanopia". Each filter type corresponds
  * to a different color overlay.
- * 
- * @param filter The type of filter to add. Supported values are "protanopia", 
+ *
+ * @param filter The type of filter to add. Supported values are "protanopia",
  * "deuteranopia", and "tritanopia".
  * @param numClient The client number associated with the filter entity.
  * @return entity::IEntity* A pointer to the created filter entity.
@@ -647,14 +647,14 @@ entity::IEntity *Game::addFilter(std::string filter, int numClient)
 
 /**
  * @brief Handles received messages and performs corresponding actions.
- * 
+ *
  * This function processes a list of received messages and executes the appropriate
  * actions based on the message type. The messages are expected to be in the form of
  * a vector of pairs, where each pair contains a string message and another pair
  * consisting of a size_t ID and an int client number.
- * 
+ *
  * @param msgReceived A reference to a vector of pairs containing the received messages.
- * 
+ *
  * The function supports the following message types:
  * - "clientConnection": Handles client connection, sets up the menu, and creates key bindings.
  * - "clientDisconnection": Handles client disconnection, deletes the player's entity if it exists.
@@ -667,7 +667,7 @@ entity::IEntity *Game::addFilter(std::string filter, int numClient)
  * - "menu": Sets the scene to MENU and sends a menu action.
  * - "moveUp", "moveDown", "moveLeft", "moveRight": Moves the player's entity in the specified direction.
  * - "shoot": Makes the player's entity shoot.
- * 
+ *
  * The function also ensures that actions are only performed if the player exists and the
  * player ID matches the provided ID.
  */
@@ -828,7 +828,7 @@ void Game::moveEntity(std::string msg, size_t id)
 
 /**
  * @brief Resets the input for all entities that have both InputComponent and VelocityComponent.
- * 
+ *
  * This function iterates through all entities managed by the engine's entity manager. For each entity,
  * it checks if the entity has both an InputComponent and a VelocityComponent. If both components are present,
  * and the entity's velocity is non-zero, and the elapsed time since the last input reset is greater than 0.1 seconds,
@@ -859,10 +859,10 @@ void Game::resetInput()
 
 /**
  * @brief Main game loop that runs the game logic.
- * 
+ *
  * This function initializes the random seed, restarts the input clock, and enters the main game loop.
  * The loop continues running while the game is marked as running (_isRunning).
- * 
+ *
  * Inside the loop:
  * - The game engine is updated.
  * - Players are checked for their corresponding entities, and if an entity is not found, the player is removed and a message is sent.
@@ -870,7 +870,7 @@ void Game::resetInput()
  * - Structures are created based on the configuration and spawn timers.
  * - If all waves are completed and there are still players, a win message is displayed and the game is marked as not started.
  * - Received messages are handled, and if no messages are received, the input is reset.
- * 
+ *
  * @throws rtype::NoPlayerInConfigException if there is an issue with player configuration.
  */
 void Game::run()
@@ -943,6 +943,14 @@ void Game::run()
         {
             std::cout << "You Win" << std::endl;
             _isStarted = false;
+            _waveNumber = _config["waveSystem"]["waveNumber"];
+            _structureCreated = false;
+            _createdStructure = 0;
+            for (auto &spawnClocks : _spawnClocks)
+            {
+                spawnClocks.first = false;
+                spawnClocks.second.restart();
+            }
             for (auto &player : _players)
             {
                 _playersScenes[player.first] = Scene::MENU;
