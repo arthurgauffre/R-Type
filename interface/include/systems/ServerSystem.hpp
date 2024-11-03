@@ -374,6 +374,10 @@ namespace rtype
                 else
                   break;
               }
+              if (numPlayer > 3) {
+                std::cout << "Connection denied" << std::endl;
+                return;
+              }
               _playerConnected[numPlayer].first = true;
               _playerConnected[numPlayer].second = deqConnections.back()->GetId();
               sendAllEntitiesToClient(deqConnections.back(), deqConnections.back()->GetId());
