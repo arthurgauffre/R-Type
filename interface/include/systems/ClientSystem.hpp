@@ -78,7 +78,6 @@ namespace rtype
         message << timeNow;
 
         Send(message);
-        std::cout << "Message sent : " << message << std::endl;
       }
 
       /**

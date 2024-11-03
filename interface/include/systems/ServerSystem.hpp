@@ -48,7 +48,6 @@
 #include <Clock.hpp>
 
 #include <optional>
-// #include <variant>
 
 namespace rtype
 {
@@ -78,23 +77,22 @@ namespace rtype
 
       void handleComponents() {};
 
-      void ackMessageReceivedAction(EntityId receivedEntity, NetworkMessages messageType) {
-        std::cout << "Queue size before erase : " << queueOfAckMessages.size() << std::endl;
-        std::cout << "QUEUE OF OUTGOING MESSAGES SIZE BEFORE : " << queueOfOutgoingMessages.size() << std::endl;
+      void ackMessageReceivedAction(EntityId receivedEntity, NetworkMessages messageType)
+      {
         size_t originalQueueSize = queueOfAckMessages.size();
-        queueOfAckMessages.erase(std::remove_if(queueOfAckMessages.begin(), queueOfAckMessages.end(), [receivedEntity](const std::pair<ServerStatus, uint32_t> &ackMessage) {
-          return ackMessage.second == receivedEntity.id;
-        }), queueOfAckMessages.end());
-        if (queueOfAckMessages.size() != originalQueueSize && queueOfOutgoingMessages.size() > 0) {
-          // Remove the element of the queueOfOutgoingMessages if the header.id is equal to the header id in the queueOfAckMessages, and also ensure that the entity id match the one in queueOfAckMessages that was erased
+        queueOfAckMessages.erase(std::remove_if(queueOfAckMessages.begin(), queueOfAckMessages.end(), [receivedEntity](const std::pair<ServerStatus, uint32_t> &ackMessage)
+                                                { return ackMessage.second == receivedEntity.id; }),
+                                 queueOfAckMessages.end());
+        if (queueOfAckMessages.size() != originalQueueSize && queueOfOutgoingMessages.size() > 0)
+        {
 
           queueOfOutgoingMessages.erase(std::remove_if(queueOfOutgoingMessages.begin(), queueOfOutgoingMessages.end(),
-    [receivedEntity, messageType](const std::pair<rtype::network::Message<NetworkMessages>, std::pair<uint32_t, int>> &outgoingMessage) {
-        return outgoingMessage.first.header.id == messageType && outgoingMessage.second.first == receivedEntity.id;
-    }), queueOfOutgoingMessages.end());
+                                                       [receivedEntity, messageType](const std::pair<rtype::network::Message<NetworkMessages>, std::pair<uint32_t, int>> &outgoingMessage)
+                                                       {
+                                                         return outgoingMessage.first.header.id == messageType && outgoingMessage.second.first == receivedEntity.id;
+                                                       }),
+                                        queueOfOutgoingMessages.end());
         }
-        std::cout << "QUEUE OF OUTGOING MESSAGES SIZE AFTER : " << queueOfOutgoingMessages.size() << std::endl;
-        std::cout << "Queue size after erase : " << queueOfAckMessages.size() << std::endl;
       }
 
       void
@@ -115,7 +113,6 @@ namespace rtype
         this->ServerUpdate(100, false);
         while (!_msgReceived.empty())
         {
-          // std::cout << "size of msgReceived : " << _msgReceived.size() << std::endl;
           msgReceived.emplace_back(_msgReceived.back());
           _msgReceived.pop_back();
         }
@@ -144,7 +141,6 @@ namespace rtype
         break;
         case NetworkMessages::ServerPing:
         {
-          std::cout << client->GetId() << " : Ping the server" << std::endl;
           client->Send(message);
         }
         break;
@@ -255,18 +251,7 @@ namespace rtype
               break;
             }
           }
-          //! Need to see if it can be implemented correctly
-          // wait for all the threads to finish before executing the disconnection of the client
-          // std::this_thread::sleep_for(std::chrono::milliseconds(100));
-          // std::cout << "WAITING FOR DISCONNECTION" << std::endl;
           _msgReceived.emplace_back(std::make_pair("clientDisconnection", std::make_pair(numPlayer, client->GetId())));
-          // OnClientDisconnection(client);
-          // for (; incomingMessages.queueSize() > 0;) {
-          //   incomingMessages.popBack();
-          // }
-          // client->Disconnect();
-          // client.reset();
-          // return;
         }
         break;
         default:
@@ -310,7 +295,6 @@ namespace rtype
         return true;
       }
 
-
       virtual void OnClientDisconnection(
           std::shared_ptr<rtype::network::NetworkConnection<NetworkMessages>> client)
       {
@@ -323,9 +307,6 @@ namespace rtype
                                    {
                                      return connection->GetId() == client->GetId();
                                    });
-          // deqConnections.erase(it, deqConnections.end());
-          // client.reset();
-          // return;
         }
       }
 
@@ -339,12 +320,10 @@ namespace rtype
           if (clientEndpoint.protocol() != asio::ip::udp::v4())
             return WaitForMessage();;
           if (!ec) {
-            std::cout << "New connection from: " << clientEndpoint << std::endl;
 
             for (std::shared_ptr<NetworkConnection<T>> &connection :
                  deqConnections) {
               if (connection->GetEndpoint() == clientEndpoint) {
-                std::cout << "Connection already exists" << std::endl;
                 return;
               }
             }
@@ -360,8 +339,6 @@ namespace rtype
               deqConnections.push_back(std::move(newConnection));
               deqConnections.back()->EstablishClientConnection(this,
                                                                actualId++);
-              std::cout << "[" << deqConnections.back()->GetId()
-                        << "] Connection approved" << std::endl;
               int numPlayer = 0;
               for (int i = 0; i < 4; i++) {
                 if (_playerConnected[i].first == true)
@@ -373,11 +350,7 @@ namespace rtype
               _playerConnected[numPlayer].second = deqConnections.back()->GetId();
               sendAllEntitiesToClient(deqConnections.back(), deqConnections.back()->GetId());
               _msgReceived.emplace_back(std::make_pair("clientConnection", std::make_pair(numPlayer, deqConnections.back()->GetId())));
-            } else {
-              std::cout << "Connection denied" << std::endl;
             }
-          } else {
-            std::cout << "Error on connection" << ec.message() << std::endl;
           }
           WaitForMessage(); });
       }
@@ -394,13 +367,15 @@ namespace rtype
             {
               for (int i = 0; i < deqConnections.size(); i++)
               {
-                if (i == entity->getNumClient()) {
+                if (i == entity->getNumClient())
+                {
                   SendMessageToClient(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), deqConnections[i]);
                   queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_ENTITY, entity->getID()));
                 }
               }
             }
-            else {
+            else
+            {
               SendMessageToAllClients(networkMessageFactory.createEntityMsg(entity->getID(), entity->getSceneStatus(), entity->getNumClient()), clientToIgnore);
               int numberOfClient = getNumPlayerConnected();
               for (int i = 0; i < numberOfClient; i++)
@@ -420,9 +395,9 @@ namespace rtype
           }
           else if (entity->getCommunication() == entity::EntityCommunication::DELETE)
           {
-            // queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
 
-            if (entity->getNumClient() != -1) {
+            if (entity->getNumClient() != -1)
+            {
               if (entity->getNumClient() < deqConnections.size())
                 SendMessageToClient(networkMessageFactory.deleteEntityMsg(entity->getID()), deqConnections[entity->getNumClient()]);
             }
@@ -468,7 +443,7 @@ namespace rtype
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              auto textureKey= getKeyByValue(_stringCom.texturePath, component->getPath());
+              auto textureKey = getKeyByValue(_stringCom.texturePath, component->getPath());
               if (textureKey)
                 SendMessageToAllClients(networkMessageFactory.updateTextureMsg(entity->getID(), *textureKey), clientToIgnore);
               else
@@ -535,13 +510,11 @@ namespace rtype
 
                 if (component->getCommunication() == component::ComponentCommunication::CREATE)
                 {
-                  std::cout << "ON CREATE" << std::endl;
 
                   queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_INPUT, entity->getID()));
                   queueOfOutgoingMessages.push_back(std::make_pair(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), std::make_pair(entity->getID(), component->getNumClient())));
 
                   component->setCommunication(component::ComponentCommunication::STANDBY);
-                  std::cout << "SENDING INPUT MSG TO CLIENT" << std::endl;
                   SendMessageToClient(networkMessageFactory.createInputMsg(entity->getID(), component->getNumClient()), deqConnections[i]);
                 }
                 else if (component->getCommunication() == component::ComponentCommunication::STANDBY)
@@ -579,7 +552,6 @@ namespace rtype
                 _componentManager.getComponent<component::TypeComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              // queueOfAckMessages.push_back(ServerStatus::WAITING_FOR_MESSAGE);
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.createTypeMsg(entity->getID(), component->getType()), clientToIgnore);
             }
@@ -640,7 +612,6 @@ namespace rtype
                 _componentManager.getComponent<component::RectangleShapeComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              // queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_RECTANGLE_SHAPE, entity->getID()));
               component->setCommunication(component::ComponentCommunication::NONE);
               SendMessageToAllClients(networkMessageFactory.createRectangleShapeMsg(entity->getID(), component->getX(), component->getY(), component->getHeight(), component->getWidth(), component->getColor()), clientToIgnore);
             }
@@ -699,7 +670,6 @@ namespace rtype
                 _componentManager.getComponent<component::TextComponent>(entity->getID());
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
-              // queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_TEXT, entity->getID()));
               auto textFontKey = getKeyByValue(_stringCom.textFont, component->getFont());
               auto textStringKey = getKeyByValue(_stringCom.textString, component->getText());
               if (textFontKey && textStringKey)
@@ -800,14 +770,6 @@ namespace rtype
 
       void sendAllEntitiesToClient(std::shared_ptr<NetworkConnection<T>> client, int numClient)
       {
-        if (client->IsConnected() == false)
-        {
-          std::cout << "Client is not connected" << std::endl;
-        }
-        else
-        {
-          std::cout << "Client is connected" << std::endl;
-        }
         for (auto &entity : _entityManager.getEntities())
         {
           if (entity->getNumClient() != -1 && entity->getNumClient() != numClient)
@@ -997,7 +959,6 @@ namespace rtype
           std::cerr << "Server exception :" << e.what() << std::endl;
           return false;
         }
-        std::cout << "Server started !" << std::endl;
         return true;
       }
 
@@ -1007,7 +968,6 @@ namespace rtype
 
         if (contextThread.joinable())
           contextThread.join();
-        std::cout << "Server stopped !" << std::endl;
       }
 
       void SendMessageToClient(const Message<T> &message,
@@ -1068,45 +1028,48 @@ namespace rtype
         if (needToWait == true)
           incomingMessages.wait();
         size_t messageCount = 0;
-        // std::chrono::milliseconds timeout(100);
         std::chrono::milliseconds timeout(100);
         bool ackMessage = true;
 
         while (messageCount < maxMessages && !incomingMessages.empty())
         {
-          // std::cout << "size of incoming messages: " << incomingMessages.queueSize() << std::endl;
           auto msg = incomingMessages.popFront();
           rtype::Clock actualClock;
 
-          // auto originalQueueSize = queueOfAckMessages.size();
-
-          //check if threre is a message.header.id not equals to ack in all the incomingMessages, and clear the data in the queueOfAckMessages and in the queueOfOutgoingMessages
-          // go through all the incoming messages
-
           if (actualClock.getElapsedTime() > 2.0)
           {
-            std::cout << "TIMEOUT BAH OUI !!!!!!" << std::endl;
             if (!queueOfOutgoingMessages.empty())
             {
               ServerStatus statusToSend;
               for (auto &actualMsg : queueOfOutgoingMessages)
               {
-                switch (actualMsg.first.header.id) {
-                  case NetworkMessages::createEntity: {
-                    statusToSend = ServerStatus::WAITING_FOR_CREATE_ENTITY;
-                  } break;
-                  case NetworkMessages::createInput: {
-                    statusToSend = ServerStatus::WAITING_FOR_CREATE_INPUT;
-                  } break;
-                  case NetworkMessages::createOnClick: {
-                    statusToSend = ServerStatus::WAITING_FOR_CREATE_ONCLICK;
-                  } break;
-                  case NetworkMessages::createRectangleShape: {
-                    statusToSend = ServerStatus::WAITING_FOR_CREATE_RECTANGLE_SHAPE;
-                  } break;
-                  case NetworkMessages::createText: {
-                    statusToSend = ServerStatus::WAITING_FOR_CREATE_TEXT;
-                  } break;
+                switch (actualMsg.first.header.id)
+                {
+                case NetworkMessages::createEntity:
+                {
+                  statusToSend = ServerStatus::WAITING_FOR_CREATE_ENTITY;
+                }
+                break;
+                case NetworkMessages::createInput:
+                {
+                  statusToSend = ServerStatus::WAITING_FOR_CREATE_INPUT;
+                }
+                break;
+                case NetworkMessages::createOnClick:
+                {
+                  statusToSend = ServerStatus::WAITING_FOR_CREATE_ONCLICK;
+                }
+                break;
+                case NetworkMessages::createRectangleShape:
+                {
+                  statusToSend = ServerStatus::WAITING_FOR_CREATE_RECTANGLE_SHAPE;
+                }
+                break;
+                case NetworkMessages::createText:
+                {
+                  statusToSend = ServerStatus::WAITING_FOR_CREATE_TEXT;
+                }
+                break;
                 }
                 SendMessageToClient(actualMsg.first, deqConnections[actualMsg.second.second]);
                 queueOfAckMessages.push_back(std::make_pair(statusToSend, actualMsg.second.first));
@@ -1114,57 +1077,26 @@ namespace rtype
             }
           }
 
-          if (queueOfAckMessages.empty() == false) {
-            // print the chrono time value
-            // auto now = std::chrono::steady_clock::now();
-            // std::cout << "Time elapsed: " << std::chrono::duration<double>(now - start).count() << "s" << std::endl;
-            // std::chrono::milliseconds secondsValue = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
-            // std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
-            // check a timer to see if no ack message is received, in this case we resend the message
+          if (queueOfAckMessages.empty() == false)
+          {
 
-            // if (secondsValue > timeout) {
-            //   std::cout << "TIMEOUT - Resend" << std::endl;
-              // if (!queueOfOutgoingMessages.empty()) {
-                // for (auto &toto : queueOfOutgoingMessages) {
-                  // SendMessageToClient(toto.first, deqConnections[toto.second.second]);
-                  // queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_ENTITY, toto.second.first));
-                // }
-              // }
-            //   start = std::chrono::steady_clock::now();
-            //   return;
-            // }
-
-            std::cout << "Ack message" << std::endl;
             OnMessageReceived(msg.remoteConnection, msg.message);
             for (auto &incomingMsg : incomingMessages.getQueue())
             {
               if (incomingMsg.message.header.id != NetworkMessages::acknowledgementMesageToCreateEntity || msg.message.header.id != NetworkMessages::acknowledgementMesageToCreateEntity)
               {
-                std::cout << "ACK NOT FOUND WHILE THE QUEUE IS NOT EMPTY" << std::endl;
                 ackMessage = false;
                 break;
               }
-              std::cout << "AFTER THE IF THAT CHECKS IF THE MESSAGE IS AN ACK" << std::endl;
             }
             if (ackMessage == false && queueOfAckMessages.size() > 0 && queueOfOutgoingMessages.size() > 0)
             {
-              std::cout << "CLEARING THE QUEUES" << std::endl;
-              // for (auto &toto : queueOfOutgoingMessages) {
-              //   SendMessageToClient(toto.first, deqConnections[toto.second.second]);
-              //   queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_ENTITY, toto.second.first));
-              // }
               queueOfAckMessages.clear();
               queueOfOutgoingMessages.clear();
-              // incomingMessages.clear();
-              // return;
             }
-            // if (queueOfAckMessages.size() != queueOfOutgoingMessages.size()) {
-            //   EntityId actualEntityId;
-            //   std::memcpy(&actualEntityId, msg.message.body.data(), sizeof(EntityId));
-            //   queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_ENTITY, actualEntityId.id));
-            // }
-          } else {
-            std::cout << "No more ack message" << std::endl;
+          }
+          else
+          {
             OnMessageReceived(msg.remoteConnection, msg.message);
             actualClock.restart();
           }
@@ -1191,7 +1123,6 @@ namespace rtype
 
       void handleMsgToSend(std::pair<Action, size_t> msgToSend)
       {
-        std::cout << "Handling message to send" << std::endl;
         if (msgToSend.first == Action::MENU)
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
         else if (msgToSend.first == Action::GAME)
@@ -1214,9 +1145,7 @@ namespace rtype
       uint32_t actualId = 0;
       std::vector<std::pair<ServerStatus, uint32_t>> queueOfAckMessages;
       std::vector<std::pair<rtype::network::Message<NetworkMessages>, std::pair<uint32_t, int>>> queueOfOutgoingMessages;
-      // std::chrono::_V2::steady_clock::time_point start = std::chrono::steady_clock::now();
       rtype::Clock startClock;
-
 
       std::vector<std::pair<std::string, std::pair<size_t, size_t>>> _msgReceived;
 
@@ -1226,7 +1155,6 @@ namespace rtype
       entity::EntityManager &_entityManager;
       rtype::Clock frequencyClock;
     };
-  } // namespace network
-} // namespace rtype
-
+  }
+}
 #endif /* !SERVER_HPP_ */

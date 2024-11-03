@@ -139,7 +139,6 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
                                              .getComponent<component::HealthComponent>(entity2->getID());
     component::DamageComponent *damage = _componentManager
                                              .getComponent<component::DamageComponent>(entity1->getID());
-    std::cout << "damage: " << damage->getDamage() << std::endl;
     health->setDamageIncoming(damage->getDamage());
 
     entity1->setCommunication(entity::EntityCommunication::DELETE);
@@ -150,7 +149,6 @@ void ECS_system::CollisionSystem::handleCollision(entity::IEntity *entity1,
                                              .getComponent<component::HealthComponent>(entity1->getID());
     component::DamageComponent *damage = _componentManager
                                              .getComponent<component::DamageComponent>(entity2->getID());
-    std::cout << "damage: " << damage->getDamage() << std::endl;
     health->setDamageIncoming(damage->getDamage());
 
     entity2->setCommunication(entity::EntityCommunication::DELETE);

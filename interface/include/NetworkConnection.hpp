@@ -330,12 +330,10 @@ private:
             } else {
               queueOfOutgoingMessages.popFront();
               if (!queueOfOutgoingMessages.empty()) {
-                // std::cout << "Goes back on the same method" << std::endl;
                 WriteHeader();
               }
             }
           } else {
-            std::cout << id << " : Write Header failed" << ec << std::endl;
             asioSocket.close();
           }
         });
@@ -361,7 +359,6 @@ private:
               WriteHeader();
             }
           } else {
-            std::cout << id << " : Write Body failed" << ec << std::endl;
             asioSocket.close();
           }
         });
@@ -401,7 +398,6 @@ private:
                      sizeof(rtype::network::MessageHeader<T>)),
         endpoint, [this](std::error_code ec, std::size_t bytesReceived) {
           if (ec.value() == 125) {
-            std::cout << "Connection closed" << std::endl;
             return;
           }
           if (!ec) {
@@ -413,7 +409,6 @@ private:
               AddMessageToIncomingQueue();
             }
           } else {
-            std::cout << id << " : Read Header failed" << ec << std::endl;
             asioSocket.close();
           }
         });
@@ -435,13 +430,11 @@ private:
           if (!ec) {
             AddMessageToIncomingQueue();
           } else {
-            std::cout << id << " : Read Body failed" << ec << std::endl;
             asioSocket.close();
           }
         });
   }
 
-  //! Need to change the way I encrypt the message later
   /**
    * @brief Scrambles a 64-bit unsigned integer using bitwise operations.
    *
@@ -482,10 +475,8 @@ private:
           if (!ec) {
             if (ownerType == actualOwner::CLIENT) {
               if (handshakeCheck == handshakeIn) {
-                std::cout << "Handshake successful" << std::endl;
                 ReadHeader();
               } else {
-                std::cout << "Handshake failed" << std::endl;
                 asioSocket.close();
               }
             } else {
@@ -493,7 +484,6 @@ private:
               WriteValidation();
             }
           } else {
-            std::cout << id << " : Write Validation failed" << ec << std::endl;
             asioSocket.close();
           }
         });

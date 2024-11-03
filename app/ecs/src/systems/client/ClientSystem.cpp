@@ -14,24 +14,23 @@ namespace rtype
 
     /**
      * @brief Sends an acknowledgment message to the network.
-     * 
+     *
      * This function constructs a network message containing an acknowledgment
      * for a specific entity and sends it. The message includes the entity ID
      * and the current timestamp.
-     * 
+     *
      * @param actualEntityId The ID of the entity for which the acknowledgment is being sent.
      * @param messageType The type of the network message to be sent.
      */
     void ClientSystem::sendAckMessage(size_t actualEntityId, NetworkMessages messageType)
     {
-      // std::cout << "Sending Acknowledgement" << std::endl;
       rtype::network::Message<NetworkMessages> message;
       EntityId entityToSend = {actualEntityId};
       message.header.id = messageType;
 
       std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entityToSend),
-                                         reinterpret_cast<uint8_t *>(&entityToSend) +
-                                             sizeof(EntityId));
+                                       reinterpret_cast<uint8_t *>(&entityToSend) +
+                                           sizeof(EntityId));
       message.body.insert(message.body.end(), entityBytes.begin(),
                           entityBytes.end());
 
@@ -42,16 +41,15 @@ namespace rtype
       Send(message);
     }
 
-
     /**
      * @brief Handles incoming network messages and performs appropriate actions based on the message type.
-     * 
+     *
      * @param msg The network message to handle.
-     * 
+     *
      * This function processes various types of network messages and updates the client state accordingly.
      * It uses a switch statement to determine the type of message and performs actions such as creating,
      * updating, or deleting entities and components, changing scenes, and handling server communication.
-     * 
+     *
      * The supported message types include:
      * - NetworkMessages::ServerAcceptance: Logs server acceptance of connection.
      * - NetworkMessages::ServerPing: Calculates and logs the ping time.
@@ -95,7 +93,7 @@ namespace rtype
      * - NetworkMessages::updateSound: Updates a sound component for an entity.
      * - NetworkMessages::createMusic: Creates a music component for an entity.
      * - NetworkMessages::updateMusic: Updates a music component for an entity.
-     * 
+     *
      * The function uses std::memcpy to extract data from the message body and update the corresponding
      * components in the entity-component system. It also sends acknowledgment messages for certain actions.
      */
@@ -105,28 +103,18 @@ namespace rtype
 
       switch (msg.header.id)
       {
-      case NetworkMessages::ServerAcceptance:
-      {
-        std::cout << "Server Accepted Connection" << std::endl;
-      }
-      break;
-
       case NetworkMessages::ServerPing:
       {
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         std::chrono::system_clock::time_point timeThen;
         msg >> timeThen;
-        std::cout << "Ping: "
-                  << std::chrono::duration<double>(timeNow - timeThen).count()
-                  << std::endl;
       }
       break;
       case NetworkMessages::ServerMessage:
       {
         uint32_t clientID;
         msg >> clientID;
-        std::cout << "Hello from [" << clientID << "]" << std::endl;
       }
       break;
       case NetworkMessages::ServerDenial:
@@ -143,7 +131,6 @@ namespace rtype
       break;
       case NetworkMessages::menu:
       {
-        std::cout << "Menu CREATED IN ON THE CLIENT SIDE" << std::endl;
         _sceneStatus = std::make_shared<Scene>(Scene::MENU);
       }
       break;
@@ -159,24 +146,18 @@ namespace rtype
       break;
       case NetworkMessages::createEntity:
       {
-        // std::cout << "Entity created" << std::endl;
         EntityStruct entityId;
         SceneStatus scene;
-        if (msg.body.size() < sizeof(EntityStruct) + sizeof(SceneStatus)) {
-          std::cout << "MESSAGE TOO SHORT" << std::endl;
+        if (msg.body.size() < sizeof(EntityStruct) + sizeof(SceneStatus))
+        {
           return;
         }
         std::memcpy(&entityId, msg.body.data(), sizeof(EntityStruct));
-        // if (_entityManager.getEntities().size() + 100000000 < entityId.id) {
-        //   std::cout << "Entity ID TOO HIGH" << std::endl;
-        //   return;
-        // }
         std::memcpy(&scene, msg.body.data() + sizeof(EntityStruct),
                     sizeof(SceneStatus));
         entity::IEntity *entity = _entityManager.createEntity(entityId.id, entityId.numClient);
         entity->setSceneStatus(scene.scene);
         sendAckMessage(entityId.id, NetworkMessages::acknowledgementMesageToCreateEntity);
-        // std::cout << "Entity created ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateEntity:
@@ -193,12 +174,10 @@ namespace rtype
       }
       case NetworkMessages::deleteEntity:
       {
-        // std::cout << "Entity deleted" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
         _componentManager.removeAllComponents(entity.id);
         _entityManager.removeEntity(entity.id);
-        // sendAckMessage();
       }
       break;
       case NetworkMessages::createSprite:
@@ -300,7 +279,6 @@ namespace rtype
       break;
       case NetworkMessages::createInput:
       {
-        std::cout << "Input component created" << std::endl;
         EntityId id;
         InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -309,12 +287,10 @@ namespace rtype
         _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
 
         sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateInput);
-        // std::cout << "Input component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateInput:
       {
-        std::cout << "Input component updated" << std::endl;
         BindKey input;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -327,7 +303,6 @@ namespace rtype
       break;
       case NetworkMessages::createType:
       {
-        // std::cout << "Type component created" << std::endl;
         TypeComponent type;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -335,7 +310,6 @@ namespace rtype
                     sizeof(TypeComponent));
         _componentManager
             .addComponent<component::TypeComponent>(id.id, type.type);
-        // sendAckMessage();
       }
       break;
       case NetworkMessages::updateType:
@@ -456,7 +430,6 @@ namespace rtype
       break;
       case NetworkMessages::createRectangleShape:
       {
-        // std::cout << "RectangleShape component created" << std::endl;
         RectangleShapeComponent rectangleShape;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -464,8 +437,6 @@ namespace rtype
                     sizeof(RectangleShapeComponent));
         _componentManager
             .addComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
-        // sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateRectangleShape);
-        // std::cout << "RectangleShape component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateRectangleShape:
@@ -481,7 +452,6 @@ namespace rtype
       break;
       case NetworkMessages::createOnClick:
       {
-        // std::cout << "OnClick component created" << std::endl;
         EntityId id;
         OnClickComponent onClick;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -490,12 +460,10 @@ namespace rtype
         _componentManager
             .addComponent<component::OnClickComponent>(id.id, onClick.action, onClick.numClient);
         sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateOnClick);
-        // std::cout << "OnClick component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::createText:
       {
-        // std::cout << "Text component created" << std::endl;
         TextComponent text;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -517,8 +485,6 @@ namespace rtype
           _componentManager
               .addComponent<component::TextComponent>(
                   id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _stringCom.textFont[text.textFont], _graphic);
-        // sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateText);
-        // std::cout << "Text component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateText:
@@ -577,10 +543,6 @@ namespace rtype
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
         std::memcpy(&music, msg.body.data() + sizeof(EntityId),
                     sizeof(SoundComponent));
-        if (music.soundPath == SoundPath::Shoot)
-          std::cout << "Music shoot play" << std::endl;
-        if (music.soundPath == SoundPath::Unknown)
-          std::cout << "Music unknown play" << std::endl;
         if (_stringCom.soundPath.find(music.soundPath) == _stringCom.soundPath.end())
           _componentManager
               .addComponent<component::MusicComponent>(
@@ -612,7 +574,7 @@ namespace rtype
     /**
      * @brief Updates the client system.
      *
-     * This function handles the update logic for the client system, including processing incoming and outgoing messages, 
+     * This function handles the update logic for the client system, including processing incoming and outgoing messages,
      * and updating the scene status.
      *
      * @param deltaTime The time elapsed since the last update.
@@ -634,16 +596,11 @@ namespace rtype
         {
           while (!GetIncomingMessages().empty())
           {
-            // std::cout << "size of msgReceived : " << GetIncomingMessages().queueSize() << std::endl;
             rtype::network::Message<NetworkMessages> msg =
                 GetIncomingMessages().popFront().message;
             enqueueMessage(msg);
           }
         }
-      }
-      else
-      {
-        std::cout << "Server Down" << std::endl;
       }
       while (!msgToSend.empty())
       {
@@ -702,7 +659,7 @@ namespace rtype
     /**
      * @brief Stops the message processing by setting the processing flag to false,
      *        notifying all waiting threads, and joining all worker threads.
-     * 
+     *
      * This function first acquires a unique lock on the queue mutex to safely set
      * the processingMessages flag to false. It then notifies all threads that are
      * waiting on the queue condition variable. Finally, it iterates through all
@@ -746,9 +703,9 @@ namespace rtype
 
     /**
      * @brief Factory function to create a new ClientSystem.
-     * 
+     *
      * This function creates and returns a new instance of the ClientSystem class.
-     * 
+     *
      * @param componentManager Reference to the ComponentManager.
      * @param entityManager Reference to the EntityManager.
      * @param graphic Shared pointer to an IGraphic instance.

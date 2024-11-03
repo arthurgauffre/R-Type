@@ -27,7 +27,6 @@ std::atomic<bool> keepRunning(true);
  * @param signum The signal number received.
  */
 void signalHandler(int signum) {
-    std::cout << "\nInterrupt signal (" << signum << ") received. Stopping...\n";
     keepRunning = false;
 }
 
@@ -157,7 +156,6 @@ void rtype::RtypeEngine::run() {
   while (1) {
     this->update();
     if (!keepRunning) {
-      std::cout << "Exiting..." << std::endl;
       msgToSend.push_back(std::make_pair(Action::EXIT, 0));
       break;
     }

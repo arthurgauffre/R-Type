@@ -16,7 +16,6 @@ class NetworkMessageFactory
 public:
     rtype::network::Message<NetworkMessages> createEntityMsg(size_t id, Scene scene, int numClient)
     {
-        // std::cout << "Creating entity message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createEntity;
         EntityStruct entity = {id, numClient};
@@ -38,7 +37,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> updateEntityMsg(size_t id, Scene scene, int numClient)
     {
-        // std::cout << "Updating entity message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateEntity;
         EntityStruct entity = {id, numClient};
@@ -61,7 +59,6 @@ public:
     rtype::network::Message<NetworkMessages>
     createTextureMsg(size_t id, TexturePath texturePath)
     {
-        // std::cout << "Creating texture message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createTexture;
         EntityId entity = {id};
@@ -84,7 +81,6 @@ public:
     rtype::network::Message<NetworkMessages> createRectangleShapeMsg(
         size_t id, float x, float y, float width, float height, RColor color)
     {
-        // std::cout << "Creating rectangle shape message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createRectangleShape;
         EntityId entity = {id};
@@ -108,7 +104,6 @@ public:
     rtype::network::Message<NetworkMessages> updateRectangleShapeMsg(
         size_t id, float x, float y, float width, float height, RColor color)
     {
-        // std::cout << "Updating rectangle shape message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateRectangleShape;
         EntityId entity = {id};
@@ -132,7 +127,6 @@ public:
     rtype::network::Message<NetworkMessages> createVelocityMsg(size_t id, float x,
                                                                float y, float actualX, float actualY)
     {
-        // std::cout << "Creating velocity message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createVelocity;
         EntityId entity = {id};
@@ -155,7 +149,6 @@ public:
     rtype::network::Message<NetworkMessages> createHealthMsg(size_t id,
                                                              int health)
     {
-        // std::cout << "Creating health message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createHealth;
         EntityId entity = {id};
@@ -179,7 +172,6 @@ public:
     rtype::network::Message<NetworkMessages> createDamageMsg(size_t id,
                                                              int damage)
     {
-        // std::cout << "Creating damage message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createDamage;
         EntityId entity = {id};
@@ -203,7 +195,6 @@ public:
     rtype::network::Message<NetworkMessages> createHitboxMsg(size_t id, float x,
                                                              float y)
     {
-        // std::cout << "Creating hitbox message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createHitbox;
         EntityId entity = {id};
@@ -226,7 +217,6 @@ public:
     rtype::network::Message<NetworkMessages> createSpriteMsg(size_t id, float x,
                                                              float y, RColor color)
     {
-        // std::cout << "Creating sprite message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createSprite;
         EntityId entity = {id};
@@ -249,7 +239,6 @@ public:
     rtype::network::Message<NetworkMessages>
     createTransformMsg(size_t id, float x, float y, float scaleX, float scaleY, float rotation)
     {
-        // std::cout << "Creating transform message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createTransform;
         EntityId entity = {id};
@@ -272,7 +261,6 @@ public:
     rtype::network::Message<NetworkMessages> createParentMsg(size_t id,
                                                              uint32_t parentID)
     {
-        // std::cout << "Creating parent message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createParent;
         EntityId entity = {id};
@@ -295,7 +283,6 @@ public:
 
     rtype::network::Message<NetworkMessages> createInputMsg(size_t id, int numClient)
     {
-        // std::cout << "Creating input message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createInput;
         EntityId entity = {id};
@@ -304,8 +291,8 @@ public:
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
         std::vector<uint8_t> inputBytes(reinterpret_cast<uint8_t *>(&input),
-                                            reinterpret_cast<uint8_t *>(&input) +
-                                                sizeof(InputComponent));
+                                        reinterpret_cast<uint8_t *>(&input) +
+                                            sizeof(InputComponent));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
         message.body.insert(message.body.end(), inputBytes.begin(),
@@ -316,9 +303,8 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> createTypeMsg(size_t id,
-                                                          Type type)
+                                                           Type type)
     {
-        // std::cout << "Creating type message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createType;
         EntityId entity = {id};
@@ -327,8 +313,8 @@ public:
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
         std::vector<uint8_t> typeBytes(reinterpret_cast<uint8_t *>(&typeComponent),
-                                      reinterpret_cast<uint8_t *>(&typeComponent) +
-                                          sizeof(TypeComponent));
+                                       reinterpret_cast<uint8_t *>(&typeComponent) +
+                                           sizeof(TypeComponent));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
         message.body.insert(message.body.end(), typeBytes.begin(),
@@ -339,10 +325,9 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> createCooldownMsg(size_t id,
-                                                              float cooldown,
-                                                              float timeRemaining)
+                                                               float cooldown,
+                                                               float timeRemaining)
     {
-        // std::cout << "Creating cooldown message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createCooldown;
         EntityId entity = {id};
@@ -364,9 +349,8 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> updateTypeMsg(size_t id,
-                                                          Type type)
+                                                           Type type)
     {
-        // std::cout << "Updating type message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateType;
         EntityId entity = {id};
@@ -375,8 +359,8 @@ public:
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
         std::vector<uint8_t> typeBytes(reinterpret_cast<uint8_t *>(&typeComponent),
-                                      reinterpret_cast<uint8_t *>(&typeComponent) +
-                                          sizeof(TypeComponent));
+                                       reinterpret_cast<uint8_t *>(&typeComponent) +
+                                           sizeof(TypeComponent));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
         message.body.insert(message.body.end(), typeBytes.begin(),
@@ -387,10 +371,9 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> updateCooldownMsg(size_t id,
-                                                              float cooldown,
-                                                              float timeRemaining)
+                                                               float cooldown,
+                                                               float timeRemaining)
     {
-        // std::cout << "Updating cooldown message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateCooldown;
         EntityId entity = {id};
@@ -414,7 +397,6 @@ public:
     rtype::network::Message<NetworkMessages>
     updateTextureMsg(size_t id, TexturePath texturePath)
     {
-        // std::cout << "Updating texture message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateTexture;
         EntityId entity = {id};
@@ -437,7 +419,6 @@ public:
     rtype::network::Message<NetworkMessages> updateVelocityMsg(size_t id, float x,
                                                                float y, float actualX, float actualY)
     {
-        // std::cout << "Updating velocity message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateVelocity;
         EntityId entity = {id};
@@ -460,7 +441,6 @@ public:
     rtype::network::Message<NetworkMessages> updateHealthMsg(size_t id,
                                                              int health)
     {
-        // std::cout << "Updating health message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateHealth;
         EntityId entity = {id};
@@ -484,7 +464,6 @@ public:
     rtype::network::Message<NetworkMessages> updateDamageMsg(size_t id,
                                                              int damage)
     {
-        // std::cout << "Updating damage message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateDamage;
         EntityId entity = {id};
@@ -508,7 +487,6 @@ public:
     rtype::network::Message<NetworkMessages> updateHitboxMsg(size_t id, float x,
                                                              float y)
     {
-        // std::cout << "Updating hitbox message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateHitbox;
         EntityId entity = {id};
@@ -531,7 +509,6 @@ public:
     rtype::network::Message<NetworkMessages> updateSpriteMsg(size_t id, float x,
                                                              float y, RColor color)
     {
-        // std::cout << "Updating sprite message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateSprite;
         EntityId entity = {id};
@@ -554,7 +531,6 @@ public:
     rtype::network::Message<NetworkMessages>
     updateTransformMsg(size_t id, float x, float y, float scaleX, float scaleY, float rotation)
     {
-        // std::cout << "Updating transform message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateTransform;
         EntityId entity = {id};
@@ -577,7 +553,6 @@ public:
     rtype::network::Message<NetworkMessages> updateParentMsg(size_t id,
                                                              uint32_t parentID)
     {
-        // std::cout << "Updating parent message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateParent;
         EntityId entity = {id};
@@ -601,7 +576,6 @@ public:
     rtype::network::Message<NetworkMessages> updateInputMsg(size_t id,
                                                             BindKey bind)
     {
-        // std::cout << "Updating input message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateInput;
         EntityId entity = {id};
@@ -624,7 +598,6 @@ public:
 
     rtype::network::Message<NetworkMessages> deleteEntityMsg(size_t id)
     {
-        // std::cout << "Deleting entity message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteEntity;
         EntityId entity = {id};
@@ -640,7 +613,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteTextureMsg(size_t id)
     {
-        // std::cout << "Deleting texture message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteTexture;
         EntityId entity = {id};
@@ -656,7 +628,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deletePositionMsg(size_t id)
     {
-        // std::cout << "Deleting position message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deletePosition;
         EntityId entity = {id};
@@ -672,7 +643,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteVelocityMsg(size_t id)
     {
-        // std::cout << "Deleting velocity message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteVelocity;
         EntityId entity = {id};
@@ -688,7 +658,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteHealthMsg(size_t id)
     {
-        // std::cout << "Deleting health message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteHealth;
         EntityId entity = {id};
@@ -704,7 +673,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteDamageMsg(size_t id)
     {
-        // std::cout << "Deleting damage message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteDamage;
         EntityId entity = {id};
@@ -720,7 +688,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteHitboxMsg(size_t id)
     {
-        // std::cout << "Deleting hitbox message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteHitbox;
         EntityId entity = {id};
@@ -736,7 +703,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteSpriteMsg(size_t id)
     {
-        // std::cout << "Deleting sprite message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteSprite;
         EntityId entity = {id};
@@ -752,7 +718,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteTransformMsg(size_t id)
     {
-        // std::cout << "Deleting transform message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteTransform;
         EntityId entity = {id};
@@ -768,7 +733,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteParentMsg(size_t id)
     {
-        // std::cout << "Deleting parent message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteParent;
         EntityId entity = {id};
@@ -785,7 +749,6 @@ public:
 
     rtype::network::Message<NetworkMessages> deleteInputMsg(size_t id)
     {
-        // std::cout << "Deleting input message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteInput;
         EntityId entity = {id};
@@ -801,7 +764,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteTypeMsg(size_t id)
     {
-        // std::cout << "Deleting type message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteType;
         EntityId entity = {id};
@@ -817,7 +779,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteCooldownMsg(size_t id)
     {
-        // std::cout << "Deleting cooldown message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteCooldown;
         EntityId entity = {id};
@@ -832,9 +793,8 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> createSizeMsg(size_t id, float x,
-                                                          float y)
+                                                           float y)
     {
-        // std::cout << "Creating size message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createSize;
         EntityId entity = {id};
@@ -855,9 +815,8 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> updateSizeMsg(size_t id, float x,
-                                                          float y)
+                                                           float y)
     {
-        // std::cout << "Updating size message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateSize;
         EntityId entity = {id};
@@ -879,7 +838,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteSizeMsg(size_t id)
     {
-        // std::cout << "Deleting size message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteSize;
         EntityId entity = {id};
@@ -895,7 +853,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> createAIMsg(size_t id, AIType type)
     {
-        // std::cout << "Creating AI message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createAI;
         EntityId entity = {id};
@@ -904,8 +861,8 @@ public:
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
         std::vector<uint8_t> aiBytes(reinterpret_cast<uint8_t *>(&ai),
-                                    reinterpret_cast<uint8_t *>(&ai) +
-                                        sizeof(AIComponent));
+                                     reinterpret_cast<uint8_t *>(&ai) +
+                                         sizeof(AIComponent));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
         message.body.insert(message.body.end(), aiBytes.begin(),
@@ -917,7 +874,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> updateAIMsg(size_t id, AIType type)
     {
-        // std::cout << "Updating AI message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateAI;
         EntityId entity = {id};
@@ -926,8 +882,8 @@ public:
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
         std::vector<uint8_t> aiBytes(reinterpret_cast<uint8_t *>(&ai),
-                                    reinterpret_cast<uint8_t *>(&ai) +
-                                        sizeof(AIComponent));
+                                     reinterpret_cast<uint8_t *>(&ai) +
+                                         sizeof(AIComponent));
         message.body.insert(message.body.end(), entityBytes.begin(),
                             entityBytes.end());
         message.body.insert(message.body.end(), aiBytes.begin(),
@@ -939,7 +895,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteAIMsg(size_t id)
     {
-        // std::cout << "Deleting AI message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteAI;
         EntityId entity = {id};
@@ -955,10 +910,8 @@ public:
     }
     rtype::network::Message<NetworkMessages> createMenuMsg()
     {
-        // std::cout << "Creating menu message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::menu;
-        // std::cout << "create menu" << std::endl;
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
@@ -966,10 +919,8 @@ public:
     }
     rtype::network::Message<NetworkMessages> createGameMsg()
     {
-        // std::cout << "Creating game message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::game;
-        // std::cout << "create game" << std::endl;
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
@@ -977,10 +928,8 @@ public:
     }
     rtype::network::Message<NetworkMessages> createKeyBindMsg()
     {
-        // std::cout << "Creating keyBind message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::keyBind;
-        // std::cout << "create keyBind" << std::endl;
         std::chrono::system_clock::time_point timeNow =
             std::chrono::system_clock::now();
         message << timeNow;
@@ -988,7 +937,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteRectangleShapeMsg(size_t id)
     {
-        // std::cout << "Deleting rectangleShape message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteRectangleShape;
         EntityId entity = {id};
@@ -1003,7 +951,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> createOnClickMsg(size_t id, int numClient, Action action)
     {
-        // std::cout << "Creating onClick message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createOnClick;
         EntityId entity = {id};
@@ -1020,7 +967,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> updateOnClickMsg(size_t id, Action action)
     {
-        // std::cout << "Updating onClick message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateOnClick;
         EntityId entity = {id};
@@ -1037,7 +983,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteOnClickMsg(size_t id)
     {
-        // std::cout << "Deleting onClick message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteOnClick;
         EntityId entity = {id};
@@ -1050,7 +995,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> createTextMsg(size_t id, float x, float y, TextFont font, TextString string, int size, RColor color)
     {
-        // std::cout << "Creating text message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createText;
         EntityId entity = {id};
@@ -1067,7 +1011,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> updateTextMsg(size_t id, float x, float y, TextFont font, TextString string, int size, RColor color)
     {
-        // std::cout << "Updating text message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateText;
         EntityId entity = {id};
@@ -1084,7 +1027,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteTextMsg(size_t id)
     {
-        // std::cout << "Deleting text message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteText;
         EntityId entity = {id};
@@ -1097,7 +1039,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> createSoundMsg(size_t id, SoundPath path, bool play)
     {
-        // std::cout << "Creating sound message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createSound;
         EntityId entity = {id};
@@ -1114,7 +1055,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> updateSoundMsg(size_t id, SoundPath path, bool play)
     {
-        // std::cout << "Updating sound message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateSound;
         EntityId entity = {id};
@@ -1131,7 +1071,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteSoundMsg(size_t id)
     {
-        // std::cout << "Deleting sound message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteSound;
         EntityId entity = {id};
@@ -1144,7 +1083,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> createMusicMsg(size_t id, SoundPath path, bool play)
     {
-        // std::cout << "Creating music message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createMusic;
         EntityId entity = {id};
@@ -1161,7 +1099,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> updateMusicMsg(size_t id, SoundPath path, bool play)
     {
-        // std::cout << "Updating music message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateMusic;
         EntityId entity = {id};
@@ -1178,7 +1115,6 @@ public:
     }
     rtype::network::Message<NetworkMessages> deleteMusicMsg(size_t id)
     {
-        // std::cout << "Deleting music message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::deleteMusic;
         EntityId entity = {id};
