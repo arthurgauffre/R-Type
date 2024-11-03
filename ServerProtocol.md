@@ -131,11 +131,32 @@ template <typename T> struct Message {
 
 ## Movements
 ```cpp
-enum class NetworkMessages : uint32_t {
-  MoveUp,
-  MoveDown,
-  MoveLeft,
-  MoveRight
+enum class Action : uint32_t
+{
+    MOVE_UP,
+    MOVE_DOWN,
+    MOVE_LEFT,
+    MOVE_RIGHT,
+    SHOOT,
+    MENU,
+    KEYBIND,
+    KEYMOVEUP,
+    KEYMOVEDOWN,
+    KEYMOVELEFT,
+    KEYMOVERIGHT,
+    KEYSHOOT,
+    PLAY,
+    GAME,
+    PROTANOPIA,
+    DEUTERANOPIA,
+    TRITANOPIA,
+    CLEARFILTER,
+    EXIT,
+    NONE,
+};
+
+struct EntityId {
+  size_t id;
 };
 ```
 
@@ -149,17 +170,11 @@ In this case the server Does not respond (because we can have the information in
 ### Entity Movement
 
 ```cpp
-message.header.id = NetworkMessages::MoveUp
-// OR
-message.header.id = NetworkMessages::MoveDown
-// OR
-message.header.id = NetworkMessages::MoveRight
-// OR
-message.header.id = NetworkMessages::MoveLeft
+message.header.id = any of the enum value of Action
 
 // I know that is not the way it works to put data into the body but it's just to simplify things
 
-body = entityId // cast into uint8_t
+body = EntityId, ActionMsg // total size of the body = 128 bits
 ```
 
 #
@@ -169,19 +184,24 @@ body = entityId // cast into uint8_t
 ```cpp
 enum class NetworkMessages : uint32_t {
   createEntity,
-  createTexture,
-  createPosition,
-  createVelocity,
-  createHealth,
-  createDamage,
-  createHitbox,
-  createMusic,
-  createSound,
-  createSprite,
-  createTransform,
-  createBackground,
-  createScroll,
-  createParent
+  createInput,
+  ...
+};
+
+enum class Scene : uint32_t
+{
+    MENU,
+    GAME,
+    GAMEOVER,
+    SETTINGS,
+    LOADING,
+    KEYBIND,
+    ALL,
+    NONE
+};
+
+struct EntityId {
+  size_t id;
 };
 ```
 
@@ -204,37 +224,11 @@ sequenceDiagram
 ```
 
 ```cpp
-message.header.id = NetworkMessages::createEntity
-// OR
-message.header.id = NetworkMessages::createTexture
-// OR
-message.header.id = NetworkMessages::createPosition
-// OR
-message.header.id = NetworkMessages::createVelocity
-// OR
-message.header.id = NetworkMessages::createHealth
-// OR
-message.header.id = NetworkMessages::createDamage
-// OR
-message.header.id = NetworkMessages::createHitbox
-// OR
-message.header.id = NetworkMessages::createMusic
-// OR
-message.header.id = NetworkMessages::createSound
-// OR
-message.header.id = NetworkMessages::createSprite
-// OR
-message.header.id = NetworkMessages::createTransform
-// OR
-message.header.id = NetworkMessages::createBackground
-// OR
-message.header.id = NetworkMessages::createScroll
-// OR
-message.header.id = NetworkMessages::createParent
+message.header.id = any of the enum value of NetworkMessages
 
 // I know that is not the way it works to put data into the body but it's just to simplify things
 
-body = entityId, {struct message.header.id} // cast into uint8_t
+body = entityId, sceneStatus  // total size of the body = 64 bits
 
 ```
 
@@ -245,18 +239,17 @@ body = entityId, {struct message.header.id} // cast into uint8_t
 enum class NetworkMessages : uint32_t {
   destroyEntity,
   deleteTexture,
-  deletePosition,
-  deleteVelocity,
-  deleteHealth,
-  deleteDamage,
-  deleteHitbox,
-  deleteMusic,
-  deleteSound,
-  deleteSprite,
-  deleteTransform,
-  deleteBackground,
-  deleteScroll,
-  deleteParent
+  ...
+};
+
+enum class TexturePath : uint32_t
+{
+    Player,
+    Enemy,
+    Background,
+    Bullet,
+    Structure,
+    Unknown,
 };
 ```
 
@@ -269,37 +262,11 @@ sequenceDiagram
 ```
 
 ```cpp
-message.header.id = NetworkMessages::destroyEntity
-// OR
-message.header.id = NetworkMessages::deleteTexture
-// OR
-message.header.id = NetworkMessages::deletePosition
-// OR
-message.header.id = NetworkMessages::deleteVelocity
-// OR
-message.header.id = NetworkMessages::deleteHealth
-// OR
-message.header.id = NetworkMessages::deleteDamage
-// OR
-message.header.id = NetworkMessages::deleteHitbox
-// OR
-message.header.id = NetworkMessages::deleteMusic
-// OR
-message.header.id = NetworkMessages::deleteSound
-// OR
-message.header.id = NetworkMessages::deleteSprite
-// OR
-message.header.id = NetworkMessages::deleteTransform
-// OR
-message.header.id = NetworkMessages::deleteBackground
-// OR
-message.header.id = NetworkMessages::deleteScroll
-// OR
-message.header.id = NetworkMessages::deleteParent
+message.header.id = any of the enum value of NetworkMessages
 
 // I know that is not the way it works to put data into the body but it's just to simplify things
 
-body = entityId, {struct message.header.id} // cast into uint8_t
+body = entityId, texturePath // total size of the body = 64 bits
 ```
 
 ### SECOND CASE (Packet loss):
@@ -321,19 +288,21 @@ sequenceDiagram
 enum class NetworkMessages : uint32_t {
   updateEntity,
   updateTexture,
-  updatePosition,
-  updateVelocity,
-  updateHealth,
-  updateDamage,
-  updateHitbox,
-  updateMusic,
-  updateSound,
-  updateSprite,
-  updateTransform,
-  updateBackground,
-  updateScroll,
-  updateParent
+  ...
 };
+
+enum class Scene : uint32_t
+{
+    MENU,
+    GAME,
+    GAMEOVER,
+    SETTINGS,
+    LOADING,
+    KEYBIND,
+    ALL,
+    NONE
+};
+
 ```
 
 ```mermaid
@@ -344,40 +313,48 @@ sequenceDiagram
 In this case the server Does not respond (because we can have the information in the next update if the packet has been lost in a transaction)
 
 ```cpp
-message.header.id = NetworkMessages::updateEntity
-// OR
-message.header.id = NetworkMessages::updateTexture
-// OR
-message.header.id = NetworkMessages::updatePosition
-// OR
-message.header.id = NetworkMessages::updateVelocity
-// OR
-message.header.id = NetworkMessages::updateHealth
-// OR
-message.header.id = NetworkMessages::updateDamage
-// OR
-message.header.id = NetworkMessages::updateHitbox
-// OR
-message.header.id = NetworkMessages::updateMusic
-// OR
-message.header.id = NetworkMessages::updateSound
-// OR
-message.header.id = NetworkMessages::updateSprite
-// OR
-message.header.id = NetworkMessages::updateTransform
-// OR
-message.header.id = NetworkMessages::updateBackground
-// OR
-message.header.id = NetworkMessages::updateScroll
-// OR
-message.header.id = NetworkMessages::updateParent
+message.header.id = any of the enum value of NetworkMessages
 
 // I know that is not the way it works to put data into the body but it's just to simplify things
 
-body = entityId, {struct message.header.id} // cast into uint8_t
+body = entityId, sceneStatus // total size of the body = 64 bits
 ```
 
 #
+
+## Ack Sending
+
+  ```cpp
+  enum class NetworkMessages : uint32_t {
+  acknowledgementMesageToCreateEntity,
+  acknowledgementMesageToCreateInput,
+  acknowledgementMesageToCreateOnClick,
+};
+```
+
+```mermaid
+sequenceDiagram
+    Client->>Server: I Received the message (ACK) / Send it
+    Client->>Server: I did not Received the message
+    Client->>Server: Delete Entity / Component
+    Client->>Server: ...
+```
+#
+
+```mermaid
+sequenceDiagram
+    Server->>Client: Delete Entity / Component
+    Client->>Server: I Received the message (ACK)
+```
+
+```cpp
+message.header.id = any of the enum value of NetworkMessages
+
+// I know that is not the way it works to put data into the body but it's just to simplify things
+
+body = entityId // total size of the body = 32 bits
+```
+
 
 ## 3. Conclusion
 
