@@ -21,8 +21,10 @@
  */
 void ECS_system::AudioSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
-    std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus) {
-  for (auto &entity : entities) {
+    std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
+{
+  for (auto &entity : _componentManager.getEntitiesWithComponents<component::SoundComponent>(entities))
+  {
     if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
       continue;
     // if (entity->getSceneStatus() == Scene::ALL)
@@ -32,19 +34,35 @@ void ECS_system::AudioSystem::update(
     component::SoundComponent *soundComponent =
         _componentManager.getComponent<component::SoundComponent>(
             entity->getID());
-    component::MusicComponent *musicComponent =
-        _componentManager.getComponent<component::MusicComponent>(
-            entity->getID());
-
-    if (soundComponent) {
-      if (soundComponent->getShouldPlay()) {
+    if (soundComponent)
+    {
+      if (soundComponent->getShouldPlay())
+      {
         soundComponent->play(_audio);
         soundComponent->setShouldPlay(false);
       }
     }
-    if (musicComponent) {
-      if (!musicComponent->isPlaying(_audio))
+    }
+
+  for (auto &entity : _componentManager.getEntitiesWithComponents<component::MusicComponent>(entities))
+  {
+    if (entity->getSceneStatus() != *sceneStatus && entity->getSceneStatus() != Scene::ALL)
+      continue;
+    // if (entity->getSceneStatus() == Scene::ALL)
+    //   *sceneStatus = Scene::ALL;
+    if (!entity)
+      continue;
+    component::MusicComponent *musicComponent =
+        _componentManager.getComponent<component::MusicComponent>(
+            entity->getID());
+
+    if (musicComponent)
+    {
+      if (musicComponent->getShouldPlay())
+      {
         musicComponent->play(_audio);
+        musicComponent->setShouldPlay(false);
+      }
     }
   }
 }
@@ -62,6 +80,7 @@ void ECS_system::AudioSystem::update(
  */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom) {
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
+{
   return new ECS_system::AudioSystem(componentManager, entityManager, graphic, audio, stringCom);
 }
