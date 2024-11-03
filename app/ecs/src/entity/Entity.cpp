@@ -16,7 +16,10 @@ namespace entity {
  *
  * @param id The unique identifier for the entity.
  */
-entity::Entity::Entity(uint32_t id, int numClt) : id(id), isActive(true), numClient(numClt) {}
+entity::Entity::Entity(uint32_t id, int numClt) : id(id), isActive(true), numClient(numClt)
+{
+    isActive = true;
+}
 
 /**
  * @brief Destructor for the Entity class.
