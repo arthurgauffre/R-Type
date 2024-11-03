@@ -111,6 +111,16 @@ class SfmlGraphic : virtual public AGraphic {
         void setSpriteRotation(float angle, size_t id) override;
 
         /**
+         * @brief Sets the color of a sprite.
+         *
+         * This function sets the color of a sprite identified by the given ID.
+         *
+         * @param id The identifier of the sprite to be colored.
+         * @param color The color to be applied to the sprite.
+         */
+        void setSpriteColor(size_t id, RColor color) override;
+
+        /**
          * @brief Sets the position of a rectangle shape.
          *
          * This function sets the position of the rectangle shape identified by the given ID.

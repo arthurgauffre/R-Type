@@ -63,7 +63,7 @@ void ECS_system::WeaponSystem::createProjectile(
         _componentManager.addComponent<component::TransformComponent>(
             projectileID, position, scale);
     _componentManager.addComponent<component::SpriteComponent>(
-        projectileID, position.first, position.second, _graphic);
+        projectileID, position.first, position.second, RColor{255, 255, 255, 255}, _graphic);
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
             ->getType() == Type::ENEMY)

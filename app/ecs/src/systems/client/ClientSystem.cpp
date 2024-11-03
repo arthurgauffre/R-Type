@@ -143,7 +143,7 @@ namespace rtype
         std::memcpy(&sprite, msg.body.data() + sizeof(EntityId),
                     sizeof(SpriteComponent));
         _componentManager
-            .addComponent<component::SpriteComponent>(id.id, sprite.x, sprite.y, _graphic);
+            .addComponent<component::SpriteComponent>(id.id, sprite.x, sprite.y, sprite.color, _graphic);
       }
       break;
       case NetworkMessages::createTexture:

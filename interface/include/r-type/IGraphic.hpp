@@ -122,6 +122,14 @@ class IGraphic {
         virtual void setSpriteRotation(float angle, size_t id) = 0;
 
         /**
+         * @brief Sets the color of the sprite with the given ID.
+         * 
+         * @param id The unique identifier of the sprite.
+         * @param color The color to set for the sprite.
+         */
+        virtual void setSpriteColor(size_t id, RColor color) = 0;
+
+        /**
          * @brief Set the position of a rectangle shape.
          *
          * @param x The x-coordinate of the new position.

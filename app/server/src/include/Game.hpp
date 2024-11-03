@@ -15,6 +15,9 @@
 #include <cmath>
 #include <random>
 
+#include <cstdlib>
+#include <ctime>
+
 class Game
 {
 public:
@@ -42,6 +45,8 @@ public:
      * @return A pointer to an IEntity representing the background.
      */
     entity::IEntity *createBackground();
+
+    RColor getRandomRColor();
 
     /**
      * @brief Creates a player entity for the specified client.

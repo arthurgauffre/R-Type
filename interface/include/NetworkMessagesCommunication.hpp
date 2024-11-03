@@ -158,6 +158,7 @@ struct SoundComponent {
 struct SpriteComponent {
   float x;
   float y;
+  RColor color;
 };
 
 struct TransformComponent {

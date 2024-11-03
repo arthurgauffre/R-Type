@@ -442,12 +442,12 @@ namespace rtype
             if (component->getCommunication() == component::ComponentCommunication::CREATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.createSpriteMsg(entity->getID(), component->getX(), component->getY()), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.createSpriteMsg(entity->getID(), component->getX(), component->getY(), component->getColor()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
               component->setCommunication(component::ComponentCommunication::NONE);
-              SendMessageToAllClients(networkMessageFactory.updateSpriteMsg(entity->getID(), component->getX(), component->getY()), clientToIgnore);
+              SendMessageToAllClients(networkMessageFactory.updateSpriteMsg(entity->getID(), component->getX(), component->getY(), component->getColor()), clientToIgnore);
             }
             else if (component->getCommunication() == component::ComponentCommunication::DELETE)
             {
@@ -821,7 +821,7 @@ namespace rtype
                 _componentManager.getComponent<component::SpriteComponent>(entity->getID());
             SendMessageToClient(
                 networkMessageFactory.createSpriteMsg(
-                    entity->getID(), component->getX(), component->getY()),
+                    entity->getID(), component->getX(), component->getY(), component->getColor()),
                 client);
           }
           if (_componentManager.getComponent<component::TextureComponent>(entity->getID()))

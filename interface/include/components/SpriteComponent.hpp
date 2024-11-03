@@ -19,9 +19,11 @@ public:
    * @param x The x-coordinate of the sprite.
    * @param y The y-coordinate of the sprite.
    */
-  SpriteComponent(uint32_t entityID, float x, float y, std::shared_ptr<IGraphic> graphic)
+  SpriteComponent(uint32_t entityID, float x, float y, RColor color, std::shared_ptr<IGraphic> graphic)
       : AComponent(entityID), _x(x), _y(y){
         _spriteId = graphic->createSprite();
+        _color = color;
+        graphic->setSpriteColor(_spriteId, color);
       };
 
   /**
@@ -52,6 +54,13 @@ public:
 
   void update(float x, float y, std::shared_ptr<IGraphic> graphic);
 
+  /**
+   * @brief Get the color of the sprite.
+   *
+   * @return RColor The color of the sprite.
+   */
+  RColor getColor() const { return _color; }
+
 private:
   /**
    * @brief Represents the x-coordinate of the sprite.
@@ -67,5 +76,10 @@ private:
    * @brief Represents the sprite object.
    */
   size_t _spriteId;
+
+  /**
+   * @brief Represents the color of the sprite.
+   */
+  RColor _color;
 };
 } // namespace component
