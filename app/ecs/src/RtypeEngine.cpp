@@ -27,7 +27,6 @@ std::atomic<bool> keepRunning(true);
  * @param signum The signal number received.
  */
 void signalHandler(int signum) {
-    std::cout << "\nInterrupt signal (" << signum << ") received. Stopping...\n";
     keepRunning = false;
 }
 

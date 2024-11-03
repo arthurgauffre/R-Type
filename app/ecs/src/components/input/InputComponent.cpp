@@ -58,7 +58,6 @@ KeyBoard component::InputComponent::checkKeyBindings(Action action, KeyBoard key
 
   file >> json;
   file.close();
-  // check if the key is already binded
   try {
     int actionJson = static_cast<int>(action);
     if (json.contains(std::to_string(actionJson))) {

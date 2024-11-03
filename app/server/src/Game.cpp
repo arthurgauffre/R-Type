@@ -651,7 +651,6 @@ entity::IEntity *Game::addFilter(std::string filter, int numClient)
     filterEntity->setSceneStatus(Scene::ALL);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(filterEntity->getID(), std::pair<float, float>(0, 0), std::pair<float, float>(1, 1));
     _engine->getComponentManager()->addComponent<component::TypeComponent>(filterEntity->getID(), Type::FILTER);
-    // std::cout << "Filter added with id: " << filterEntity->getID() << "and a numClient of: " << numClient << std::endl;
     return filterEntity;
 }
 
@@ -694,11 +693,9 @@ void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<si
         _playersScenes[numClient] = Scene::MENU;
         createKeyBind(numClient);
         createMenu(numClient);
-        std::cout << "Client connected : " << id << std::endl;
     }
     if (msg == "clientDisconnection")
     {
-        std::cout << "Client disconnected in Game.cpp : " << numClient << std::endl;
         if (_players.find(numClient) != _players.end())
         {
             entity::IEntity *entity = _engine->getEntityManager()->getEntityByID(_players[numClient]);
@@ -956,7 +953,6 @@ void Game::run()
 
         if (_players.size() != 0 && _waveNumber == 0 && _isStarted)
         {
-            std::cout << "You Win" << std::endl;
             _isStarted = false;
             _waveNumber = _config["waveSystem"]["waveNumber"];
             _structureCreated = false;
