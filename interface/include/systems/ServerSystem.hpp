@@ -266,6 +266,10 @@ namespace rtype
           // return;
         }
         break;
+        default:
+        {
+          std::cout << "Unknown action" << std::endl;
+        }
         }
       }
 
@@ -978,33 +982,58 @@ namespace rtype
           incomingMessages.wait();
         size_t messageCount = 0;
         // std::chrono::milliseconds timeout(100);
-        std::chrono::microseconds timeout(1);
+        std::chrono::milliseconds timeout(100);
+        bool ackMessage = true;
 
         while (messageCount < maxMessages && !incomingMessages.empty())
         {
           auto msg = incomingMessages.popFront();
           // auto originalQueueSize = queueOfAckMessages.size();
-          auto now = std::chrono::steady_clock::now();
+
+          //check if threre is a message.header.id not equals to ack in all the incomingMessages, and clear the data in the queueOfAckMessages and in the queueOfOutgoingMessages
+          // go through all the incoming messages
+
 
           if (queueOfAckMessages.empty() == false) {
             // print the chrono time value
-            std::cout << "Time elapsed: " << std::chrono::duration<double>(now - start).count() << "s" << std::endl;
-            std::chrono::milliseconds secondsValue = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+            // auto now = std::chrono::steady_clock::now();
+            // std::cout << "Time elapsed: " << std::chrono::duration<double>(now - start).count() << "s" << std::endl;
+            // std::chrono::milliseconds secondsValue = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
             // std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
             // check a timer to see if no ack message is received, in this case we resend the message
-            if (secondsValue > timeout) {
-              std::cout << "TIMEOUT - Resend" << std::endl;
+
+            // if (secondsValue > timeout) {
+            //   std::cout << "TIMEOUT - Resend" << std::endl;
               // if (!queueOfOutgoingMessages.empty()) {
-                for (auto &toto : queueOfOutgoingMessages) {
+                // for (auto &toto : queueOfOutgoingMessages) {
                   // SendMessageToClient(toto.first, deqConnections[toto.second.second]);
                   // queueOfAckMessages.push_back(std::make_pair(ServerStatus::WAITING_FOR_CREATE_ENTITY, toto.second.first));
                 // }
-              }
-              start = std::chrono::steady_clock::now();
-            }
+              // }
+            //   start = std::chrono::steady_clock::now();
+            //   return;
+            // }
 
             std::cout << "Ack message" << std::endl;
             OnMessageReceived(msg.remoteConnection, msg.message);
+            for (auto &incomingMsg : incomingMessages.getQueue())
+            {
+              if (incomingMsg.message.header.id != NetworkMessages::acknowledgementMesageToCreateEntity || msg.message.header.id != NetworkMessages::acknowledgementMesageToCreateEntity)
+              {
+                std::cout << "ACK NOT FOUND WHILE THE QUEUE IS NOT EMPTY" << std::endl;
+                ackMessage = false;
+                break;
+              }
+              std::cout << "AFTER THE IF THAT CHECKS IF THE MESSAGE IS AN ACK" << std::endl;
+            }
+            if (ackMessage == false && queueOfAckMessages.size() > 0 && queueOfOutgoingMessages.size() > 0)
+            {
+              std::cout << "CLEARING THE QUEUES" << std::endl;
+              queueOfAckMessages.clear();
+              queueOfOutgoingMessages.clear();
+              // incomingMessages.clear();
+              return;
+            }
             // if (queueOfAckMessages.size() != queueOfOutgoingMessages.size()) {
             //   EntityId actualEntityId;
             //   std::memcpy(&actualEntityId, msg.message.body.data(), sizeof(EntityId));

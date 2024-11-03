@@ -158,6 +158,20 @@ public:
   }
 
   /**
+   * @brief Retrieves a copy of the current queue.
+   *
+   * This function returns a copy of the queue in a thread-safe manner by
+   * using a scoped lock to ensure that the queue is not modified while
+   * it is being copied.
+   *
+   * @return std::deque<T> A copy of the current queue.
+   */
+  std::deque<T> getQueue() {
+    std::scoped_lock lock(mutexQueue);
+    return queue;
+  }
+
+  /**
    * @brief Clears all elements from the queue.
    *
    * This function acquires a scoped lock on the mutex to ensure thread safety

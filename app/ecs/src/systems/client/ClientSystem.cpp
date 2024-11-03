@@ -86,13 +86,18 @@ namespace rtype
       }
       case NetworkMessages::createEntity:
       {
+        std::cout << "ENTITY RECEIVED" << std::endl;
         EntityStruct entityId;
         SceneStatus scene;
-        if (msg.body.size() < sizeof(EntityStruct) + sizeof(SceneStatus))
+        if (msg.body.size() < sizeof(EntityStruct) + sizeof(SceneStatus)) {
+          std::cout << "MESSAGE TOO SHORT" << std::endl;
           return;
+        }
         std::memcpy(&entityId, msg.body.data(), sizeof(EntityStruct));
-        if (_entityManager.getEntities().size() + 100 < entityId.id)
-          return;
+        // if (_entityManager.getEntities().size() + 100000000 < entityId.id) {
+        //   std::cout << "Entity ID TOO HIGH" << std::endl;
+        //   return;
+        // }
         std::memcpy(&scene, msg.body.data() + sizeof(EntityStruct),
                     sizeof(SceneStatus));
         entity::IEntity *entity = _entityManager.createEntity(entityId.id, entityId.numClient);
