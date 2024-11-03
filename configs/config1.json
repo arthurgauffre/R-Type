@@ -16,6 +16,29 @@
     }
   },
 
+  "player": {
+    "path": "app/assets/sprites/plane.png",
+    "health": 100,
+    "damage": 10,
+    "position": {
+      "x": 100,
+      "y": 100
+    },
+    "velocity": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": {
+      "x": 0.2,
+      "y": 0.2
+    },
+    "weapon": {
+      "damage": 10,
+      "cooldown": 1,
+      "speed": 500
+    }
+  },
+
   "structure": [
     {
       "path": "app/assets/sprites/block.png",
