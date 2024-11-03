@@ -29,7 +29,7 @@ public:
   /**
    * @brief Get the music object.
    *
-   * @return sf::Music& The music object.
+   * @return size_t id The music object.
    */
   size_t getMusic() { return _music; }
 
@@ -50,20 +50,43 @@ public:
    */
   bool isPlaying(std::shared_ptr<IAudio> audio) { return audio->isMusicPlaying(_music); }
 
+  /**
+   * @brief Sets the playback state of the music component.
+   * 
+   * This function allows you to control whether the music should be playing or not.
+   * 
+   * @param shouldPlay A boolean value indicating whether the music should play (true) or stop (false).
+   */
   void setShouldPlay(bool shouldPlay) { _shouldPlay = shouldPlay; }
 
+  /**
+   * @brief Get the status of whether the music should play.
+   * 
+   * @return true if the music should play, false otherwise.
+   */
   bool getShouldPlay() { return _shouldPlay; }
 
+  /**
+   * @brief Retrieves the file path of the sound file associated with this component.
+   * 
+   * @return std::string The file path of the sound file.
+   */
   std::string getPath() { return _soundFilePath; }
 
 private:
   /**
-   * @brief Represents the music object.
+   * @brief Represents the musicID object.
    */
   size_t _music;
 
+  /**
+   * @brief Indicates whether the music should be played.
+   */
   bool _shouldPlay;
 
+  /**
+   * @brief Path to the sound file.
+   */
   std::string _soundFilePath;
 };
 } // namespace component

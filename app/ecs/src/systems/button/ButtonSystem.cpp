@@ -9,6 +9,15 @@
 
 namespace ECS_system
 {
+    /**
+     * @brief Construct a new Button System object
+     * 
+     * @param componentManager Reference to the ComponentManager
+     * @param entityManager Reference to the EntityManager
+     * @param graphic Shared pointer to the IGraphic interface
+     * @param audio Shared pointer to the IAudio interface
+     * @param stringCom StringCom object
+     */
     ButtonSystem::ButtonSystem(
         component::ComponentManager &componentManager,
         entity::EntityManager &entityManager,
@@ -17,6 +26,17 @@ namespace ECS_system
     {
     }
 
+    /**
+     * @brief Binds a keyboard key to a specific action and updates the key bindings configuration file.
+     *
+     * This function reads the current key bindings from a JSON configuration file, updates the binding
+     * for the specified action with the provided key, and writes the updated bindings back to the file.
+     *
+     * @param key The keyboard key to bind to the action.
+     * @param action The action to bind the key to.
+     *
+     * @throws std::runtime_error If the configuration file cannot be opened for writing.
+     */
     void ButtonSystem::bindTheKey(KeyBoard key, Action action)
     {
         std::ifstream file("configs/keyBind.json");
@@ -42,6 +62,17 @@ namespace ECS_system
         }
     }
 
+    /**
+     * @brief Changes the text of a TextComponent based on the provided keyboard key.
+     * 
+     * This function retrieves the TextComponent associated with the given ID and updates its text
+     * based on the specified keyboard key. If the TextComponent is not found, the function returns
+     * without making any changes.
+     * 
+     * @param id The ID of the entity whose TextComponent is to be updated.
+     * @param key The keyboard key that determines the new text for the TextComponent.
+     * @param graphic A shared pointer to the IGraphic interface used for rendering the text.
+     */
     void ButtonSystem::changeText(size_t id, KeyBoard key, std::shared_ptr<IGraphic> graphic)
     {
         component::TextComponent *text = _componentManager.getComponent<component::TextComponent>(id);
@@ -138,6 +169,17 @@ namespace ECS_system
         }
     }
 
+    /**
+     * @brief Changes the input binding for entities with InputComponent and TypeComponent.
+     *
+     * This function iterates through the provided entities and updates the input binding
+     * for those that have both InputComponent and TypeComponent. If the entity's type is
+     * PLAYER, it binds the specified action to the given key.
+     *
+     * @param entities A vector of shared pointers to IEntity objects to be processed.
+     * @param key The keyboard key to bind the action to.
+     * @param action The action to be bound to the specified key.
+     */
     void ButtonSystem::changeInput(std::vector<std::shared_ptr<entity::IEntity>> entities, KeyBoard key, Action action)
     {
         for (auto &entity : _componentManager.getEntitiesWithComponents<component::InputComponent, component::TypeComponent>(entities))
@@ -149,6 +191,18 @@ namespace ECS_system
         }
     }
 
+    /**
+     * @brief Retrieves the key binding for a given action from a JSON configuration file.
+     *
+     * This function reads the key bindings from the "configs/keyBind.json" file and returns the key
+     * associated with the specified action. If the action is not found in the JSON file, the provided
+     * default key is returned.
+     *
+     * @param action The action for which the key binding is to be retrieved.
+     * @param key The default key to be returned if the action is not found in the JSON file.
+     * @return The key binding for the specified action, or the default key if the action is not found.
+     * @throws std::runtime_error If the JSON configuration file cannot be opened.
+     */
     static KeyBoard getKey(Action action, KeyBoard key)
     {
         std::ifstream file("configs/keyBind.json");
@@ -178,6 +232,22 @@ namespace ECS_system
         }
     }
 
+    /**
+     * @brief Updates the button system.
+     * 
+     * This function processes all entities with OnClickComponent, RectangleShapeComponent, 
+     * TransformComponent, and TypeComponent. It checks for mouse interactions and updates 
+     * the state of buttons accordingly.
+     * 
+     * @param deltaTime The time elapsed since the last update.
+     * @param entities A vector of shared pointers to entities to be processed.
+     * @param msgToSend A reference to a vector of pairs where each pair contains an action 
+     *        and an entity ID to be sent as a message.
+     * @param msgReceived A reference to a vector of pairs where each pair contains a string 
+     *        and a pair of size_t values representing received messages.
+     * @param entityMutex A mutex to ensure thread-safe access to entities.
+     * @param sceneStatus A shared pointer to the current scene status.
+     */
     void ButtonSystem::update(float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
     {
         std::lock_guard<std::mutex> lock(entityMutex);

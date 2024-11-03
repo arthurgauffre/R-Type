@@ -36,6 +36,21 @@ ECS_system::RenderSystem::RenderSystem(
  * @param deltaTime The time elapsed since the last update.
  * @param entities A vector of shared pointers to entities to be processed.
  */
+/**
+ * @brief Updates the render system by drawing entities with specific components.
+ *
+ * This function clears the window, locks the entity mutex, and iterates through
+ * entities with various component combinations to render them appropriately.
+ * It handles background sprites, regular sprites, rectangle shapes, text components,
+ * and filter rectangle shapes.
+ *
+ * @param deltaTime The time elapsed since the last update.
+ * @param entities A vector of shared pointers to entities to be processed.
+ * @param msgToSend A reference to a vector of messages to be sent.
+ * @param msgReceived A reference to a vector of received messages.
+ * @param entityMutex A mutex to ensure thread-safe access to entities.
+ * @param sceneStatus A shared pointer to the current scene status.
+ */
 void ECS_system::RenderSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities,
     std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)

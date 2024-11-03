@@ -10,6 +10,60 @@
 #include <r-type/AComponent.hpp>
 
 namespace component {
+/**
+ * @class SpriteComponent
+ * @brief A component that represents a sprite in the game.
+ *
+ * The SpriteComponent class is responsible for managing the position, color, and graphical representation
+ * of a sprite associated with an entity in the game. It inherits from the AComponent class.
+ *
+ * @note This class uses a shared pointer to an IGraphic interface for graphical operations.
+ *
+ * @fn SpriteComponent::SpriteComponent(uint32_t entityID, float x, float y, RColor color, std::shared_ptr<IGraphic> graphic)
+ * @brief Constructs a new SpriteComponent object.
+ * @param entityID The unique identifier for the entity.
+ * @param x The x-coordinate of the sprite.
+ * @param y The y-coordinate of the sprite.
+ * @param color The color of the sprite.
+ * @param graphic A shared pointer to an IGraphic interface for graphical operations.
+ *
+ * @fn SpriteComponent::~SpriteComponent()
+ * @brief Default destructor for the SpriteComponent class.
+ *
+ * @fn float SpriteComponent::getX() const
+ * @brief Get the x position of the sprite.
+ * @return The x position as a float.
+ *
+ * @fn float SpriteComponent::getY() const
+ * @brief Get the y position of the sprite.
+ * @return The y position as a float.
+ *
+ * @fn size_t& SpriteComponent::getSpriteId()
+ * @brief Get the sprite object.
+ * @return The sprite object as a reference to a size_t.
+ *
+ * @fn void SpriteComponent::update(float x, float y, std::shared_ptr<IGraphic> graphic)
+ * @brief Update the position and graphical representation of the sprite.
+ * @param x The new x-coordinate of the sprite.
+ * @param y The new y-coordinate of the sprite.
+ * @param graphic A shared pointer to an IGraphic interface for graphical operations.
+ *
+ * @fn RColor SpriteComponent::getColor() const
+ * @brief Get the color of the sprite.
+ * @return The color of the sprite as an RColor.
+ *
+ * @var SpriteComponent::_x
+ * @brief Represents the x-coordinate of the sprite.
+ *
+ * @var SpriteComponent::_y
+ * @brief Represents the y-coordinate of the sprite.
+ *
+ * @var SpriteComponent::_spriteId
+ * @brief Represents the sprite object.
+ *
+ * @var SpriteComponent::_color
+ * @brief Represents the color of the sprite.
+ */
 class SpriteComponent : virtual public AComponent {
 public:
   /**

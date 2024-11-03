@@ -9,6 +9,16 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 
+/**
+ * @brief Entry point of the application.
+ * 
+ * This function initializes the game engine, loads configuration from a JSON file,
+ * sets up various resources such as textures, fonts, and sounds, and then runs the engine.
+ * 
+ * @return int Returns 0 upon successful execution.
+ * 
+ * @throws std::runtime_error If the configuration file cannot be opened.
+ */
 int main(void)
 {
   ECS_system::StringCom stringCom;

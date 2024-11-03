@@ -12,6 +12,16 @@ namespace rtype
   namespace network
   {
 
+    /**
+     * @brief Sends an acknowledgment message to the network.
+     * 
+     * This function constructs a network message containing an acknowledgment
+     * for a specific entity and sends it. The message includes the entity ID
+     * and the current timestamp.
+     * 
+     * @param actualEntityId The ID of the entity for which the acknowledgment is being sent.
+     * @param messageType The type of the network message to be sent.
+     */
     void ClientSystem::sendAckMessage(size_t actualEntityId, NetworkMessages messageType)
     {
       // std::cout << "Sending Acknowledgement" << std::endl;
@@ -33,6 +43,62 @@ namespace rtype
     }
 
 
+    /**
+     * @brief Handles incoming network messages and performs appropriate actions based on the message type.
+     * 
+     * @param msg The network message to handle.
+     * 
+     * This function processes various types of network messages and updates the client state accordingly.
+     * It uses a switch statement to determine the type of message and performs actions such as creating,
+     * updating, or deleting entities and components, changing scenes, and handling server communication.
+     * 
+     * The supported message types include:
+     * - NetworkMessages::ServerAcceptance: Logs server acceptance of connection.
+     * - NetworkMessages::ServerPing: Calculates and logs the ping time.
+     * - NetworkMessages::ServerMessage: Logs a message from the server with the client ID.
+     * - NetworkMessages::ServerDenial: Placeholder for server denial handling.
+     * - NetworkMessages::MessageAll: Placeholder for handling messages to all clients.
+     * - NetworkMessages::ClientConnection: Placeholder for handling client connection.
+     * - NetworkMessages::menu: Creates a menu scene on the client side.
+     * - NetworkMessages::game: Creates a game scene on the client side.
+     * - NetworkMessages::keyBind: Creates a key binding scene on the client side.
+     * - NetworkMessages::createEntity: Creates an entity with the specified ID and scene status.
+     * - NetworkMessages::updateEntity: Updates an entity's scene status.
+     * - NetworkMessages::deleteEntity: Deletes an entity and removes all its components.
+     * - NetworkMessages::createSprite: Creates a sprite component for an entity.
+     * - NetworkMessages::createTexture: Creates a texture component for an entity.
+     * - NetworkMessages::createTransform: Creates a transform component for an entity.
+     * - NetworkMessages::createVelocity: Creates a velocity component for an entity.
+     * - NetworkMessages::createParent: Creates a parent component for an entity.
+     * - NetworkMessages::createHealth: Creates a health component for an entity.
+     * - NetworkMessages::createDamage: Creates a damage component for an entity.
+     * - NetworkMessages::createHitbox: Creates a hitbox component for an entity.
+     * - NetworkMessages::createInput: Creates an input component for an entity.
+     * - NetworkMessages::updateInput: Updates an input component for an entity.
+     * - NetworkMessages::createType: Creates a type component for an entity.
+     * - NetworkMessages::updateType: Updates a type component for an entity.
+     * - NetworkMessages::updateSprite: Updates a sprite component for an entity.
+     * - NetworkMessages::updateTransform: Updates a transform component for an entity.
+     * - NetworkMessages::updateVelocity: Updates a velocity component for an entity.
+     * - NetworkMessages::updateParent: Updates a parent component for an entity.
+     * - NetworkMessages::updateHealth: Updates a health component for an entity.
+     * - NetworkMessages::updateDamage: Updates a damage component for an entity.
+     * - NetworkMessages::updateHitbox: Updates a hitbox component for an entity.
+     * - NetworkMessages::createSize: Creates a size component for an entity.
+     * - NetworkMessages::updateSize: Updates a size component for an entity.
+     * - NetworkMessages::createRectangleShape: Creates a rectangle shape component for an entity.
+     * - NetworkMessages::updateRectangleShape: Updates a rectangle shape component for an entity.
+     * - NetworkMessages::createOnClick: Creates an on-click component for an entity.
+     * - NetworkMessages::createText: Creates a text component for an entity.
+     * - NetworkMessages::updateText: Updates a text component for an entity.
+     * - NetworkMessages::createSound: Creates a sound component for an entity.
+     * - NetworkMessages::updateSound: Updates a sound component for an entity.
+     * - NetworkMessages::createMusic: Creates a music component for an entity.
+     * - NetworkMessages::updateMusic: Updates a music component for an entity.
+     * 
+     * The function uses std::memcpy to extract data from the message body and update the corresponding
+     * components in the entity-component system. It also sends acknowledgment messages for certain actions.
+     */
     void ClientSystem::handleMessage(rtype::network::Message<NetworkMessages> &msg)
     {
       std::lock_guard<std::mutex> lock(*_entityMutex);
@@ -543,6 +609,19 @@ namespace rtype
       }
     }
 
+    /**
+     * @brief Updates the client system.
+     *
+     * This function handles the update logic for the client system, including processing incoming and outgoing messages, 
+     * and updating the scene status.
+     *
+     * @param deltaTime The time elapsed since the last update.
+     * @param entities A vector of shared pointers to entities.
+     * @param msgToSend A reference to a vector of pairs containing actions and entity IDs to be sent.
+     * @param msgReceived A reference to a vector of pairs containing received messages.
+     * @param entityMutex A reference to a mutex for synchronizing access to entities.
+     * @param sceneStatus A shared pointer to the current scene status.
+     */
     void ClientSystem::update(float deltaTime,
                               std::vector<std::shared_ptr<entity::IEntity>> entities,
                               std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
@@ -596,6 +675,11 @@ namespace rtype
       sceneStatus = _sceneStatus;
     }
 
+    /**
+     * @brief Starts the message processing by creating worker threads.
+     *
+     * This function sets the `processingMessages` flag to true and spawns a number of worker threads equal to the hardware concurrency of the system. Each worker thread continuously waits for messages to be available in the `messageQueue`. When a message is available, it is processed by calling the `handleMessage` function. The threads will stop processing when the `processingMessages` flag is set to false.
+     */
     void ClientSystem::startMessageProcessing()
     {
       processingMessages = true;
@@ -615,6 +699,16 @@ namespace rtype
       }
     }
 
+    /**
+     * @brief Stops the message processing by setting the processing flag to false,
+     *        notifying all waiting threads, and joining all worker threads.
+     * 
+     * This function first acquires a unique lock on the queue mutex to safely set
+     * the processingMessages flag to false. It then notifies all threads that are
+     * waiting on the queue condition variable. Finally, it iterates through all
+     * worker threads, joins them if they are joinable, and clears the workerThreads
+     * vector.
+     */
     void ClientSystem::stopMessageProcessing()
     {
       {
@@ -632,6 +726,15 @@ namespace rtype
       workerThreads.clear();
     }
 
+    /**
+     * @brief Enqueues a network message to the message queue.
+     *
+     * This function safely enqueues a given network message to the message queue
+     * using a mutex to ensure thread safety. After the message is enqueued, it
+     * notifies one of the waiting threads.
+     *
+     * @param msg The network message to be enqueued.
+     */
     void ClientSystem::enqueueMessage(Message<NetworkMessages> msg)
     {
       {
@@ -641,6 +744,18 @@ namespace rtype
       queueCondition.notify_one();
     }
 
+    /**
+     * @brief Factory function to create a new ClientSystem.
+     * 
+     * This function creates and returns a new instance of the ClientSystem class.
+     * 
+     * @param componentManager Reference to the ComponentManager.
+     * @param entityManager Reference to the EntityManager.
+     * @param graphic Shared pointer to an IGraphic instance.
+     * @param audio Shared pointer to an IAudio instance.
+     * @param stringCom StringCom instance for communication.
+     * @return ECS_system::ISystem* Pointer to the newly created ClientSystem.
+     */
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
                                                  entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
     {
