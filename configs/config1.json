@@ -9,7 +9,7 @@
     "health"
   ],
 
-  "localSystems": ["render", "movement", "button", "input", "client", "audio"],
+  "localSystems": ["render", "movement", "button", "input", "client"],
 
   "waveSystem": {
     "waveNumber": 10,
