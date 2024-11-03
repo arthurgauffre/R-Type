@@ -3,6 +3,7 @@
   "serverSystems": [
     "server",
     "cooldown",
+    "movement",
     "collision",
     "weapon",
     "ai",
@@ -11,6 +12,7 @@
 
   "localSystems": [
     "render",
+    "movement",
     "button",
     "input",
     "client",
