@@ -17,6 +17,15 @@ std::atomic<bool> keepRunning(true);
  *
  * @param signum
  */
+/**
+ * @brief Signal handler function to handle interrupt signals.
+ *
+ * This function is called when an interrupt signal is received.
+ * It outputs a message indicating the received signal and sets
+ * the keepRunning flag to false to stop the program.
+ *
+ * @param signum The signal number received.
+ */
 void signalHandler(int signum) {
     std::cout << "\nInterrupt signal (" << signum << ") received. Stopping...\n";
     keepRunning = false;
@@ -25,6 +34,17 @@ void signalHandler(int signum) {
 /**
  * @brief Construct a new rtype::Core Module::Core Module object
  *
+ */
+/**
+ * @brief Constructs a new RtypeEngine object.
+ * 
+ * This constructor initializes the RtypeEngine by loading the specified graphic and audio libraries,
+ * and setting up the component, system, and entity managers.
+ * 
+ * @param graphicName The name of the graphic library to load (without the "r-type_" prefix and "_graphic.so" suffix).
+ * @param audioName The name of the audio library to load (without the "r-type_" prefix and "_audio.so" suffix).
+ * 
+ * @throws std::runtime_error If the graphic or audio library cannot be loaded.
  */
 rtype::RtypeEngine::RtypeEngine(std::string graphicName, std::string audioName) {
   std::shared_ptr<
@@ -122,6 +142,16 @@ void rtype::RtypeEngine::update() {
   this->getSystemManager()->update(deltatime, entities, this->msgToSend, this->msgReceived, _entityMutex);
 }
 
+/**
+ * @brief Runs the main loop of the RtypeEngine.
+ * 
+ * This function sets up a signal handler for SIGINT to handle
+ * interruption signals. It then enters an infinite loop where it
+ * continuously calls the update() method. If the keepRunning flag
+ * is set to false, it prints an exit message, adds an exit action
+ * to the msgToSend queue, and breaks out of the loop. After breaking
+ * out of the loop, it calls the update() method one final time.
+ */
 void rtype::RtypeEngine::run() {
   signal(SIGINT, signalHandler);
   while (1) {

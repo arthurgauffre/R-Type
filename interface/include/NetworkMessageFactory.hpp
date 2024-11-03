@@ -224,13 +224,13 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> createSpriteMsg(size_t id, float x,
-                                                             float y)
+                                                             float y, RColor color)
     {
         // std::cout << "Creating sprite message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createSprite;
         EntityId entity = {id};
-        SpriteComponent sprite = {x, y};
+        SpriteComponent sprite = {x, y, color};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));
@@ -529,13 +529,13 @@ public:
         return message;
     }
     rtype::network::Message<NetworkMessages> updateSpriteMsg(size_t id, float x,
-                                                             float y)
+                                                             float y, RColor color)
     {
         // std::cout << "Updating sprite message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::updateSprite;
         EntityId entity = {id};
-        SpriteComponent sprite = {x, y};
+        SpriteComponent sprite = {x, y, color};
         std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entity),
                                          reinterpret_cast<uint8_t *>(&entity) +
                                              sizeof(EntityId));

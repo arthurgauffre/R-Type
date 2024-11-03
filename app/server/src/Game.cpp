@@ -7,6 +7,15 @@
 
 #include "include/Game.hpp"
 
+/**
+ * @brief Constructs a new Game object.
+ * 
+ * Initializes the game with the provided core module, setting the initial state
+ * of the game to not started, structure not created, running, with wave number
+ * and wave interval set to 0.
+ * 
+ * @param coreModule A shared pointer to the RtypeEngine core module.
+ */
 Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
 {
     _isStarted = false;
@@ -16,10 +25,44 @@ Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
     _waveInterval = 0;
 }
 
+/**
+ * @brief Destructor for the Game class.
+ * 
+ * This destructor is responsible for cleaning up any resources
+ * that the Game object may have acquired during its lifetime.
+ */
 Game::~Game()
 {
 }
 
+/**
+ * @brief Generates a random RColor with random RGB values and full opacity.
+ * 
+ * This function creates an RColor object with each of the red, green, and blue
+ * components set to a random value between 0 and 255. The alpha component is
+ * set to 255, making the color fully opaque.
+ * 
+ * @return RColor A randomly generated color with random RGB values and full opacity.
+ */
+RColor Game::getRandomRColor()
+{
+    RColor color;
+    color.r = rand() % 256;
+    color.g = rand() % 256;
+    color.b = rand() % 256;
+    color.a = 255;
+
+    return color;
+}
+
+/**
+ * @brief Generates a random floating-point number representing a position.
+ * 
+ * This function uses a random device to seed a Mersenne Twister engine, which
+ * generates a random floating-point number uniformly distributed between 0 and 1080.
+ * 
+ * @return A random float between 0 and 1080.
+ */
 float getRandomPosition()
 {
     std::random_device rd;
@@ -28,6 +71,16 @@ float getRandomPosition()
     return dis(gen);
 }
 
+/**
+ * @brief Creates a weapon entity with specified properties.
+ * 
+ * This function creates a weapon entity and attaches various components to it,
+ * such as sound, type, parent, cooldown, and damage components.
+ * 
+ * @param parentID The ID of the parent entity.
+ * @param weapon A JSON object containing the weapon properties.
+ * @return entity::IEntity* A pointer to the created weapon entity.
+ */
 entity::IEntity *Game::createWeapon(uint32_t parentID, nlohmann::json &weapon)
 {
     int damage = weapon["damage"];
@@ -89,26 +142,34 @@ entity::IEntity *Game::createBackground()
     _engine->getComponentManager()->addComponent<component::TextureComponent>(
         background1->getID(), texturePath, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        background1->getID(), 0, 0, _engine->_graphic);
+        background1->getID(), 0, 0, RColor{255, 255, 255, 255}, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SizeComponent>(
         background1->getID(), size);
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         background2->getID(), Type::BACKGROUND);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
-        background2->getID(), std::pair<float, float>(size.first - 20, 0));
+        background2->getID(), std::pair<float, float>(size.first, 0));
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         background2->getID(), speed, speed);
     _engine->getComponentManager()->addComponent<component::TextureComponent>(
         background2->getID(), texturePath, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        background2->getID(), size.first, 0, _engine->_graphic);
+        background2->getID(), size.first, 0, RColor{255, 255, 255, 255}, _engine->_graphic);
     _engine->getComponentManager()->addComponent<component::SizeComponent>(
         background2->getID(), size);
 
     return background1;
 }
 
+/**
+ * @brief Binds input actions to the specified entity.
+ * 
+ * This function binds various input actions (move left, move right, move up, move down, shoot, and menu)
+ * to the corresponding keys (Q, D, Z, S, Space, and Escape) for the given entity.
+ * 
+ * @param entity A pointer to the entity to which the input actions will be bound.
+ */
 void Game::BindInputScript(entity::IEntity *entity)
 {
     uint32_t entityID = entity->getID();
@@ -171,7 +232,7 @@ entity::IEntity *Game::createPlayer(int numClient)
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
                                                                            Type::PLAYER);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second, _engine->_graphic);
+        entityID, position.first, position.second, getRandomRColor(), _engine->_graphic);
     component::TextureComponent *texture =
         _engine->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath, _engine->_graphic);
@@ -254,7 +315,7 @@ entity::IEntity *Game::createEnemy(const nlohmann::json &enemy)
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, Type::ENEMY);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second, _engine->_graphic);
+        entityID, position.first, position.second, RColor{255, 255, 255, 255}, _engine->_graphic);
     component::TextureComponent *texture =
         _engine->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath, _engine->_graphic);
@@ -272,6 +333,22 @@ entity::IEntity *Game::createEnemy(const nlohmann::json &enemy)
     return enemyEntity;
 }
 
+/**
+ * @brief Creates a button entity with the specified properties.
+ * 
+ * This function creates a button entity and adds various components to it, such as
+ * RectangleShapeComponent, TransformComponent, OnClickComponent, TextComponent, and TypeComponent.
+ * 
+ * @param entityID The unique identifier for the entity.
+ * @param color The color of the button.
+ * @param position The position of the button in the form of a pair of floats (x, y).
+ * @param size The size of the button in the form of a pair of floats (width, height).
+ * @param action The action to be performed when the button is clicked.
+ * @param numClient The client number associated with the button.
+ * @param text The text to be displayed on the button.
+ * @param type The type of the entity.
+ * @return entity::IEntity* A pointer to the created button entity.
+ */
 entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient, std::string text, Type type)
 {
     entity::IEntity *button = _engine->getEntityManager()->createEntity(entityID, numClient);
@@ -285,6 +362,23 @@ entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<f
     return button;
 }
 
+/**
+ * @brief Creates the menu with various buttons for the game.
+ * 
+ * This function creates several buttons for the game menu, each with a specific action and position.
+ * The buttons created are:
+ * - Play
+ * - Protanopia
+ * - Deuteranopia
+ * - Tritanopia
+ * - Clear Filter
+ * - Key Bind
+ * 
+ * Each button is assigned a unique entity ID, color, position, size, action, and label.
+ * The scene status for each button is set to MENU.
+ * 
+ * @param numClient The number of clients connected, used to configure the buttons.
+ */
 void Game::createMenu(int numClient)
 {
     entity::IEntity *buttonPlay = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(860.0f, 700.0f), std::pair<float, float>(70.0f, 200.0f), Action::PLAY, numClient, "Play");
@@ -302,6 +396,16 @@ void Game::createMenu(int numClient)
     buttonKeyBind->setSceneStatus(Scene::MENU);
 }
 
+/**
+ * @brief Creates key bindings for a client in the game.
+ * 
+ * This function creates several buttons and text components for key bindings
+ * and assigns them to a specific client. The buttons and text components are
+ * created with specific positions, colors, and actions. The scene status for
+ * each button and text component is set to Scene::KEYBIND.
+ * 
+ * @param numClient The client number for which the key bindings are created.
+ */
 void Game::createKeyBind(int numClient)
 {
     entity::IEntity *buttonMoveUp = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 20.0f), std::pair<float, float>(70.0f, 300.0f), Action::MOVE_UP, numClient, "Z", Type::BUTTONBIND);
@@ -338,6 +442,24 @@ void Game::createKeyBind(int numClient)
     textKeyShoot->setSceneStatus(Scene::KEYBIND);
 }
 
+/**
+ * @brief Creates a structure entity based on the provided JSON configuration.
+ *
+ * This function initializes a new structure entity with various components such as
+ * texture, position, scale, health, and others. The entity is created using the
+ * entity manager and components are added using the component manager.
+ *
+ * @param structure A JSON object containing the configuration for the structure.
+ * The JSON object should have the following format:
+ * {
+ *     "path": "path/to/texture",
+ *     "position": { "x": float, "y": float },
+ *     "scale": { "x": float, "y": float },
+ *     "health": int
+ * }
+ *
+ * @return A pointer to the created IEntity representing the structure.
+ */
 entity::IEntity *Game::createStructure(const nlohmann::json &structure)
 {
     std::string texturePath = structure["path"];
@@ -352,7 +474,7 @@ entity::IEntity *Game::createStructure(const nlohmann::json &structure)
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         entityID, Type::STRUCTURE);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
-        entityID, position.first, position.second, _engine->_graphic);
+        entityID, position.first, position.second, RColor{255, 255, 255, 255}, _engine->_graphic);
     component::TextureComponent *texture =
         _engine->getComponentManager()->addComponent<component::TextureComponent>(
             entityID, texturePath, _engine->_graphic);
@@ -369,6 +491,16 @@ entity::IEntity *Game::createStructure(const nlohmann::json &structure)
     return structureEntity;
 }
 
+/**
+ * @brief Reads a JSON configuration file and returns its content as a nlohmann::json object.
+ *
+ * This function opens the specified file, reads its content, and parses it into a nlohmann::json object.
+ * If the file cannot be opened, it throws a std::runtime_error.
+ *
+ * @param path The path to the JSON configuration file.
+ * @return A nlohmann::json object containing the parsed content of the file.
+ * @throws std::runtime_error If the file cannot be opened.
+ */
 nlohmann::json Game::fillConfigJson(const std::string &path)
 {
     std::ifstream file(path);
@@ -416,7 +548,7 @@ void Game::init()
     ECS_system::StringCom stringCom;
     stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
     stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
-    stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+    stringCom.texturePath[TexturePath::Background] = "app/assets/images/background.jpg";
     stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
     stringCom.texturePath[TexturePath::Structure] = "app/assets/sprites/block.png";
     stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
@@ -472,24 +604,31 @@ void Game::init()
 
     entity::EntityManager &entityManager = *_engine->getEntityManager();
 
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "movement", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "server", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "cooldown", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "weapon", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "ai", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "collision", _engine->_graphic, _engine->_audio, stringCom);
-    _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                           "health", _engine->_graphic, _engine->_audio, stringCom);
-    // _engine->getSystemManager()->addSystem(componentManager, entityManager,
-    //                                            "game", _engine->_graphic);
+    if (_config.contains("serverSystems") == true)
+    {
+        if (!_config["serverSystems"].is_array())
+            throw rtype::InvalidSystemConfigException("Invalid system configuration in JSON file.");
+        else
+        {
+            for (const auto &system : _config["serverSystems"])
+                _engine->getSystemManager()->addSystem(componentManager, entityManager, system, _engine->_graphic, _engine->_audio, stringCom);
+        }
+    }
 }
 
+/**
+ * @brief Adds a filter entity to the game based on the specified filter type.
+ * 
+ * This function creates a new filter entity and adds the appropriate components
+ * to it based on the specified filter type. The filter types supported are 
+ * "protanopia", "deuteranopia", and "tritanopia". Each filter type corresponds 
+ * to a different color overlay.
+ * 
+ * @param filter The type of filter to add. Supported values are "protanopia", 
+ * "deuteranopia", and "tritanopia".
+ * @param numClient The client number associated with the filter entity.
+ * @return entity::IEntity* A pointer to the created filter entity.
+ */
 entity::IEntity *Game::addFilter(std::string filter, int numClient)
 {
     entity::IEntity *filterEntity = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
@@ -506,6 +645,32 @@ entity::IEntity *Game::addFilter(std::string filter, int numClient)
     return filterEntity;
 }
 
+/**
+ * @brief Handles received messages and performs corresponding actions.
+ * 
+ * This function processes a list of received messages and executes the appropriate
+ * actions based on the message type. The messages are expected to be in the form of
+ * a vector of pairs, where each pair contains a string message and another pair
+ * consisting of a size_t ID and an int client number.
+ * 
+ * @param msgReceived A reference to a vector of pairs containing the received messages.
+ * 
+ * The function supports the following message types:
+ * - "clientConnection": Handles client connection, sets up the menu, and creates key bindings.
+ * - "clientDisconnection": Handles client disconnection, deletes the player's entity if it exists.
+ * - "play": Starts the game, initializes player entities, and sets the scene to GAME.
+ * - "keyBind": Sets the scene to KEYBIND and sends a key binding action.
+ * - "protanopia": Applies the protanopia filter to the player's view.
+ * - "deuteranopia": Applies the deuteranopia filter to the player's view.
+ * - "tritanopia": Applies the tritanopia filter to the player's view.
+ * - "clearFilter": Clears any color filter applied to the player's view.
+ * - "menu": Sets the scene to MENU and sends a menu action.
+ * - "moveUp", "moveDown", "moveLeft", "moveRight": Moves the player's entity in the specified direction.
+ * - "shoot": Makes the player's entity shoot.
+ * 
+ * The function also ensures that actions are only performed if the player exists and the
+ * player ID matches the provided ID.
+ */
 void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
 {
     std::string msg = msgReceived.front().first;
@@ -613,6 +778,14 @@ void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<si
         shootEntity(id);
 }
 
+/**
+ * @brief Triggers the firing mechanism of an entity's weapon.
+ *
+ * This function sets the `isFiring` flag to true for the weapon component
+ * associated with the specified entity ID, if the entity has a weapon component.
+ *
+ * @param id The unique identifier of the entity whose weapon should be fired.
+ */
 void Game::shootEntity(size_t id)
 {
     if (_engine->getComponentManager()->getComponent<component::WeaponComponent>(id))
@@ -622,6 +795,20 @@ void Game::shootEntity(size_t id)
     }
 }
 
+/**
+ * @brief Moves an entity based on the provided message.
+ *
+ * This function updates the velocity of an entity identified by its ID
+ * according to the specified movement command. The entity's velocity
+ * components are adjusted to reflect the desired movement direction.
+ *
+ * @param msg The movement command, which can be one of the following:
+ *            - "moveUp": Moves the entity upwards.
+ *            - "moveDown": Moves the entity downwards.
+ *            - "moveLeft": Moves the entity to the left.
+ *            - "moveRight": Moves the entity to the right.
+ * @param id The unique identifier of the entity to be moved.
+ */
 void Game::moveEntity(std::string msg, size_t id)
 {
     if (_engine->getComponentManager()->getComponent<component::VelocityComponent>(id))
@@ -639,6 +826,14 @@ void Game::moveEntity(std::string msg, size_t id)
     }
 }
 
+/**
+ * @brief Resets the input for all entities that have both InputComponent and VelocityComponent.
+ * 
+ * This function iterates through all entities managed by the engine's entity manager. For each entity,
+ * it checks if the entity has both an InputComponent and a VelocityComponent. If both components are present,
+ * and the entity's velocity is non-zero, and the elapsed time since the last input reset is greater than 0.1 seconds,
+ * the function sets the entity's velocity to zero, updates the component communication status, and restarts the input clock.
+ */
 void Game::resetInput()
 {
     std::vector<std::shared_ptr<entity::IEntity>> entities = _engine->getEntityManager()->getEntities();
@@ -662,8 +857,25 @@ void Game::resetInput()
     }
 }
 
+/**
+ * @brief Main game loop that runs the game logic.
+ * 
+ * This function initializes the random seed, restarts the input clock, and enters the main game loop.
+ * The loop continues running while the game is marked as running (_isRunning).
+ * 
+ * Inside the loop:
+ * - The game engine is updated.
+ * - Players are checked for their corresponding entities, and if an entity is not found, the player is removed and a message is sent.
+ * - Waves of enemies are spawned based on the configuration and wave interval.
+ * - Structures are created based on the configuration and spawn timers.
+ * - If all waves are completed and there are still players, a win message is displayed and the game is marked as not started.
+ * - Received messages are handled, and if no messages are received, the input is reset.
+ * 
+ * @throws rtype::NoPlayerInConfigException if there is an issue with player configuration.
+ */
 void Game::run()
 {
+    std::srand(static_cast<unsigned int>(std::time(0)));
     _inputClock.restart();
     while (_isRunning)
     {

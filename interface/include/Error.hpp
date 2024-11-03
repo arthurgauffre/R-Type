@@ -48,6 +48,7 @@ private:
 NEW_EXCEPTION(ServerException)
 NEW_EXCEPTION(ClientConnectionException)
 NEW_EXCEPTION(NoPlayerInConfigException)
+NEW_EXCEPTION(InvalidSystemConfigException)
 } // namespace rtype
 
 #endif /* !ERROR_HPP_ */

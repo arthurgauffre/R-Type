@@ -15,6 +15,9 @@
 #include <cmath>
 #include <random>
 
+#include <cstdlib>
+#include <ctime>
+
 class Game
 {
 public:
@@ -44,13 +47,40 @@ public:
     entity::IEntity *createBackground();
 
     /**
+     * @brief Generates a random RColor.
+     * 
+     * This function returns a randomly generated RColor object.
+     * The RColor can be used for various purposes such as setting
+     * colors in the game.
+     * 
+     * @return RColor A randomly generated RColor object.
+     */
+    RColor getRandomRColor();
+
+    /**
      * @brief Creates a player entity for the specified client.
      *
      * @param numClient The client number for which the player entity is to be created.
      * @return A pointer to the created player entity.
      */
     entity::IEntity *createPlayer(int numClient);
+    /**
+     * @brief Creates an enemy entity based on the provided JSON configuration.
+     * 
+     * @param enemy A JSON object containing the configuration for the enemy entity.
+     * @return A pointer to the created enemy entity.
+     */
     entity::IEntity *createEnemy(const nlohmann::json &enemy);
+    /**
+     * @brief Creates a weapon entity.
+     * 
+     * This function creates a weapon entity associated with a given parent entity ID.
+     * The weapon's properties are defined by the provided JSON object.
+     * 
+     * @param parentID The ID of the parent entity to which the weapon belongs.
+     * @param weapon A JSON object containing the properties of the weapon to be created.
+     * @return A pointer to the created weapon entity.
+     */
     entity::IEntity *createWeapon(uint32_t parentID, nlohmann::json &weapon);
 
     /**

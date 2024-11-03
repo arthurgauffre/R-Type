@@ -7,13 +7,24 @@
 
 #include <RtypeEngine.hpp>
 #include <memory>
+#include <nlohmann/json.hpp>
 
+/**
+ * @brief Entry point of the application.
+ * 
+ * This function initializes the game engine, loads configuration from a JSON file,
+ * sets up various resources such as textures, fonts, and sounds, and then runs the engine.
+ * 
+ * @return int Returns 0 upon successful execution.
+ * 
+ * @throws std::runtime_error If the configuration file cannot be opened.
+ */
 int main(void)
 {
   ECS_system::StringCom stringCom;
   stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
   stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
-  stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+  stringCom.texturePath[TexturePath::Background] = "app/assets/images/background.jpg";
   stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
   stringCom.texturePath[TexturePath::Structure] = "app/assets/sprites/block.png";
   stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
@@ -43,12 +54,23 @@ int main(void)
   component::ComponentManager &componentManager = *engine->getComponentManager();
   entity::EntityManager &entityManager = *engine->getEntityManager();
 
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "render", engine->_graphic, engine->_audio, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "movement", engine->_graphic, engine->_audio, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "button", engine->_graphic, engine->_audio, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "input", engine->_graphic, engine->_audio, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "client", engine->_graphic, engine->_audio, stringCom);
-  engine->getSystemManager()->addSystem(componentManager, entityManager, "audio", engine->_graphic, engine->_audio, stringCom);
+  std::ifstream file("configs/config1.json");
+
+  if (!file.is_open())
+    throw std::runtime_error("Failed to open file: configs/config1.json");
+
+  nlohmann::json _config;
+
+  file >> _config;
+
+  if (_config.contains("localSystems"))
+  {
+    if (_config["localSystems"].is_array())
+    {
+      for (const auto &system : _config["localSystems"])
+        engine->getSystemManager()->addSystem(componentManager, entityManager, system, engine->_graphic, engine->_audio, stringCom);
+    }
+  }
 
   engine->run();
   return 0;

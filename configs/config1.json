@@ -1,18 +1,30 @@
 {
+  "serverSystems": [
+    "server",
+    "cooldown",
+    "movement",
+    "collision",
+    "weapon",
+    "ai",
+    "health"
+  ],
+
+  "localSystems": ["render", "movement", "button", "input", "client", "audio"],
+
   "waveSystem": {
     "waveNumber": 10,
     "waveInterval": 5
   },
 
   "background": {
-    "path": "app/assets/images/city_background.png",
+    "path": "app/assets/images/background.jpg",
     "velocity": {
       "x": -100,
       "y": 0
     },
     "size": {
-      "width": 4448,
-      "height": 1200
+      "width": 1920,
+      "height": 1192
     }
   },
 
@@ -195,7 +207,6 @@
         "y": 1
       }
     }
-
   ],
 
   "enemy": [

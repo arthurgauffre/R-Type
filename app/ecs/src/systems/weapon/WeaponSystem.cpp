@@ -8,13 +8,43 @@
 #include <iostream>
 #include <systems/WeaponSystem.hpp>
 
+/**
+ * @brief Construct a new Weapon System object
+ * 
+ * @param componentManager Reference to the ComponentManager
+ * @param entityManager Reference to the EntityManager
+ * @param graphic Shared pointer to the IGraphic interface
+ * @param audio Shared pointer to the IAudio interface
+ * @param stringCom StringCom object for communication
+ */
 ECS_system::WeaponSystem::WeaponSystem(
     component::ComponentManager &componentManager,
     entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
     : ASystem(componentManager, entityManager, graphic, audio, stringCom) {}
 
+/**
+ * @brief Destructor for the WeaponSystem class.
+ *
+ * This destructor is responsible for cleaning up any resources
+ * that the WeaponSystem class may have allocated during its lifetime.
+ */
 ECS_system::WeaponSystem::~WeaponSystem() {}
 
+/**
+ * @brief Creates a projectile entity with the specified parameters.
+ * 
+ * This function generates a new projectile entity and assigns various components
+ * to it, such as TypeComponent, DamageComponent, ParentComponent, VelocityComponent,
+ * TextureComponent, HitBoxComponent, TransformComponent, and SpriteComponent.
+ * The projectile's position and rotation are determined based on the parent entity's
+ * properties.
+ * 
+ * @param parentID The ID of the parent entity that is creating the projectile.
+ * @param texturePath The file path to the texture to be used for the projectile.
+ * @param velocity A pair representing the velocity of the projectile (x, y).
+ * @param scale A pair representing the scale of the projectile (x, y).
+ * @param damage The damage value that the projectile will inflict.
+ */
 void ECS_system::WeaponSystem::createProjectile(
     uint32_t parentID, std::string texturePath,
     std::pair<float, float> velocity, std::pair<float, float> scale,
@@ -63,13 +93,25 @@ void ECS_system::WeaponSystem::createProjectile(
         _componentManager.addComponent<component::TransformComponent>(
             projectileID, position, scale);
     _componentManager.addComponent<component::SpriteComponent>(
-        projectileID, position.first, position.second, _graphic);
+        projectileID, position.first, position.second, RColor{255, 255, 255, 255}, _graphic);
 
     if (_componentManager.getComponent<component::TypeComponent>(parentID)
             ->getType() == Type::ENEMY)
         transformComponent->setRotation(180);
 }
 
+/**
+ * @brief Updates the weapon system for all entities with a WeaponComponent.
+ *
+ * This function iterates through all entities that have a WeaponComponent and updates their state based on the current scene status, cooldowns, and firing status. It handles the creation of projectiles, cooldown management, and sound effects for firing weapons.
+ *
+ * @param deltaTime The time elapsed since the last update.
+ * @param entities A vector of shared pointers to all entities in the system.
+ * @param msgToSend A reference to a vector of messages to be sent, containing actions and entity IDs.
+ * @param msgReceived A reference to a vector of received messages, containing message strings and entity ID pairs.
+ * @param entityMutex A reference to a mutex for thread-safe entity access.
+ * @param sceneStatus A shared pointer to the current scene status.
+ */
 void ECS_system::WeaponSystem::update(
     float deltaTime, std::vector<std::shared_ptr<entity::IEntity>> entities, std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
 {

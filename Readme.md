@@ -9,7 +9,7 @@
 - [How to Play](#how-to-play)
 - [Configuration files](#configuration-files)
 - [Authors](#authors)
-- [Documentation Dev](https://jsuissayker.github.io/R-Type/)
+- [Documentation Dev](https://arthurgauffre.github.io/R-Type/)
 - [Game Engine Documentation](GameEngine.md)
 - [Networking Protocol](ServerProtocol.md)
 - [Comparative Analysis](ComparativeAnalysis.md)
@@ -106,6 +106,11 @@ For each client that want to connect to the server, you need to launch a new ter
 # Configuration files
 
 The configuration files are located in the `configs` folder. You can change the settings of the game by modifying the `config.json` files. Here is the differents key words that you can change:
+
+
+- "serverSystems": Array with all the system that run on the server.
+
+- "localSystems": Array with all the system that run on the client.
 
 - "waveSystem": All the settings of the wave system.
     - "waveNumber": The number of wave that you want to play.
