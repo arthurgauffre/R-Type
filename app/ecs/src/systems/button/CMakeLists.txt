@@ -7,6 +7,9 @@ add_library(r-type_button_system SHARED
     ../../components/onclick/OnClickComponent.cpp
     ../../components/transform/TransformComponent.cpp
     ../../components/rectangle/RectangleShapeComponent.cpp
+    ../../components/type/TypeComponent.cpp
+    ../../components/text/TextComponent.cpp
+    ../../components/input/InputComponent.cpp
 )
 
 target_link_libraries(

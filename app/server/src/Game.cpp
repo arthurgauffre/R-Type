@@ -9,6 +9,11 @@
 
 Game::Game(std::shared_ptr<rtype::RtypeEngine> coreModule) : _engine(coreModule)
 {
+    _isStarted = false;
+    _structureCreated = false;
+    _isRunning = true;
+    _waveNumber = 0;
+    _waveInterval = 0;
 }
 
 Game::~Game()
@@ -23,25 +28,26 @@ float getRandomPosition()
     return dis(gen);
 }
 
-entity::IEntity *Game::createWeapon(uint32_t parentID,
-                                    Type type, int damage,
-                                    float cooldown)
+entity::IEntity *Game::createWeapon(uint32_t parentID, nlohmann::json &weapon)
 {
-    auto weapon = _engine->getEntityManager()->createEntity(
+    int damage = weapon["damage"];
+    float cooldown = weapon["cooldown"];
+
+    auto weaponEntity = _engine->getEntityManager()->createEntity(
         _engine->getEntityManager()->generateEntityID(), -1);
 
-    // _engine->getComponentManager()->addComponent<component::SoundComponent>(
-    //     weapon->getID(), "app/assets/musics/blaster.wav");
+    _engine->getComponentManager()->addComponent<component::SoundComponent>(
+        weaponEntity->getID(), "app/assets/musics/blaster.wav", _engine->_audio);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
-        weapon->getID(), type);
+        weaponEntity->getID(), Type::WEAPON);
     _engine->getComponentManager()->addComponent<component::ParentComponent>(
-        weapon->getID(), parentID);
+        weaponEntity->getID(), parentID);
     _engine->getComponentManager()->addComponent<component::CooldownComponent>(
-        weapon->getID(), cooldown);
+        weaponEntity->getID(), cooldown);
     _engine->getComponentManager()->addComponent<component::DamageComponent>(
-        weapon->getID(), damage);
+        weaponEntity->getID(), damage);
 
-    return weapon;
+    return weaponEntity;
 }
 
 /**
@@ -58,14 +64,13 @@ entity::IEntity *Game::createWeapon(uint32_t parentID,
  */
 entity::IEntity *Game::createBackground()
 {
-    nlohmann::json config = this->getConfig();
 
-    if (config.contains("background") == false)
+    if (_config.contains("background") == false)
         return nullptr;
 
-    std::string texturePath = config["background"]["path"];
-    std::pair<float, float> speed = std::pair<float, float>(config["background"]["velocity"]["x"], config["background"]["velocity"]["y"]);
-    std::pair<float, float> size = std::pair<float, float>(config["background"]["size"]["width"], config["background"]["size"]["height"]);
+    std::string texturePath = _config["background"]["path"];
+    std::pair<float, float> speed = std::pair<float, float>(_config["background"]["velocity"]["x"], _config["background"]["velocity"]["y"]);
+    std::pair<float, float> size = std::pair<float, float>(_config["background"]["size"]["width"], _config["background"]["size"]["height"]);
 
     entity::IEntity *background1 = _engine->getEntityManager()->createEntity(
         _engine->getEntityManager()->generateEntityID(), -1);
@@ -76,7 +81,7 @@ entity::IEntity *Game::createBackground()
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         background1->getID(), Type::BACKGROUND);
     _engine->getComponentManager()->addComponent<component::MusicComponent>(
-        background1->getID(), "app/assets/musics/testSong.wav");
+        background1->getID(), "app/assets/musics/dancin.ogg", _engine->_audio);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
         background1->getID(), std::pair<float, float>(0, 0));
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
@@ -140,29 +145,31 @@ void Game::BindInputScript(entity::IEntity *entity)
  */
 entity::IEntity *Game::createPlayer(int numClient)
 {
-    nlohmann::json config = this->getConfig();
     uint32_t entityID = _engine->getEntityManager()->generateEntityID();
-
-    if (config.contains("player") == false)
-        return nullptr;
-
-    std::string texturePath = config["player"]["path"];
-    std::pair<float, float> position = std::pair<float, float>(config["player"]["position"]["x"], config["player"]["position"]["y"]);
-    std::pair<float, float> velocity = std::pair<float, float>(config["player"]["velocity"]["x"], config["player"]["velocity"]["y"]);
-    std::pair<float, float> scale = std::pair<float, float>(config["player"]["scale"]["x"], config["player"]["scale"]["y"]);
-    int health = config["player"]["health"];
-
-    int weaponDamage = config["player"]["weapon"]["damage"];
-    float weaponCooldown = config["player"]["weapon"]["cooldown"];
 
     entity::IEntity *player = _engine->getEntityManager()->createEntity(entityID, -1);
 
-    entity::IEntity *weapon = createWeapon(entityID, Type::WEAPON, weaponDamage, weaponCooldown);
+    if (_config.contains("player") == false)
+    {
+        throw rtype::NoPlayerInConfigException("No player configuration found in the JSON file.");
+    }
 
-    _engine->getComponentManager()->addComponent<component::WeaponComponent>(
-        entityID, weapon->getID(), false, 500);
+    std::string texturePath = _config["player"]["path"];
+    std::pair<float, float> position = std::pair<float, float>(_config["player"]["position"]["x"], _config["player"]["position"]["y"]);
+    std::pair<float, float> velocity = std::pair<float, float>(_config["player"]["velocity"]["x"], _config["player"]["velocity"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(_config["player"]["scale"]["x"], _config["player"]["scale"]["y"]);
+    int health = _config["player"]["health"];
+
+    if (_config["player"].contains("weapon"))
+    {
+        entity::IEntity *weapon = createWeapon(entityID, _config["player"]["weapon"]);
+        float speed = _config["player"]["weapon"]["speed"];
+        _engine->getComponentManager()->addComponent<component::WeaponComponent>(
+            entityID, weapon->getID(), false, speed);
+    }
+
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID,
-                                                                               Type::PLAYER);
+                                                                           Type::PLAYER);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second, _engine->_graphic);
     component::TextureComponent *texture =
@@ -194,21 +201,16 @@ entity::IEntity *Game::createPlayer(int numClient)
  *
  * @return entity::IEntity* Pointer to the created enemy entity.
  */
-entity::IEntity *Game::createEnemy()
+entity::IEntity *Game::createEnemy(const nlohmann::json &enemy)
 {
-    nlohmann::json config = this->getConfig();
-
-    if (config.contains("enemy") == false)
-        return nullptr;
-
-    std::string texturePath = config["enemy"]["path"];
-    int damage = config["enemy"]["damage"];
-    std::pair<float, float> velocity = std::pair<float, float>(config["enemy"]["velocity"]["x"], config["enemy"]["velocity"]["y"]);
-    std::pair<float, float> scale = std::pair<float, float>(config["enemy"]["scale"]["x"], config["enemy"]["scale"]["y"]);
-    auto positionInput = config["enemy"]["position"];
-    int health = config["enemy"]["health"];
+    std::string texturePath = enemy["path"];
+    int damage = enemy["damage"];
+    std::pair<float, float> velocity = std::pair<float, float>(enemy["velocity"]["x"], enemy["velocity"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(enemy["scale"]["x"], enemy["scale"]["y"]);
+    auto positionInput = enemy["position"];
+    int health = enemy["health"];
     std::pair<float, float> position;
-    std::string iaType = config["enemy"]["iaType"];
+    std::string iaType = enemy["iaType"];
 
     if (positionInput["x"] == "random")
         position.first = getRandomPosition();
@@ -220,8 +222,16 @@ entity::IEntity *Game::createEnemy()
         position.second = positionInput["y"];
 
     uint32_t entityID = _engine->getEntityManager()->generateEntityID();
-    entity::IEntity *enemy = _engine->getEntityManager()->createEntity(entityID, -1);
-    entity::IEntity *weapon = createWeapon(entityID, Type::WEAPON, damage, 2);
+    entity::IEntity *enemyEntity = _engine->getEntityManager()->createEntity(entityID, -1);
+
+    if (enemy.contains("weapon") == true)
+    {
+        auto weaponConfig = enemy["weapon"];
+        entity::IEntity *weapon = createWeapon(entityID, weaponConfig);
+        float speed = enemy["weapon"]["speed"];
+        _engine->getComponentManager()->addComponent<component::WeaponComponent>(
+            entityID, weapon->getID(), true, speed);
+    }
 
     if (iaType == "random")
     {
@@ -242,8 +252,6 @@ entity::IEntity *Game::createEnemy()
     else
         _engine->getComponentManager()->addComponent<component::AIComponent>(entityID, AIType::UNKNOWN);
 
-    _engine->getComponentManager()->addComponent<component::WeaponComponent>(
-        entityID, weapon->getID(), true, -500);
     _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, Type::ENEMY);
     _engine->getComponentManager()->addComponent<component::SpriteComponent>(
         entityID, position.first, position.second, _engine->_graphic);
@@ -261,10 +269,10 @@ entity::IEntity *Game::createEnemy()
         entityID, _engine->_graphic->getTextureSize(texture->getTexture()).first * scale.first,
         _engine->_graphic->getTextureSize(texture->getTexture()).second * scale.second);
 
-    return enemy;
+    return enemyEntity;
 }
 
-entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient, std::string text)
+entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<float, float> position, std::pair<float, float> size, Action action, int numClient, std::string text, Type type)
 {
     entity::IEntity *button = _engine->getEntityManager()->createEntity(entityID, numClient);
 
@@ -272,6 +280,7 @@ entity::IEntity *Game::createButton(uint32_t entityID, RColor color, std::pair<f
     _engine->getComponentManager()->addComponent<component::TransformComponent>(entityID, position, std::pair<float, float>(1, 1));
     _engine->getComponentManager()->addComponent<component::OnClickComponent>(entityID, action, numClient);
     _engine->getComponentManager()->addComponent<component::TextComponent>(entityID, position, text, 50, RColor{25, 25, 25, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    _engine->getComponentManager()->addComponent<component::TypeComponent>(entityID, type);
 
     return button;
 }
@@ -283,18 +292,62 @@ void Game::createMenu(int numClient)
     entity::IEntity *buttonDeuteranopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 110.0f), std::pair<float, float>(70.0f, 300.0f), Action::DEUTERANOPIA, numClient, "Deuteranopia");
     entity::IEntity *buttonTritanopia = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 200.0f), std::pair<float, float>(70.0f, 300.0f), Action::TRITANOPIA, numClient, "Tritanopia");
     entity::IEntity *buttonClearFilter = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 290.0f), std::pair<float, float>(70.0f, 300.0f), Action::CLEARFILTER, numClient, "Clear Filter");
+    entity::IEntity *buttonKeyBind = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 930.0f), std::pair<float, float>(70.0f, 200.0f), Action::KEYBIND, numClient, "Key Bind");
+
     buttonPlay->setSceneStatus(Scene::MENU);
     buttonProtanopia->setSceneStatus(Scene::MENU);
     buttonDeuteranopia->setSceneStatus(Scene::MENU);
     buttonTritanopia->setSceneStatus(Scene::MENU);
     buttonClearFilter->setSceneStatus(Scene::MENU);
+    buttonKeyBind->setSceneStatus(Scene::MENU);
 }
 
-entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePath,
-                                       std::pair<float, float> position,
-                                       std::pair<float, float> scale, int health)
+void Game::createKeyBind(int numClient)
 {
-    entity::IEntity *structure = _engine->getEntityManager()->createEntity(entityID, -1);
+    entity::IEntity *buttonMoveUp = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 20.0f), std::pair<float, float>(70.0f, 300.0f), Action::MOVE_UP, numClient, "Z", Type::BUTTONBIND);
+    entity::IEntity *buttonMoveDown = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 110.0f), std::pair<float, float>(70.0f, 300.0f), Action::MOVE_DOWN, numClient, "S", Type::BUTTONBIND);
+    entity::IEntity *buttonMoveLeft = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 200.0f), std::pair<float, float>(70.0f, 300.0f), Action::MOVE_LEFT, numClient, "D", Type::BUTTONBIND);
+    entity::IEntity *buttonMoveRight = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 290.0f), std::pair<float, float>(70.0f, 300.0f), Action::KEYMOVERIGHT, numClient, "Q", Type::BUTTONBIND);
+    entity::IEntity *buttonShoot = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 380.0f), std::pair<float, float>(70.0f, 300.0f), Action::SHOOT, numClient, "Space", Type::BUTTONBIND);
+    entity::IEntity *buttonMenu = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(20.0f, 470.0f), std::pair<float, float>(70.0f, 300.0f), Action::MENU, numClient, "Menu");
+    entity::IEntity *buttonPlay = createButton(_engine->getEntityManager()->generateEntityID(), RColor{150, 150, 150, 255}, std::pair<float, float>(860.0f, 700.0f), std::pair<float, float>(70.0f, 200.0f), Action::PLAY, numClient, "Play");
+
+    entity::IEntity *textKeyMoveUp = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyMoveUp->getID(), std::pair<float, float>(320.0f, 20.0f), "Move Up", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    entity::IEntity *textKeyMoveDown = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyMoveDown->getID(), std::pair<float, float>(320.0f, 110.0f), "Move Down", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    entity::IEntity *textKeyMoveLeft = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyMoveLeft->getID(), std::pair<float, float>(320.0f, 200.0f), "Move Left", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    entity::IEntity *textKeyMoveRight = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyMoveRight->getID(), std::pair<float, float>(320.0f, 290.0f), "Move Right", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+    entity::IEntity *textKeyShoot = _engine->getEntityManager()->createEntity(_engine->getEntityManager()->generateEntityID(), numClient);
+    _engine->getComponentManager()->addComponent<component::TextComponent>(textKeyShoot->getID(), std::pair<float, float>(320.0f, 380.0f), "Shoot", 50, RColor{255, 255, 255, 255}, "app/assets/fonts/arial.ttf", _engine->_graphic);
+
+    buttonMoveUp->setSceneStatus(Scene::KEYBIND);
+    buttonMoveDown->setSceneStatus(Scene::KEYBIND);
+    buttonMoveLeft->setSceneStatus(Scene::KEYBIND);
+    buttonMoveRight->setSceneStatus(Scene::KEYBIND);
+    buttonShoot->setSceneStatus(Scene::KEYBIND);
+    buttonMenu->setSceneStatus(Scene::KEYBIND);
+    buttonPlay->setSceneStatus(Scene::KEYBIND);
+
+    textKeyMoveUp->setSceneStatus(Scene::KEYBIND);
+    textKeyMoveDown->setSceneStatus(Scene::KEYBIND);
+    textKeyMoveLeft->setSceneStatus(Scene::KEYBIND);
+    textKeyMoveRight->setSceneStatus(Scene::KEYBIND);
+    textKeyShoot->setSceneStatus(Scene::KEYBIND);
+}
+
+entity::IEntity *Game::createStructure(const nlohmann::json &structure)
+{
+    std::string texturePath = structure["path"];
+    std::pair<float, float> position = std::pair<float, float>(structure["position"]["x"], structure["position"]["y"]);
+    std::pair<float, float> scale = std::pair<float, float>(structure["scale"]["x"], structure["scale"]["y"]);
+    int health = structure["health"];
+
+    uint32_t entityID = _engine->getEntityManager()->generateEntityID();
+
+    entity::IEntity *structureEntity = _engine->getEntityManager()->createEntity(entityID, -1);
 
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         entityID, Type::STRUCTURE);
@@ -313,7 +366,7 @@ entity::IEntity *Game::createStructure(uint32_t entityID, std::string texturePat
     _engine->getComponentManager()->addComponent<component::HealthComponent>(
         entityID, health);
 
-    return structure;
+    return structureEntity;
 }
 
 nlohmann::json Game::fillConfigJson(const std::string &path)
@@ -360,17 +413,33 @@ nlohmann::json Game::fillConfigJson(const std::string &path)
  */
 void Game::init()
 {
-  ECS_system::StringCom stringCom;
-  stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
-  stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
-  stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
-  stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
-  stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
-  stringCom.textString[TextString::Play] = "Play";
-  stringCom.textString[TextString::Protanopia] = "Protanopia";
-  stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
-  stringCom.textString[TextString::Tritanopia] = "Tritanopia";
-  stringCom.textString[TextString::ClearFilter] = "Clear Filter";
+    ECS_system::StringCom stringCom;
+    stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
+    stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
+    stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+    stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
+    stringCom.texturePath[TexturePath::Structure] = "app/assets/sprites/block.png";
+    stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
+    stringCom.textString[TextString::Play] = "Play";
+    stringCom.textString[TextString::Protanopia] = "Protanopia";
+    stringCom.textString[TextString::Deuteranopia] = "Deuteranopia";
+    stringCom.textString[TextString::Tritanopia] = "Tritanopia";
+    stringCom.textString[TextString::ClearFilter] = "Clear Filter";
+    stringCom.textString[TextString::KeyBind] = "Key Bind";
+    stringCom.textString[TextString::Menu] = "Menu";
+    stringCom.textString[TextString::MoveUp] = "Move Up";
+    stringCom.textString[TextString::MoveDown] = "Move Down";
+    stringCom.textString[TextString::MoveLeft] = "Move Left";
+    stringCom.textString[TextString::MoveRight] = "Move Right";
+    stringCom.textString[TextString::Shoot] = "Shoot";
+    stringCom.textString[TextString::Z] = "Z";
+    stringCom.textString[TextString::S] = "S";
+    stringCom.textString[TextString::Q] = "Q";
+    stringCom.textString[TextString::D] = "D";
+    stringCom.textString[TextString::Space] = "Space";
+    stringCom.textString[TextString::PressKey] = "Press a key";
+    stringCom.soundPath[SoundPath::Shoot] = "app/assets/musics/blaster.wav";
+    stringCom.soundPath[SoundPath::BackgroundMusic] = "app/assets/musics/dancin.ogg";
 
     try
     {
@@ -378,10 +447,22 @@ void Game::init()
 
         this->createBackground();
 
-        this->createStructure(_engine->getEntityManager()->generateEntityID(),
-                              "app/assets/sprites/block.png",
-                              std::pair<float, float>(1920.0f, 0.0f),
-                              std::pair<float, float>(0.5f, 0.5f), 50);
+        if (_config.contains("waveSystem"))
+        {
+            int waveInterval = _config["waveSystem"]["waveInterval"];
+            int waveNumber = _config["waveSystem"]["waveNumber"];
+            this->_waveInterval = waveInterval;
+            this->_waveNumber = waveNumber;
+        }
+
+        if (_config.contains("structure") && _config["structure"].is_array())
+        {
+            for (const auto &structure : _config["structure"])
+            {
+                if (structure.contains("timer"))
+                    _spawnClocks.push_back(rtype::Clock());
+            }
+        }
     }
     catch (const std::exception &e)
     {
@@ -393,26 +474,21 @@ void Game::init()
     entity::EntityManager &entityManager = *_engine->getEntityManager();
 
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "movement", _engine->_graphic, stringCom);
+                                           "movement", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "server", _engine->_graphic, stringCom);
+                                           "server", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "cooldown", _engine->_graphic, stringCom);
+                                           "cooldown", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "weapon", _engine->_graphic, stringCom);
+                                           "weapon", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "ai", _engine->_graphic, stringCom);
+                                           "ai", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
-                                               "collision", _engine->_graphic, stringCom);
-    // _engine->getSystemManager()->addSystem(componentManager, entityManager,
-    //                                            "health", _engine->_graphic);
+                                           "collision", _engine->_graphic, _engine->_audio, stringCom);
+    _engine->getSystemManager()->addSystem(componentManager, entityManager,
+                                               "health", _engine->_graphic, _engine->_audio, stringCom);
     // _engine->getSystemManager()->addSystem(componentManager, entityManager,
     //                                            "game", _engine->_graphic);
-
-    int waveInterval = this->getConfig()["waveInterval"];
-    int waveNumber = this->getConfig()["waveNumber"];
-    this->_waveInterval = waveInterval;
-    this->_waveNumber = waveNumber;
 }
 
 entity::IEntity *Game::addFilter(std::string filter, int numClient)
@@ -427,11 +503,11 @@ entity::IEntity *Game::addFilter(std::string filter, int numClient)
     filterEntity->setSceneStatus(Scene::ALL);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(filterEntity->getID(), std::pair<float, float>(0, 0), std::pair<float, float>(1, 1));
     _engine->getComponentManager()->addComponent<component::TypeComponent>(filterEntity->getID(), Type::FILTER);
-    std::cout << "Filter added with id: " << filterEntity->getID() << "and a numClient of: " << numClient << std::endl;
+    // std::cout << "Filter added with id: " << filterEntity->getID() << "and a numClient of: " << numClient << std::endl;
     return filterEntity;
 }
 
-void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
+void Game::handleReceivedMessage(std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived)
 {
     std::string msg = msgReceived.front().first;
     size_t id = msgReceived.front().second.first;
@@ -442,6 +518,7 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
 
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, numClient));
         _playersScenes[numClient] = Scene::MENU;
+        createKeyBind(numClient);
         createMenu(numClient);
         std::cout << "Client connected : " << id << std::endl;
     }
@@ -455,15 +532,28 @@ void Game::handdleReceivedMessage(std::vector<std::pair<std::string, std::pair<s
             _players.erase(numClient);
         }
     }
-    if (msg == "play") {
+    if (msg == "play")
+    {
+        for (auto &spawnClocks : _spawnClocks)
+            spawnClocks.restart();
+        _isStarted = true;
+        _waveClock.restart();
         if (_playersScenes[numClient] == Scene::GAME)
             return;
-        if (_players.find(numClient) == _players.end()) {
+        if (_players.find(numClient) == _players.end())
+        {
             entity::IEntity *entity = createPlayer(numClient);
             _players[numClient] = entity;
         }
         _playersScenes[numClient] = Scene::GAME;
         _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::GAME, numClient));
+    }
+    if (msg == "keyBind")
+    {
+        if (_playersScenes[numClient] == Scene::KEYBIND)
+            return;
+        _playersScenes[numClient] = Scene::KEYBIND;
+        _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::KEYBIND, numClient));
     }
     if (msg == "protanopia")
     {
@@ -564,12 +654,12 @@ void Game::resetInput()
             if (_engine->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID()))
             {
                 component::VelocityComponent *velocityComponent = _engine->getComponentManager()->getComponent<component::VelocityComponent>(entity->getID());
-                if ((velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0) && inputClock.getElapsedTime().asSeconds() > 0.1)
+                if ((velocityComponent->getActualVelocity().first != 0 || velocityComponent->getActualVelocity().second != 0) && _inputClock.getElapsedTime() > 0.1)
                 {
                     velocityComponent->setActualVelocityX(0);
                     velocityComponent->setActualVelocityY(0);
                     velocityComponent->setCommunication(component::ComponentCommunication::UPDATE);
-                    inputClock.restart();
+                    _inputClock.restart();
                 }
             }
         }
@@ -578,20 +668,80 @@ void Game::resetInput()
 
 void Game::run()
 {
-    inputClock.restart();
-    waveClock.restart();
-    while (1)
+    _inputClock.restart();
+    while (_isRunning)
     {
         _engine->update();
-        if (_waveNumber != 0 && waveClock.getElapsedTime().asSeconds() > _waveInterval)
+        if (_waveNumber != 0 && _waveClock.getElapsedTime() > _waveInterval && _isStarted)
         {
-            this->createEnemy();
+            if (_config.contains("enemy") && _config["enemy"].is_array())
+            {
+                for (const auto &enemy : _config["enemy"])
+                    this->createEnemy(enemy);
+            }
+            else
+                std::cerr << "Warning: 'enemy' not found or is not an array in config." << std::endl;
+
             _waveNumber--;
-            waveClock.restart();
+            _waveClock.restart();
         }
+
+        if (!_structureCreated && _isStarted)
+        {
+            if (_config.contains("structure") && _config["structure"].is_array())
+            {
+                if (_spawnClocks.size() >= _config["structure"].size())
+                {
+                    for (size_t i = 0; i < _config["structure"].size(); ++i)
+                    {
+                        const auto &structure = _config["structure"][i];
+
+                        if (structure.contains("timer"))
+                        {
+                            float timer = structure["timer"];
+                            if (_spawnClocks[i].getElapsedTime() > timer)
+                            {
+                                this->createStructure(structure);
+                                _createdStructure++;
+                                _spawnClocks[i].restart();
+                            }
+                        }
+                    }
+                }
+                else
+                    std::cerr << "Erreur : _spawnClocks n'a pas assez d'éléments pour correspondre à config[\"structure\"]." << std::endl;
+                if (_createdStructure == _config["structure"].size())
+                    _structureCreated = true;
+            }
+            else
+                std::cerr << "Warning: 'structure' not found or is not an array in config." << std::endl;
+        }
+
+        if (_players.size() == 0 && _isStarted)
+        {
+            std::cout << "No more players" << std::endl;
+        }
+        if (_players.size() != 0 && _waveNumber == 0 && _isStarted)
+        {
+            _isStarted = false;
+            for (auto &player : _players)
+            {
+                _playersScenes[player.first] = Scene::MENU;
+                _engine->msgToSend.push_back(std::pair<Action, size_t>(Action::MENU, player.first));
+            }
+        }
+
         if (!_engine->msgReceived.empty())
         {
-            handdleReceivedMessage(_engine->msgReceived);
+            try
+            {
+                handleReceivedMessage(_engine->msgReceived);
+            }
+            catch (const rtype::NoPlayerInConfigException &e)
+            {
+                std::cerr << e.what() << '\n';
+                // disconnect the client
+            }
         }
         else
         {

@@ -10,8 +10,8 @@
 
 ECS_system::WeaponSystem::WeaponSystem(
     component::ComponentManager &componentManager,
-    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-    : ASystem(componentManager, entityManager, graphic, stringCom) {}
+    entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+    : ASystem(componentManager, entityManager, graphic, audio, stringCom) {}
 
 ECS_system::WeaponSystem::~WeaponSystem() {}
 
@@ -116,10 +116,13 @@ void ECS_system::WeaponSystem::update(
 
             if (entityType == Type::PLAYER)
             {
-                // _componentManager
-                //     .getComponent<component::SoundComponent>(
-                //         weaponComponent->getWeaponEntityID())
-                //     ->setShouldPlay(true);
+                component::SoundComponent *soundComponent =
+                    _componentManager.getComponent<component::SoundComponent>(
+                        weaponComponent->getWeaponEntityID());
+                if (soundComponent) {
+                    soundComponent->setShouldPlay(true);
+                    soundComponent->setCommunication(component::ComponentCommunication::UPDATE);
+                }
                 weaponComponent->setIsFiring(false);
             }
         }
@@ -140,7 +143,7 @@ void ECS_system::WeaponSystem::update(
  */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
 {
-    return new ECS_system::WeaponSystem(componentManager, entityManager, graphic, stringCom);
+    return new ECS_system::WeaponSystem(componentManager, entityManager, graphic, audio, stringCom);
 }

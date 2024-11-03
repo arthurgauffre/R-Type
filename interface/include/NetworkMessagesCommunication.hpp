@@ -86,6 +86,7 @@ enum class NetworkMessages : uint32_t {
   acknowledgementMesageToCreateText,
   menu,
   game,
+  keyBind,
   action,
   none,
 };
@@ -121,6 +122,10 @@ struct SceneStatus {
   Scene scene;
 };
 
+struct soundComponent {
+  SoundPath soundPath;
+};
+
 struct VelocityComponent {
   float x;
   float y;
@@ -145,12 +150,9 @@ struct HitboxComponent {
   float y;
 };
 
-struct MusicComponent {
-  std::string musicPath;
-};
-
 struct SoundComponent {
-  std::string soundPath;
+  SoundPath soundPath;
+  bool play;
 };
 
 struct SpriteComponent {

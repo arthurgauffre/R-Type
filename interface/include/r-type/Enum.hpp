@@ -15,6 +15,7 @@ enum class Scene : uint32_t
     GAMEOVER,
     SETTINGS,
     LOADING,
+    KEYBIND,
     ALL,
     NONE
 };
@@ -27,6 +28,12 @@ enum class Action : uint32_t
     MOVE_RIGHT,
     SHOOT,
     MENU,
+    KEYBIND,
+    KEYMOVEUP,
+    KEYMOVEDOWN,
+    KEYMOVELEFT,
+    KEYMOVERIGHT,
+    KEYSHOOT,
     PLAY,
     GAME,
     PROTANOPIA,
@@ -51,6 +58,7 @@ enum class TexturePath : uint32_t
     Enemy,
     Background,
     Bullet,
+    Structure,
     Unknown,
 };
 
@@ -67,6 +75,26 @@ enum class TextString : uint32_t
     Deuteranopia,
     Tritanopia,
     ClearFilter,
+    KeyBind,
+    Menu,
+    MoveUp,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+    Shoot,
+    PressKey,
+    Z,
+    S,
+    Q,
+    D,
+    Space,
+    Unknown,
+};
+
+enum class SoundPath : uint32_t
+{
+    Shoot,
+    BackgroundMusic,
     Unknown,
 };
 
@@ -81,6 +109,8 @@ enum class Type
     BACKGROUND,
     STRUCTURE,
     FILTER,
+    BUTTON,
+    BUTTONBIND,
     UNKNOWN,
 };
 

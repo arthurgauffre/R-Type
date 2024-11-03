@@ -45,6 +45,8 @@
 #include <r-type/ASystem.hpp>
 #include <ServerStatus.hpp>
 
+#include <Clock.hpp>
+
 #include <optional>
 // #include <variant>
 
@@ -58,10 +60,10 @@ namespace rtype
     {
     public:
       ServerSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
           : rtype::network::IServer<NetworkMessages>(), ECS_system::ASystem(
                                                             componentManager,
-                                                            entityManager, graphic, stringCom),
+                                                            entityManager, graphic, audio, stringCom),
             _componentManager(componentManager), _entityManager(entityManager), asioSocket(asioContext,
                                                                                            asio::ip::udp::endpoint(asio::ip::udp::v4(), 60000))
       {
@@ -101,8 +103,8 @@ namespace rtype
              std::vector<std::pair<Action, size_t>> &msgToSend, std::vector<std::pair<std::string, std::pair<size_t, size_t>>> &msgReceived, std::mutex &entityMutex, std::shared_ptr<Scene> &sceneStatus)
       {
         *sceneStatus = Scene::GAME;
-        sf::Clock clock;
-        float deltatime = clock.restart().asSeconds();
+        rtype::Clock clock;
+        float deltatime = clock.restart();
         while (!msgToSend.empty())
         {
           std::pair<Action, size_t> msg = msgToSend.front();
@@ -113,6 +115,7 @@ namespace rtype
         this->ServerUpdate(100, false);
         while (!_msgReceived.empty())
         {
+          // std::cout << "size of msgReceived : " << _msgReceived.size() << std::endl;
           msgReceived.emplace_back(_msgReceived.back());
           _msgReceived.pop_back();
         }
@@ -217,6 +220,11 @@ namespace rtype
         case Action::MENU:
         {
           _msgReceived.emplace_back(std::make_pair("menu", std::make_pair(entityId, client->GetId())));
+        }
+        break;
+        case Action::KEYBIND:
+        {
+          _msgReceived.emplace_back(std::make_pair("keyBind", std::make_pair(entityId, client->GetId())));
         }
         break;
         case Action::PROTANOPIA:
@@ -482,7 +490,7 @@ namespace rtype
             }
             else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
             {
-              if (frequencyClock.getElapsedTime().asSeconds() > 0.2)
+              if (frequencyClock.getElapsedTime() > 0.2)
               {
                 component->setCommunication(component::ComponentCommunication::NONE);
                 SendMessageToAllClients(networkMessageFactory.updateTransformMsg(entity->getID(), component->getPosition().first, component->getPosition().second, component->getScale().first, component->getScale().second, component->getRotation()), clientToIgnore);
@@ -724,6 +732,62 @@ namespace rtype
               SendMessageToAllClients(networkMessageFactory.deleteTextMsg(entity->getID()), clientToIgnore);
             }
           }
+          if (_componentManager.getComponent<component::SoundComponent>(entity->getID()))
+          {
+            component::SoundComponent *component =
+                _componentManager.getComponent<component::SoundComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto soundKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+              if (soundKey)
+                SendMessageToAllClients(networkMessageFactory.createSoundMsg(entity->getID(), *soundKey, component->getShouldPlay()), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.createSoundMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto soundKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+              if (soundKey)
+                SendMessageToAllClients(networkMessageFactory.updateSoundMsg(entity->getID(), *soundKey, component->getShouldPlay()), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.updateSoundMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteSoundMsg(entity->getID()), clientToIgnore);
+            }
+          }
+          if (_componentManager.getComponent<component::MusicComponent>(entity->getID()))
+          {
+            component::MusicComponent *component =
+                _componentManager.getComponent<component::MusicComponent>(entity->getID());
+            if (component->getCommunication() == component::ComponentCommunication::CREATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto musicKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+              if (musicKey)
+                SendMessageToAllClients(networkMessageFactory.createMusicMsg(entity->getID(), *musicKey, component->getShouldPlay()), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.createMusicMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::UPDATE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              auto musicKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+              if (musicKey)
+                SendMessageToAllClients(networkMessageFactory.updateMusicMsg(entity->getID(), *musicKey, component->getShouldPlay()), clientToIgnore);
+              else
+                SendMessageToAllClients(networkMessageFactory.updateMusicMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), clientToIgnore);
+            }
+            else if (component->getCommunication() == component::ComponentCommunication::DELETE)
+            {
+              component->setCommunication(component::ComponentCommunication::NONE);
+              SendMessageToAllClients(networkMessageFactory.deleteMusicMsg(entity->getID()), clientToIgnore);
+            }
+          }
         }
         if (transform)
         {
@@ -893,6 +957,26 @@ namespace rtype
               SendMessageToClient(networkMessageFactory.createOnClickMsg(entity->getID(), component->getNumClient(), component->getAction()), client);
             }
           }
+          if (_componentManager.getComponent<component::SoundComponent>(entity->getID()))
+          {
+            component::SoundComponent *component =
+                _componentManager.getComponent<component::SoundComponent>(entity->getID());
+            auto soundKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+            if (soundKey)
+              SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(), *soundKey, component->getShouldPlay()), client);
+            else
+              SendMessageToClient(networkMessageFactory.createSoundMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), client);
+          }
+          if (_componentManager.getComponent<component::MusicComponent>(entity->getID()))
+          {
+            component::MusicComponent *component =
+                _componentManager.getComponent<component::MusicComponent>(entity->getID());
+            auto musicKey = getKeyByValue(_stringCom.soundPath, component->getPath());
+            if (musicKey)
+              SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(), *musicKey, component->getShouldPlay()), client);
+            else
+              SendMessageToClient(networkMessageFactory.createMusicMsg(entity->getID(), SoundPath::Unknown, component->getShouldPlay()), client);
+          }
         }
       }
 
@@ -987,6 +1071,7 @@ namespace rtype
 
         while (messageCount < maxMessages && !incomingMessages.empty())
         {
+          // std::cout << "size of incoming messages: " << incomingMessages.queueSize() << std::endl;
           auto msg = incomingMessages.popFront();
           // auto originalQueueSize = queueOfAckMessages.size();
 
@@ -1071,6 +1156,8 @@ namespace rtype
           SendMessageToClient(networkMessageFactory.createMenuMsg(), deqConnections[msgToSend.second]);
         else if (msgToSend.first == Action::GAME)
           SendMessageToClient(networkMessageFactory.createGameMsg(), deqConnections[msgToSend.second]);
+        else if (msgToSend.first == Action::KEYBIND)
+          SendMessageToClient(networkMessageFactory.createKeyBindMsg(), deqConnections[msgToSend.second]);
       }
 
       rtype::network::ServerQueue<rtype::network::OwnedMessage<T>> incomingMessages;
@@ -1096,7 +1183,7 @@ namespace rtype
       std::vector<std::pair<bool, int>> _playerConnected;
       component::ComponentManager &_componentManager;
       entity::EntityManager &_entityManager;
-      sf::Clock frequencyClock;
+      rtype::Clock frequencyClock;
     };
   } // namespace network
 } // namespace rtype

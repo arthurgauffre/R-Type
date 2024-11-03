@@ -10,8 +10,14 @@
 #include <components/RectangleShapeComponent.hpp>
 #include <components/OnClickComponent.hpp>
 #include <components/TransformComponent.hpp>
+#include <components/TypeComponent.hpp>
+#include <components/InputComponent.hpp>
+#include <components/TextComponent.hpp>
 #include <managers/ComponentManager.hpp>
 #include <managers/EntityManager.hpp>
+
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 #include <r-type/ASystem.hpp>
 
@@ -29,12 +35,40 @@ namespace ECS_system
          * @param stringCom StringCom object.
          */
         ButtonSystem(component::ComponentManager &componentManager,
-                     entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom);
+                     entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom);
 
         /**
          * @brief Default destructor for the ButtonSystem class.
          */
         ~ButtonSystem() = default;
+
+        /**
+         * @brief Changes the input state of the given entities based on the keyboard key and action.
+         * 
+         * @param entities A vector of shared pointers to IEntity objects representing the entities whose input state will be changed.
+         * @param key The KeyBoard key that was pressed or released.
+         * @param action The action associated with the key press or release.
+         */
+        void changeInput(std::vector<std::shared_ptr<entity::IEntity>> entities, KeyBoard key, Action action);
+
+        /**
+         * @brief Binds a keyboard key to a specific action.
+         * 
+         * This function associates a given keyboard key with a specified action,
+         * allowing the key to trigger the action when pressed.
+         * 
+         * @param key The keyboard key to bind.
+         * @param action The action to be triggered by the key.
+         */
+        void bindTheKey(KeyBoard key, Action action);
+
+        /**
+         * @brief Changes the text of the given entity based on the keyboard input.
+         * 
+         * @param entity A pointer to the entity whose text will be changed.
+         * @param key The keyboard input that determines the new text.
+         */
+        void changeText(size_t id, KeyBoard key, std::shared_ptr<IGraphic> graphic);
 
         /**
          * @brief Updates the state of the button system.

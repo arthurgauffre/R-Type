@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <SFML/Audio.hpp>
+#include <r-type/IAudio.hpp>
 #include <r-type/AComponent.hpp>
 
 namespace component {
@@ -19,7 +19,7 @@ public:
    * @param entityID The unique identifier for the entity associated with this component.
    * @param soundFilePath The file path to the sound file to be used by this component.
    */
-  MusicComponent(uint32_t entityID, const std::string &soundFilePath);
+  MusicComponent(uint32_t entityID, const std::string &soundFilePath, std::shared_ptr<IAudio> audio);
 
   /**
    * @brief Destroys the MusicComponent object.
@@ -27,63 +27,43 @@ public:
   ~MusicComponent() = default;
 
   /**
-   * @brief Set the music file to be used by this component.
-   *
-   * @param path The file path to the music file.
-   */
-  void setMusic(const std::string &path) { _music.openFromFile(path); }
-
-  /**
    * @brief Get the music object.
    *
    * @return sf::Music& The music object.
    */
-  sf::Music &getMusic() { return _music; }
-
-  /**
-   * @brief Updates the MusicComponent.
-   *
-   * This function is called to update the state of the MusicComponent.
-   * It is typically called once per frame and allows the component to
-   * perform any necessary updates based on the elapsed time since the
-   * last update.
-   *
-   * @param deltaTime The time elapsed since the last update, in seconds.
-   */
-  void update(std::string &path) { _music.openFromFile(path); }
+  size_t getMusic() { return _music; }
 
   /**
    * @brief Play the music.
    */
-  void play() { _music.play(); }
+  void play(std::shared_ptr<IAudio> audio) { audio->playMusic(_music); }
 
   /**
    * @brief Stop the music.
    */
-  void stop() { _music.stop(); }
+  void stop(std::shared_ptr<IAudio> audio) { audio->stopMusic(_music); }
 
   /**
    * @brief Checks if the music is currently playing.
    *
    * @return true if the music is playing, false otherwise.
    */
-  bool isPlaying() { return _music.getStatus() == sf::Music::Playing; }
+  bool isPlaying(std::shared_ptr<IAudio> audio) { return audio->isMusicPlaying(_music); }
 
-  /**
-   * @brief Sets the looping state of the music.
-   *
-   * This function enables or disables the looping of the music. When looping is
-   * enabled, the music will restart from the beginning once it reaches the end.
-   *
-   * @param loop A boolean value indicating whether the music should loop (true)
-   * or not (false).
-   */
-  void setLoop(bool loop) { _music.setLoop(loop); }
+  void setShouldPlay(bool shouldPlay) { _shouldPlay = shouldPlay; }
+
+  bool getShouldPlay() { return _shouldPlay; }
+
+  std::string getPath() { return _soundFilePath; }
 
 private:
   /**
    * @brief Represents the music object.
    */
-  sf::Music _music;
+  size_t _music;
+
+  bool _shouldPlay;
+
+  std::string _soundFilePath;
 };
 } // namespace component

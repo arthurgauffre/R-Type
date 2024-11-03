@@ -25,8 +25,8 @@ namespace rtype::network
    */
   EXPORT_API ECS_system::ISystem *
   createSystem(component::ComponentManager &componentManager,
-               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+               entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
   {
-    return new ServerSystem<NetworkMessages>(componentManager, entityManager, graphic, stringCom);
+    return new ServerSystem<NetworkMessages>(componentManager, entityManager, graphic, audio, stringCom);
   }
 } // namespace rtype::network

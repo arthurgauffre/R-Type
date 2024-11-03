@@ -25,10 +25,7 @@ add_library(r-type_client_system SHARED
     ../../entity/Entity.cpp
 )
 
-target_include_directories(r-type_client_system PRIVATE ${SFML_INCLUDE_DIR})
-
 target_link_libraries(
     r-type_client_system
     r-type_interfaces
-    sfml-audio
 )

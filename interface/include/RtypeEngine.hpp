@@ -12,6 +12,7 @@
 #include <iostream>
 #include <limits.h>
 #include <memory>
+#include <Clock.hpp>
 #include <r-type/Entity.hpp>
 #include <r-type/IRtypeEngine.hpp>
 #include <r-type/ISystem.hpp>
@@ -39,6 +40,7 @@
 #include <components/TextComponent.hpp>
 
 #include <r-type/IGraphic.hpp>
+#include <r-type/IAudio.hpp>
 #include <r-type/Enum.hpp>
 
 namespace rtype {
@@ -49,7 +51,7 @@ public:
  *
  * @param graphicName The name of the graphic to be used by the engine.
  */
-  RtypeEngine(std::string graphicName);
+  RtypeEngine(std::string graphicName, std::string audioName);
 
 /**
  * @brief Destructor for the RtypeEngine class.
@@ -124,32 +126,7 @@ public:
  * represented by an Action and its associated size.
  */
   std::vector<std::pair<Action, size_t>> msgToSend;
-
-/**
- * @brief A class to measure elapsed time.
- *
- * The sf::Clock class provides a way to measure the time elapsed since the clock was started.
- * It can be used to measure time intervals, for example to implement frame timing in a game.
- *
- * Usage example:
- * ```
- * sf::Clock clock;
- * // some code that takes time
- * sf::Time elapsed = clock.getElapsedTime();
- * std::cout << "Time elapsed: " << elapsed.asSeconds() << " seconds" << std::endl;
- * ```
- *
- * @see sf::Time
- */
-  sf::Clock clock;
-
-/**
- * @brief Mutex to protect access to the entity data.
- *
- * This mutex is used to ensure thread-safe operations on the entity data.
- * It should be locked before accessing or modifying any entity-related data
- * and unlocked after the operation is complete.
- */
+  rtype::Clock clock;
   std::mutex _entityMutex;
 
 /**
@@ -161,6 +138,8 @@ public:
  * management and shared ownership.
  */
   std::shared_ptr<IGraphic> _graphic;
+
+  std::shared_ptr<IAudio> _audio;
 
   template <typename T> class DLLoader {
   public:
@@ -285,6 +264,34 @@ public:
       FuncPtr createFunc = reinterpret_cast<FuncPtr>(
           sym);
       IGraphic *graphic = createFunc();
+      return graphic;
+    }
+
+    IAudio *getAudio(const std::string &funcName) {
+      using FuncPtr =
+          IAudio *(*)();
+      void *sym;
+
+#ifdef _WIN32
+      sym = GetProcAddress(static_cast<HMODULE>(handle), funcName.c_str());
+#else
+      sym = dlsym(handle, funcName.c_str());
+#endif
+
+      if (!sym) {
+#ifdef _WIN32
+        std::cerr << "Error getting symbol: " << funcName
+                  << " Error: " << GetLastError() << std::endl;
+#else
+        std::cerr << dlerror()
+                  << std::endl;
+#endif
+        exit(1);
+      }
+
+      FuncPtr createFunc = reinterpret_cast<FuncPtr>(
+          sym);
+      IAudio *graphic = createFunc();
       return graphic;
     }
 

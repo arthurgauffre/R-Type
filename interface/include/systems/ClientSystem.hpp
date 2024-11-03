@@ -44,7 +44,7 @@ namespace rtype
        * scene status to MENU.
        */
       ClientSystem(component::ComponentManager &componentManager,
-                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) : AClient(), ASystem(componentManager, entityManager, graphic, stringCom), _componentManager(componentManager), _entityManager(entityManager), _entityMutex(nullptr)
+                   entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom) : AClient(), ASystem(componentManager, entityManager, graphic, audio, stringCom), _componentManager(componentManager), _entityManager(entityManager), _entityMutex(nullptr)
       {
         Connect("127.0.0.1", 60000);
         startMessageProcessing();

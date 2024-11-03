@@ -14,6 +14,7 @@ namespace rtype
 
     void ClientSystem::sendAckMessage(size_t actualEntityId, NetworkMessages messageType)
     {
+      // std::cout << "Sending Acknowledgement" << std::endl;
       rtype::network::Message<NetworkMessages> message;
       EntityId entityToSend = {actualEntityId};
       message.header.id = messageType;
@@ -84,9 +85,15 @@ namespace rtype
       {
         _sceneStatus = std::make_shared<Scene>(Scene::GAME);
       }
+      break;
+      case NetworkMessages::keyBind:
+      {
+        _sceneStatus = std::make_shared<Scene>(Scene::KEYBIND);
+      }
+      break;
       case NetworkMessages::createEntity:
       {
-        std::cout << "ENTITY RECEIVED" << std::endl;
+        // std::cout << "Entity created" << std::endl;
         EntityStruct entityId;
         SceneStatus scene;
         if (msg.body.size() < sizeof(EntityStruct) + sizeof(SceneStatus)) {
@@ -120,6 +127,7 @@ namespace rtype
       }
       case NetworkMessages::deleteEntity:
       {
+        // std::cout << "Entity deleted" << std::endl;
         EntityId entity;
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
         _componentManager.removeAllComponents(entity.id);
@@ -226,7 +234,7 @@ namespace rtype
       break;
       case NetworkMessages::createInput:
       {
-        std::cout << "Input component created" << std::endl;
+        // std::cout << "Input component created" << std::endl;
         EntityId id;
         InputComponent input;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -240,7 +248,7 @@ namespace rtype
       break;
       case NetworkMessages::updateInput:
       {
-        std::cout << "Input component updated" << std::endl;
+        // std::cout << "Input component updated" << std::endl;
         BindKey input;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -253,6 +261,7 @@ namespace rtype
       break;
       case NetworkMessages::createType:
       {
+        // std::cout << "Type component created" << std::endl;
         TypeComponent type;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -381,6 +390,7 @@ namespace rtype
       break;
       case NetworkMessages::createRectangleShape:
       {
+        // std::cout << "RectangleShape component created" << std::endl;
         RectangleShapeComponent rectangleShape;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -405,6 +415,7 @@ namespace rtype
       break;
       case NetworkMessages::createOnClick:
       {
+        // std::cout << "OnClick component created" << std::endl;
         EntityId id;
         OnClickComponent onClick;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -418,6 +429,7 @@ namespace rtype
       break;
       case NetworkMessages::createText:
       {
+        // std::cout << "Text component created" << std::endl;
         TextComponent text;
         EntityId id;
         std::memcpy(&id, msg.body.data(), sizeof(EntityId));
@@ -458,6 +470,74 @@ namespace rtype
           _componentManager
               .updateComponent<component::TextComponent>(
                   id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _graphic);
+      }
+      break;
+      case NetworkMessages::createSound:
+      {
+        SoundComponent sound;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&sound, msg.body.data() + sizeof(EntityId),
+                    sizeof(SoundComponent));
+        if (_stringCom.soundPath.find(sound.soundPath) == _stringCom.soundPath.end())
+          _componentManager
+              .addComponent<component::SoundComponent>(
+                  id.id, _stringCom.soundPath[SoundPath::Unknown], _audio);
+        else
+          _componentManager
+              .addComponent<component::SoundComponent>(
+                  id.id, _stringCom.soundPath[sound.soundPath], _audio);
+        _componentManager.getComponent<component::SoundComponent>(id.id)->setShouldPlay(sound.play);
+      }
+      break;
+      case NetworkMessages::updateSound:
+      {
+        SoundComponent sound;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&sound, msg.body.data() + sizeof(EntityId),
+                    sizeof(SoundComponent));
+        component::SoundComponent *component =
+            _componentManager.getComponent<component::SoundComponent>(id.id);
+        if (!component)
+          return;
+        component->setShouldPlay(sound.play);
+      }
+      break;
+      case NetworkMessages::createMusic:
+      {
+        SoundComponent music;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&music, msg.body.data() + sizeof(EntityId),
+                    sizeof(SoundComponent));
+        if (music.soundPath == SoundPath::Shoot)
+          std::cout << "Music shoot play" << std::endl;
+        if (music.soundPath == SoundPath::Unknown)
+          std::cout << "Music unknown play" << std::endl;
+        if (_stringCom.soundPath.find(music.soundPath) == _stringCom.soundPath.end())
+          _componentManager
+              .addComponent<component::MusicComponent>(
+                  id.id, _stringCom.soundPath[SoundPath::Unknown], _audio);
+        else
+          _componentManager
+              .addComponent<component::MusicComponent>(
+                  id.id, _stringCom.soundPath[music.soundPath], _audio);
+        _componentManager.getComponent<component::MusicComponent>(id.id)->setShouldPlay(music.play);
+      }
+      break;
+      case NetworkMessages::updateMusic:
+      {
+        SoundComponent music;
+        EntityId id;
+        std::memcpy(&id, msg.body.data(), sizeof(EntityId));
+        std::memcpy(&music, msg.body.data() + sizeof(EntityId),
+                    sizeof(SoundComponent));
+        component::MusicComponent *component =
+            _componentManager.getComponent<component::MusicComponent>(id.id);
+        if (!component)
+          return;
+        component->setShouldPlay(music.play);
       }
       break;
       }
@@ -561,9 +641,9 @@ namespace rtype
     }
 
     EXPORT_API ECS_system::ISystem *createSystem(component::ComponentManager &componentManager,
-                                                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom)
+                                                 entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom)
     {
-      return new rtype::network::ClientSystem(componentManager, entityManager, graphic, stringCom);
+      return new rtype::network::ClientSystem(componentManager, entityManager, graphic, audio, stringCom);
     }
   } // namespace network
 } // namespace rtype

@@ -330,7 +330,7 @@ private:
             } else {
               queueOfOutgoingMessages.popFront();
               if (!queueOfOutgoingMessages.empty()) {
-                std::cout << "Goes back on the same method" << std::endl;
+                // std::cout << "Goes back on the same method" << std::endl;
                 WriteHeader();
               }
             }

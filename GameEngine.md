@@ -156,7 +156,7 @@ Systems are responsible for updating entities that have certain components. The 
 The `MovementSystem` handles the movement of entities with a `TransformComponent` and `VelocityComponent`. To ensure entities move as expected, the system is updated on each frame.
 
 ```cpp
-_movementSystem.update(deltaTime, _entityManager.getEntities());
+_movementSystem.update(deltatime, entities, this->msgToSend, this->msgReceived, _entityMutex);
 ```
 
 ### InputSystem
@@ -164,7 +164,7 @@ _movementSystem.update(deltaTime, _entityManager.getEntities());
 The `InputSystem` handles user input for entities that have an `InputComponent`. You can map keys to actions, such as moving the player or firing a weapon.
 
 ```cpp
-_inputSystem.update(deltaTime, _entityManager.getEntities());
+_inputSystem.update(deltatime, entities, this->msgToSend, this->msgReceived, _entityMutex);
 ```
 
 ---
@@ -185,8 +185,8 @@ void game::GameLoop::run()
 
 void game::GameLoop::update()
 {
-    float deltaTime = _clock.restart().asSeconds();
-    _systemManager.update(deltaTime, _entityManager.getEntities());
+    float deltaTime = _clock.restart();
+    _systemManager.update(deltatime, entities, this->msgToSend, this->msgReceived, _entityMutex);
 }
 ```
 

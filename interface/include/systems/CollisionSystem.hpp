@@ -29,8 +29,8 @@ public:
    * components.
    */
   CollisionSystem(component::ComponentManager &componentManager,
-                  entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-      : ASystem(componentManager, entityManager, graphic, stringCom) {}
+                  entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+      : ASystem(componentManager, entityManager, graphic, audio, stringCom) {}
 
   /**
    * @brief Destroys the CollisionSystem object.

@@ -34,13 +34,13 @@ void ECS_system::AudioSystem::update(
 
     if (soundComponent) {
       if (soundComponent->getShouldPlay()) {
-        soundComponent->play();
+        soundComponent->play(_audio);
         soundComponent->setShouldPlay(false);
       }
     }
     if (musicComponent) {
-      if (!musicComponent->isPlaying())
-        musicComponent->play();
+      if (!musicComponent->isPlaying(_audio))
+        musicComponent->play(_audio);
     }
   }
 }
@@ -58,6 +58,6 @@ void ECS_system::AudioSystem::update(
  */
 EXPORT_API ECS_system::ISystem *
 createSystem(component::ComponentManager &componentManager,
-             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, ECS_system::StringCom stringCom) {
-  return new ECS_system::AudioSystem(componentManager, entityManager, graphic, stringCom);
+             entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, ECS_system::StringCom stringCom) {
+  return new ECS_system::AudioSystem(componentManager, entityManager, graphic, audio, stringCom);
 }

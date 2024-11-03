@@ -13,6 +13,9 @@
 #include <iostream>
 #include <unordered_map>
 
+#include <nlohmann/json.hpp>
+#include <fstream>
+
 namespace component {
 class InputComponent : public AComponent {
 public:
@@ -25,6 +28,15 @@ public:
   InputComponent(uint32_t entityID, int numClient) : AComponent(entityID), _numClient(numClient) {};
 
   /**
+   * @brief Checks if the given keyboard key is bound to the specified action.
+   * 
+   * @param action The action to check the key binding for.
+   * @param key The keyboard key to check.
+   * @return true if the key is bound to the action, false otherwise.
+   */
+  KeyBoard checkKeyBindings(Action action, KeyBoard key);
+
+  /**
    * @brief Destroy the InputComponent object.
    */
   ~InputComponent() = default;
@@ -35,9 +47,7 @@ public:
    * @param action The action to be bound.
    * @param key The keyboard key to bind the action to.
    */
-  void update(Action action, KeyBoard key) {
-    bindAction(action, key);
-  }
+  void update(Action action, KeyBoard key);
 
   /**
    * @brief Associates an action with a specific key.

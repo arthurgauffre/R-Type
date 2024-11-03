@@ -26,7 +26,7 @@ void signalHandler(int signum) {
  * @brief Construct a new rtype::Core Module::Core Module object
  *
  */
-rtype::RtypeEngine::RtypeEngine(std::string graphicName) {
+rtype::RtypeEngine::RtypeEngine(std::string graphicName, std::string audioName) {
   std::shared_ptr<
       rtype::RtypeEngine::DLLoader<std::shared_ptr<IGraphic>>>
       graphicLoader = std::make_shared<
@@ -38,6 +38,19 @@ rtype::RtypeEngine::RtypeEngine(std::string graphicName) {
   }
   this->_graphic = std::shared_ptr<IGraphic>(graphicLoader->getGraphic(
           "createGraphic"));
+    
+  std::shared_ptr<
+      rtype::RtypeEngine::DLLoader<std::shared_ptr<IAudio>>>
+      audioLoader = std::make_shared<
+          rtype::RtypeEngine::DLLoader<std::shared_ptr<IAudio>>>(
+          "lib/audios/r-type_" + audioName + "_audio.so");
+  if (!audioLoader) {
+    std::cerr << "Error: cannot load audio library" << std::endl;
+    exit(84);
+  }
+  this->_audio = std::shared_ptr<IAudio>(audioLoader->getAudio(
+          "createAudio"));
+
   this->_componentManager = std::make_shared<component::ComponentManager>();
   this->_systemManager = std::make_shared<ECS_system::SystemManager>();
   this->_entityManager = std::make_shared<entity::EntityManager>();
@@ -102,7 +115,7 @@ rtype::RtypeEngine::getSystemManager() const {
  * the entity manager.
  */
 void rtype::RtypeEngine::update() {
-  float deltatime = clock.restart().asSeconds();
+  float deltatime = clock.restart();
   _entityMutex.lock();
   auto entities = this->getEntityManager()->getEntities();
   _entityMutex.unlock();

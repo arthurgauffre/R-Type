@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <r-type/Enum.hpp>
 #include <managers/ComponentManager.hpp>
 #include <managers/EntityManager.hpp>
 #include <memory>
 #include <r-type/IEntity.hpp>
 #include <r-type/IGraphic.hpp>
+#include <r-type/IAudio.hpp>
 #include <vector>
 #include <mutex>
 
@@ -37,12 +37,13 @@ struct StringCom {
   std::unordered_map<TexturePath, std::string> texturePath;
   std::unordered_map<TextFont, std::string> textFont;
   std::unordered_map<TextString, std::string> textString;
+  std::unordered_map<SoundPath, std::string> soundPath;
 };
 class ISystem {
 public:
   ISystem(component::ComponentManager &componentManager,
-          entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, StringCom stringCom)
-      : _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic), _stringCom(stringCom) {}
+          entity::EntityManager &entityManager, std::shared_ptr<IGraphic> graphic, std::shared_ptr<IAudio> audio, StringCom stringCom)
+      : _componentManager(componentManager), _entityManager(entityManager), _graphic(graphic), _audio(audio), _stringCom(stringCom) {}
   /*
   ** @brief Initializes the system.
   */
@@ -106,6 +107,8 @@ protected:
    * within the system, ensuring proper memory management and resource sharing.
    */
   std::shared_ptr<IGraphic> _graphic;
+
+  std::shared_ptr<IAudio> _audio;
 
   /**
    * @brief A member variable of type StringCom.
