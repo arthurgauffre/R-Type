@@ -12,10 +12,22 @@ namespace rtype
   namespace network
   {
 
-    void ClientSystem::sendAckMessage()
+    void ClientSystem::sendAckMessage(size_t actualEntityId, NetworkMessages messageType)
     {
       rtype::network::Message<NetworkMessages> message;
-      message.header.id = NetworkMessages::acknowledgementMesage;
+      EntityId entityToSend = {actualEntityId};
+      message.header.id = messageType;
+
+      std::vector<uint8_t> entityBytes(reinterpret_cast<uint8_t *>(&entityToSend),
+                                         reinterpret_cast<uint8_t *>(&entityToSend) +
+                                             sizeof(EntityId));
+      message.body.insert(message.body.end(), entityBytes.begin(),
+                          entityBytes.end());
+
+      std::chrono::system_clock::time_point timeNow =
+          std::chrono::system_clock::now();
+      message << timeNow;
+
       Send(message);
     }
 
@@ -85,7 +97,8 @@ namespace rtype
                     sizeof(SceneStatus));
         entity::IEntity *entity = _entityManager.createEntity(entityId.id, entityId.numClient);
         entity->setSceneStatus(scene.scene);
-        sendAckMessage();
+        sendAckMessage(entityId.id, NetworkMessages::acknowledgementMesageToCreateEntity);
+        std::cout << "Entity created ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateEntity:
@@ -106,7 +119,7 @@ namespace rtype
         std::memcpy(&entity, msg.body.data(), sizeof(EntityId));
         _componentManager.removeAllComponents(entity.id);
         _entityManager.removeEntity(entity.id);
-        sendAckMessage();
+        // sendAckMessage();
       }
       break;
       case NetworkMessages::createSprite:
@@ -216,8 +229,8 @@ namespace rtype
                     sizeof(InputComponent));
         _componentManager.addComponent<component::InputComponent>(id.id, input.numClient);
 
-        sendAckMessage();
-        std::cout << "Input component ack message sent" << std::endl;
+        // sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateInput);
+        // std::cout << "Input component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateInput:
@@ -242,7 +255,7 @@ namespace rtype
                     sizeof(TypeComponent));
         _componentManager
             .addComponent<component::TypeComponent>(id.id, type.type);
-        sendAckMessage();
+        // sendAckMessage();
       }
       break;
       case NetworkMessages::updateType:
@@ -370,7 +383,8 @@ namespace rtype
                     sizeof(RectangleShapeComponent));
         _componentManager
             .addComponent<component::RectangleShapeComponent>(id.id, std::make_pair(rectangleShape.x, rectangleShape.y), std::make_pair(rectangleShape.width, rectangleShape.height), rectangleShape.color, _graphic);
-        sendAckMessage();
+        // sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateRectangleShape);
+        // std::cout << "RectangleShape component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateRectangleShape:
@@ -393,7 +407,8 @@ namespace rtype
                     sizeof(OnClickComponent));
         _componentManager
             .addComponent<component::OnClickComponent>(id.id, onClick.action, onClick.numClient);
-        sendAckMessage();
+        // sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateOnClick);
+        // std::cout << "OnClick component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::createText:
@@ -419,7 +434,8 @@ namespace rtype
           _componentManager
               .addComponent<component::TextComponent>(
                   id.id, std::make_pair(text.x, text.y), _stringCom.textString[text.textString], text.size, text.color, _stringCom.textFont[text.textFont], _graphic);
-        sendAckMessage();
+        // sendAckMessage(id.id, NetworkMessages::acknowledgementMesageToCreateText);
+        // std::cout << "Text component ack message sent" << std::endl;
       }
       break;
       case NetworkMessages::updateText:

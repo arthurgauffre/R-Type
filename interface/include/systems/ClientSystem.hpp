@@ -126,12 +126,14 @@ namespace rtype
       void enqueueMessage(Message<NetworkMessages> msg);
 
       /**
-       * @brief Sends an acknowledgment message to the server.
+       * @brief Sends an acknowledgment message for a specific entity.
        *
-       * This function is responsible for sending a message to the server
-       * to acknowledge the receipt of a previous message or action.
+       * This function sends an acknowledgment message of the specified type for the given entity ID.
+       *
+       * @param actualEntityId The ID of the entity for which the acknowledgment message is being sent.
+       * @param messageType The type of the acknowledgment message to be sent.
        */
-      void sendAckMessage();
+      void sendAckMessage(size_t actualEntityId, NetworkMessages messageType);
 
       /**
        * @brief Handles incoming network messages.
