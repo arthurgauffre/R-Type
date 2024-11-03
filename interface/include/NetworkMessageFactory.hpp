@@ -16,6 +16,7 @@ class NetworkMessageFactory
 public:
     rtype::network::Message<NetworkMessages> createEntityMsg(size_t id, Scene scene, int numClient)
     {
+        std::cout << "Creating entity message" << std::endl;
         rtype::network::Message<NetworkMessages> message;
         message.header.id = NetworkMessages::createEntity;
         EntityStruct entity = {id, numClient};
