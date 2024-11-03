@@ -13,7 +13,7 @@ int main(void)
   ECS_system::StringCom stringCom;
   stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
   stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
-  stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+  stringCom.texturePath[TexturePath::Background] = "app/assets/images/background.jpg";
   stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
   stringCom.texturePath[TexturePath::Structure] = "app/assets/sprites/block.png";
   stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";

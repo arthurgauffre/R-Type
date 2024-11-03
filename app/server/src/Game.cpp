@@ -96,7 +96,7 @@ entity::IEntity *Game::createBackground()
     _engine->getComponentManager()->addComponent<component::TypeComponent>(
         background2->getID(), Type::BACKGROUND);
     _engine->getComponentManager()->addComponent<component::TransformComponent>(
-        background2->getID(), std::pair<float, float>(size.first - 20, 0));
+        background2->getID(), std::pair<float, float>(size.first, 0));
     _engine->getComponentManager()->addComponent<component::VelocityComponent>(
         background2->getID(), speed, speed);
     _engine->getComponentManager()->addComponent<component::TextureComponent>(
@@ -416,7 +416,7 @@ void Game::init()
     ECS_system::StringCom stringCom;
     stringCom.texturePath[TexturePath::Player] = "app/assets/sprites/plane.png";
     stringCom.texturePath[TexturePath::Enemy] = "app/assets/sprites/enemy.png";
-    stringCom.texturePath[TexturePath::Background] = "app/assets/images/city_background.png";
+    stringCom.texturePath[TexturePath::Background] = "app/assets/images/background.jpg";
     stringCom.texturePath[TexturePath::Bullet] = "app/assets/sprites/projectile.gif";
     stringCom.texturePath[TexturePath::Structure] = "app/assets/sprites/block.png";
     stringCom.textFont[TextFont::Arial] = "app/assets/fonts/arial.ttf";
@@ -486,8 +486,6 @@ void Game::init()
                                            "collision", _engine->_graphic, _engine->_audio, stringCom);
     _engine->getSystemManager()->addSystem(componentManager, entityManager,
                                            "health", _engine->_graphic, _engine->_audio, stringCom);
-    // _engine->getSystemManager()->addSystem(componentManager, entityManager,
-    //                                            "game", _engine->_graphic);
 }
 
 entity::IEntity *Game::addFilter(std::string filter, int numClient)
