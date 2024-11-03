@@ -108,8 +108,8 @@ The diagram illustrates the fundamental structure and relationships within the E
 Entities are the building blocks of your game. Each entity can represent anything in the game world, such as a player, enemy, or object. Here's how to create an entity:
 
 ```cpp
-auto player = _entityManager.createEntity(*id_number*);
-auto enemy = _entityManager.createEntity(*id_number*);
+auto player = _entityManager.createEntity(*id_number*, *numClient*);
+auto enemy = _entityManager.createEntity(*id_number*, *numClient*);
 ```
 
 Each entity has a unique ID and can hold multiple components.
